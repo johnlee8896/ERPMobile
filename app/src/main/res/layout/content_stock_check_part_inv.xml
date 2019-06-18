@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".warehouse.StockCheckPartInv"
+    tools:showIn="@layout/activity_stock_check_part_inv">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_checkinventory_file"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="选择盘点文件"
+            android:textAppearance="@android:style/TextAppearance.Material.Title" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_select_check_inv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="选择盘点表" />
+
+            <Button
+                android:id="@+id/btn_select_check_inv_scan_ist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="扫描位置码" />
+
+            <Button
+                android:id="@+id/btn_select_check_inv_add_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="扫描物料" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="库位单元" />
+
+                <TextView
+                    android:id="@+id/tv_check_stock_ist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="......"
+                    android:textAppearance="@android:style/TextAppearance.Material.Title" />
+            </TableRow>
+
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="物料条码" />
+
+                <TextView
+                    android:id="@+id/tv_check_stock_item_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="......"
+                    android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+            </TableRow>
+
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ERP位置" />
+
+                <TextView
+                    android:id="@+id/tv_check_stock_ist_erp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="......"
+                    android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="物料" />
+
+                <TextView
+                    android:id="@+id/tv_check_stock_item_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="......"
+                    android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="生产批次" />
+
+                <TextView
+                    android:id="@+id/tv_check_stock_manulotno"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="......"
+                    android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="托盘" />
+
+                <TextView
+                    android:id="@+id/tv_check_stock_box"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="......"
+                    android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ERP库存" />
+
+                <TextView
+                    android:id="@+id/tv_check_stock_box_left_qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="......"
+                    android:textAppearance="@android:style/TextAppearance.Material.Subhead" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView21"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="完整件数" />
+
+                <EditText
+                    android:id="@+id/et_check_stock_box_n"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="14"
+                    android:inputType="number|numberSigned"
+                    android:text="1" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView22"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="每件数量" />
+
+                <EditText
+                    android:id="@+id/et_check_stock_box_pn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="14"
+                    android:inputType="number|numberSigned|numberDecimal" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView23"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="散件数" />
+
+                <EditText
+                    android:id="@+id/et_check_stock_box_dq"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="14"
+                    android:inputType="number|numberSigned|numberDecimal"
+                    android:text="0" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+
+                <TextView
+                    android:id="@+id/textView24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="小计" />
+
+                <Button
+                    android:id="@+id/btn_check_inv_cal_qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="小计" />
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="实际盘点" />
+
+                <EditText
+                    android:id="@+id/et_check_stock_box_real_qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:ems="14"
+                    android:inputType="number|numberSigned|numberDecimal" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="备注" />
+
+                <EditText
+                    android:id="@+id/et_check_stock_box_remark"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="14"
+                    android:inputType="text" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="确认" />
+
+                <Button
+                    android:id="@+id/btn_affirm_qty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="提交" />
+            </TableRow>
+
+
+        </TableLayout>
+    </LinearLayout>
+
+</LinearLayout>

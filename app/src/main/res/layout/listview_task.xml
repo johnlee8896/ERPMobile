@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/underlinetask"
+    android:paddingBottom="2dp">
+
+
+    <TextView
+        android:id="@+id/tv_task_create_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="Task Create Time"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/iv_task_creater"
+        android:layout_width="40dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+        android:scaleType="fitStart"
+
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/tv_task_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_task_create_time"
+        app:srcCompat="@mipmap/monster_mike" />
+
+
+    <TextView
+        android:id="@+id/tv_task_creater"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:background="#FefeFe"
+
+
+        android:gravity="center"
+
+        android:scaleType="fitStart"
+        android:text="creater"
+        app:layout_constraintEnd_toEndOf="@+id/iv_task_creater"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_task_creater" />
+
+
+    <TextView
+        android:id="@+id/tv_task_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/tasktextviewborder"
+        android:gravity="left"
+
+        android:padding="8dp"
+
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+
+        android:text="fabasdfasdfa
+            sdfkasjfjaeiofjaslkfmaslkdjfal
+             kjsdlkfja;lksjflasdfasd fa"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_task_creater"
+        app:layout_constraintTop_toBottomOf="@+id/tv_task_create_time" />
+
+
+    <TextView
+        android:id="@+id/tv_task_exer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="#FefeFe"
+        android:gravity="center_vertical"
+
+
+        android:scaleType="fitEnd"
+        android:text="a, b, c"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_task_plan_end_time"
+        app:layout_constraintStart_toEndOf="@+id/iv_task_creater"
+        app:layout_constraintTop_toBottomOf="@+id/tv_task_title" />
+
+
+    <ImageView
+        android:id="@+id/iv_task_plan_end_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:alpha="120"
+        android:maxHeight="16dp"
+        android:tint="#ff0000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_task_plan_end_time"
+        app:layout_constraintStart_toEndOf="@+id/tv_task_exer"
+        app:layout_constraintTop_toTopOf="@+id/tv_task_exer"
+        app:srcCompat="@drawable/ic_assignment_turned_in_black_24dp" />
+
+    <TextView
+        android:id="@+id/tv_task_plan_end_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="#FefeFe"
+
+
+        android:gravity="right"
+        android:scaleType="fitEnd"
+        android:text="2018-1-2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/tv_task_title" />
+
+</android.support.constraint.ConstraintLayout>

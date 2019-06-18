@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:ignore="ExtraText">
+
+    <item
+        android:id="@+id/navigation_contact_usual"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="常用" />
+
+    <item
+        android:id="@+id/navigation_contact_history"
+        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:title="历史" />
+
+    <!--
+    <item
+        android:id="@+id/navigation_contact_all"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="所有" />
+-->
+    <item
+        android:id="@+id/navigation_contact_group"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="工作组" />
+
+</menu>

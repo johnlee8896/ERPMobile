@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/underline"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:stretchColumns="1">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_name_row"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="物料" />
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_name"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="物品"
+                android:textColor="@android:color/background_dark" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_lotno_row"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="生产批次" />
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_lotno"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="批次"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_smlremark_row"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="生产批注" />
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_smlremark"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="批注"
+                android:textColor="@color/colorAccent" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_lot_description_row"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="批次标注" />
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_lot_description"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="标注"
+                android:textColor="@color/colorAccent" />
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_boxno_row"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="包装" />
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_boxno"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="包装"
+                android:textColor="@android:color/background_dark" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_needmore_row"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:text="投料差额" />
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_needmore"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="投料差额"
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="18sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_qty_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="数量" />
+
+            <EditText
+                android:id="@+id/et_issue_more_qty"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:editable="true"
+                android:ems="10"
+                android:inputType="numberDecimal" />
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

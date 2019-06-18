@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".commonactivity.InputBoxActivity">
+
+    <TextView
+        android:id="@+id/tv_input_box_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/textviewfullborder"
+        android:text="Title"
+        android:textAppearance="@android:style/TextAppearance.Material.Display1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/et_inputbox_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:gravity="left"
+        android:inputType="text|textMultiLine"
+        android:singleLine="false"
+        android:text="Input..."
+        app:layout_constraintBottom_toTopOf="@+id/btn_input_box_commit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_input_box_title" />
+
+    <Button
+        android:id="@+id/btn_input_box_commit"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btn_input_box_cancel"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="取消"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+       />
+</android.support.constraint.ConstraintLayout>

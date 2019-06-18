@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.chinashb.www.mobileerp.task.TaskActivity">
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation_task"
+        android:layout_width="0dp"
+        android:layout_height="74dp"
+        android:background="?android:attr/windowBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/navigation_tasks">
+
+    </android.support.design.widget.BottomNavigationView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_new_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:adjustViewBounds="false"
+        android:clickable="true"
+        app:backgroundTint="#ffffff"
+        app:layout_constraintBottom_toTopOf="@+id/navigation_task"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@mipmap/roundbutton4" />
+
+    <LinearLayout
+        android:id="@+id/linear_layout_task_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/navigation_task"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_task_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/recycler_view_item_1" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
