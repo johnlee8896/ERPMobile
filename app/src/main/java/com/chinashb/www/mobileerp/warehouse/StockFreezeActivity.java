@@ -14,12 +14,12 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.AdapterFreezeBoxItem;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 
 import java.util.ArrayList;
@@ -267,7 +267,7 @@ public class StockFreezeActivity extends AppCompatActivity {
             for (int i=0;i<boxitemList.size();i++)
             {
                 BoxItemEntity bi = boxitemList.get(i);
-                Ws_Result result = WebServiceUtil.op_Commit_Freeze_Inv(bi);
+                WsResult result = WebServiceUtil.op_Commit_Freeze_Inv(bi);
                 bi.setWs_result(result);
                 if (result.getResult()==true)
                 {
@@ -307,7 +307,7 @@ public class StockFreezeActivity extends AppCompatActivity {
             for (int i=0;i<boxitemList.size();i++)
             {
                 BoxItemEntity bi = boxitemList.get(i);
-                Ws_Result result = WebServiceUtil.op_Commit_FreezeNot_Inv(bi);
+                WsResult result = WebServiceUtil.op_Commit_FreezeNot_Inv(bi);
                 bi.setWs_result(result);
                 if (result.getResult()==true)
                 {

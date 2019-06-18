@@ -20,7 +20,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.AdapterInBoxItem;
 import com.chinashb.www.mobileerp.basicobject.Ist_Place;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 
 import java.io.Serializable;
@@ -355,7 +355,7 @@ public class StockInActivity extends AppCompatActivity {
 
 
     private class AsyncExeWarehouseIn extends AsyncTask<String, Void, Void> {
-        Ws_Result ws_result;
+        WsResult ws_result;
 
         @Override
         protected Void doInBackground(String... params) {

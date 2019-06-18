@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 
 import java.io.Serializable;
 
-public class Ws_Result implements Serializable {
+public class WsResult implements Serializable {
     private boolean result;
     private String ErrorInfo;
     private Long ID;

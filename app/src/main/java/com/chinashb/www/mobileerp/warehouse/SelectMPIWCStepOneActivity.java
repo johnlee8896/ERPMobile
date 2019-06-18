@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -120,7 +120,7 @@ public class SelectMPIWCStepOneActivity extends AppCompatActivity {
                     + StockMainActivity.userInfo.getBu_ID() + " Order By Case When Ac_Type=1 Then '部件' When Ac_Type=2 Then '成品' Else '' End";
 
 
-            Ws_Result r = WebServiceUtil.getDataTable(sql);
+            WsResult r = WebServiceUtil.getDataTable(sql);
 
             if(r!=null && r.getResult()==true)
             {

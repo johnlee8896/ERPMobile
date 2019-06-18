@@ -21,7 +21,7 @@ public class QueryAsyncTask extends AsyncTask<String, Void, List<JsonObject>> {
 
         String sql= strings[0];
 
-        //Ws_Result result=WebServiceUtil.getDataTable(sql);
+        //WsResult result=WebServiceUtil.getDataTable(sql);
 
         List<JsonObject> jsonObjectList;
         jsonObjectList= WebServiceUtil.getJsonList(sql);

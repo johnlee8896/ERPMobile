@@ -10,7 +10,7 @@ import com.chinashb.www.mobileerp.basicobject.Ist_Place;
 import com.chinashb.www.mobileerp.basicobject.JUser;
 import com.chinashb.www.mobileerp.basicobject.Mpi_Wc;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -433,7 +433,7 @@ public class WebServiceUtil {
     }
 
 
-    public static Ws_Result op_Commit_DS_Item(BoxItemEntity box_item) {
+    public static WsResult op_Commit_DS_Item(BoxItemEntity box_item) {
         String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
@@ -464,7 +464,7 @@ public class WebServiceUtil {
 
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result ws_result = Get_WS_Result(obj);
+        WsResult ws_result = Get_WS_Result(obj);
 
 
         return ws_result;
@@ -795,15 +795,15 @@ public class WebServiceUtil {
         propertyInfos.add(propertyInfo);
     }
 
-    public static Ws_Result op_Commit_MW_Issue_Item(Long MW_ID, BoxItemEntity bi) {
+    public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, BoxItemEntity bi) {
         String sqty = String.valueOf(bi.getQty());
 
-        Ws_Result Result = op_Commit_MW_Issue_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
+        WsResult Result = op_Commit_MW_Issue_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
 
         return Result;
     }
 
-    public static Ws_Result op_Commit_MW_Issue_Item(Long MW_ID, Integer Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty) {
+    public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, Integer Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty) {
         String webMethodName = "op_Commit_MW_New_Issue_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -824,20 +824,20 @@ public class WebServiceUtil {
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result ws_result = Get_WS_Result(obj);
+        WsResult ws_result = Get_WS_Result(obj);
 
         return ws_result;
     }
 
-    public static Ws_Result op_Commit_MW_Issue_Extra_Item(Long MW_ID, BoxItemEntity bi) {
+    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, BoxItemEntity bi) {
         String sqty = String.valueOf(bi.getQty());
 
-        Ws_Result Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
+        WsResult Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
 
         return Result;
     }
 
-    public static Ws_Result op_Commit_MW_Issue_Extra_Item(Long MW_ID, Integer Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty) {
+    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, Integer Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty) {
         String webMethodName = "op_Commit_MW_New_Issue_Extra_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -857,14 +857,14 @@ public class WebServiceUtil {
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result ws_result = Get_WS_Result(obj);
+        WsResult ws_result = Get_WS_Result(obj);
 
         return ws_result;
 
     }
 
 
-    public static Ws_Result op_Commit_Dep_Out_Item(Integer Bu_ID, HashMap<String, String> SelectDep, HashMap<String, String> SelectReaseach, BoxItemEntity bi) {
+    public static WsResult op_Commit_Dep_Out_Item(Integer Bu_ID, HashMap<String, String> SelectDep, HashMap<String, String> SelectReaseach, BoxItemEntity bi) {
         String sqty = String.valueOf(bi.getQty());
 
         String webMethodName = "op_Commit_Dep_Out_Item";
@@ -894,19 +894,19 @@ public class WebServiceUtil {
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result ws_result = Get_WS_Result(obj);
+        WsResult ws_result = Get_WS_Result(obj);
 
         return ws_result;
     }
 
-    public static Ws_Result op_Commit_Return_Item(BoxItemEntity bi) {
+    public static WsResult op_Commit_Return_Item(BoxItemEntity bi) {
 
-        Ws_Result Result = op_Commit_Return_Item(UserInfoEntity.ID, bi.getDIII_ID());
+        WsResult Result = op_Commit_Return_Item(UserInfoEntity.ID, bi.getDIII_ID());
 
         return Result;
     }
 
-    public static Ws_Result op_Commit_Return_Item(Integer Sender, Long DIII_ID) {
+    public static WsResult op_Commit_Return_Item(Integer Sender, Long DIII_ID) {
         String webMethodName = "op_Commit_Return_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -914,7 +914,7 @@ public class WebServiceUtil {
         AddPrpertyInfo(propertyInfos, "DIII_ID", DIII_ID);
 
 
-        Ws_Result ws_result;
+        WsResult ws_result;
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
@@ -1078,9 +1078,9 @@ public class WebServiceUtil {
         return box_item;
     }
 
-    public static Ws_Result op_Commit_Stock_Result(String Exer_Name, Integer CI_ID, Integer Bu_ID, String X,
-                                                   Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
-                                                   Long LotID, String Qty, String remark) {
+    public static WsResult op_Commit_Stock_Result(String Exer_Name, Integer CI_ID, Integer Bu_ID, String X,
+                                                  Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
+                                                  Long LotID, String Qty, String remark) {
         String webMethodName = "op_Commit_Check_Stock_Save";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         AddPrpertyInfo(propertyInfos, "Exer_Name", Exer_Name);
@@ -1104,9 +1104,9 @@ public class WebServiceUtil {
     }
 
 
-    public static Ws_Result op_Commit_Stock_Result_V2(String Exer_Name, Integer CI_ID, String X,
-                                                      Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
-                                                      String Qty, String remark) {
+    public static WsResult op_Commit_Stock_Result_V2(String Exer_Name, Integer CI_ID, String X,
+                                                     Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
+                                                     String Qty, String remark) {
         String webMethodName = "op_Commit_Check_Stock_Save_V2";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         AddPrpertyInfo(propertyInfos, "Exer_Name", Exer_Name);
@@ -1129,9 +1129,9 @@ public class WebServiceUtil {
 
     }
 
-    public static Ws_Result op_Commit_Stock_Result_V4(String Exer_Name, Integer CI_ID, Integer Bu_ID, String X,
-                                                      Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
-                                                      Long LotID, String Qty, String N, String PN, String DQ, String remark) {
+    public static WsResult op_Commit_Stock_Result_V4(String Exer_Name, Integer CI_ID, Integer Bu_ID, String X,
+                                                     Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
+                                                     Long LotID, String Qty, String N, String PN, String DQ, String remark) {
         String webMethodName = "op_Commit_Check_Stock_Save_V4";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         AddPrpertyInfo(propertyInfos, "Exer_Name", Exer_Name);
@@ -1159,9 +1159,9 @@ public class WebServiceUtil {
     }
 
 
-    public static Ws_Result op_Commit_Stock_Result_V3(String Exer_Name, Integer CI_ID, String X,
-                                                      Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
-                                                      String Qty, String N, String PN, String DQ, String remark) {
+    public static WsResult op_Commit_Stock_Result_V3(String Exer_Name, Integer CI_ID, String X,
+                                                     Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
+                                                     String Qty, String N, String PN, String DQ, String remark) {
         String webMethodName = "op_Commit_Check_Stock_Save_V3";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         AddPrpertyInfo(propertyInfos, "Exer_Name", Exer_Name);
@@ -1233,7 +1233,7 @@ public class WebServiceUtil {
         return box_item;
     }
 
-    public static Ws_Result op_Commit_Move_Item(BoxItemEntity box_item) {
+    public static WsResult op_Commit_Move_Item(BoxItemEntity box_item) {
         String webMethodName = "op_Commit_Inv_Move";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -1248,14 +1248,14 @@ public class WebServiceUtil {
 
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result result = Get_WS_Result(obj);
+        WsResult result = Get_WS_Result(obj);
 
 
         return result;
 
     }
 
-    public static Ws_Result op_Commit_Freeze_Inv(BoxItemEntity box_item) {
+    public static WsResult op_Commit_Freeze_Inv(BoxItemEntity box_item) {
         String webMethodName = "op_Commit_Freeze_Inv";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -1267,14 +1267,14 @@ public class WebServiceUtil {
 
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result result = Get_WS_Result(obj);
+        WsResult result = Get_WS_Result(obj);
 
 
         return result;
 
     }
 
-    public static Ws_Result op_Commit_FreezeNot_Inv(BoxItemEntity box_item) {
+    public static WsResult op_Commit_FreezeNot_Inv(BoxItemEntity box_item) {
         String webMethodName = "op_Commit_FreezeNot_Inv";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -1286,20 +1286,20 @@ public class WebServiceUtil {
 
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result result = Get_WS_Result(obj);
+        WsResult result = Get_WS_Result(obj);
 
         return result;
 
     }
 
-    public static Ws_Result getWS_Result(SoapObject obj) {
+    public static WsResult getWS_Result(SoapObject obj) {
         return Get_WS_Result(obj);
     }
 
     //todo
-    public static Ws_Result Get_WS_Result(SoapObject obj) {
+    public static WsResult Get_WS_Result(SoapObject obj) {
 
-        Ws_Result result = new Ws_Result();
+        WsResult result = new WsResult();
 
         if (obj != null) {
             int count = obj.getPropertyCount();
@@ -1322,9 +1322,9 @@ public class WebServiceUtil {
     }
 
 
-    public static Ws_Result getDataTable(String sql) {
+    public static WsResult getDataTable(String sql) {
 
-        Ws_Result result = null;
+        WsResult result = null;
         String webMethodName = "GetAndroidData";
         ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
 
@@ -1397,7 +1397,7 @@ public class WebServiceUtil {
     }
 
     public static List<JsonObject> getJsonList(String SQL) {
-        Ws_Result result = getDataTable(SQL);
+        WsResult result = getDataTable(SQL);
 
         if (result == null) {
             return null;
@@ -1436,7 +1436,7 @@ public class WebServiceUtil {
     }
 
 
-    public static Ws_Result getERPObject(String ObjectName, String IDValue) {
+    public static WsResult getERPObject(String ObjectName, String IDValue) {
 
 
         String webMethodName = "op_Get_ERP_Object";
@@ -1460,7 +1460,7 @@ public class WebServiceUtil {
 
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result result = getWS_Result(obj);
+        WsResult result = getWS_Result(obj);
 
         if (result.getResult()) {
             String js = result.getErrorInfo();
@@ -1484,7 +1484,7 @@ public class WebServiceUtil {
     }
 
 
-    public static Ws_Result getShbCommunicationFun(String ObjectName, String FunctionName, Object X[]) {
+    public static WsResult getShbCommunicationFun(String ObjectName, String FunctionName, Object X[]) {
 
 
         String webMethodName = "op_Exe_SHB_Communication_Fun";
@@ -1513,7 +1513,7 @@ public class WebServiceUtil {
 
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result result = getWS_Result(obj);
+        WsResult result = getWS_Result(obj);
 
 
         return result;
@@ -1556,7 +1556,7 @@ public class WebServiceUtil {
         return bm;
     }
 
-    public static Ws_Result getTryLogin(String name, String pw) {
+    public static WsResult getTryLogin(String name, String pw) {
 
         String webMethodName = "op_Try_Login";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -1578,7 +1578,7 @@ public class WebServiceUtil {
 
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result result = new Ws_Result();
+        WsResult result = new WsResult();
 
         if (obj != null) {
             int count = obj.getPropertyCount();
@@ -1660,7 +1660,7 @@ public class WebServiceUtil {
         return result;
     }
 
-    public static Ws_Result op_Commit_Update_Lot_Description(Integer Oper, Integer LotID, String Description) {
+    public static WsResult op_Commit_Update_Lot_Description(Integer Oper, Integer LotID, String Description) {
         String webMethodName = "op_Update_Lot_Description";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -1672,7 +1672,7 @@ public class WebServiceUtil {
 
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ws_Result result = getWS_Result(obj);
+        WsResult result = getWS_Result(obj);
 
 
         return result;

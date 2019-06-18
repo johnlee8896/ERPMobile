@@ -14,7 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -227,7 +227,7 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
                     "Where M.Deleted=0 And M.WC_ID=" + select_wc.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + " " +
                     " Order By PShift_ID, Shift_No";
 
-            Ws_Result r = WebServiceUtil.getDataTable(sql);
+            WsResult r = WebServiceUtil.getDataTable(sql);
 
             if(r!=null && r.getResult())
             {

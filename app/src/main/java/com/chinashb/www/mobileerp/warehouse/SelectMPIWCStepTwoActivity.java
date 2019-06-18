@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.MealTypeEntity;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -148,7 +148,7 @@ public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
 
             String sql="Select Wi.WC_ID, Wi.List_No,WC_Name From WC_List_Item As Wi Inner Join P_WC As C On Wi.Wc_ID=C.WC_ID Where Wi.LID= " + selected_wclist.getLID() + " Order By Wi.List_No";
 
-            Ws_Result r = WebServiceUtil.getDataTable(sql);
+            WsResult r = WebServiceUtil.getDataTable(sql);
 
             if(r!=null && r.getResult()==true)
             {

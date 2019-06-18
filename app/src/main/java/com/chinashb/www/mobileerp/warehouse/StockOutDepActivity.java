@@ -28,7 +28,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.Mpi_Wc;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 
 import java.io.Serializable;
@@ -456,7 +456,7 @@ public class StockOutDepActivity extends AppCompatActivity {
     }
 
     private class AsyncExeWarehouseOut extends AsyncTask<String, Void, Void> {
-        Ws_Result ws_result;
+        WsResult ws_result;
         @Override
         protected Void doInBackground(String... params) {
 

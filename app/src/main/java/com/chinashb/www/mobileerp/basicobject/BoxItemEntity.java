@@ -34,7 +34,7 @@ public class BoxItemEntity implements Serializable {
     private String LotDescription = "";
     private String SmlRemark = "";
     private String ManuLotNo = "";
-    private Ws_Result ws_result = new Ws_Result();
+    private WsResult ws_result = new WsResult();
 
     public boolean getResult() {
         return result;
@@ -283,11 +283,11 @@ public class BoxItemEntity implements Serializable {
         this.ManuLotNo = ManuLotNo;
     }
 
-    public Ws_Result getWs_result() {
+    public WsResult getWs_result() {
         return ws_result;
     }
 
-    public void setWs_result(Ws_Result w) {
+    public void setWs_result(WsResult w) {
         ws_result = w;
     }
 

@@ -24,7 +24,7 @@ import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.Issued_Item;
 import com.chinashb.www.mobileerp.basicobject.Ist_Place;
 import com.chinashb.www.mobileerp.basicobject.Mpi_Wc;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 
 
@@ -464,7 +464,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
 
 
     private class AsyncExeWarehouseOut extends AsyncTask<String, Void, Void> {
-        Ws_Result ws_result;
+        WsResult ws_result;
         @Override
         protected Void doInBackground(String... params) {
 

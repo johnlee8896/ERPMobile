@@ -20,7 +20,7 @@ import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.Ist_Place;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
@@ -609,7 +609,7 @@ public class StockCheckPartInv extends AppCompatActivity {
 
 
     private class AsyncCommitStockResult extends AsyncTask<String, Void, Void> {
-        Ws_Result ws_result;
+        WsResult ws_result;
 
 
         @Override

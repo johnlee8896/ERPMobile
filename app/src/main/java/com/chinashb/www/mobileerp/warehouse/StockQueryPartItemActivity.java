@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.InputBoxActivity;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.google.gson.Gson;
@@ -188,7 +188,7 @@ public class StockQueryPartItemActivity extends AppCompatActivity {
 
     private class AsyncUpdateLotDescription extends AsyncTask<String, Void, Void> {
 
-        Ws_Result ws_result;
+        WsResult ws_result;
 
         @Override
         protected Void doInBackground(String... params) {

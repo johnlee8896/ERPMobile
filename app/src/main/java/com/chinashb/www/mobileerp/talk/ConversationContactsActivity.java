@@ -14,7 +14,7 @@ import android.view.View;
 import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.JsonListAdapter;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
@@ -176,7 +176,7 @@ public class ConversationContactsActivity extends AppCompatActivity {
         protected void loadConcactGroupData()
         {
 
-           Ws_Result w= WebServiceUtil.getShbCommunicationFun("t_Msg_Group","GetMyGroup",new Object[]{HR_ID,60});
+           WsResult w= WebServiceUtil.getShbCommunicationFun("t_Msg_Group","GetMyGroup",new Object[]{HR_ID,60});
 
            if (w.getResult())
            {

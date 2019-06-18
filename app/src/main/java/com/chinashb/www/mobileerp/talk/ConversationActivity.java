@@ -21,7 +21,7 @@ import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.MsgAdapter;
 import com.chinashb.www.mobileerp.basicobject.Msg;
-import com.chinashb.www.mobileerp.basicobject.Ws_Result;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.myGestureListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
@@ -300,7 +300,7 @@ public class ConversationActivity extends AppCompatActivity {
 
             Integer existedMinID = getMinMsID();
 
-            Ws_Result w;
+            WsResult w;
             if (existedMinID == -1) {
                 w = WebServiceUtil.getShbCommunicationFun("Msg",
                         "dtGetMsg_Group_MsID", new Object[]{MG_ID, 10});
