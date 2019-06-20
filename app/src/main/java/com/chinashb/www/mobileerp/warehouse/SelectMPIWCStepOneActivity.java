@@ -93,7 +93,7 @@ public class SelectMPIWCStepOneActivity extends AppCompatActivity {
         if(result != null) {
             if(result.getContents() == null) {
                 //new IntentIntegrator(MainActivity.this).initiateScan();
-                //start_scan_HR();
+                //startScanHR();
             }
             else
             {

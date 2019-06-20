@@ -12,6 +12,7 @@ import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.Msg;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -83,7 +84,7 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
         holder.tvTime.setText(msg.msgTimes );
         holder.tvMsg.setText(msg.Msg);
 
-        if(msg.mSenderID== MobileMainActivity.userInfo.getHR_ID())
+        if(msg.mSenderID== UserSingleton.get().getHRID())
         {
             holder.ivNotMe.setVisibility(View.INVISIBLE);
             holder.ivMe.setVisibility(View.VISIBLE);

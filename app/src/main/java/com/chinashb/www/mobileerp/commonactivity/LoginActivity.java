@@ -5,37 +5,63 @@ import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.funs.isLoadDataListener;
+import com.chinashb.www.mobileerp.singleton.SPSingleton;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.SPDefine;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.CommProgressDialog;
+import com.google.gson.JsonObject;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
 
     private EditText nameEditText;
     private EditText passwordEditText;
     private Button loginButton;
-    private ProgressBar progressBar;
+    private Button scanHRButton;
+//    private ProgressBar progressBar;
+
+    //todo
+    private int mobile_erp_ver_id = 1;
+    private boolean versionOk = false;
+    private boolean isNetReady = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_login_layout);
 
 
         nameEditText = (EditText) findViewById(R.id.et_login_name);
         passwordEditText = (EditText) findViewById(R.id.et_login_password);
         loginButton = (Button) findViewById(R.id.name_sign_in_button);
-        progressBar = (ProgressBar) findViewById(R.id.login_progress);
+        scanHRButton = (Button) findViewById(R.id.main_scan_hr_card_button);
+//        progressBar = (ProgressBar) findViewById(R.id.login_progress);
+
+        //最新版本检测
+        checkErpVersionOk();
+
+        CommonUtil.initNetWorkLink(this);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,10 +70,138 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        scanHRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (versionOk) {
+                    startScanHR();
+                } else {
+                    if (!isNetReady) {
+                        CommonUtil.ShowToast(LoginActivity.this, "无法连接服务器", R.mipmap.warning, Toast.LENGTH_SHORT);
+                    } else {
+                        CommonUtil.ShowToast(LoginActivity.this, "请升级App", R.mipmap.warning, Toast.LENGTH_SHORT);
+                    }
+
+                }
+
+            }
+        });
+
         setHomeButton();
+        initView();
 
     }
 
+    private void initView() {
+        String userName = SPSingleton.get().getString(SPDefine.SP_login_user_name);
+        if (!TextUtils.isEmpty(userName)) {
+            nameEditText.setText(userName);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        Toast.makeText(this, " scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+        String[] qrContent;
+        UserInfoEntity userInfo = new UserInfoEntity();
+        if (result.getContents().contains("/")) {
+            qrContent = result.getContents().split("/");
+            if (qrContent.length >= 4) {
+                userInfo.setHR_ID(Integer.parseInt(qrContent[2]));
+                userInfo.setHrNum(qrContent[4]);
+
+//                GetHrNameAsyncTask task = new GetHrNameAsyncTask();
+//                task.execute();
+
+//                SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
+                Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
+                intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
+                startActivity(intent);
+                finish();
+            }
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        //设置为竖屏幕
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+        super.onResume();
+    }
+
+    private void startScanHR() {
+
+        IntentIntegrator scan = new IntentIntegrator(LoginActivity.this);
+        //scan.setOrientationLocked(false);
+        scan.setBeepEnabled(true);
+        scan.setCaptureActivity(CustomScannerActivity.class);
+
+        scan.setPrompt("扫描员工二维码");
+        startActivityForResult(scan.createScanIntent(), 0x0000c0de);
+
+        //new IntentIntegrator( MobileMainActivity.this).initiateScan();
+    }
+
+//    protected void debugLogin() {
+//
+//        if (BuildConfig.DEBUG) {
+//            userInfo = new UserInfoEntity();
+//            userInfo.setHR_ID(249);
+//            userInfo.setBu_ID(1);
+//            userInfo.setBu_Name("座椅电机");
+//            userInfo.setCompany_ID(1);
+//            userInfo.setCompany_Name("上海胜华波汽车电器有限公司");
+//
+//            MobileMainActivity.AsyncGetHrName task = new MobileMainActivity.AsyncGetHrName();
+//            task.execute();
+//        }
+//    }
+
+    private void checkErpVersionOk() {
+        String sql = "select top 1 VerID,Version,Convert(nvarchar(100),UpdateDate,23) As UpdateDate, Des " +
+                " from ERP_Mobile_Ver Where RequireUpdate=1 Order By VerID Desc";
+
+        QueryAsyncTask query = new QueryAsyncTask();
+        query.execute(sql);
+        query.setLoadDataCompleteListener(new isLoadDataListener() {
+            @Override
+            public void loadComplete(List<JsonObject> result) {
+                if (result != null && result.size() == 1) {
+                    //返回结果，说明网络访问没有问题
+                    isNetReady = true;
+
+                    JsonObject o = result.get(0);
+                    Integer ErpVerID = o.get("VerID").getAsInt();
+                    String Version = o.get("Version").getAsString();
+                    String UpdateDate = o.get("UpdateDate").getAsString();
+                    String Des = o.get("Des").getAsString();
+
+//                    query_erp_id = ErpVerID;
+                    if (mobile_erp_ver_id >= ErpVerID) {
+                        versionOk = true;
+
+//                        debugLogin();
+                    } else {
+                        String newVerWarning = "当前App 版本已经过时。\n" +
+                                "系统已于" + UpdateDate + "升级到版本" + Version + "\n" +
+                                "版本描述：\n" +
+                                Des;
+
+                        CommonUtil.ShowToast(LoginActivity.this, newVerWarning, R.mipmap.warning, Toast.LENGTH_SHORT);
+                    }
+                } else {
+
+                }
+            }
+        });
+
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -81,49 +235,55 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        //设置为竖屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-
-        super.onResume();
-    }
-
     private class CheckNameAndPasswordAsyncTask extends AsyncTask<String, Void, Void> {
 
-        WsResult result = null;
+        private WsResult wsResult = null;
+        private CommProgressDialog progressDialog;
 
         @Override
         protected Void doInBackground(String... params) {
             String Name = nameEditText.getText().toString();
             String password = passwordEditText.getText().toString();
 
-            result = WebServiceUtil.getTryLogin(Name, password);
+            wsResult = WebServiceUtil.getTryLogin(Name, password);
 
             return null;
         }
 
         @Override
         protected void onPreExecute() {
-            progressBar.setVisibility(View.VISIBLE);
+//            progressBar.setVisibility(View.VISIBLE);
+            progressDialog = new CommProgressDialog.Builder(LoginActivity.this)
+                    .setTitle("正在上传中...").create();
+
+            progressDialog.show();
         }
 
         @Override
         protected void onPostExecute(Void result) {
 
-            if (this.result.getResult()) {
-                UserInfoEntity.ID = this.result.getID().intValue();
+            if (this.wsResult.getResult()) {
+//                UserInfoEntity.ID = this.wsResult.getID().intValue();
 
-                Intent resultIntent = new Intent();
-                setResult(1, resultIntent);
+//                Intent resultIntent = new Intent();
+//                setResult(1, resultIntent);
+//                finish();
+
+                UserSingleton.get().setHRID(wsResult.getID().intValue());
+                UserSingleton.get().setHRName(nameEditText.getText().toString());
+
+                SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
+                Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
+                intent.putExtra(IntentConstant.Intent_Extra_hr_id, wsResult.getID().intValue());
+                startActivity(intent);
                 finish();
+
             } else {
-                Toast.makeText(LoginActivity.this, this.result.getErrorInfo(), Toast.LENGTH_LONG).show();
+                ToastUtil.showToastLong(wsResult.getErrorInfo());
             }
 
-            progressBar.setVisibility(View.INVISIBLE);
+//            progressBar.setVisibility(View.INVISIBLE);
+            progressDialog.dismiss();
         }
 
         @Override
@@ -131,6 +291,51 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-
+//    private UserInfoEntity userInfo;
+//
+//
+//    private class GetHrNameAsyncTask extends AsyncTask<String, Void, Void> {
+//        //Image hr_photo;
+//
+//        @Override
+//        protected Void doInBackground(String... params) {
+//
+//            int hrId = Integer.parseInt(params[0]);
+////            userInfo = WebServiceUtil.getHRName_Bu(userInfo.getHR_ID());
+//            userInfo = WebServiceUtil.getHRName_Bu(hrId);
+//
+//
+////            if (userInfo != null) {
+////                pictureBitmap = CommonUtil.getUserPic(LoginActivity.this, userPictureMap, userInfo.getHR_ID());
+////            }
+//
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+////            scanProgressBar.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            if (userInfo != null) {
+////                setTvUserName();
+////                if (pictureBitmap != null) {
+////                    avatarImageView.setImageBitmap(pictureBitmap);
+////                }
+//            } else {
+//                Toast.makeText(LoginActivity.this, "无法访问服务器，请检查网络连接是否正常", Toast.LENGTH_LONG).show();
+//            }
+//
+////            scanProgressBar.setVisibility(View.GONE);
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Void... values) {
+//        }
+//
+//    }
 
 }

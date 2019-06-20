@@ -14,17 +14,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.R;
-
-
 import com.chinashb.www.mobileerp.basicobject.Mpi_Wc;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.ShbTcpTest;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.chinashb.www.mobileerp.MobileMainActivity;
 
 
 
@@ -92,7 +90,7 @@ public class StockMainActivity extends AppCompatActivity {
         fab=(FloatingActionButton)findViewById(R.id.fab_test_tcp_net);
 
 
-        userInfo= MobileMainActivity.userInfo;
+        userInfo= UserSingleton.get().getUserInfo();
         userpic = MobileMainActivity.pictureBitmap;
 
         tvTitle.setText(userInfo.getBu_Name()+ ":"+"仓库管理");

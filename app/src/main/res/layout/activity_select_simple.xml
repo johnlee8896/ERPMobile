@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.shb.stockinout.MainActivity">
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_select_title"
@@ -14,30 +14,35 @@
         android:text="选择标题"
         android:textSize="18sp" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/json_linear_lay_out_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        >
 
+
+
+        <Button
+            android:layout_alignParentRight="true"
+            android:id="@+id/btn_execute_filter"
+            android:layout_width="80dp"
+            android:layout_height="35dp"
+            android:text="筛选"
+            android:textSize="14sp" />
         <EditText
             android:id="@+id/et_keyword_input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:ems="10"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="40dp"
+            android:layout_toLeftOf="@id/btn_execute_filter"
+            android:layout_centerVertical="true"
+            android:background="@null"
             android:hint="检索关键字"
             android:inputType="text"
             android:textSize="14sp" />
-
-        <Button
-            android:id="@+id/btn_execute_filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="筛选"
-            android:textSize="14sp" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/json_linear_lay_out_title"
@@ -47,30 +52,29 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="vertical">-->
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_select_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#bbccaa"
             android:scrollbars="vertical"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp">
 
         </android.support.v7.widget.RecyclerView>
 
-        <ProgressBar
-            android:id="@+id/pb_webservice_progressbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:visibility="visible" />
+        <!--<ProgressBar-->
+        <!--android:id="@+id/pb_webservice_progressbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:visibility="visible" />-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 
 </LinearLayout>

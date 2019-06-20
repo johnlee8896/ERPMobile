@@ -21,13 +21,15 @@
         android:supportsRtl="true"
         android:name=".APP"
         android:theme="@style/AppTheme">
-        <activity android:name=".MobileMainActivity">
+        <activity android:name=".commonactivity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MobileMainActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".warehouse.WarehouseStockQueryActivity" />
         <activity
             android:name=".warehouse.WarehousePartMainActivity"
@@ -38,9 +40,9 @@
         <activity
             android:name=".warehouse.StockInActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".commonactivity.LoginActivity"
-            android:screenOrientation="portrait" />
+        <!--<activity-->
+            <!--android:name=".commonactivity.LoginActivity"-->
+            <!--android:screenOrientation="portrait" />-->
         <activity
             android:name=".warehouse.StockOutActivity"
             android:screenOrientation="portrait" />
@@ -108,7 +110,7 @@
         </receiver>
 
         <activity
-            android:name=".talk.ConversationContactsActivity"
+            android:name=".talk.MessageManageActivity"
             android:label="@string/title_activity_conversation_contacts" />
         <activity
             android:name=".task.TaskViewActivity"

@@ -25,6 +25,7 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.myGestureListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class ConversationActivity extends AppCompatActivity {
 
         if (contactType == 0 || contactType == 1) {
             String HR_Name2 = Contact.get("联系人");
-            tvContactWho.setText(HR_Name2 + " ---- " + MobileMainActivity.userInfo.getHR_Name());
+            tvContactWho.setText(HR_Name2 + " ---- " + UserSingleton.get().getUserInfo().getHR_Name());
         }
         if (contactType == 2) {
             String GroupName = Contact.get("小组");
@@ -184,7 +185,7 @@ public class ConversationActivity extends AppCompatActivity {
                 }
 
                 Msg msg = new Msg();
-                msg.mSenderID = MobileMainActivity.userInfo.getHR_ID();
+                msg.mSenderID = UserSingleton.get().getHRID();
                 msg.Msg = s;
                 msg.mReceiverID = Integer.valueOf(Contact.get("HR_ID"));
 
@@ -266,7 +267,7 @@ public class ConversationActivity extends AppCompatActivity {
         }
 
         private void loadHRMsg() {
-            HR_ID1 = MobileMainActivity.userInfo.getHR_ID();
+            HR_ID1 = UserSingleton.get().getHRID();
             HR_ID2 = Integer.valueOf(Contact.get("HR_ID"));
 
             HR_Name2 = WebServiceUtil.getHRName(HR_ID2);
@@ -342,7 +343,7 @@ public class ConversationActivity extends AppCompatActivity {
                     msg.mSender = mo.getAsJsonPrimitive("SenderName").getAsString();
 
 
-                    if (msg.mSenderID != MobileMainActivity.userInfo.getHR_ID()) {
+                    if (msg.mSenderID != UserSingleton.get().getHRID()) {
                         msg.HR_Pic2 = CommonUtil.getUserPic(ConversationActivity.this, MobileMainActivity.userPictureMap, msg.mSenderID);
                     }
 
@@ -401,6 +402,7 @@ public class ConversationActivity extends AppCompatActivity {
             return null;
         }
 
+        @Override
         protected void onPostExecute(List<JsonObject> result) {
             super.onPostExecute(result);
 

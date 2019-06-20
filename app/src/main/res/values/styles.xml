@@ -17,4 +17,48 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <style name="bottomDialogWindowAnim" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/translate_dialog_move_up</item>
+        <item name="android:windowExitAnimation">@anim/translate_dialog_move_down</item>
+    </style>
+
+    <style name="centerDialogWindowAnim" mce_bogus="1" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/anim_dialog_center_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_dialog_center_out</item>
+    </style>
+
+    <!--新版自定义的RecyclerView-->
+    <declare-styleable name="CustomRecyclerView">
+
+        <attr name="app_span_count" format="integer"></attr>
+        <attr name="app_recycler_view_max_height" format="dimension"></attr>
+        <attr name="app_item_divide_line_color" format="color" />
+        <attr name="app_item_divide_line_size" format="dimension" />
+
+        <attr name="app_item_margin" format="dimension" />
+        <attr name="app_is_expanded" format="boolean" />
+        <attr name="app_start_item_margin" format="dimension" />
+        <attr name="app_end_item_margin" format="dimension" />
+
+
+        <attr name="app_item_decoration_type" format="enum">
+            <enum name="NONE" value="0"></enum>
+            <enum name="ITEM_DIVIDE_LNE" value="1"></enum>
+            <enum name="ITEM_SPACE" value="2"></enum>
+        </attr>
+
+        <attr name="app_layout_style" format="enum">
+            <enum name="list_vertical" value="1"></enum>
+            <enum name="list_horizontal" value="2"></enum>
+            <enum name="grid_vertical" value="4"></enum>
+            <enum name="grid_horizontal" value="8"></enum>
+            <enum name="staggered_vertical" value="16"></enum>
+            <enum name="staggered_horizontal" value="32"></enum>
+            <enum name="other" value="256"></enum>
+        </attr>
+
+
+    </declare-styleable>
+
 </resources>

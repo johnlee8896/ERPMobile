@@ -18,6 +18,7 @@ import com.chinashb.www.mobileerp.adapter.TaskJsonListAdapter;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.google.gson.JsonObject;
 
 import java.io.Serializable;
@@ -74,7 +75,8 @@ public class TasksActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
 
-        HR_ID= MobileMainActivity.userInfo.getHR_ID();
+        HR_ID= UserSingleton.get().getHRID();
+
 
         setHomeButton();
 
