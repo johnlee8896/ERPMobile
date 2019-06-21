@@ -61,4 +61,22 @@
 
     </declare-styleable>
 
+    <declare-styleable name="EmptyLayoutManageView">
+        <attr name="app_empty_text_color" format="color" />
+        <attr name="app_empty_text" format="string" />
+        <attr name="app_empty_text_size" format="dimension" />
+        <attr name="app_empty_image_src" format="reference" />
+        <attr name="app_empty_image_width" format="dimension" />
+        <attr name="app_empty_image_height" format="dimension" />
+
+        <attr name="app_empty_text_gravity" format="enum">
+            <enum name="center_horizontal" value="0" />
+            <enum name="left" value="1" />
+            <enum name="right" value="2" />
+            <enum name="center" value="3" />
+            <enum name="center_vertical" value="4" />
+        </attr>
+
+    </declare-styleable>
+
 </resources>

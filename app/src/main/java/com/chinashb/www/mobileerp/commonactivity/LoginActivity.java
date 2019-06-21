@@ -89,6 +89,9 @@ public class LoginActivity extends AppCompatActivity {
 
         setHomeButton();
         initView();
+        if (nameEditText.getText().length() > 0){
+            passwordEditText.requestFocus();
+        }
 
     }
 

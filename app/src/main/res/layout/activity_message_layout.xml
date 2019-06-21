@@ -20,6 +20,13 @@
             android:id="@+id/rv_conversation_contactlist"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+            android:layout_width="match_parent"
+            app:app_empty_text="没有数据"
+            android:visibility="gone"
+            app:app_empty_image_src="@mipmap/ic_empty_no_data"
+            android:id="@+id/message_emptyManager"
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
     <android.support.design.widget.BottomNavigationView

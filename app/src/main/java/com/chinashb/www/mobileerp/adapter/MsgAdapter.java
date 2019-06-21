@@ -14,7 +14,6 @@ import com.chinashb.www.mobileerp.basicobject.Msg;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -79,7 +78,7 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
     public void onBindViewHolder(final MsgViewHolder holder, int position) {
         final Msg msg = dataSoure.get(position);
 
-        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
+//        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         //holder.tvTime.setText(sdf.format(msg.msgTime));
         holder.tvTime.setText(msg.msgTimes );
         holder.tvMsg.setText(msg.Msg);

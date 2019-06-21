@@ -18,7 +18,9 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
+import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
 import com.google.gson.JsonObject;
 
 import java.io.Serializable;
@@ -38,6 +40,8 @@ public class MessageManageActivity extends AppCompatActivity {
     private JsonListAdapter ObjectAdapter;
     private JsonObject Selected_Object;
     private HashMap<String, String> Result;
+
+    private EmptyLayoutManageView emptyLayoutManageView;
 
 //    Integer HR_ID;
 
@@ -74,6 +78,7 @@ public class MessageManageActivity extends AppCompatActivity {
         JsonListAdapter jsonListAdapter = new JsonListAdapter(this, contacts);
         recyclerView.setAdapter(jsonListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        emptyLayoutManageView = (EmptyLayoutManageView) findViewById(R.id.message_emptyManager);
 
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_contact);
@@ -160,7 +165,7 @@ public class MessageManageActivity extends AppCompatActivity {
 
 
             //pbScan.setVisibility(View.INVISIBLE);
-            if (progressDialog != null && progressDialog.isShowing()){
+            if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
         }
@@ -214,32 +219,41 @@ public class MessageManageActivity extends AppCompatActivity {
         }
 
         protected void bindObjectListsToAdapter(final List<JsonObject> JList) {
-            ObjectAdapter = new JsonListAdapter(MessageManageActivity.this, contacts);
-            //赋值 列宽度
-            ObjectAdapter.ColWidth = ColWidth;
-            ObjectAdapter.HiddenCol = HiddenCol;
-            recyclerView.setLayoutManager(new LinearLayoutManager(MessageManageActivity.this));
-            recyclerView.setAdapter(ObjectAdapter);
+            if (contacts != null && contacts.size() > 0) {
 
-            ObjectAdapter.setOnItemClickListener(new OnItemClickListener() {
-                @Override
-                public void OnItemClick(View view, int position) {
-                    if (JList != null) {
-                        Selected_Object = JList.get(position);
+                ObjectAdapter = new JsonListAdapter(MessageManageActivity.this, contacts);
+                //赋值 列宽度
+                ObjectAdapter.ColWidth = ColWidth;
+                ObjectAdapter.HiddenCol = HiddenCol;
+                recyclerView.setLayoutManager(new LinearLayoutManager(MessageManageActivity.this));
+                recyclerView.setAdapter(ObjectAdapter);
 
-                        //Selected_Object转换成HashMap：Result
-                        Result = CommonUtil.Convert_JsonObject_HashMap(Selected_Object);
+                ObjectAdapter.setOnItemClickListener(new OnItemClickListener() {
+                    @Override
+                    public void OnItemClick(View view, int position) {
+                        if (JList != null) {
+                            Selected_Object = JList.get(position);
 
-                        Intent Conversation = new Intent(MessageManageActivity.this, ConversationActivity.class);
-                        Conversation.putExtra("ContactType", contactType);
-                        Conversation.putExtra("Contact", (Serializable) Result);
+                            //Selected_Object转换成HashMap：Result
+                            Result = CommonUtil.Convert_JsonObject_HashMap(Selected_Object);
 
-                        startActivity(Conversation);
+                            Intent Conversation = new Intent(MessageManageActivity.this, ConversationActivity.class);
+                            Conversation.putExtra("ContactType", contactType);
+                            Conversation.putExtra("Contact", (Serializable) Result);
+
+                            startActivity(Conversation);
+
+                        }
 
                     }
-
-                }
-            });
+                });
+                recyclerView.setVisibility(View.VISIBLE);
+                emptyLayoutManageView.setVisibility(View.GONE);
+            } else {
+                ToastUtil.showToastLong("您还没有设置常联系人,请添加!");
+                emptyLayoutManageView.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }
         }
 
     }

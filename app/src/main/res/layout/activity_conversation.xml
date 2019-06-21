@@ -38,7 +38,16 @@
             tools:itemCount="17"
             tools:listitem="@layout/recycler_view_item">
 
+
         </android.support.v7.widget.RecyclerView>
+
+        <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+            android:id="@+id/conversation_emptyManagerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:app_empty_image_src="@mipmap/ic_empty_no_message"
+            app:app_empty_text="没有消息" />
 
         <LinearLayout
             android:id="@+id/linearLayout_new"
@@ -55,25 +64,25 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button2"
+                    android:id="@+id/conversation_image_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Image" />
+                    android:text="图片" />
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/conversation_video_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Vedio" />
+                    android:text="视频" />
 
                 <Button
-                    android:id="@+id/button4"
+                    android:id="@+id/conversation_file_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="File" />
+                    android:text="文件" />
             </LinearLayout>
 
             <LinearLayout
@@ -88,16 +97,16 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
                     android:ems="10"
+                    android:hint="请发送消息"
                     android:inputType="textMultiLine"
-                    android:singleLine="false"
-                    tools:text="Hello, from Android ~ Hello, from Android ~ Hello, from Android     " />
+                    android:singleLine="false" />
 
                 <Button
                     android:id="@+id/btn_send_new_conversation_msg"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:layout_weight="1"
-                    android:text="Send" />
+                    android:text="发送" />
             </LinearLayout>
 
         </LinearLayout>

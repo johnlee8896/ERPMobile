@@ -34,4 +34,12 @@
     <string name="part_inv_check">零部件仓库盘点</string>
     <string name="title_activity_stock_check_part_inv">仓库盘点</string>
 
+
+
+    <string name="empty_no_message">您暂时还没有消息</string>
+    <string name="empty_no_data">暂无数据</string>
+    <string name="empty_no_network">网络不太给力，点击重新加载</string>
+    <string name="empty_no_search">未找到相关内容</string>
+    <string name="empty_no_voucher">暂无代金券</string>
+
 </resources>

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.chinashb.www.mobileerp.task.TaskActivity">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_task"
