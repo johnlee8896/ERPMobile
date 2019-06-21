@@ -1,0 +1,23 @@
+apply plugin: 'com.android.library'
+
+//def cfg = rootProject.ext.android
+android {
+    compileSdkVersion 25
+//    buildToolsVersion "25.4.0"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 25
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation 'com.google.zxing:core:3.3.3'
+    api project(':qrcodecore')
+}

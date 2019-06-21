@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.MobileMainActivity;
+import com.chinashb.www.mobileerp.OnQRScanListenerImpl;
+import com.chinashb.www.mobileerp.QRCodeScanActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
@@ -25,6 +27,7 @@ import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.SPDefine;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -91,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         initView();
         if (nameEditText.getText().length() > 0){
             passwordEditText.requestFocus();
+            passwordEditText.setText("john1234@@");
         }
 
     }
@@ -140,15 +144,31 @@ public class LoginActivity extends AppCompatActivity {
 
     private void startScanHR() {
 
-        IntentIntegrator scan = new IntentIntegrator(LoginActivity.this);
-        //scan.setOrientationLocked(false);
-        scan.setBeepEnabled(true);
-        scan.setCaptureActivity(CustomScannerActivity.class);
+//        IntentIntegrator scan = new IntentIntegrator(LoginActivity.this);
+//        //scan.setOrientationLocked(false);
+//        scan.setBeepEnabled(true);
+//        scan.setCaptureActivity(CustomScannerActivity.class);
+//
+//        scan.setPrompt("扫描员工二维码");
+//        startActivityForResult(scan.createScanIntent(), 0x0000c0de);
+//
+//        //new IntentIntegrator( MobileMainActivity.this).initiateScan();
 
-        scan.setPrompt("扫描员工二维码");
-        startActivityForResult(scan.createScanIntent(), 0x0000c0de);
-
-        //new IntentIntegrator( MobileMainActivity.this).initiateScan();
+        QRCodeScanActivity.startQRCodeScanner(this, new OnQRScanListenerImpl() {
+            @Override
+            public void onScanQRCodeSuccess(String result) {
+                if (result.startsWith("http")) {
+//                    WebViewActivity.gotoWebViewActivity(LoginActivity.this, result);
+                } else {
+                    CommAlertDialog.with(LoginActivity.this).setTitle("扫描结果展示")
+                            .setMessage(result)
+                            .setMiddleText("确定")
+                            .setCancelAble(false).setTouchOutsideCancel(false)
+                            .setClickButtonDismiss(true)
+                            .create().show();
+                }
+            }
+        });
     }
 
 //    protected void debugLogin() {

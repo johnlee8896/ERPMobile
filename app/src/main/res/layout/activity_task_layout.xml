@@ -20,7 +20,7 @@
     </android.support.design.widget.BottomNavigationView>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_new_task"
+        android:id="@+id/fab_new_task_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -47,6 +47,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/recycler_view_item_1" />
+
+        <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+            android:layout_width="match_parent"
+            app:app_empty_text="没有数据"
+            android:visibility="gone"
+            app:app_empty_image_src="@mipmap/ic_empty_no_data"
+            android:id="@+id/task_emptyManager"
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

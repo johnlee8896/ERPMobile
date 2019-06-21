@@ -79,4 +79,12 @@
 
     </declare-styleable>
 
+    <declare-styleable name="TitleLayoutManagerView">
+        <attr name="app_title_text" />
+        <attr name="app_title_text_color" />
+        <attr name="app_title_text_size" />
+        <attr name="app_back_image_src" format="reference" />
+        <attr name="app_hide_back_image" format="boolean" />
+    </declare-styleable>
+
 </resources>

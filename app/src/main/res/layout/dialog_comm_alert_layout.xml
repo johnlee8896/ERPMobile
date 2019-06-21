@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="100dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginBottom="100dp"
+    android:background="@drawable/shape_white_conner_8dp_bg"
+
+    >
+
+    <TextView
+        android:id="@+id/dialog_alert_title_TextView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="标题"
+        android:textColor="#333"
+        android:textSize="18sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/dialog_alert_title_line_View"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/shape_divide_line_horizontal"
+        app:layout_constraintTop_toBottomOf="@id/dialog_alert_title_TextView" />
+
+    <android.support.constraint.Group
+        android:id="@+id/dialog_alert_bottom_button_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:constraint_referenced_ids="dialog_alert_bottom_button_container_layout,dialog_alert_message_line_View" />
+
+    <View
+        android:id="@+id/dialog_alert_message_line_View"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/shape_divide_line_horizontal"
+        app:layout_constraintBottom_toTopOf="@id/dialog_alert_bottom_button_container_layout"
+        app:layout_constraintTop_toBottomOf="@id/dialog_alert_message_container_layout" />
+
+
+    <LinearLayout
+        android:id="@+id/dialog_alert_bottom_button_container_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:divider="@drawable/shape_divide_line_vertical"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dialog_alert_message_container_layout">
+
+        <Button
+            android:id="@+id/dialog_alert_left_Button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="确定"
+            android:textColor="#333"
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/dialog_alert_middle_Button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="不再提醒"
+            android:textColor="#333"
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/dialog_alert_right_Button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="取消"
+            android:textColor="#333"
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/dialog_alert_message_container_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxHeight="100dp"
+        android:orientation="vertical"
+        app:layout_constrainedHeight="true"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toTopOf="@id/dialog_alert_bottom_button_container_layout"
+        app:layout_constraintTop_toBottomOf="@id/dialog_alert_title_TextView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/dialog_alert_message_EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="#0fff"
+                android:gravity="left|top"
+                android:hint=""
+                android:minHeight="50dp"
+                android:padding="10dp"
+                android:text=""
+                android:textColor="#333"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/dialog_alert_message_TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:lineSpacingMultiplier="1.2"
+                android:textColor="#333"
+                android:textSize="16sp"
+                android:visibility="visible"
+                tools:text="这个是消息内容" />
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.constraint.ConstraintLayout>

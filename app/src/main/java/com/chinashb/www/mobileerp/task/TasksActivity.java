@@ -19,6 +19,8 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.widget.CommProgressDialog;
+import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
 import com.google.gson.JsonObject;
 
 import java.io.Serializable;
@@ -32,6 +34,7 @@ public class TasksActivity extends AppCompatActivity {
     public List<String> ColCaption;
     public List<String> HiddenCol;
     RecyclerView recyclerView;
+    private EmptyLayoutManageView emptyManageView;
     int tasks_type = 0; //0:综合 1:mysent   2:myexe 3:mydep
     List<JsonObject> tasks;
     TaskJsonListAdapter ObjectAdapter;
@@ -80,6 +83,7 @@ public class TasksActivity extends AppCompatActivity {
         setHomeButton();
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_task_list);
+        emptyManageView = (EmptyLayoutManageView) findViewById(R.id.task_emptyManager);
         tasks = new ArrayList<>();
         TaskJsonListAdapter jsonListAdapter = new TaskJsonListAdapter(this, tasks);
         recyclerView.setAdapter(jsonListAdapter);
@@ -120,6 +124,7 @@ public class TasksActivity extends AppCompatActivity {
 
     }
 
+    private CommProgressDialog progressDialog;
 
     private class AsyncGetTasks extends AsyncTask<String, Void, Void> {
 
@@ -150,6 +155,10 @@ public class TasksActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             //pbScan.setVisibility(View.VISIBLE);
+            if (progressDialog == null) {
+                progressDialog = new CommProgressDialog.Builder(TasksActivity.this).setTitle("正在获取数据").create();
+            }
+            progressDialog.show();
         }
 
         @Override
@@ -159,6 +168,9 @@ public class TasksActivity extends AppCompatActivity {
 
 
             //pbScan.setVisibility(View.INVISIBLE);
+            if (progressDialog != null && progressDialog.isShowing()){
+                progressDialog.dismiss();
+            }
         }
 
         @Override
@@ -182,6 +194,7 @@ public class TasksActivity extends AppCompatActivity {
 
         }
 
+        //todo 不理解
         private String getSqlTaskSelectField() {
             String sql = " Select (Case When BigJob=0 Then 0 Else TTask_Ver.TTP_ID End) As TTP_ID, " +
                     "~ Isnull(TTask_Exer.Confirmed,1) As New, " +
@@ -386,6 +399,13 @@ public class TasksActivity extends AppCompatActivity {
             //ObjectAdapter.HiddenCol =HiddenCol;
             recyclerView.setLayoutManager(new LinearLayoutManager(TasksActivity.this));
             recyclerView.setAdapter(ObjectAdapter);
+            if (tasks != null && tasks.size() > 0){
+                recyclerView.setVisibility(View.VISIBLE);
+                emptyManageView.setVisibility(View.GONE);
+            }else{
+                recyclerView.setVisibility(View.GONE);
+                emptyManageView.setVisibility(View.VISIBLE);
+            }
 
             ObjectAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override

@@ -3,4 +3,51 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#d81b60</color>
+
+    <color name="white">#fff</color>
+    <color name="transparent">#0fff</color>
+    <color name="black">#000</color>
+
+    <color name="qr_code_cover_color">#6000</color>
+
+    <color name="login_title_color">#880000FF</color>
+    <color name="color_333333">#333333</color>
+    <color name="color_666666">#666666</color>
+    <color name="color_999999">#999999</color>
+    <color name="color_C6C6C6">#C6C6C6</color>
+    <color name="color_E5E5E5">#E5E5E5</color>
+    <color name="color_E9E9E9">#E9E9E9</color>
+    <color name="color_B6B6B6">#B6B6B6</color>
+    <color name="color_CCCCCC">#CCCCCC</color>
+    <color name="color_orange_FF6A00">#FF6A00</color>
+    <color name="color_blue_05A7F7">#05A7F7</color>
+    <color name="color_blue_3D83FF">#3D83FF</color>
+    <color name="color_blue_598CFF">#598CFF</color>
+    <color name="color_blue_468BFF">#598CFF</color>
+    <color name="color_red_FF3333">#FF3333</color>
+    <color name="color_gray_F3F5F5">#F3F5F5</color>
+    <color name="color_dark_blue_1A2D53">#1A2D53</color>
+    <color name="color_dark_blue_231D34">#231D34</color>
+    <color name="color_dark_blue_184254">#184254</color>
+    <color name="color_dark_blue_3C1A49">#3C1A49</color>
+    <color name="half_transparency">#80FFFFFF</color>
+    <color name="color_gray_F9F9F9">#F9F9F9</color>
+    <color name="color_green_0BCD74">#0BCD74</color>
+    <color name="text_color_F3F5F5">#F3F5F5</color>
+    <color name="color_blue_528FFF">#528FFF</color>
+
+    <!--手势校验相关-->
+    <color name="color_grey_b2b2b2">#b2b2b2</color>
+    <color name="color_blue_78d2f6">#78d2f6</color>
+    <color name="color_blue_00AAEE">#00aaee</color>
+    <color name="color_red_f3323b">#00f3323b</color>
+    <color name="color_blue_01AAEE">#01AAEE</color>
+    <color name="color_grey_f6f6f6">#f6f6f6</color>
+    <color name="color_blue_228BE0">#228BE0</color>
+    <color name="color_grey_a5a5a5">#A5A5A5</color>
+
+    <color name="warning_color">#f4511e</color>
+    <color name="hint_color">#42000000</color>
+    <color name="success_color">#009688</color>
+    <color name="color_red_f4333c">#F4333C</color>
 </resources>

@@ -1,0 +1,11 @@
+apply plugin: 'com.android.library'
+//def cfg = rootProject.ext.android
+android {
+//    buildToolsVersion "25.4.0"
+    compileSdkVersion 25
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 25
+    }
+}

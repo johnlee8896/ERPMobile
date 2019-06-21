@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class MobileMainActivity extends AppCompatActivity {
+public class MobileMainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //    public static UserInfoEntity userInfo;
     public static Bitmap pictureBitmap;
@@ -100,47 +100,11 @@ public class MobileMainActivity extends AppCompatActivity {
             task.execute(String.valueOf(HRID));
         }
 
-        btnWarehouseMain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnWarehouseMain.setOnClickListener(this);
 
-                if (!UserSingleton.get().hasLogin()) {
-                    ToastUtil.showToastLong("请先登录");
-                    return;
-                }
+        btnConversation.setOnClickListener(this);
 
-                Intent intent = new Intent(MobileMainActivity.this, StockMainActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        btnConversation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (!UserSingleton.get().hasLogin()) {
-                    ToastUtil.showToastLong("请先登录");
-                    return;
-                }
-
-                Intent intent = new Intent(MobileMainActivity.this, MessageManageActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        btnTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (!UserSingleton.get().hasLogin()) {
-                    ToastUtil.showToastLong("请先登录");
-                    return;
-                }
-
-                Intent intent = new Intent(MobileMainActivity.this, TasksActivity.class);
-                startActivity(intent);
-            }
-        });
+        btnTask.setOnClickListener(this);
 
 
     }
@@ -460,6 +424,35 @@ public class MobileMainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(netWorkReceiver, filter);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == btnConversation){
+            if (!UserSingleton.get().hasLogin()) {
+                ToastUtil.showToastLong("请先登录");
+                return;
+            }
+
+            Intent intent = new Intent(MobileMainActivity.this, MessageManageActivity.class);
+            startActivity(intent);
+        }else if (view == btnTask){
+            if (!UserSingleton.get().hasLogin()) {
+                ToastUtil.showToastLong("请先登录");
+                return;
+            }
+
+            Intent intent = new Intent(MobileMainActivity.this, TasksActivity.class);
+            startActivity(intent);
+        }else if (view == btnWarehouseMain){
+            if (!UserSingleton.get().hasLogin()) {
+                ToastUtil.showToastLong("请先登录");
+                return;
+            }
+
+            Intent intent = new Intent(MobileMainActivity.this, StockMainActivity.class);
+            startActivity(intent);
+        }
     }
 
     private class NetOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {

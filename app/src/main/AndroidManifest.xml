@@ -10,6 +10,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
@@ -31,6 +32,9 @@
         <activity android:name=".MobileMainActivity"
             android:screenOrientation="portrait"/>
         <activity android:name=".warehouse.WarehouseStockQueryActivity" />
+        <activity
+            android:name=".QRCodeScanActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.WarehousePartMainActivity"
             android:label="@string/title_activity_warehouse_part_main" />
