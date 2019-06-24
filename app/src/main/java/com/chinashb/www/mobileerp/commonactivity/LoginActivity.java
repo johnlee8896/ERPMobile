@@ -258,6 +258,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+
     private class CheckNameAndPasswordAsyncTask extends AsyncTask<String, Void, Void> {
 
         private WsResult wsResult = null;

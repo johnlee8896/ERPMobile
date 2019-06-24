@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.google.gson.JsonObject;
 
@@ -24,7 +25,7 @@ import java.util.List;
 public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapter.JsonListViewHolder> {
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
-    private List<JsonObject>  dataSoure;
+    private List<JsonObject> dataSoure;
     private OnItemClickListener mClickListener;
     static JsonObject sample;
     private LinearLayout linearLayout;
@@ -36,29 +37,28 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
         dataSoure = jsonList;
         mContext = context;
 
-        if(jsonList!=null)
-        {if (jsonList.size()>=1)
-        {
-            sample=jsonList.get(0);
-        }
+        if (jsonList != null) {
+            if (jsonList.size() >= 1) {
+                sample = jsonList.get(0);
+            }
         }
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public List<JsonObject> getDataList(){
-        return  dataSoure;
+    public List<JsonObject> getDataList() {
+        return dataSoure;
     }
+
     @Override
     public JsonListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = mLayoutInflater
                 .inflate(R.layout.listview_task, parent, false);
 
 
-        JsonListViewHolder vh = new JsonListViewHolder(v,mClickListener);
+        JsonListViewHolder vh = new JsonListViewHolder(v, mClickListener);
         return vh;
 
     }
-
 
 
     @Override
@@ -69,32 +69,36 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
 
         Integer creater = obj.get("Creater").getAsInt();
 
-        if(obj.get("任务").isJsonNull()==false)
-        {holder.tvTask.setText(obj.get("任务").getAsString());}
-        else
-        {holder.tvTask.setText("（没有填写任务标题）");}
-        if(obj.get("责任人").isJsonNull()==false)
-        {holder.tvExer.setText(obj.get("责任人").getAsString());}
-        else
-        {holder.tvExer.setText("");}
-        if(obj.get("Create_Time").isJsonNull()==false)
-        {holder.tvCreateTime.setText(obj.get("Create_Time").getAsString());}
-        else
-        {holder.tvCreateTime.setText("?");}
-
-        if (obj.get("End_Time").isJsonNull()==false)
-        {holder.tvEndTime.setText(obj.get("End_Time").getAsString());}
-        else
-        {holder.tvEndTime.setText("TBD");}
-
-        if(MobileMainActivity.userPictureMap.containsKey(creater))
-        {
-            holder.ivCreater.setImageBitmap(MobileMainActivity.userPictureMap.get(creater));
+        if (obj.get("任务").isJsonNull() == false) {
+            holder.tvTask.setText(obj.get("任务").getAsString());
+        } else {
+            holder.tvTask.setText("（没有填写任务标题）");
         }
-        if (obj.get("制定人").isJsonNull()==false)
-        {holder.tvCreater.setText(obj.get("制定人").getAsString());}
-        else
-        {holder.tvCreater.setText("");}
+        if (obj.get("责任人").isJsonNull() == false) {
+            holder.tvExer.setText(obj.get("责任人").getAsString());
+        } else {
+            holder.tvExer.setText("");
+        }
+        if (obj.get("Create_Time").isJsonNull() == false) {
+            holder.tvCreateTime.setText(obj.get("Create_Time").getAsString());
+        } else {
+            holder.tvCreateTime.setText("?");
+        }
+
+        if (obj.get("End_Time").isJsonNull() == false) {
+            holder.tvEndTime.setText(obj.get("End_Time").getAsString());
+        } else {
+            holder.tvEndTime.setText("TBD");
+        }
+
+        if (CommonUtil.userPictureMap.containsKey(creater)) {
+            holder.ivCreater.setImageBitmap(CommonUtil.userPictureMap.get(creater));
+        }
+        if (obj.get("制定人").isJsonNull() == false) {
+            holder.tvCreater.setText(obj.get("制定人").getAsString());
+        } else {
+            holder.tvCreater.setText("");
+        }
 
         //holder.ivCreater.set;
 
@@ -109,8 +113,7 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
         this.mClickListener = mClickListener;
     }
 
-    public static class JsonListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
+    public static class JsonListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         //HashMap<String,TextView> textViews;
 
@@ -121,13 +124,12 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
         TextView tvExer;
         TextView tvEndTime;
 
-        private  OnItemClickListener mListener;
+        private OnItemClickListener mListener;
 
-        public JsonListViewHolder(View itemView, OnItemClickListener listener)
-        {
+        public JsonListViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
 
-            mListener=listener;
+            mListener = listener;
             itemView.setOnClickListener(this);
 
             setTextViews(itemView);
@@ -139,23 +141,22 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
             setTextViews(view);
         }
 
-        public void setTextViews(View itemView)
-        {
+        public void setTextViews(View itemView) {
             //textViews = new HashMap<String, TextView>();
 
-            tvCreateTime=(TextView) itemView.findViewById(R.id.tv_task_create_time);
-            tvCreater=(TextView) itemView.findViewById(R.id.tv_task_creater);
-            ivCreater=(ImageView) itemView.findViewById(R.id.iv_task_creater);
-            tvTask=(TextView) itemView.findViewById(R.id.tv_task_title);
-            tvEndTime =(TextView)itemView.findViewById(R.id.tv_task_plan_end_time);
-            tvExer=(TextView)itemView.findViewById(R.id.tv_task_exer);
+            tvCreateTime = (TextView) itemView.findViewById(R.id.tv_task_create_time);
+            tvCreater = (TextView) itemView.findViewById(R.id.tv_task_creater);
+            ivCreater = (ImageView) itemView.findViewById(R.id.iv_task_creater);
+            tvTask = (TextView) itemView.findViewById(R.id.tv_task_title);
+            tvEndTime = (TextView) itemView.findViewById(R.id.tv_task_plan_end_time);
+            tvExer = (TextView) itemView.findViewById(R.id.tv_task_exer);
 
         }
 
         @Override
         public void onClick(View v) {
             //mListener.OnItemClick(v, getAdapterPosition());
-            mListener.OnItemClick(v,getPosition());
+            mListener.OnItemClick(v, getPosition());
         }
     }
 }

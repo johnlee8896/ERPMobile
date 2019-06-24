@@ -20,20 +20,21 @@ import java.util.List;
  */
 
 
-public class AdapterInBoxItem extends RecyclerView.Adapter<AdapterInBoxItem.BoxItemViewHolder> {
+public class InBoxItemAdapter extends RecyclerView.Adapter<InBoxItemAdapter.BoxItemViewHolder> {
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
-    private List<BoxItemEntity>  dataSoure;
+    private List<BoxItemEntity> dataSoure;
 
-    public AdapterInBoxItem(Context context, List<BoxItemEntity> Box_ItemList) {
+    public InBoxItemAdapter(Context context, List<BoxItemEntity> Box_ItemList) {
         dataSoure = Box_ItemList;
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public List<BoxItemEntity> getDataList(){
-        return  dataSoure;
+    public List<BoxItemEntity> getDataList() {
+        return dataSoure;
     }
+
     @Override
     public BoxItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = mLayoutInflater
@@ -54,7 +55,7 @@ public class AdapterInBoxItem extends RecyclerView.Adapter<AdapterInBoxItem.BoxI
         holder.cbSelect.setChecked(Box_Item.getSelect());
 
         String LotWithBox;
-        LotWithBox=Box_Item.getLotNo() + "@" + Box_Item.getBoxName()+ Box_Item.getBoxNo();
+        LotWithBox = Box_Item.getLotNo() + "@" + Box_Item.getBoxName() + Box_Item.getBoxNo();
         holder.tvLotNo.setText(LotWithBox);
 
         //holder.tvIst.setText(BoxItemEntity.get());
@@ -85,12 +86,12 @@ public class AdapterInBoxItem extends RecyclerView.Adapter<AdapterInBoxItem.BoxI
         BoxItemViewHolder(View view) {
             super(view);
 
-            tvItem = (TextView)view.findViewById(R.id.tv_item_name);
-            tvQty = (TextView)view.findViewById(R.id.tv_qty);
-            tvBu = (TextView)view.findViewById(R.id.tv_bu_name);
-            tvLotNo = (TextView)view.findViewById(R.id.tv_inv_in_lotno);
-            tvIst = (TextView)view.findViewById(R.id.tv_ist_name);
-            cbSelect=(CheckBox)view.findViewById(R.id.cb_select_ist );
+            tvItem = (TextView) view.findViewById(R.id.tv_item_name);
+            tvQty = (TextView) view.findViewById(R.id.tv_qty);
+            tvBu = (TextView) view.findViewById(R.id.tv_bu_name);
+            tvLotNo = (TextView) view.findViewById(R.id.tv_inv_in_lotno);
+            tvIst = (TextView) view.findViewById(R.id.tv_ist_name);
+            cbSelect = (CheckBox) view.findViewById(R.id.cb_select_ist);
 
 
         }

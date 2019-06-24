@@ -33,7 +33,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_weight="1"
-                android:text="扫描增加托盘" />
+                android:text="开始扫描"
+                 />
+            <!--android:text="扫描增加托盘"-->
 
             <Button
                 android:id="@+id/btn_scan_area"
@@ -53,6 +55,22 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/input_EditeText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:hint="接收扫描结果"
+        android:visibility="gone"
+        android:textColorHint="@color/white"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:gravity="center_vertical"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14"
+        android:textColor="@color/color_333333"
+        android:background="@color/transparent"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"

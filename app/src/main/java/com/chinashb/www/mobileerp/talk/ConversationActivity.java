@@ -321,7 +321,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
 
             HR_Name2 = WebServiceUtil.getHRName(HR_ID2);
 
-            HR_Pic2 = CommonUtil.getUserPic(ConversationActivity.this, MobileMainActivity.userPictureMap, HR_ID2);
+            HR_Pic2 = CommonUtil.getUserPic(ConversationActivity.this, CommonUtil.userPictureMap, HR_ID2);
 
             Integer existedMinID = getMinMsID();
 
@@ -375,7 +375,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
 
                 List<Integer> Senders = CommonUtil.getIDListFromJsonList(ObjectLists, "Sender");
 
-                CommonUtil.getUsersPic(ConversationActivity.this, MobileMainActivity.userPictureMap, Senders);
+                CommonUtil.getUsersPic(ConversationActivity.this, CommonUtil.userPictureMap, Senders);
 
                 Append_Query_Msg();
             }
@@ -400,7 +400,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
 
 
                         if (msg.mSenderID != UserSingleton.get().getHRID()) {
-                            msg.HR_Pic2 = CommonUtil.getUserPic(ConversationActivity.this, MobileMainActivity.userPictureMap, msg.mSenderID);
+                            msg.HR_Pic2 = CommonUtil.getUserPic(ConversationActivity.this, CommonUtil.userPictureMap, msg.mSenderID);
                         }
 
 

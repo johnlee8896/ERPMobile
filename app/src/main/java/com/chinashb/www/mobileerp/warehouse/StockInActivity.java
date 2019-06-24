@@ -1,5 +1,9 @@
 package com.chinashb.www.mobileerp.warehouse;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
@@ -7,41 +11,49 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.adapter.InBoxItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
-import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
-import com.chinashb.www.mobileerp.funs.WebServiceUtil;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
-import com.chinashb.www.mobileerp.adapter.AdapterInBoxItem;
 import com.chinashb.www.mobileerp.basicobject.Ist_Place;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.ScanInputDialog;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockInActivity extends AppCompatActivity {
+public class StockInActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private Button btnAddTray;
-    private Button btnScanArea;
-    private Button btnStockIn;
-    private Button btnStartMoving;
-    private Button btnWarehouseIn;
+    private Button addTrayButton;
+    private Button scanAreaButton;
+    //    private Button stockInButton;
+//    private Button btnStartMoving;
+    private Button warehouseInButton;
 
     private RecyclerView mRecyclerView;
+    private EditText inputEditText;
 
-    private AdapterInBoxItem boxitemAdapter;
-    private List<BoxItemEntity> boxitemList=new ArrayList<>();
+    private InBoxItemAdapter boxItemAdapter;
+    private List<BoxItemEntity> boxitemList = new ArrayList<>();
     private Ist_Place thePlace;
-    private String scanstring;
+    private String scanContent;
+
+    private ScanInputDialog inputDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,92 +61,28 @@ public class StockInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stock_in);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_box_item);
-        btnAddTray = (Button)findViewById(R.id.btn_add_tray);
-        btnScanArea = (Button) findViewById(R.id.btn_scan_area);
-        btnWarehouseIn=(Button) findViewById(R.id.btn_exe_warehouse_in);
+        addTrayButton = (Button) findViewById(R.id.btn_add_tray);
+        scanAreaButton = (Button) findViewById(R.id.btn_scan_area);
+        warehouseInButton = (Button) findViewById(R.id.btn_exe_warehouse_in);
+        inputEditText = (EditText) findViewById(R.id.input_EditeText);
 
         setHomeButton();
 
-        if(savedInstanceState!=null)
-        {
-            boxitemList=(List<BoxItemEntity>)savedInstanceState.getSerializable("BoxItemList");
+        if (savedInstanceState != null) {
+            boxitemList = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
         }
 
-        boxitemAdapter= new AdapterInBoxItem(StockInActivity.this, boxitemList);
+        boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxitemList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
-        mRecyclerView.setAdapter(boxitemAdapter);
+        mRecyclerView.setAdapter(boxItemAdapter);
+        setViewsListener();
 
+    }
 
-        btnAddTray.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                //scanstring= "VG/404731";
-                //StockInActivity.AsyncGetBox task = new StockInActivity.AsyncGetBox();
-                //task.execute();
-
-                new IntentIntegrator( StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-            }
-
-        });
-
-        btnScanArea.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-
-                if (boxitemList.size()>0)
-                {
-                    int selectedcount=0 ;
-                    for (int i =0; i<boxitemList.size(); i++)
-                    {
-                        if (boxitemList.get(i).getSelect()==true){selectedcount++;}
-                    }
-                    if (selectedcount>0)
-                    {
-                        new IntentIntegrator( StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-                    }
-
-                }
-
-            }
-
-        });
-
-
-        btnWarehouseIn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-
-                if (boxitemList.size()>0)
-                {
-                    int selectedcount=0 ;
-                    for (int i =0; i<boxitemList.size(); i++)
-                    {
-                        if (boxitemList.get(i).getSelect()==true)
-                        {
-                            if(boxitemList.get(i).getIst_ID()==0)
-                            {
-                                CommonUtil.ShowToast(StockInActivity.this,"还没有扫描库位",R.mipmap.warning, Toast.LENGTH_SHORT);
-
-                                return;
-                            }
-                            selectedcount++;
-                        }
-
-                    }
-                    if (selectedcount>0)
-                    {
-                        StockInActivity.AsyncExeWarehouseIn task = new StockInActivity.AsyncExeWarehouseIn();
-                        task.execute();
-
-                    }
-
-                }
-
-            }
-
-        });
-
-
+    private void setViewsListener() {
+        addTrayButton.setOnClickListener(this);
+        scanAreaButton.setOnClickListener(this);
+        warehouseInButton.setOnClickListener(this);
     }
 
 
@@ -148,9 +96,9 @@ public class StockInActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void setHomeButton(){
+    protected void setHomeButton() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -159,55 +107,9 @@ public class StockInActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() == null) {
-                //new IntentIntegrator(StockInActivity.this).initiateScan();
-
-            } else {
-
-                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-
-                String X = result.getContents();
-                if(X.contains("/"))
-                {
-                    String [] qrContent;
-                    qrContent = X.split("/");
-                    if (qrContent.length >=2)
-                    {
-
-                        String qrTitle = qrContent[0];
-
-                        if (! qrTitle.equals(""))
-                        {
-                            if (qrTitle.equals("VE")|| qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB")|| qrTitle.equals("VC"))
-                            {
-//物品条码
-                                scanstring= X;
-
-                                StockInActivity.AsyncGetBox task = new StockInActivity.AsyncGetBox();
-                                task.execute();
-                            }
-
-                        }
-
-
-
-                        if (X.startsWith("/SUB_IST_ID/")||X.startsWith("/IST_ID/"))
-                        {
-                            //仓库位置码
-                            scanstring= X;
-
-                            StockInActivity.AsyncGetIst task = new StockInActivity.AsyncGetIst();
-                            task.execute();
-
-                        }
-
-
-
-                    }
-                }
-
-
+        if (result != null) {
+            if (!TextUtils.isEmpty(result.getContents())) {
+                parseScanResult(result.getContents());
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
@@ -215,50 +117,151 @@ public class StockInActivity extends AppCompatActivity {
         }
     }
 
+    private void parseScanResult(String content) {
+        Toast.makeText(this, "Scanned: " + content, Toast.LENGTH_LONG).show();
+        System.out.println("============ scan content = " + content);
+        // VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
+//        String content = result.getContents();
+        if (content.contains("/")) {
+            String[] qrContent;
+            qrContent = content.split("/");
+            if (qrContent.length >= 2) {
+                String qrTitle = qrContent[0];
+                if (!qrTitle.equals("")) {
+                    if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
+                        //物品条码
+                        scanContent = content;
+                        AsyncGetBox task = new AsyncGetBox();
+                        task.execute();
+                    }
+                }
 
+                if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
+                    //仓库位置码
+                    scanContent = content;
+                    GetIstAsyncTask task = new GetIstAsyncTask();
+                    task.execute();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == addTrayButton) {
+            //scanContent= "VG/404731";
+            //StockInActivity.AsyncGetBox task = new StockInActivity.AsyncGetBox();
+            //task.execute();
+//            CommAlertDialog.with(StockInActivity.this).setTitle("请点击扫描枪")
+//                    .setMessage("请确保蓝牙已连接，若未连接请打开设置--蓝牙--连接QScanner")
+//                    .setMiddleText("确定")
+//                    .setCancelAble(false).setTouchOutsideCancel(false)
+//                    .setClickButtonDismiss(true)
+//                    .create().show();
+            //todo 这时用dialog的edittext，会直接走ondestroy方法
+//            if (inputDialog == null) {
+//                inputDialog = new ScanInputDialog(StockInActivity.this);
+//            }
+//            if (!inputDialog.isShowing()) {
+//                inputDialog.show();
+//            }
+//            inputDialog.setOnViewClickListener(new OnViewClickListener() {
+//                @Override
+//                public <T> void onClickAction(View v, String tag, T t) {
+////                    parseScanResult((String) t);
+//                    ToastUtil.showToastLong("Scanned: " + ((String) t));
+//                    inputDialog.dismiss();
+//                }
+//            });
+//            inputDialog.setOnEditTextInputCompleteListener(new OnEditTextInputCompleteListener() {
+//                @Override
+//                public void onEditTextInputComplete(String content) {
+//                    parseScanResult(content);
+//                }
+//            });
+
+
+//            new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+
+            if (inputEditText.getVisibility() == View.GONE){
+
+            inputEditText.setVisibility(View.VISIBLE);
+            addTrayButton.setText("扫描增加托盘");
+            }else{
+                addTrayButton.setText("开始扫描");
+                parseScanResult(inputEditText.getText().toString());
+
+            }
+        } else if (view == scanAreaButton) {
+            if (boxitemList.size() > 0) {
+                int selectedcount = 0;
+                for (int i = 0; i < boxitemList.size(); i++) {
+                    if (boxitemList.get(i).getSelect() == true) {
+                        selectedcount++;
+                    }
+                }
+                if (selectedcount > 0) {
+                    new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                }
+
+            }
+        } else if (view == warehouseInButton) {
+            if (boxitemList.size() > 0) {
+                int selectedcount = 0;
+                for (int i = 0; i < boxitemList.size(); i++) {
+                    if (boxitemList.get(i).getSelect() == true) {
+                        if (boxitemList.get(i).getIst_ID() == 0) {
+                            CommonUtil.ShowToast(StockInActivity.this, "还没有扫描库位", R.mipmap.warning, Toast.LENGTH_SHORT);
+
+                            return;
+                        }
+                        selectedcount++;
+                    }
+
+                }
+                if (selectedcount > 0) {
+                    StockInActivity.AsyncExeWarehouseIn task = new StockInActivity.AsyncExeWarehouseIn();
+                    task.execute();
+
+                }
+
+            }
+        }
+    }
 
     private class AsyncGetBox extends AsyncTask<String, Void, Void> {
         BoxItemEntity scanresult;
+
         @Override
         protected Void doInBackground(String... params) {
 
-            BoxItemEntity bi = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanstring);
+            BoxItemEntity bi = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanContent);
 
-            scanresult=bi;
+            scanresult = bi;
 
-            if (bi.getResult()==true)
-            {
-                if (!is_box_existed(bi))
-                {
+            if (bi.getResult() == true) {
+                if (!is_box_existed(bi)) {
                     bi.setSelect(true);
                     boxitemList.add(bi);
+                } else {
+                    bi.setResult(false);
+                    bi.setErrorInfo("该包装已经在装载列表中");
                 }
-                else
-                    {
-                        bi.setResult(false);
-                        bi.setErrorInfo("该包装已经在装载列表中");
-                    }
 
 
-
-            }
-            else
-            {
+            } else {
 
             }
 
             return null;
         }
 
-        protected Boolean is_box_existed(BoxItemEntity box_item){
-            Boolean result=false;
+        protected Boolean is_box_existed(BoxItemEntity box_item) {
+            Boolean result = false;
 
-            if ( boxitemList != null)
-            {
-                for(int i =0 ; i< boxitemList.size();i++)
-                {
-                    if(boxitemList .get(i).getDIII_ID()==box_item.getDIII_ID())
-                    {
+            if (boxitemList != null) {
+                for (int i = 0; i < boxitemList.size(); i++) {
+                    if (boxitemList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
                         return true;
                     }
                 }
@@ -268,21 +271,21 @@ public class StockInActivity extends AppCompatActivity {
         }
 
 
-
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            if ( scanresult!=null)
-            {
-                if(scanresult.getResult()==false)
-                {
-                    Toast.makeText(StockInActivity.this,scanresult.getErrorInfo(),Toast.LENGTH_LONG).show();
+            if (scanresult != null) {
+                if (scanresult.getResult() == false) {
+                    Toast.makeText(StockInActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
 
-            boxitemAdapter= new AdapterInBoxItem(StockInActivity.this, boxitemList);
-            mRecyclerView.setAdapter(boxitemAdapter);
+            boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxitemList);
+            mRecyclerView.setAdapter(boxItemAdapter);
+//            if (inputDialog != null && inputDialog.isShowing()) {
+//                inputDialog.dismiss();
+//            }
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -298,37 +301,24 @@ public class StockInActivity extends AppCompatActivity {
     }
 
 
-    private class AsyncGetIst extends AsyncTask<String, Void, Void> {
+    private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
-
-
-            Ist_Place bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
-
-            if (bi.getResult()==true)
-            {
+            Ist_Place bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanContent);
+            if (bi.getResult()) {
                 thePlace = bi;
-
-                if(bi.getResult()==true)
-                {
-                    for (int i=0;i<boxitemList.size();i++)
-                    {
-                        if(boxitemList.get(i).getSelect()==true)
-                        {
+                if (bi.getResult() == true) {
+                    for (int i = 0; i < boxitemList.size(); i++) {
+                        if (boxitemList.get(i).getSelect() == true) {
                             boxitemList.get(i).setIstName(bi.getIstName());
                             boxitemList.get(i).setIst_ID(bi.getIst_ID());
                             boxitemList.get(i).setSub_Ist_ID(bi.getSub_Ist_ID());
-
-
                         }
                     }
                 }
+            } else {
+                Toast.makeText(StockInActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
             }
-            else
-            {
-                Toast.makeText(StockInActivity.this,bi.getErrorInfo(),Toast.LENGTH_LONG).show();
-            }
-
             return null;
         }
 
@@ -336,7 +326,7 @@ public class StockInActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            mRecyclerView.setAdapter(boxitemAdapter);
+            mRecyclerView.setAdapter(boxItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -350,8 +340,6 @@ public class StockInActivity extends AppCompatActivity {
         }
 
     }
-
-
 
 
     private class AsyncExeWarehouseIn extends AsyncTask<String, Void, Void> {
@@ -361,29 +349,25 @@ public class StockInActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
 
             List<BoxItemEntity> SelectList;
-            SelectList= new ArrayList<>();
+            SelectList = new ArrayList<>();
 
-            for (int i=0;i<boxitemList.size();i++)
-            {
-                if(boxitemList.get(i).getSelect()==true)
-                {
+            for (int i = 0; i < boxitemList.size(); i++) {
+                if (boxitemList.get(i).getSelect() == true) {
                     SelectList.add(boxitemList.get(i));
                 }
             }
 
-            int count=0;
-            int selectedcount=SelectList.size();
+            int count = 0;
+            int selectedcount = SelectList.size();
 
-            while(count < selectedcount && SelectList.size()>0)
-            {
-                BoxItemEntity bi = SelectList.get(0);
-                ws_result = WebServiceUtil.op_Commit_DS_Item(bi);
+            while (count < selectedcount && SelectList.size() > 0) {
+                BoxItemEntity boxItemEntity = SelectList.get(0);
+                ws_result = WebServiceUtil.op_Commit_DS_Item(boxItemEntity);
 
 
-                if (ws_result.getResult()==true)
-                {
-                    boxitemList.remove(bi);
-                    SelectList.remove(bi);
+                if (ws_result.getResult() == true) {
+                    boxitemList.remove(boxItemEntity);
+                    SelectList.remove(boxItemEntity);
                 }
 
                 count++;
@@ -396,24 +380,20 @@ public class StockInActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            if (ws_result!=null)
-            {
-                if (ws_result.getResult()==false)
-                {
+            if (ws_result != null) {
+                if (!ws_result.getResult()) {
                     //Toast.makeText(StockInActivity.this,ws_result.getErrorInfo(),Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(StockInActivity.this, ws_result.getErrorInfo(),R.mipmap.warning);
+                    CommonUtil.ShowToast(StockInActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
 
-                }
-                else
-                {
+                } else {
                     //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(StockInActivity.this, "入库完成",R.mipmap.smiley);
+                    CommonUtil.ShowToast(StockInActivity.this, "入库完成", R.mipmap.smiley);
                 }
 
             }
 
-            boxitemAdapter= new AdapterInBoxItem(StockInActivity.this, boxitemList);
-            mRecyclerView.setAdapter(boxitemAdapter);
+            boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxitemList);
+            mRecyclerView.setAdapter(boxItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -431,10 +411,9 @@ public class StockInActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-    //设置为竖屏
-        if(getRequestedOrientation()!= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT )
-        {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
+        //设置为竖屏
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
         super.onResume();
@@ -446,6 +425,35 @@ public class StockInActivity extends AppCompatActivity {
 
         outState.putSerializable("BoxItemList", (Serializable) boxitemList);
 
+    }
+
+
+    BroadcastReceiver mFoundReceiver = new BroadcastReceiver() {
+
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            //找到设备
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // 添加进一个设备列表，进行显示。
+                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+//                    Log.v(TAG, "find device:" + device.getName() + device.getAddress());
+                }
+            }
+            //搜索完成
+            else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+//                cancelDiscovery();
+            }
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("===========onDestroy");
+        if (inputDialog != null && inputDialog.isShowing()) {
+            inputDialog.dismiss();
+        }
     }
 
 }

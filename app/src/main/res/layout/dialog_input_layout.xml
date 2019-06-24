@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="@drawable/shape_white_bg_conner_4dp"
+    android:showDividers="middle"
+    android:divider="@drawable/shape_divide_line_horizontal"
+    android:paddingTop="@dimen/dimen_size_10">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="请点击扫描枪"
+        android:textColor="#333"
+        android:textSize="18sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="@dimen/dimen_size_20"
+        android:text="请确保蓝牙已连接，若未连接请打开设置--蓝牙--连接QScanner"
+        android:textColor="#333"
+        android:textSize="18sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <EditText
+        android:id="@+id/dialog_input_password_EditeText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:hint="请输入密码"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:gravity="center_vertical"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14"
+        android:textColor="@color/color_333333"
+        android:background="@color/transparent"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/dialog_input_ok_Button"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dimen_size_45"
+            android:layout_weight="1"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="确定入库"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/text_size_16"
+            />
+        <Button
+            android:id="@+id/dialog_input_cancel_Button"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dimen_size_45"
+            android:layout_weight="1"
+            android:textColor="@color/color_333333"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="取消"
+            android:textSize="@dimen/text_size_16"
+            />
+
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

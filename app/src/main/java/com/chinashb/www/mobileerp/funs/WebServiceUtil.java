@@ -388,50 +388,39 @@ public class WebServiceUtil {
         return box_item;
     }
 
-
-    public static Ist_Place op_Check_Commit_IST_Barcode(String X) {
+    //VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
+    public static Ist_Place op_Check_Commit_IST_Barcode(String scanContent) {
         String webMethodName = "op_Check_Commit_IST_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
         propertyInfo.setName("X");
-        propertyInfo.setValue(X);
+        propertyInfo.setValue(scanContent);
         propertyInfo.setType(String.class);
-
         propertyInfos.add(propertyInfo);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ist_Place ip = new Ist_Place();
-
+        Ist_Place istPlace = new Ist_Place();
         if (obj != null) {
             int count = obj.getPropertyCount();
             SoapObject obj2;
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
-
-
-                ip.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-
-                if (ip.getResult() == false) {
-                    ip.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                istPlace.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                if (istPlace.getResult() == false) {
+                    istPlace.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
-                    ip.setIst_ID(Long.parseLong(obj2.getProperty("Ist_ID").toString()));
-                    ip.setSub_Ist_ID(Long.parseLong(obj2.getProperty("Sub_Ist_ID").toString()));
-                    ip.setIstName(obj2.getProperty("IstName").toString());
-                    ip.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
-                    ip.setBuName(obj2.getProperty("BuName").toString());
-
+                    istPlace.setIst_ID(Long.parseLong(obj2.getProperty("Ist_ID").toString()));
+                    istPlace.setSub_Ist_ID(Long.parseLong(obj2.getProperty("Sub_Ist_ID").toString()));
+                    istPlace.setIstName(obj2.getProperty("IstName").toString());
+                    istPlace.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
+                    istPlace.setBuName(obj2.getProperty("BuName").toString());
                 }
-
-
             }
-
         }
-
-        return ip;
+        return istPlace;
     }
-
 
     public static WsResult op_Commit_DS_Item(BoxItemEntity box_item) {
         String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse";

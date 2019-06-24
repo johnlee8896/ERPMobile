@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.Msg;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 
@@ -24,7 +25,7 @@ import java.util.List;
 public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
-    private List<Msg>  dataSoure;
+    private List<Msg> dataSoure;
     private OnItemClickListener mClickListener;
 
     public MsgAdapter(Context context, List<Msg> wcListList) {
@@ -33,9 +34,10 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public List<Msg> getDataList(){
-        return  dataSoure;
+    public List<Msg> getDataList() {
+        return dataSoure;
     }
+
     @Override
     public MsgViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = mLayoutInflater
@@ -44,9 +46,9 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
         //LinearLayout test = (LinearLayout)v.findViewById(R.id.layoutTest);
         //LinearLayout.LayoutParams lp= new LinearLayout.LayoutParams(
 //                LinearLayout.LayoutParams.WRAP_CONTENT,
-  //              LinearLayout.LayoutParams.WRAP_CONTENT);
+        //              LinearLayout.LayoutParams.WRAP_CONTENT);
 
-        MsgViewHolder vh = new MsgViewHolder(v,mClickListener);
+        MsgViewHolder vh = new MsgViewHolder(v, mClickListener);
 
         return vh;
 
@@ -80,44 +82,37 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
 
 //        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         //holder.tvTime.setText(sdf.format(msg.msgTime));
-        holder.tvTime.setText(msg.msgTimes );
+        holder.tvTime.setText(msg.msgTimes);
         holder.tvMsg.setText(msg.Msg);
 
-        if(msg.mSenderID== UserSingleton.get().getHRID())
-        {
+        if (msg.mSenderID == UserSingleton.get().getHRID()) {
             holder.ivNotMe.setVisibility(View.INVISIBLE);
             holder.ivMe.setVisibility(View.VISIBLE);
-            if (MobileMainActivity.pictureBitmap !=null)
-            {
-                holder.ivMe.setImageBitmap(MobileMainActivity.pictureBitmap);
+            if (CommonUtil.pictureBitmap != null) {
+                holder.ivMe.setImageBitmap(CommonUtil.pictureBitmap);
 
             }
             //holder.tvMsg.setGravity(Gravity.RIGHT);
 
-        }
-        else
-        {
+        } else {
             holder.ivMe.setVisibility(View.INVISIBLE);
             holder.ivNotMe.setVisibility(View.VISIBLE);
             holder.ivNotMe.setImageBitmap(msg.HR_Pic2);
         }
 
         //调整TextView宽度
-        TextView t=holder.tvMsg;
-        try
-        {
+        TextView t = holder.tvMsg;
+        try {
             //LinearLayout llMsg=holder.llMsg;
             //int mtvMsgWidth=dip2px(mContext,80);
             float textWidth = t.getPaint().measureText(t.getText().toString());
-            if (t.getWidth()>textWidth)
-            {
-                t.setWidth((int)textWidth);
-
+            if (t.getWidth() > textWidth) {
+                t.setWidth((int) textWidth);
 
 
             }
+        } catch (Exception e) {
         }
-        catch (Exception e){}
 
 
     }
@@ -136,8 +131,7 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
         this.mClickListener = mClickListener;
     }
 
-    public static class MsgViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
+    public static class MsgViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTime;
         TextView tvMsg;
         ImageView ivNotMe;
@@ -149,20 +143,19 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
         //ImageView testB;
         //TextView tvX;
 
-        private  OnItemClickListener mListener;
+        private OnItemClickListener mListener;
 
-        public  MsgViewHolder(View itemView, OnItemClickListener listener)
-        {
+        public MsgViewHolder(View itemView, OnItemClickListener listener) {
             super(itemView);
 
-            mListener=listener;
+            mListener = listener;
             itemView.setOnClickListener(this);
 
 
-            tvTime=(TextView)itemView.findViewById(R.id.tv_conversation_time);
-            tvMsg=(TextView)itemView.findViewById(R.id.tv_msg_content);
-            ivNotMe =(ImageView) itemView.findViewById(R.id.iv_talker_not_me );
-            ivMe =(ImageView) itemView.findViewById(R.id.iv_talker_me );
+            tvTime = (TextView) itemView.findViewById(R.id.tv_conversation_time);
+            tvMsg = (TextView) itemView.findViewById(R.id.tv_msg_content);
+            ivNotMe = (ImageView) itemView.findViewById(R.id.iv_talker_not_me);
+            ivMe = (ImageView) itemView.findViewById(R.id.iv_talker_me);
             //llMsg=(LinearLayout)itemView.findViewById(R.id.linear_layout_converation_msg);
 
             //tvType=(TextView) itemView.findViewById(R.id.tv_listview_wclist_type);
@@ -174,19 +167,18 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.MsgViewHolder> {
         MsgViewHolder(View view) {
             super(view);
 
-            tvTime=(TextView)itemView.findViewById(R.id.tv_conversation_time);
-            tvMsg=(TextView)itemView.findViewById(R.id.tv_msg_content);
-            ivNotMe =(ImageView) itemView.findViewById(R.id.iv_talker_not_me );
-            ivMe =(ImageView) itemView.findViewById(R.id.iv_talker_me );
+            tvTime = (TextView) itemView.findViewById(R.id.tv_conversation_time);
+            tvMsg = (TextView) itemView.findViewById(R.id.tv_msg_content);
+            ivNotMe = (ImageView) itemView.findViewById(R.id.iv_talker_not_me);
+            ivMe = (ImageView) itemView.findViewById(R.id.iv_talker_me);
             //llMsg=(LinearLayout)itemView.findViewById(R.id.linear_layout_converation_msg);
         }
 
         @Override
         public void onClick(View v) {
             //mListener.OnItemClick(v, getAdapterPosition());
-            if (mListener!=null)
-            {
-                mListener.OnItemClick(v,getPosition());
+            if (mListener != null) {
+                mListener.OnItemClick(v, getPosition());
             }
 
         }

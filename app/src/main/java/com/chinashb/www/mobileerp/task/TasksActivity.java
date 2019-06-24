@@ -168,7 +168,7 @@ public class TasksActivity extends AppCompatActivity {
 
 
             //pbScan.setVisibility(View.INVISIBLE);
-            if (progressDialog != null && progressDialog.isShowing()){
+            if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
         }
@@ -289,7 +289,7 @@ public class TasksActivity extends AppCompatActivity {
             for (int i = 0; i < Hr_IDs.size(); i++) {
                 Integer x = Hr_IDs.get(i);
                 if (x != 0) {
-                    Bitmap bitmap = CommonUtil.getUserPic(TasksActivity.this, MobileMainActivity.userPictureMap, x);
+                    Bitmap bitmap = CommonUtil.getUserPic(TasksActivity.this, CommonUtil.userPictureMap, x);
 
                 }
             }
@@ -399,10 +399,10 @@ public class TasksActivity extends AppCompatActivity {
             //ObjectAdapter.HiddenCol =HiddenCol;
             recyclerView.setLayoutManager(new LinearLayoutManager(TasksActivity.this));
             recyclerView.setAdapter(ObjectAdapter);
-            if (tasks != null && tasks.size() > 0){
+            if (tasks != null && tasks.size() > 0) {
                 recyclerView.setVisibility(View.VISIBLE);
                 emptyManageView.setVisibility(View.GONE);
-            }else{
+            } else {
                 recyclerView.setVisibility(View.GONE);
                 emptyManageView.setVisibility(View.VISIBLE);
             }

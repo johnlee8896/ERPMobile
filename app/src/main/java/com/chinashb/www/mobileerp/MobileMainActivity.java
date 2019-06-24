@@ -42,8 +42,7 @@ import java.util.List;
 public class MobileMainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //    public static UserInfoEntity userInfo;
-    public static Bitmap pictureBitmap;
-    public static HashMap<Integer, Bitmap> userPictureMap = new HashMap<Integer, Bitmap>();
+
 
     private Button btnWarehouseMain;
     private Button btnConversation;
@@ -226,33 +225,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 //            }
 //        });
 
-        switchBUButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (!UserSingleton.get().hasLogin()) {
-
-                    ToastUtil.showToastLong("请先登录");
-                    return;
-                }
-
-
-                Intent intent = new Intent(MobileMainActivity.this, SelectItemActivity.class);
-                String sql = getSqlBu();
-
-                List<Integer> ColWidth = new ArrayList<Integer>(Arrays.asList(50, 200, 100, 50, 180));
-                List<String> ColCaption = new ArrayList<String>(Arrays.asList("Company_ID", "公司", "Brief", "Bu_ID", "车间"));
-                List<String> HiddenCol = new ArrayList<String>(Arrays.asList("Company_ID", "Brief", "Bu_ID"));
-
-                String Title = "选择车间";
-                intent.putExtra("Title", Title);
-                intent.putExtra("SQL", sql);
-                intent.putExtra("ColWidth", (Serializable) ColWidth);
-                intent.putExtra("ColCaption", (Serializable) ColCaption);
-                intent.putExtra("HiddenCol", (Serializable) HiddenCol);
-                startActivityForResult(intent, 200);
-            }
-        });
+        switchBUButton.setOnClickListener(this);
     }
 
     private String getSqlBu() {
@@ -452,6 +425,26 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
             Intent intent = new Intent(MobileMainActivity.this, StockMainActivity.class);
             startActivity(intent);
+        }else if (view == switchBUButton){
+            if (!UserSingleton.get().hasLogin()) {
+                ToastUtil.showToastLong("请先登录");
+                return;
+            }
+
+            Intent intent = new Intent(MobileMainActivity.this, SelectItemActivity.class);
+            String sql = getSqlBu();
+
+            List<Integer> ColWidth = new ArrayList<Integer>(Arrays.asList(50, 200, 100, 50, 180));
+            List<String> ColCaption = new ArrayList<String>(Arrays.asList("Company_ID", "公司", "Brief", "Bu_ID", "车间"));
+            List<String> HiddenCol = new ArrayList<String>(Arrays.asList("Company_ID", "Brief", "Bu_ID"));
+
+            String Title = "选择车间";
+            intent.putExtra("Title", Title);
+            intent.putExtra("SQL", sql);
+            intent.putExtra("ColWidth", (Serializable) ColWidth);
+            intent.putExtra("ColCaption", (Serializable) ColCaption);
+            intent.putExtra("HiddenCol", (Serializable) HiddenCol);
+            startActivityForResult(intent, 200);
         }
     }
 
@@ -482,7 +475,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
 
             if (userInfoEntity != null) {
-                pictureBitmap = CommonUtil.getUserPic(MobileMainActivity.this, userPictureMap, userInfoEntity.getHR_ID());
+                CommonUtil.pictureBitmap = CommonUtil.getUserPic(MobileMainActivity.this, CommonUtil.userPictureMap, userInfoEntity.getHR_ID());
             }
 
             return null;
@@ -497,8 +490,8 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         protected void onPostExecute(Void result) {
             if (UserSingleton.get().getUserInfo() != null) {
                 userNameTextView.setText(UserSingleton.get().getUserInfo().getBu_Name() + ":" + UserSingleton.get().getHRName());
-                if (pictureBitmap != null) {
-                    avatarImageView.setImageBitmap(pictureBitmap);
+                if (CommonUtil.pictureBitmap != null) {
+                    avatarImageView.setImageBitmap(CommonUtil.pictureBitmap);
                 }
             } else {
                 Toast.makeText(MobileMainActivity.this, "无法访问服务器，请检查网络连接是否正常", Toast.LENGTH_LONG).show();
