@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_margin="@dimen/dimen_size_10"
+    android:orientation="vertical">
+
+    <android.support.constraint.Barrier
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="item_search_company_info_textView,item_search_company_brief_info_textView,item_search_bu_number_info_textView"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/item_search_company_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="公司名称:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_search_company_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="上海胜华波汽车电器有限公司"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_search_company_info_textView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_search_company_brief_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="公司简称: "
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/item_search_company_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/item_search_company_info_textView" />
+
+    <TextView
+        android:id="@+id/item_search_brief_company_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="有限公司"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_search_company_brief_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/item_search_company_brief_info_textView"
+        app:layout_constraintTop_toTopOf="@id/item_search_company_brief_info_textView" />
+
+
+    <TextView
+        android:id="@+id/item_search_bu_number_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="车间号: "
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_search_company_brief_info_textView" />
+
+    <TextView
+        android:id="@+id/item_search_bu_number_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_40"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="1"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/item_search_bu_number_info_textView"
+        app:layout_constraintLeft_toRightOf="@id/item_search_bu_number_info_textView"
+        app:layout_constraintTop_toTopOf="@id/item_search_bu_number_info_textView" />
+
+    <TextView
+        android:id="@+id/item_search_bu_name_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="车间名称: "
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_search_bu_number_info_textView" />
+
+    <TextView
+        android:id="@+id/item_search_bu_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="钣金车间"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintBottom_toBottomOf="@id/item_search_bu_name_info_textView"
+        app:layout_constraintLeft_toRightOf="@id/item_search_bu_name_info_textView"
+        app:layout_constraintTop_toTopOf="@id/item_search_bu_name_info_textView" />
+
+</android.support.constraint.ConstraintLayout>

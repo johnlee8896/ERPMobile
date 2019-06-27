@@ -189,8 +189,8 @@ public class StockOutDepActivity extends AppCompatActivity {
                 String Title ="选择部门";
                 intent.putExtra("Title",Title);
                 intent.putExtra("SQL",sql);
-                intent.putExtra("ColWidth", (Serializable) ColWith);
-                intent.putExtra("ColCaption", (Serializable) ColCaption);
+                intent.putExtra("ColWidthList", (Serializable) ColWith);
+                intent.putExtra("ColCaptionList", (Serializable) ColCaption);
 
                 startActivityForResult(intent,100);
             }
@@ -219,9 +219,9 @@ public class StockOutDepActivity extends AppCompatActivity {
                 String Title ="选择研发项目";
                 intent.putExtra("Title",Title);
                 intent.putExtra("SQL",sql);
-                intent.putExtra("ColWidth", (Serializable) ColWith);
-                intent.putExtra("ColCaption", (Serializable) ColCaption);
-                intent.putExtra("HiddenCol", (Serializable) HiddenCol);
+                intent.putExtra("ColWidthList", (Serializable) ColWith);
+                intent.putExtra("ColCaptionList", (Serializable) ColCaption);
+                intent.putExtra("hiddenColList", (Serializable) HiddenCol);
 
                 startActivityForResult(intent,200);
             }

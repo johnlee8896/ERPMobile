@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
+import com.chinashb.www.mobileerp.BuildConfig;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.Issued_Item;
 import com.chinashb.www.mobileerp.basicobject.Ist_Place;
@@ -11,6 +12,8 @@ import com.chinashb.www.mobileerp.basicobject.JUser;
 import com.chinashb.www.mobileerp.basicobject.Mpi_Wc;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.BUItemBean;
+import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -27,6 +30,7 @@ import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +41,7 @@ import static com.chinashb.www.mobileerp.funs.CommonUtil.isNothing2String;
 
 public class WebServiceUtil {
 
+    public static final Class<BUItemBean> bu = BUItemBean.class;
     public static String Current_Net_Link = "Intranet";
 
     private static String NAMESPACE = "http://tempuri.org/";
@@ -607,7 +612,7 @@ public class WebServiceUtil {
                     box_item.setItemName(obj2.getProperty("ItemName").toString());
                     box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
                     box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
-                    box_item.setBuName(obj2.getProperty("BuName").toString());
+                    box_item.setBUName(obj2.getProperty("BuName").toString());
                     box_item.setLotNo(obj2.getProperty("LotNo").toString());
                     box_item.setIst_ID(Long.parseLong(obj2.getProperty("Ist_ID").toString()));
                     box_item.setSub_Ist_ID(Long.parseLong(obj2.getProperty("Sub_Ist_ID").toString()));*/
@@ -663,7 +668,7 @@ public class WebServiceUtil {
                     box_item.setItemName(obj2.getProperty("ItemName").toString());
                     box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
                     box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
-                    box_item.setBuName(obj2.getProperty("BuName").toString());
+                    box_item.setBUName(obj2.getProperty("BuName").toString());
                     box_item.setLotNo(obj2.getProperty("LotNo").toString());
                     box_item.setIst_ID(Long.parseLong(obj2.getProperty("Ist_ID").toString()));
                     box_item.setSub_Ist_ID(Long.parseLong(obj2.getProperty("Sub_Ist_ID").toString()));
@@ -983,7 +988,7 @@ public class WebServiceUtil {
                     box_item.setItemName(obj2.getProperty("ItemName").toString());
                     box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
                     //box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
-                    //box_item.setBuName(obj2.getProperty("BuName").toString());
+                    //box_item.setBUName(obj2.getProperty("BuName").toString());
 
                     */
 
@@ -1391,21 +1396,39 @@ public class WebServiceUtil {
         if (result == null) {
             return null;
         }
-
-        if (result.getResult() == false) {
+        if (!result.getResult()) {
             return null;
         }
-
-        String js = result.getErrorInfo();
-        if (js.equalsIgnoreCase("null")) {
+        String resultData = result.getErrorInfo();
+        if (resultData.isEmpty() || resultData.equalsIgnoreCase("null")) {
             return null;
         }
-
         //变成List
-        List<JsonObject> objs = ConvertJstring2List(js);
-
+        List<JsonObject> ojsonObjectList = ConvertJstring2List(resultData);
         //结果
-        return objs;
+        return ojsonObjectList;
+
+    }
+
+    public static List<BUItemBean> getBUBeanList(String SQL) {
+        WsResult result = getDataTable(SQL);
+        if (result == null) {
+            return null;
+        }
+        if (!result.getResult()) {
+            return null;
+        }
+        String resultData = result.getErrorInfo();
+        if (resultData.isEmpty() || resultData.equalsIgnoreCase("null")) {
+            return null;
+        }
+        //变成List
+//        List<JsonObject> ojsonObjectList = ConvertJstring2List(resultData);
+//        BUItemBean buItemBean = JsonUtil.parseJsonToObject(resultData, BUItemBean.class);
+        Type type = new TypeToken<List<BUItemBean>>(){}.getType();
+        List<BUItemBean> list = JsonUtil.parseJsonToObject(resultData, type);
+        //结果
+        return list;
 
     }
 
@@ -1414,7 +1437,6 @@ public class WebServiceUtil {
         JsonArray jsonArray = (JsonArray) new JsonParser().parse(js);
         Iterator<JsonElement> iter = jsonArray.iterator();
         List<JsonObject> objs = new ArrayList<JsonObject>();
-
 
         while (iter.hasNext()) {
             JsonObject obj = iter.next().getAsJsonObject();

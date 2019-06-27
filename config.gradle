@@ -1,0 +1,21 @@
+/***
+ * APP版本编译相关、第三方包引用库统一管理的配置文件
+ * **/
+ext {
+    android = [
+            buildToolsVersion: "27.0.3",
+            compileSdkVersion: 27,
+            minSdkVersion    : 15,
+            targetSdkVersion : 27,
+            versionCode      : 1,
+            versionName      : "1.0",
+
+            supportVersion     : "27.1.0",
+    ]
+
+    dependencies = [
+            "support_v7" : ("com.android.support:appcompat-v7:${android.supportVersion}"),
+            "recyclerview_v7" : ("com.android.support:recyclerview-v7:${android.supportVersion}"),
+            "design_v7" : ("com.android.support:design:${android.supportVersion}"),
+    ]
+}

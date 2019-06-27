@@ -3,14 +3,11 @@ package com.chinashb.www.mobileerp;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
@@ -19,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
+import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.commonactivity.NetWorkReceiver;
 import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
@@ -44,12 +42,12 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
     //    public static UserInfoEntity userInfo;
 
 
-    private Button btnWarehouseMain;
-    private Button btnConversation;
-    private Button btnTask;
+    private TextView warehouseMainTextView;
+    private TextView conversationTextView;
+    private TextView taskTextView;
     //    private Button scanHRButton;
 //    private Button loginButton;
-    private Button switchBUButton;
+    private TextView switchBUTextView;
     private TextView userNameTextView;
     private ImageView avatarImageView;
     private RadioGroup netRadioGroup;
@@ -70,7 +68,6 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
         registerNetReceiver();
         setContentView(R.layout.activity_mobile_main);
-
         getViewFromXML();
 
         CommonUtil.initNetWorkLink(this);
@@ -78,17 +75,14 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
             internetRadioButton.setChecked(true);
         }
 
-        setHomeButton();
+//        setHomeButton();
 
 //        //最新版本检测
 //        checkErpVersionOk();
-
         setViewListeners();
-
-
-        btnWarehouseMain = (Button) findViewById(R.id.main_warehouse_manage_button);
-        btnConversation = (Button) findViewById(R.id.main_message_button);
-        btnTask = (Button) findViewById(R.id.main_task_manage_button);
+        warehouseMainTextView = (TextView) findViewById(R.id.main_warehouse_manage_button);
+        conversationTextView = (TextView) findViewById(R.id.main_message_button);
+        taskTextView = (TextView) findViewById(R.id.main_task_manage_button);
 
 //        if (savedInstanceState != null) {
 //            userInfo = (UserInfoEntity) savedInstanceState.getSerializable("userInfo");
@@ -99,11 +93,9 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
             task.execute(String.valueOf(HRID));
         }
 
-        btnWarehouseMain.setOnClickListener(this);
-
-        btnConversation.setOnClickListener(this);
-
-        btnTask.setOnClickListener(this);
+        warehouseMainTextView.setOnClickListener(this);
+        conversationTextView.setOnClickListener(this);
+        taskTextView.setOnClickListener(this);
 
 
     }
@@ -177,7 +169,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         avatarImageView = (ImageView) findViewById(R.id.main_avatar_imageView);
 //        scanHRButton = (Button) findViewById(R.id.main_scan_hr_card_button);
 //        loginButton = (Button) findViewById(R.id.main_login_button);
-        switchBUButton = (Button) findViewById(R.id.main_select_bu_button);
+        switchBUTextView = (TextView) findViewById(R.id.main_select_bu_button);
         userNameTextView = (TextView) findViewById(R.id.tv_current_user_name);
 
         netRadioGroup = (RadioGroup) findViewById(R.id.rg_net_link);
@@ -225,7 +217,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 //            }
 //        });
 
-        switchBUButton.setOnClickListener(this);
+        switchBUTextView.setOnClickListener(this);
     }
 
     private String getSqlBu() {
@@ -278,23 +270,23 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 //    }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    protected void setHomeButton() {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                this.finish(); // back button
+//                return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    protected void setHomeButton() {
+//        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null) {
+//            actionBar.setHomeButtonEnabled(true);
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//        }
+//    }
 
 
     @Override
@@ -348,14 +340,24 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+//    @Override
+//    protected void onPause() {
+//        if (netWorkReceiver == null) {
+//            unregisterReceiver(netWorkReceiver);
+//            System.out.println("注销");
+//        }
+//
+//        super.onPause();
+//    }
+
+
     @Override
-    protected void onPause() {
+    protected void onDestroy() {
+        super.onDestroy();
         if (netWorkReceiver == null) {
             unregisterReceiver(netWorkReceiver);
             System.out.println("注销");
         }
-
-        super.onPause();
     }
 
     @Override
@@ -371,13 +373,19 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
     protected void ActivityResultSelectBu(Intent data) {
         if (data != null) {
-            HashMap<String, String> SelectBu = (HashMap<String, String>) data.getSerializableExtra("SelectItem");
-            if (SelectBu != null) {
+//            HashMap<String, String> SelectBu = (HashMap<String, String>) data.getSerializableExtra("SelectItem");
+            BUItemBean buItemBean = data.getParcelableExtra("SelectItem");
+            if (buItemBean != null) {
                 UserInfoEntity userInfoEntity = new UserInfoEntity();
-                userInfoEntity.setBu_ID(Integer.valueOf(SelectBu.get("bu_id")));
-                userInfoEntity.setBu_Name(SelectBu.get("bu_name"));
-                userInfoEntity.setCompany_ID(Integer.valueOf(SelectBu.get("Company_ID")));
-                userInfoEntity.setCompany_Name(SelectBu.get("Company_Chinese_Name"));
+//                userInfoEntity.setBu_ID(Integer.valueOf(buItemBean.get("bu_id")));
+//                userInfoEntity.setBu_Name(buItemBean.get("bu_name"));
+//                userInfoEntity.setCompany_ID(Integer.valueOf(SelectBu.get("Company_ID")));
+//                userInfoEntity.setCompany_Name(SelectBu.get("Company_Chinese_Name"));
+
+                userInfoEntity.setBu_ID(buItemBean.getBUId());
+                userInfoEntity.setBu_Name(buItemBean.getBUName());
+                userInfoEntity.setCompany_ID(buItemBean.getCompanyID());
+                userInfoEntity.setCompany_Name(buItemBean.getCompanyChineseName());
                 //todo 此处应用update
                 userInfoEntity.setHR_ID(UserSingleton.get().getHRID());
 
@@ -390,7 +398,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    protected void registerNetReceiver() {
+    private void registerNetReceiver() {
         if (netWorkReceiver == null) {
             netWorkReceiver = new NetWorkReceiver();
         }
@@ -401,7 +409,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View view) {
-        if (view == btnConversation){
+        if (view == conversationTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
                 return;
@@ -409,7 +417,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
             Intent intent = new Intent(MobileMainActivity.this, MessageManageActivity.class);
             startActivity(intent);
-        }else if (view == btnTask){
+        } else if (view == taskTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
                 return;
@@ -417,7 +425,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
             Intent intent = new Intent(MobileMainActivity.this, TasksActivity.class);
             startActivity(intent);
-        }else if (view == btnWarehouseMain){
+        } else if (view == warehouseMainTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
                 return;
@@ -425,7 +433,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
             Intent intent = new Intent(MobileMainActivity.this, StockMainActivity.class);
             startActivity(intent);
-        }else if (view == switchBUButton){
+        } else if (view == switchBUTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
                 return;
@@ -441,9 +449,9 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
             String Title = "选择车间";
             intent.putExtra("Title", Title);
             intent.putExtra("SQL", sql);
-            intent.putExtra("ColWidth", (Serializable) ColWidth);
-            intent.putExtra("ColCaption", (Serializable) ColCaption);
-            intent.putExtra("HiddenCol", (Serializable) HiddenCol);
+            intent.putExtra("ColWidthList", (Serializable) ColWidth);
+            intent.putExtra("ColCaptionList", (Serializable) ColCaption);
+            intent.putExtra("hiddenColList", (Serializable) HiddenCol);
             startActivityForResult(intent, 200);
         }
     }

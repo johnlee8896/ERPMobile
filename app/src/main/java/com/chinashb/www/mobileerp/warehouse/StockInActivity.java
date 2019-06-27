@@ -122,6 +122,9 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         System.out.println("============ scan content = " + content);
         // VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
 //        String content = result.getContents();
+        if (content.contains("\n")){
+            content = content.replace("\n","");
+        }
         if (content.contains("/")) {
             String[] qrContent;
             qrContent = content.split("/");
@@ -183,11 +186,11 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 
 //            new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
-            if (inputEditText.getVisibility() == View.GONE){
+            if (inputEditText.getVisibility() == View.GONE) {
 
-            inputEditText.setVisibility(View.VISIBLE);
-            addTrayButton.setText("扫描增加托盘");
-            }else{
+                inputEditText.setVisibility(View.VISIBLE);
+                addTrayButton.setText("扫描增加托盘");
+            } else {
                 addTrayButton.setText("开始扫描");
                 parseScanResult(inputEditText.getText().toString());
 

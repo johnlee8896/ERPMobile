@@ -45,6 +45,7 @@ public class MessageManageActivity extends AppCompatActivity {
 
 //    Integer HR_ID;
 
+    //todo 从menu里移过来的
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -213,7 +214,7 @@ public class MessageManageActivity extends AppCompatActivity {
 
                 contacts = WebServiceUtil.ConvertJstring2List(js);
                 ColWidth = new ArrayList<>(Arrays.asList(10, 80, 300));
-                //ColCaption=new ArrayList<String>(Arrays.asList("HR_ID","联系人"));
+                //ColCaptionList=new ArrayList<String>(Arrays.asList("HR_ID","联系人"));
                 HiddenCol = new ArrayList<>(Arrays.asList("MG_ID"));
             }
         }

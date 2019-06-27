@@ -395,8 +395,8 @@ public class TasksActivity extends AppCompatActivity {
         protected void bindObjectListsToAdapter(final List<JsonObject> JList) {
             ObjectAdapter = new TaskJsonListAdapter(TasksActivity.this, tasks);
             //赋值 列宽度
-            //ObjectAdapter.ColWidth = ColWidth;
-            //ObjectAdapter.HiddenCol =HiddenCol;
+            //ObjectAdapter.ColWidthList = ColWidthList;
+            //ObjectAdapter.hiddenColList =hiddenColList;
             recyclerView.setLayoutManager(new LinearLayoutManager(TasksActivity.this));
             recyclerView.setAdapter(ObjectAdapter);
             if (tasks != null && tasks.size() > 0) {

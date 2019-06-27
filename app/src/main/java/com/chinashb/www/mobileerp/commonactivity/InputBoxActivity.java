@@ -25,27 +25,27 @@ public class InputBoxActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_box);
 
-        tvTitle=(TextView)findViewById(R.id.tv_input_box_title);
-        etInput=(EditText)findViewById(R.id.et_inputbox_text);
-        btnOk =(Button)findViewById(R.id.btn_input_box_commit);
-        btnCancel=(Button)findViewById(R.id.btn_input_box_cancel);
+        tvTitle = (TextView) findViewById(R.id.tv_input_box_title);
+        etInput = (EditText) findViewById(R.id.et_inputbox_text);
+        btnOk = (Button) findViewById(R.id.btn_input_box_commit);
+        btnCancel = (Button) findViewById(R.id.btn_input_box_cancel);
 
 
-        Intent who=getIntent();
+        Intent who = getIntent();
 
-        String Title =who.getStringExtra("Title");
+        String Title = who.getStringExtra("title");
 
-        if (Title.isEmpty()==false)
-        {
+        if (Title.isEmpty() == false) {
             tvTitle.setText(Title);
         }
 
-        String OriText =who.getStringExtra("OriText");
+        String OriText = who.getStringExtra("OriText");
 
         etInput.setText("");
-        if (OriText.isEmpty()==false)
-        {
-            if (OriText.equals("null")==false){etInput.setText(OriText);}
+        if (OriText.isEmpty() == false) {
+            if (OriText.equals("null") == false) {
+                etInput.setText(OriText);
+            }
 
         }
 
@@ -55,11 +55,11 @@ public class InputBoxActivity extends AppCompatActivity {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String T=etInput.getText().toString();
+                String T = etInput.getText().toString();
 
                 Intent result = new Intent();
-                result.putExtra("Input",T);
-                setResult(1,result);
+                result.putExtra("Input", T);
+                setResult(1, result);
                 finish();
             }
         });
@@ -73,7 +73,6 @@ public class InputBoxActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -84,9 +83,9 @@ public class InputBoxActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void setHomeButton(){
+    protected void setHomeButton() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }

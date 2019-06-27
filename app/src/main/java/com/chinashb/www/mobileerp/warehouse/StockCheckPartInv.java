@@ -174,9 +174,9 @@ public class StockCheckPartInv extends AppCompatActivity {
                 String Title ="选择盘点文件";
                 intent.putExtra("Title",Title);
                 intent.putExtra("SQL",sql);
-                intent.putExtra("ColWidth", (Serializable) ColWith);
-                intent.putExtra("ColCaption", (Serializable) ColCaption);
-                intent.putExtra("HiddenCol", (Serializable) HiddenCol);
+                intent.putExtra("ColWidthList", (Serializable) ColWith);
+                intent.putExtra("ColCaptionList", (Serializable) ColCaption);
+                intent.putExtra("hiddenColList", (Serializable) HiddenCol);
 
                 startActivityForResult(intent,200);
 

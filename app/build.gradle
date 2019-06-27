@@ -1,21 +1,61 @@
 apply plugin: 'com.android.application'
 
+def cfg = rootProject.ext.android
+
 android {
-    compileSdkVersion 25
+    compileSdkVersion cfg.compileSdkVersion
+    buildToolsVersion cfg.buildToolsVersion
     defaultConfig {
         applicationId "com.chinashb.www.mobileerp"
-        minSdkVersion 15
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion cfg.minSdkVersion
+        targetSdkVersion cfg.targetSdkVersion
+        versionCode cfg.versionCode
+        versionName cfg.versionName
+
+        dexOptions {
+            javaMaxHeapSize "8g"
+//            preDexLibraries false
+        }
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+//    buildTypes {
+//        release {
+//            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//        }
+//    }
+
+    signingConfigs {
+        //加载资源
+        Properties properties = new Properties()
+        InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream();
+        properties.load(inputStream)
+
+        //读取文件
+        def sdkDir = properties.getProperty('key.file')
+        //读取字段
+        def key_keyAlias = properties.getProperty('keyAlias')
+        def key_keyPassword = properties.getProperty('keyPassword');
+        def key_storePassword = properties.getProperty('storePassword');
+
+//        release {
+//            keyAlias key_keyAlias
+//            keyPassword key_keyPassword
+//            storeFile file(sdkDir)
+//            storePassword key_storePassword
+//        }
+//        debug {
+//            keyAlias key_keyAlias
+//            keyPassword key_keyPassword
+//            storeFile file(sdkDir)
+//            storePassword key_storePassword
+//        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
     sourceSets {
 //        main {
@@ -48,14 +88,19 @@ android {
         abortOnError false
     }
 }
-
+def libs = rootProject.ext.dependencies // 库依赖
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:25.4.0'
+
+
+    implementation libs["support_v7"]
+    implementation libs["design_v7"]
+    implementation libs["recyclerview_v7"]
+//    implementation 'com.android.support:appcompat-v7:25.4.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.android.support:design:25.4.0'
-    implementation 'com.android.support:support-vector-drawable:25.4.0'
-    implementation 'com.android.support:support-v4:25.4.0'
+//    implementation 'com.android.support:design:25.4.0'
+//    implementation 'com.android.support:support-vector-drawable:25.4.0'
+//    implementation 'com.android.support:support-v4:25.4.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -64,6 +109,9 @@ dependencies {
     implementation 'com.google.zxing:core:3.3.3'
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
     implementation files('libs/ksoap2-android-assembly-3.6.2-jar-with-dependencies.jar')
+
+//    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+//    implementation 'com.jakewharton:butterknife:10.1.0'
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.jakewharton:butterknife:8.8.1'

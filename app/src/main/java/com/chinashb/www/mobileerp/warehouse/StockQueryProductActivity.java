@@ -25,73 +25,58 @@ import java.util.List;
 public class StockQueryProductActivity extends AppCompatActivity {
 
     private UserInfoEntity user;
-
     private EditText etFilter;
     private Button btnQuery;
     private Button btnQueryNextPage;
     private Button btnQueryPrePage;
-
     private RecyclerView mRecyclerView;
 
     private AdapterProInv proinvadpater;
     private List<Product_Inv> product_invs;
 
     private String scanstring;
-    private Integer PageNi=1;
+    private Integer PageNi = 1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_stock_query_product);
-
-
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_query_product_inv);
+        etFilter = (EditText) findViewById(R.id.et_stock_query_filter);
+        btnQuery = (Button) findViewById(R.id.btn_stock_query);
+        btnQueryNextPage = (Button) findViewById(R.id.btn_stock_query_nextpage);
+        btnQueryPrePage = (Button) findViewById(R.id.btn_stock_query_prepage);
 
-        etFilter = (EditText)findViewById(R.id.et_stock_query_filter);
-
-        btnQuery = (Button)findViewById(R.id.btn_stock_query);
-        btnQueryNextPage =(Button)findViewById(R.id.btn_stock_query_nextpage);
-        btnQueryPrePage=(Button)findViewById(R.id.btn_stock_query_prepage);
-
-        user=StockMainActivity.userInfo;
-
-        product_invs =  new ArrayList<>();
-
+        user = StockMainActivity.userInfo;
+        product_invs = new ArrayList<>();
         proinvadpater = new AdapterProInv(StockQueryProductActivity.this, product_invs);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(proinvadpater);
 
-
         setHomeButton();
-
-        btnQuery.setOnClickListener(new View.OnClickListener(){
+        btnQuery.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
-
-                PageNi=1;
-
-                StockQueryProductActivity.AsyncQueryProductInv t = new StockQueryProductActivity.AsyncQueryProductInv();
+            public void onClick(View view) {
+                PageNi = 1;
+                QueryProductStockAsyncTask t = new QueryProductStockAsyncTask();
                 t.execute();
 
             }
 
         });
 
-        btnQueryNextPage.setOnClickListener(new View.OnClickListener(){
+        btnQueryNextPage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
-
-                if( product_invs!=null)
-                {
-                    if (product_invs.size()>=20)
-                    {
+            public void onClick(View view) {
+                if (product_invs != null) {
+                    if (product_invs.size() >= 20) {
                         PageNi++;
-                        StockQueryProductActivity.AsyncQueryProductInv t = new StockQueryProductActivity.AsyncQueryProductInv();
+                        QueryProductStockAsyncTask t = new QueryProductStockAsyncTask();
                         t.execute();
                     }
                 }
-
 
 
             }
@@ -99,14 +84,13 @@ public class StockQueryProductActivity extends AppCompatActivity {
         });
 
 
-        btnQueryPrePage.setOnClickListener(new View.OnClickListener(){
+        btnQueryPrePage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
 
-                if (PageNi>1)
-                {
+                if (PageNi > 1) {
                     PageNi--;
-                    StockQueryProductActivity.AsyncQueryProductInv t = new StockQueryProductActivity.AsyncQueryProductInv();
+                    QueryProductStockAsyncTask t = new QueryProductStockAsyncTask();
                     t.execute();
                 }
 
@@ -129,27 +113,28 @@ public class StockQueryProductActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void setHomeButton(){
+    protected void setHomeButton() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
-    private class AsyncQueryProductInv extends AsyncTask<String, Void, Void> {
+    private class QueryProductStockAsyncTask extends AsyncTask<String, Void, Void> {
         //ArrayList<Product_Inv> us = new ArrayList<Product_Inv>();
 
         @Override
         protected Void doInBackground(String... params) {
 
-            String F=etFilter.getText().toString();
+            String F = etFilter.getText().toString();
 
-            String js = WebServiceUtil.getQueryInv(user.getBu_ID(),2,F, PageNi, 20);
+            String js = WebServiceUtil.getQueryInv(user.getBu_ID(), 2, F, PageNi, 20);
 
 
-            Gson gson= new Gson();
-            product_invs= gson.fromJson(js,new TypeToken<List<Product_Inv>>(){}.getType());
+            Gson gson = new Gson();
+            product_invs = gson.fromJson(js, new TypeToken<List<Product_Inv>>() {
+            }.getType());
 
 
             return null;
@@ -177,14 +162,11 @@ public class StockQueryProductActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     protected void onResume() {
 //设置为横屏幕
-        if(getRequestedOrientation()!= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT )
-        {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
         super.onResume();

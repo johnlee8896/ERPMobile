@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#d81b60</color>
 
+    <!--<color name="colorPrimary">#fff</color>-->
+    <!--<color name="colorPrimaryDark">#f5f5f5</color>-->
+    <!--<color name="colorAccent">#fff</color>-->
+
     <color name="white">#fff</color>
     <color name="transparent">#0fff</color>
     <color name="black">#000</color>
@@ -50,4 +54,5 @@
     <color name="hint_color">#42000000</color>
     <color name="success_color">#009688</color>
     <color name="color_red_f4333c">#F4333C</color>
+    <color name="color_F1F1F1">#F1F1F1</color>
 </resources>

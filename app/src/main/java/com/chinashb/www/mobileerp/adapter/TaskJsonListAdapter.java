@@ -65,7 +65,7 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
     public void onBindViewHolder(final JsonListViewHolder holder, int position) {
         final JsonObject obj = dataSoure.get(position);
 
-        //HashMap<String,TextView> textViews = holder.textViews;
+        //HashMap<String,TextView> stringTextViewHashMap = holder.stringTextViewHashMap;
 
         Integer creater = obj.get("Creater").getAsInt();
 
@@ -115,7 +115,7 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
 
     public static class JsonListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        //HashMap<String,TextView> textViews;
+        //HashMap<String,TextView> stringTextViewHashMap;
 
         TextView tvCreateTime;
         TextView tvCreater;
@@ -142,7 +142,7 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
         }
 
         public void setTextViews(View itemView) {
-            //textViews = new HashMap<String, TextView>();
+            //stringTextViewHashMap = new HashMap<String, TextView>();
 
             tvCreateTime = (TextView) itemView.findViewById(R.id.tv_task_create_time);
             tvCreater = (TextView) itemView.findViewById(R.id.tv_task_creater);
