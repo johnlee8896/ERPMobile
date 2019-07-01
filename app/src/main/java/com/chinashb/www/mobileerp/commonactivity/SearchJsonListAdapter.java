@@ -11,8 +11,6 @@ import com.chinashb.www.mobileerp.adapter.BaseRecycleAdapter;
 import com.chinashb.www.mobileerp.adapter.BaseViewHolder;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 
-import java.io.Serializable;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

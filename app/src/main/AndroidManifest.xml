@@ -90,6 +90,9 @@
             android:name=".warehouse.StockQueryPartItemActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".warehouse.StockQueryProductItemActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".warehouse.StockOutDepActivity"
             android:screenOrientation="portrait" />
         <activity

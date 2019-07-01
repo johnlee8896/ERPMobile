@@ -35,12 +35,11 @@ public class InputBoxActivity extends AppCompatActivity {
 
         String Title = who.getStringExtra("title");
 
-        if (Title.isEmpty() == false) {
+        if (Title != null && !Title.isEmpty()) {
             tvTitle.setText(Title);
         }
 
         String OriText = who.getStringExtra("OriText");
-
         etInput.setText("");
         if (OriText.isEmpty() == false) {
             if (OriText.equals("null") == false) {

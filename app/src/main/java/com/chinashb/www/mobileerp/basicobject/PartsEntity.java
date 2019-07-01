@@ -2,7 +2,7 @@ package com.chinashb.www.mobileerp.basicobject;
 
 import java.io.Serializable;
 
-public class Part_Inv implements Serializable {
+public class PartsEntity implements Serializable {
     /**
      * Item_ID : 3861
      * 物料编码 : P-ZD1360CE-3003B

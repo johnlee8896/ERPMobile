@@ -22,6 +22,7 @@ import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -69,7 +70,6 @@ public class StockOutDepActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         bindView(savedInstanceState);
         setHomeButton();
         setButtonListener();
@@ -177,7 +177,7 @@ public class StockOutDepActivity extends AppCompatActivity {
                         "select cd.Department_ID, pd.Department_Name as PDN, cd.Department_Name  from org " +
                         " left join department as pd on org.pid=pd.Department_ID " +
                         " inner join department as cd on org.cid=cd.department_ID " +
-                        " where cd.Company_ID =" + StockMainActivity.userInfo.getCompany_ID().toString() +
+                        " where cd.Company_ID =" + UserSingleton.get().getUserInfo().getCompany_ID() +
                         " and cd.Hide=0 and cd.Subgroup=0 and cd.IsVirtual=0" +
                         " And " +
                         " (pd.Hide is null or pd.Hide=0) " +
@@ -209,8 +209,8 @@ public class StockOutDepActivity extends AppCompatActivity {
                         " Inner Join Fi_Standard_Product On Product.Product_ID=Fi_Standard_Product.Product_ID " +
                         " Inner Join Fi_Standard_product_Type On Fi_Standard_Product.Fi_Standard_Product_Type=Fi_Standard_Product_Type.FiPT_ID  " +
                         " Inner Join Fi_Standard_Product_Developing_Status As St On Fi_Standard_Product.Fi_Standard_Product_Developing_Status=St.FSPD_ID " +
-                        " Where Fi_Standard_product_Type.Obsolete=0 And Program.Company_ID=" + StockMainActivity.userInfo.getCompany_ID() +
-                        " And Program.Bu_ID=" + StockMainActivity.userInfo.getBu_ID() + " And Fi_Standard_Product_Type.Obsolete=0  ";
+                        " Where Fi_Standard_product_Type.Obsolete=0 And Program.Company_ID=" + UserSingleton.get().getUserInfo().getCompany_ID() +
+                        " And Program.Bu_ID=" + UserSingleton.get().getUserInfo().getBu_ID() + " And Fi_Standard_Product_Type.Obsolete=0  ";
 
                 List<Integer>ColWith=new ArrayList<Integer>(Arrays.asList(10,10,120,10,120,10,120,10));
                 List<String>ColCaption=new ArrayList<String>(Arrays.asList("Product_ID","PS_ID","产品通称","FiPT_ID","研发项目","FSPD_ID","研发状态","Program_ID"));
@@ -368,7 +368,7 @@ public class StockOutDepActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... params) {
 
-            BoxItemEntity bi = WebServiceUtil.op_Check_Commit_Inv_Out_Item_Barcode(StockMainActivity.userInfo.getBu_ID(),scanstring);
+            BoxItemEntity bi = WebServiceUtil.op_Check_Commit_Inv_Out_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(),scanstring);
 
             scanresult=bi;
 
@@ -465,7 +465,7 @@ public class StockOutDepActivity extends AppCompatActivity {
             while(count<newissuesize && newissuelist.size()>0)
             {
                 BoxItemEntity bi = newissuelist.get(0);
-                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(StockMainActivity.userInfo.getBu_ID(), SelectDep, SelectReaseach,bi );
+                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), SelectDep, SelectReaseach,bi );
 
                 if (ws_result.getResult()==true)
                 {

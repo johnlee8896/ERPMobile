@@ -1,5 +1,6 @@
 package com.chinashb.www.mobileerp.warehouse;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,13 +13,17 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.funs.OnItemClickListener;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.chinashb.www.mobileerp.adapter.AdapterProInv;
-import com.chinashb.www.mobileerp.basicobject.Product_Inv;
+import com.chinashb.www.mobileerp.basicobject.ProductsEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,17 +36,15 @@ public class StockQueryProductActivity extends AppCompatActivity {
     private Button btnQueryPrePage;
     private RecyclerView mRecyclerView;
 
-    private AdapterProInv proinvadpater;
-    private List<Product_Inv> product_invs;
+    private AdapterProInv productAdapter;
+    private List<ProductsEntity> productsEntityList;
 
     private String scanstring;
-    private Integer PageNi = 1;
-
+    private int currentPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_stock_query_product);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_query_product_inv);
         etFilter = (EditText) findViewById(R.id.et_stock_query_filter);
@@ -49,17 +52,28 @@ public class StockQueryProductActivity extends AppCompatActivity {
         btnQueryNextPage = (Button) findViewById(R.id.btn_stock_query_nextpage);
         btnQueryPrePage = (Button) findViewById(R.id.btn_stock_query_prepage);
 
-        user = StockMainActivity.userInfo;
-        product_invs = new ArrayList<>();
-        proinvadpater = new AdapterProInv(StockQueryProductActivity.this, product_invs);
+        user = UserSingleton.get().getUserInfo();
+        productsEntityList = new ArrayList<>();
+        productAdapter = new AdapterProInv(StockQueryProductActivity.this, productsEntityList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
-        mRecyclerView.setAdapter(proinvadpater);
+        mRecyclerView.setAdapter(productAdapter);
+
+//        productAdapter.setOnItemClickListener((view, position) -> {
+//                    if (productsEntityList != null && productsEntityList.size() > 0) {
+//                        Intent intent = new Intent(StockQueryProductActivity.this, StockQueryProductItemActivity.class);
+//                        intent.putExtra("selected_item", (Serializable) productsEntityList.get(position));
+//                        startActivityForResult(intent, 100);
+//                    }
+////                    ToastUtil.showToastLong("正在开发！");
+//
+//                }
+//        );
 
         setHomeButton();
         btnQuery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PageNi = 1;
+                currentPage = 1;
                 QueryProductStockAsyncTask t = new QueryProductStockAsyncTask();
                 t.execute();
 
@@ -70,38 +84,31 @@ public class StockQueryProductActivity extends AppCompatActivity {
         btnQueryNextPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (product_invs != null) {
-                    if (product_invs.size() >= 20) {
-                        PageNi++;
+                if (productsEntityList != null) {
+                    if (productsEntityList.size() >= 20) {
+                        currentPage++;
                         QueryProductStockAsyncTask t = new QueryProductStockAsyncTask();
                         t.execute();
                     }
                 }
 
-
             }
 
         });
-
 
         btnQueryPrePage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (PageNi > 1) {
-                    PageNi--;
+                if (currentPage > 1) {
+                    currentPage--;
                     QueryProductStockAsyncTask t = new QueryProductStockAsyncTask();
                     t.execute();
                 }
 
-
             }
-
         });
 
-
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -122,20 +129,16 @@ public class StockQueryProductActivity extends AppCompatActivity {
     }
 
     private class QueryProductStockAsyncTask extends AsyncTask<String, Void, Void> {
-        //ArrayList<Product_Inv> us = new ArrayList<Product_Inv>();
+        //ArrayList<ProductsEntity> us = new ArrayList<ProductsEntity>();
 
         @Override
         protected Void doInBackground(String... params) {
 
-            String F = etFilter.getText().toString();
-
-            String js = WebServiceUtil.getQueryInv(user.getBu_ID(), 2, F, PageNi, 20);
-
-
+            String keyWord = etFilter.getText().toString();
+            String js = WebServiceUtil.getQueryInv(user.getBu_ID(), 2, keyWord, currentPage, 20);
             Gson gson = new Gson();
-            product_invs = gson.fromJson(js, new TypeToken<List<Product_Inv>>() {
+            productsEntityList = gson.fromJson(js, new TypeToken<List<ProductsEntity>>() {
             }.getType());
-
 
             return null;
         }
@@ -145,8 +148,18 @@ public class StockQueryProductActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            proinvadpater = new AdapterProInv(StockQueryProductActivity.this, product_invs);
-            mRecyclerView.setAdapter(proinvadpater);
+            productAdapter = new AdapterProInv(StockQueryProductActivity.this, productsEntityList);
+            mRecyclerView.setAdapter(productAdapter);
+            productAdapter.setOnItemClickListener((view, position) -> {
+                        if (productsEntityList != null && productsEntityList.size() > 0) {
+                            Intent intent = new Intent(StockQueryProductActivity.this, StockQueryProductItemActivity.class);
+                            intent.putExtra("selected_item", (Serializable) productsEntityList.get(position));
+                            startActivityForResult(intent, 100);
+                        }
+//                    ToastUtil.showToastLong("正在开发！");
+
+                    }
+            );
             //pbScan.setVisibility(View.INVISIBLE);
         }
 

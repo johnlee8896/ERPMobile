@@ -1,7 +1,12 @@
 package com.chinashb.www.mobileerp.commonactivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +39,8 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.List;
+
+import static com.chinashb.www.mobileerp.funs.CommonUtil.userPictureMap;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -86,17 +93,37 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                 }
-
+//                ToastUtil.showToastLong(" " + GetApkInfo(LoginActivity.this,"http://www.chinashb.com/Download/ShbERP.apk"));
+//                new Thread(){
+//                    @Override public void run() {
+//                        super.run();
+//                        String versionCode = WebServiceUtil.getVersionCode();
+////                        String versionCode = WebServiceUtil.getMobileVersion();
+//                        System.out.println("versionCoce = " + versionCode);
+//                    }
+//                }.start();
             }
         });
 
         setHomeButton();
         initView();
-        if (nameEditText.getText().length() > 0){
-            passwordEditText.requestFocus();
-            passwordEditText.setText("john1234@@");
-        }
+//        if (nameEditText.getText().length() > 0){
+//            passwordEditText.requestFocus();
+//            passwordEditText.setText("john1234@@");
+//        }
 
+    }
+
+    public int GetApkInfo(Context context, String apkPath) {
+        PackageManager pm = context.getPackageManager();
+        PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
+        if (info != null) {
+            ApplicationInfo appInfo = info.applicationInfo;
+            String packageName = appInfo.packageName;  //得到安装包名称
+            String version = info.versionName;//获取安装包的版本号
+            return info.versionCode;
+        }
+        return -1;
     }
 
     private void initView() {
@@ -111,25 +138,25 @@ public class LoginActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         Toast.makeText(this, " scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-        String[] qrContent;
-        UserInfoEntity userInfo = new UserInfoEntity();
-        if (result.getContents().contains("/")) {
-            qrContent = result.getContents().split("/");
-            if (qrContent.length >= 4) {
-                userInfo.setHR_ID(Integer.parseInt(qrContent[2]));
-                userInfo.setHrNum(qrContent[4]);
-
+//        String[] qrContent;
+//        UserInfoEntity userInfo = new UserInfoEntity();
+//        if (result.getContents().contains("/")) {
+//            qrContent = result.getContents().split("/");
+//            if (qrContent.length >= 4) {
+//                userInfo.setHR_ID(Integer.parseInt(qrContent[2]));
+//                userInfo.setHrNum(qrContent[4]);
+//
 //                GetHrNameAsyncTask task = new GetHrNameAsyncTask();
 //                task.execute();
-
-//                SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
-                Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
-                intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
-                startActivity(intent);
-                finish();
-            }
-
-        }
+//
+////                SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
+//                Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
+//                intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
+//                startActivity(intent);
+//                finish();
+//            }
+//
+//        }
     }
 
     @Override
@@ -160,12 +187,30 @@ public class LoginActivity extends AppCompatActivity {
                 if (result.startsWith("http")) {
 //                    WebViewActivity.gotoWebViewActivity(LoginActivity.this, result);
                 } else {
-                    CommAlertDialog.with(LoginActivity.this).setTitle("扫描结果展示")
-                            .setMessage(result)
-                            .setMiddleText("确定")
-                            .setCancelAble(false).setTouchOutsideCancel(false)
-                            .setClickButtonDismiss(true)
-                            .create().show();
+//                    CommAlertDialog.with(LoginActivity.this).setTitle("扫描结果展示")
+//                            .setMessage(result)
+//                            .setMiddleText("确定")
+//                            .setCancelAble(false).setTouchOutsideCancel(false)
+//                            .setClickButtonDismiss(true)
+//                            .create().show();
+
+                    String[] qrContent;
+                    UserInfoEntity userInfo = new UserInfoEntity();
+                    if (result.contains("/")) {
+                        qrContent = result.split("/");
+                        if (qrContent.length >= 4) {
+                            userInfo.setHR_ID(Integer.parseInt(qrContent[2]));
+                            userInfo.setHrNum(qrContent[4]);
+                            GetHrNameAsyncTask task = new GetHrNameAsyncTask();
+                            task.execute(qrContent[2]);
+//                SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
+//                            Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
+//                            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
+//                            startActivity(intent);
+//                            finish();
+                        }
+
+                    }
                 }
             }
         });
@@ -186,6 +231,7 @@ public class LoginActivity extends AppCompatActivity {
 //        }
 //    }
 
+    //http://www.chinashb.com/Download/ShbERP.apk
     private void checkErpVersionOk() {
         String sql = "select top 1 VerID,Version,Convert(nvarchar(100),UpdateDate,23) As UpdateDate, Des " +
                 " from ERP_Mobile_Ver Where RequireUpdate=1 Order By VerID Desc";
@@ -252,8 +298,10 @@ public class LoginActivity extends AppCompatActivity {
         if (Name.isEmpty() || password.isEmpty()) {
             ToastUtil.showToastLong("请输入名字/密码");
         } else {
+//            String Name = nameEditText.getText().toString();
+//            String password = passwordEditText.getText().toString();
             CheckNameAndPasswordAsyncTask task = new CheckNameAndPasswordAsyncTask();
-            task.execute();
+            task.execute(nameEditText.getText().toString(), passwordEditText.getText().toString());
         }
 
     }
@@ -266,11 +314,14 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(String... params) {
-            String Name = nameEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
-
-            wsResult = WebServiceUtil.getTryLogin(Name, password);
-
+//            String Name = nameEditText.getText().toString();
+//            String password = passwordEditText.getText().toString();
+            if (params != null && params.length > 1) {
+                String userName = params[0];
+                String password = params[1];
+                wsResult = WebServiceUtil.getTryLogin(userName, password);
+                return null;
+            }
             return null;
         }
 
@@ -315,35 +366,35 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
-//    private UserInfoEntity userInfo;
+
+    //    private UserInfoEntity userInfo;
 //
 //
-//    private class GetHrNameAsyncTask extends AsyncTask<String, Void, Void> {
-//        //Image hr_photo;
-//
-//        @Override
-//        protected Void doInBackground(String... params) {
-//
-//            int hrId = Integer.parseInt(params[0]);
-////            userInfo = WebServiceUtil.getHRName_Bu(userInfo.getHR_ID());
-//            userInfo = WebServiceUtil.getHRName_Bu(hrId);
-//
-//
-////            if (userInfo != null) {
-////                pictureBitmap = CommonUtil.getUserPic(LoginActivity.this, userPictureMap, userInfo.getHR_ID());
-////            }
-//
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-////            scanProgressBar.setVisibility(View.VISIBLE);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void result) {
+    private class GetHrNameAsyncTask extends AsyncTask<String, Void, Void> {
+        //Image hr_photo;
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            int hrId = Integer.parseInt(params[0]);
+//            userInfo = WebServiceUtil.getHRName_Bu(userInfo.getHR_ID());
+            UserInfoEntity userInfo = WebServiceUtil.getHRName_Bu(hrId);
+            UserSingleton.get().setHRID(hrId);
+            UserSingleton.get().setHRName(userInfo.getHR_Name());
+            UserSingleton.get().setUserInfo(userInfo);
+            if (userInfo != null) {
+                Bitmap userPic = CommonUtil.getUserPic(LoginActivity.this, userPictureMap, userInfo.getHR_ID());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+//            scanProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
 //            if (userInfo != null) {
 ////                setTvUserName();
 ////                if (pictureBitmap != null) {
@@ -352,14 +403,21 @@ public class LoginActivity extends AppCompatActivity {
 //            } else {
 //                Toast.makeText(LoginActivity.this, "无法访问服务器，请检查网络连接是否正常", Toast.LENGTH_LONG).show();
 //            }
-//
-////            scanProgressBar.setVisibility(View.GONE);
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Void... values) {
-//        }
-//
-//    }
+
+//            scanProgressBar.setVisibility(View.GONE);
+            if (UserSingleton.get().getUserInfo() != null) {
+                Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
+//            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
+                intent.putExtra(IntentConstant.Intent_Extra_hr_id, UserSingleton.get().getHRID());
+                startActivity(intent);
+                finish();
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
 
 }

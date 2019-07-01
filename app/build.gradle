@@ -19,12 +19,6 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
-//    buildTypes {
-//        release {
-//            minifyEnabled false
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-//        }
-//    }
 
     signingConfigs {
         //加载资源
@@ -39,19 +33,41 @@ android {
         def key_keyPassword = properties.getProperty('keyPassword');
         def key_storePassword = properties.getProperty('storePassword');
 
-//        release {
-//            keyAlias key_keyAlias
-//            keyPassword key_keyPassword
-//            storeFile file(sdkDir)
-//            storePassword key_storePassword
-//        }
-//        debug {
-//            keyAlias key_keyAlias
-//            keyPassword key_keyPassword
-//            storeFile file(sdkDir)
-//            storePassword key_storePassword
-//        }
+        release {
+            keyAlias key_keyAlias
+            keyPassword key_keyPassword
+            storeFile file(sdkDir)
+            storePassword key_storePassword
+        }
+        debug {
+            keyAlias key_keyAlias
+            keyPassword key_keyPassword
+            storeFile file(sdkDir)
+            storePassword key_storePassword
+        }
     }
+
+    //要加上这段，否则点assembleRelease生成的是app-unsinged-apk,并且放在signingConfigs 配置的下面
+    buildTypes {
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            minifyEnabled false
+//            manifestPlaceholders = [
+//                    Jpush_AppKey: "b30593265e19dc5b635b223e"
+//            ]
+        }
+        debug {
+            signingConfig signingConfigs.debug
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled false
+
+//            manifestPlaceholders = [
+//                    Jpush_AppKey: "2cae1866b303ea72d1980d2c"
+//            ]
+        }
+    }
+
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

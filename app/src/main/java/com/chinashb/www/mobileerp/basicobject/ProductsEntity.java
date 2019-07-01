@@ -2,7 +2,7 @@ package com.chinashb.www.mobileerp.basicobject;
 
 import java.io.Serializable;
 
-public class Product_Inv implements Serializable {
+public class ProductsEntity implements Serializable {
     /**
      * PS_ID : 5845
      * Item_ID : 16967

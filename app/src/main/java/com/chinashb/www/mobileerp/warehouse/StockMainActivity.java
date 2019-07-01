@@ -34,30 +34,19 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
     private Button productSupplyButton;
     private Button returnWCButton;
     private Button departMentInButton;
-
     private Button partStockCheckButton;//零部件盘点
     private Button makingProductButton;//在制品盘存
     private Button selfProductButton;//自制车间成品盘点
-
     private Button completeProductButton;
     private Button partStockInButton;//零部件库存
     private Button lookQRButton;
 
 
     private FloatingActionButton floatButton;
-
-//    private ProgressBar pbScan;
-
-
-    public static UserInfoEntity userInfo;
+    //    private ProgressBar pbScan;
+    private UserInfoEntity userInfo;
     public static Bitmap userpic;
     public static List<Mpi_Wc> selected_mws = new ArrayList<>();
-
-    public StockMainActivity() {
-    }
-
-    //private Integer HR_ID;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,27 +88,16 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
 
     private void setViewsListener() {
         scanToStockButton.setOnClickListener(this);
-
         productSupplyButton.setOnClickListener(this);
-
         returnWCButton.setOnClickListener(this);
-
         departMentInButton.setOnClickListener(this);
-
         moveStockAreaButton.setOnClickListener(this);
-
         freezeStockButton.setOnClickListener(this);
-
-
         completeProductButton.setOnClickListener(this);
-
         partStockInButton.setOnClickListener(this);
-
         partStockCheckButton.setOnClickListener(this);
-
         selfProductButton.setOnClickListener(this);
         makingProductButton.setOnClickListener(this);
-
         floatButton.setOnClickListener(this);
     }
 
@@ -175,31 +153,31 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View view) {
-        if (view == scanToStockButton){
+        if (view == scanToStockButton) {
             scanToStock();
-        }else if (view == productSupplyButton){
+        } else if (view == productSupplyButton) {
             productSupply();
-        }else if (view == returnWCButton){
+        } else if (view == returnWCButton) {
             returnToWC();
-        }else if (view == moveStockAreaButton){
+        } else if (view == moveStockAreaButton) {
             moveStockArea();
-        }else if (view == freezeStockButton){
+        } else if (view == freezeStockButton) {
             freezeStock();
-        }else if (view == departMentInButton){
+        } else if (view == departMentInButton) {
             departMentIn();
-        }else if (view == completeProductButton){
+        } else if (view == completeProductButton) {
             completeProduct();
-        }else if (view == partStockInButton){
+        } else if (view == partStockInButton) {
             partStockIn();
-        }else if (view == makingProductButton){
+        } else if (view == makingProductButton) {
             makingProductCheck();
-        }else if (view == partStockCheckButton){
+        } else if (view == partStockCheckButton) {
             partStockCheck();
-        }else if (view == selfProductButton){
+        } else if (view == selfProductButton) {
             selfProduct();
-        }else if (view == lookQRButton){
+        } else if (view == lookQRButton) {
 //            scanToStock();
-        }else if (view == floatButton){
+        } else if (view == floatButton) {
             Intent intent = new Intent(StockMainActivity.this, ShbTcpTest.class);
             startActivity(intent);
         }

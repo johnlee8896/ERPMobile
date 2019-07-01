@@ -1,10 +1,12 @@
 package com.chinashb.www.mobileerp.funs;
 
+import android.app.Service;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.telecom.Call;
 import android.util.Base64;
+import android.util.Log;
 
-import com.chinashb.www.mobileerp.BuildConfig;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.Issued_Item;
 import com.chinashb.www.mobileerp.basicobject.Ist_Place;
@@ -31,6 +33,7 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
 import java.lang.reflect.Type;
+import java.security.Provider;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -100,6 +103,43 @@ public class WebServiceUtil {
         return envelope;
     }
 
+    private static SoapSerializationEnvelope tempinvokeSupplierWS(ArrayList<PropertyInfo> propertyInfoList, String webMethName, String url) {
+        SoapSerializationEnvelope envelope = null;
+        // Create request
+        SoapObject request = new SoapObject(NAMESPACE, webMethName);
+        for (PropertyInfo propertyInfo : propertyInfoList) {
+            request.addProperty(propertyInfo);
+        }
+
+        // Create envelope
+        envelope = new SoapSerializationEnvelope(
+                SoapEnvelope.VER11);
+        envelope.dotNet = true;
+        envelope.bodyOut = request;
+
+        // Set output SOAP object
+        envelope.setOutputSoapObject(request);
+        new MarshalDate().register(envelope);
+
+        // Create HTTP call object
+        HttpTransportSE androidHttpTransport = new HttpTransportSE(url);
+        androidHttpTransport.debug = true;
+
+        try {
+            // Invole web service todo
+            androidHttpTransport.call(SOAP_ACTION + webMethName, envelope);
+//            androidHttpTransport.call("http://tempuri.org/ReadApkVersion" + webMethName, envelope);
+//            androidHttpTransport.call("http://tempuri.org/" + webMethName, envelope);
+            // Get the response
+            envelope.getResponse();
+        } catch (Exception e) {
+            e.printStackTrace();
+//			resTxt = "Error occured";
+        }
+
+        return envelope;
+    }
+
     public static String getHRName(int id) {
         String result = null;
         String webMethodName = "op_Get_HR_Name";
@@ -128,18 +168,15 @@ public class WebServiceUtil {
     public static UserInfoEntity getHRName_Bu(int id) {
         String result = null;
         String webMethodName = "op_Get_HR_Name_And_Bu";
-        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
         propertyInfo.setName("HR_ID");
         propertyInfo.setValue(id);
         propertyInfo.setType(Integer.class);
-        propertyInfos.add(propertyInfo);
-        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-
+        propertyInfoList.add(propertyInfo);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
         SoapPrimitive response = null;
-
-        UserInfoEntity u = null;
-
+        UserInfoEntity userInfoEntity = null;
         try {
             response = (SoapPrimitive) envelope.getResponse();
         } catch (SoapFault soapFault) {
@@ -147,37 +184,25 @@ public class WebServiceUtil {
         }
         if (response != null) {
             result = response.toString();
-
             Gson gson = new Gson();
-
-
             ArrayList<JUser> us = new ArrayList<JUser>();
-
             us = gson.fromJson(result, new TypeToken<List<JUser>>() {
             }.getType());
-
-
             if (us != null) {
                 if (us.size() >= 1) {
                     //Object o = us.get(0);
                     JUser j = us.get(0);
-                    u = new UserInfoEntity();
-                    u.setHR_ID(j.getHR_ID());
-                    u.setHR_Name(j.getHR_Name());
-
-                    u.setBu_ID(j.getBu_ID());
-                    u.setBu_Name(j.getBu_Name());
-
-                    u.setCompany_ID(j.getCompany_ID());
-                    u.setCompany_Name(j.getCompany_Name());
-
-
+                    userInfoEntity = new UserInfoEntity();
+                    userInfoEntity.setHR_ID(j.getHR_ID());
+                    userInfoEntity.setHR_Name(j.getHR_Name());
+                    userInfoEntity.setBu_ID(j.getBu_ID());
+                    userInfoEntity.setBu_Name(j.getBu_Name());
+                    userInfoEntity.setCompany_ID(j.getCompany_ID());
+                    userInfoEntity.setCompany_Name(j.getCompany_Name());
                 }
             }
-
         }
-
-        return u;
+        return userInfoEntity;
     }
 
     public static boolean getFoodOrder(int id, Date date, int whichFood) {
@@ -682,7 +707,7 @@ public class WebServiceUtil {
         return box_item;
     }
 
-    public static BoxItemEntity op_Check_Commit_Inv_Out_Item_Barcode(Integer Bu_ID, String X) {
+    public static BoxItemEntity op_Check_Commit_Inv_Out_Item_Barcode(int Bu_ID, String X) {
         String webMethodName = "op_Check_Commit_Inv_Out_Item_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -775,17 +800,16 @@ public class WebServiceUtil {
         return box_item;
     }
 
-    public static PropertyInfo NewPrpertyInfo(String Name, Object Value) {
+    private static PropertyInfo getNewPrpertyInfo(String Name, Object Value) {
         PropertyInfo propertyInfo = new PropertyInfo();
         propertyInfo.setName(Name);
         propertyInfo.setValue(Value);
         propertyInfo.setType(Value.getClass());
-
         return propertyInfo;
     }
 
     public static void AddPrpertyInfo(ArrayList<PropertyInfo> propertyInfos, String Name, Object Value) {
-        PropertyInfo propertyInfo = NewPrpertyInfo(Name, Value);
+        PropertyInfo propertyInfo = getNewPrpertyInfo(Name, Value);
         propertyInfos.add(propertyInfo);
     }
 
@@ -797,7 +821,7 @@ public class WebServiceUtil {
         return Result;
     }
 
-    public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, Integer Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty) {
+    public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty) {
         String webMethodName = "op_Commit_MW_New_Issue_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -831,7 +855,7 @@ public class WebServiceUtil {
         return Result;
     }
 
-    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, Integer Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty) {
+    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty) {
         String webMethodName = "op_Commit_MW_New_Issue_Extra_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -858,7 +882,7 @@ public class WebServiceUtil {
     }
 
 
-    public static WsResult op_Commit_Dep_Out_Item(Integer Bu_ID, HashMap<String, String> SelectDep, HashMap<String, String> SelectReaseach, BoxItemEntity bi) {
+    public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, HashMap<String, String> SelectDep, HashMap<String, String> SelectReaseach, BoxItemEntity bi) {
         String sqty = String.valueOf(bi.getQty());
 
         String webMethodName = "op_Commit_Dep_Out_Item";
@@ -900,7 +924,7 @@ public class WebServiceUtil {
         return Result;
     }
 
-    public static WsResult op_Commit_Return_Item(Integer Sender, Long DIII_ID) {
+    public static WsResult op_Commit_Return_Item(int Sender, Long DIII_ID) {
         String webMethodName = "op_Commit_Return_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -1002,7 +1026,7 @@ public class WebServiceUtil {
     }
 
     //盘点，扫描包装条码
-    public static BoxItemEntity op_Check_Stock_Item_Barcode(Integer Bu_ID, String X) {
+    public static BoxItemEntity op_Check_Stock_Item_Barcode(int Bu_ID, String X) {
         String webMethodName = "op_Commit_Check_Stock_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         AddPrpertyInfo(propertyInfos, "Bu_ID", Bu_ID);
@@ -1072,7 +1096,7 @@ public class WebServiceUtil {
         return box_item;
     }
 
-    public static WsResult op_Commit_Stock_Result(String Exer_Name, Integer CI_ID, Integer Bu_ID, String X,
+    public static WsResult op_Commit_Stock_Result(String Exer_Name, int CI_ID, int Bu_ID, String X,
                                                   Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
                                                   Long LotID, String Qty, String remark) {
         String webMethodName = "op_Commit_Check_Stock_Save";
@@ -1098,7 +1122,7 @@ public class WebServiceUtil {
     }
 
 
-    public static WsResult op_Commit_Stock_Result_V2(String Exer_Name, Integer CI_ID, String X,
+    public static WsResult op_Commit_Stock_Result_V2(String Exer_Name, int CI_ID, String X,
                                                      Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
                                                      String Qty, String remark) {
         String webMethodName = "op_Commit_Check_Stock_Save_V2";
@@ -1123,7 +1147,7 @@ public class WebServiceUtil {
 
     }
 
-    public static WsResult op_Commit_Stock_Result_V4(String Exer_Name, Integer CI_ID, Integer Bu_ID, String X,
+    public static WsResult op_Commit_Stock_Result_V4(String Exer_Name, int CI_ID, int Bu_ID, String X,
                                                      Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
                                                      Long LotID, String Qty, String N, String PN, String DQ, String remark) {
         String webMethodName = "op_Commit_Check_Stock_Save_V4";
@@ -1153,7 +1177,7 @@ public class WebServiceUtil {
     }
 
 
-    public static WsResult op_Commit_Stock_Result_V3(String Exer_Name, Integer CI_ID, String X,
+    public static WsResult op_Commit_Stock_Result_V3(String Exer_Name, int CI_ID, String X,
                                                      Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
                                                      String Qty, String N, String PN, String DQ, String remark) {
         String webMethodName = "op_Commit_Check_Stock_Save_V3";
@@ -1410,6 +1434,27 @@ public class WebServiceUtil {
 
     }
 
+    public static String getVersionCode() {
+//        http://172.16.2.20:8002/WebService.asmx/ReadApkVersion
+        String webMethodName = "ReadApkVersion";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        SoapSerializationEnvelope envelope = tempinvokeSupplierWS(propertyInfos, webMethodName, "http://172.16.2.20:8002/WebService.asmx");
+//        Object response = null;
+        SoapObject response = null;
+        try {
+//            response = (SoapPrimitive) envelope.getResponse();
+            response = (SoapObject) envelope.getResponse();
+            SoapObject result = (SoapObject) envelope.bodyIn;
+
+        } catch (SoapFault soapFault) {
+            soapFault.printStackTrace();
+        }
+        if (response != null) {
+            return response.toString();
+        }
+        return "";
+    }
+
     public static List<BUItemBean> getBUBeanList(String SQL) {
         WsResult result = getDataTable(SQL);
         if (result == null) {
@@ -1425,7 +1470,8 @@ public class WebServiceUtil {
         //变成List
 //        List<JsonObject> ojsonObjectList = ConvertJstring2List(resultData);
 //        BUItemBean buItemBean = JsonUtil.parseJsonToObject(resultData, BUItemBean.class);
-        Type type = new TypeToken<List<BUItemBean>>(){}.getType();
+        Type type = new TypeToken<List<BUItemBean>>() {
+        }.getType();
         List<BUItemBean> list = JsonUtil.parseJsonToObject(resultData, type);
         //结果
         return list;
@@ -1530,7 +1576,7 @@ public class WebServiceUtil {
         return result;
     }
 
-    public static Bitmap getHRPhoto(Integer HR_ID) {
+    public static Bitmap getHRPhoto(int HR_ID) {
 
 
         byte[] result = null;
@@ -1616,22 +1662,19 @@ public class WebServiceUtil {
     }
 
 
-    public static String getQueryInv(Integer Bu_ID, Integer Ac_Type, String F, Integer PageNi, Integer NumberInPage) {
-
+    public static String getQueryInv(int Bu_ID, int Ac_Type, String F, int PageNi, int NumberInPage) {
         String result = null;
         String webMethodName = "op_Query_Proudct_Inv";
-        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
 
-        AddPrpertyInfo(propertyInfos, "Bu_ID", Bu_ID);
-        AddPrpertyInfo(propertyInfos, "Ac_Type", Ac_Type);
-        AddPrpertyInfo(propertyInfos, "F", F);
-        AddPrpertyInfo(propertyInfos, "PageNi", PageNi);
-        AddPrpertyInfo(propertyInfos, "NumberInPage", NumberInPage);
+        AddPrpertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPrpertyInfo(propertyInfoList, "Ac_Type", Ac_Type);
+        AddPrpertyInfo(propertyInfoList, "F", F);
+        AddPrpertyInfo(propertyInfoList, "PageNi", PageNi);
+        AddPrpertyInfo(propertyInfoList, "NumberInPage", NumberInPage);
 
-        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
         SoapPrimitive response = null;
-
 
         try {
             response = (SoapPrimitive) envelope.getResponse();
@@ -1645,20 +1688,14 @@ public class WebServiceUtil {
         return result;
     }
 
-    public static String getQueryInvItem(Integer Bu_ID, Integer Item_ID) {
-
+    public static String getQueryPartInvItem(int Bu_ID, int Item_ID) {
         String result = null;
         String webMethodName = "op_Query_Part_Inv_Item";
-        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
-
-        AddPrpertyInfo(propertyInfos, "Bu_ID", Bu_ID);
-        AddPrpertyInfo(propertyInfos, "Item_ID", Item_ID);
-
-        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPrpertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPrpertyInfo(propertyInfoList, "Item_ID", Item_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
         SoapPrimitive response = null;
-
-
         try {
             response = (SoapPrimitive) envelope.getResponse();
         } catch (SoapFault soapFault) {
@@ -1667,11 +1704,29 @@ public class WebServiceUtil {
         if (response != null) {
             result = response.toString();
         }
-
         return result;
     }
 
-    public static WsResult op_Commit_Update_Lot_Description(Integer Oper, Integer LotID, String Description) {
+    public static String getQueryProductInvItem(int Bu_ID, int PS_ID) {
+        String result = null;
+        String webMethodName = "op_Query_Product_Inv_Item";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPrpertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPrpertyInfo(propertyInfoList, "PS_ID", PS_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapPrimitive response = null;
+        try {
+            response = (SoapPrimitive) envelope.getResponse();
+        } catch (SoapFault soapFault) {
+            soapFault.printStackTrace();
+        }
+        if (response != null) {
+            result = response.toString();
+        }
+        return result;
+    }
+
+    public static WsResult op_Commit_Update_Lot_Description(int Oper, int LotID, String Description) {
         String webMethodName = "op_Update_Lot_Description";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -1690,4 +1745,70 @@ public class WebServiceUtil {
     }
 
 
+    public static String getMobileVersion() {
+        System.out.println("Polling...");
+
+        String nameSpace = "http://tempuri.org/";
+//        String serviceURL = "http://******:8001/ChargeService.asmx";
+        String serviceURL = "http://172.16.2.20:8002/WebService.asmx";
+
+//        String methodName = "GetPhoneUnCharged";
+        String methodName = "ReadApkVersion";
+//        String soapAction = "http://tempuri.org/GetPhoneUnCharged";
+        String soapAction = "http://tempuri.org/ReadApkVersion";
+        SoapObject request = new SoapObject(nameSpace, methodName);
+
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
+                SoapEnvelope.VER11);
+        envelope.bodyOut = request;
+        envelope.dotNet = true;
+        HttpTransportSE ht = new HttpTransportSE(serviceURL);
+        ht.debug = false;
+        try {
+            ht.call(soapAction, envelope);
+            if (envelope.getResponse() != null) {
+                String result = envelope.getResponse().toString();
+                Log.d("result", result);
+
+//                Gson gson = new Gson();
+//                List<cha_phonechargedto> ps = gson.fromJson(result, new TypeToken<List<cha_phonechargedto>>() {
+//                }.getType());
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
+        return "";
+    }
+
+//    public static String invokeRemoteAddr(String wsdl, String method,
+//                                          Object[] objects) throws Exception {
+//        Provider.Service service = new Service();
+//        Call call;
+//        try {
+//            call = (Call) service.createCall();
+//            call.setSOAPActionURI("http://tempuri.org/receiveDataTask");
+//            call.setTargetEndpointAddress(wsdl);
+//            call.setOperationName(method);// WSDL里面描述的接口名称
+//            call.addParameter("orig",
+//                    org.apache.axis.encoding.XMLType.XSD_STRING,
+//                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
+//            call.addParameter("sign",
+//                    org.apache.axis.encoding.XMLType.XSD_STRING,
+//                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
+//            call.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);// 设置返回类型
+//            call.invoke(objects);
+//            return "end";
+//        } catch (ServiceException e) {
+//            throw new Exception(e);
+//        }
+//
+//
+//    }
 }
+
+
+
+

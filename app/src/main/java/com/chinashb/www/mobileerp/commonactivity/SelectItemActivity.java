@@ -21,8 +21,6 @@ import android.widget.TextView;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.JsonListAdapter;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
-import com.chinashb.www.mobileerp.funs.CommonUtil;
-import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -33,7 +31,6 @@ import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,9 +40,9 @@ import java.util.Set;
 
 public class SelectItemActivity extends AppCompatActivity {
 
-    public List<Integer> ColWidthList;
-    public List<String> ColCaptionList;
-    public List<String> hiddenColList;
+    //    public List<Integer> ColWidthList;
+//    public List<String> ColCaptionList;
+//    public List<String> hiddenColList;
     TitleLayoutManagerView titleLayoutManagerView;
     CustomRecyclerView recyclerView;
     String title;
@@ -61,8 +58,8 @@ public class SelectItemActivity extends AppCompatActivity {
     //    ProgressBar pbBackground;
     private CommProgressDialog progressDialog;
     private String SQL;
-    private List<BUItemBean> objectDataList;
-        private JsonListAdapter dataAdapter;
+    private List<BUItemBean> originalDataList;
+    //    private JsonListAdapter dataAdapter;
     private SearchJsonListAdapter adapter;
 
     @Override
@@ -95,7 +92,7 @@ public class SelectItemActivity extends AppCompatActivity {
 
     protected void setViewsListener() {
         if (searchTextView != null) {
-            //筛选清单 objectDataList
+            //筛选清单 originalDataList
             searchTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -109,9 +106,14 @@ public class SelectItemActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 clearImageView.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
                 searchTextView.setText(s.length() > 0 ? "搜索" : "取消");
-//                if (s.length() == 0) {
-//                }
+                if (s.length() == 0) {
+                    bindObjectListsToAdapterBU(originalDataList);
+                }
             }
+        });
+        clearImageView.setOnClickListener(v -> {
+            searchEditText.setText("");
+            searchTextView.setText("取消");
         });
 
         searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -132,15 +134,15 @@ public class SelectItemActivity extends AppCompatActivity {
     }
 
     private void doSearchAction(String input) {
-        if (objectDataList == null) {
+        if (originalDataList == null) {
             return;
         }
-        if (input.isEmpty() == false) {
-            List<JsonObject> newlist = getFilterList(input);
-            bindObjectListsToAdapter(newlist);
+        if (!input.isEmpty()) {
+            List<BUItemBean> tempList = getFilterList(input);
+            bindObjectListsToAdapterBU(tempList);
         } else {
             //todo
-//            bindObjectListsToAdapter(objectDataList);
+            bindObjectListsToAdapterBU(originalDataList);
         }
     }
 
@@ -227,16 +229,23 @@ public class SelectItemActivity extends AppCompatActivity {
 //    }
 
     //todo
-    protected List<JsonObject> getFilterList(String Key) {
-        List<JsonObject> tempList = new ArrayList<>();
-//        if (objectDataList != null) {
-//            for (int i = 0; i < objectDataList.size(); i++) {
-//                JsonObject j = objectDataList.get(i);
+    protected List<BUItemBean> getFilterList(String keyWord) {
+        List<BUItemBean> tempList = new ArrayList<>();
+        if (originalDataList != null) {
+            for (int i = 0; i < originalDataList.size(); i++) {
+//                JsonObject j = originalDataList.get(i);
 //                if (IsJsonObjectContainsKeyString(j, Key)) {
 //                    tempList.add(j);
 //                }
-//            }
-//        }
+
+            }
+
+            for (BUItemBean buItemBean : originalDataList){
+                if (buItemBean.getCompanyChineseName().contains(keyWord) || buItemBean.getBUName().contains(keyWord) ){
+                    tempList.add(buItemBean);
+                }
+            }
+        }
         return tempList;
     }
 
@@ -256,32 +265,34 @@ public class SelectItemActivity extends AppCompatActivity {
         return false;
     }
 
-    private void bindObjectListsToAdapter(final List<JsonObject> JList) {
-        dataAdapter = new JsonListAdapter(SelectItemActivity.this, JList);
-        //赋值 列宽度
-        dataAdapter.ColWidth = ColWidthList;
-        dataAdapter.HiddenCol = hiddenColList;
-//        rec.setLayoutManager(new LinearLayoutManager(SelectItemActivity.this));
-        recyclerView.setAdapter(dataAdapter);
-        dataAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void OnItemClick(View view, int position) {
-                if (JList != null) {
-                    Selected_Object = JList.get(position);
-                    //Selected_Object转换成HashMap：Result
-                    Result = CommonUtil.Convert_JsonObject_HashMap(Selected_Object);
-                    Intent result = new Intent();
-                    result.putExtra("SelectItem", (Serializable) Result);
-                    setResult(1, result);
-                    finish();
-                }
-            }
-        });
-    }
+//    private void bindObjectListsToAdapter(final List<JsonObject> JList) {
+//        dataAdapter = new JsonListAdapter(SelectItemActivity.this, JList);
+//        //赋值 列宽度
+//        dataAdapter.ColWidth = ColWidthList;
+//        dataAdapter.HiddenCol = hiddenColList;
+////        rec.setLayoutManager(new LinearLayoutManager(SelectItemActivity.this));
+//        recyclerView.setAdapter(dataAdapter);
+//        dataAdapter.setOnItemClickListener(new OnItemClickListener() {
+//            @Override
+//            public void OnItemClick(View view, int position) {
+//                if (JList != null) {
+//                    Selected_Object = JList.get(position);
+//                    //Selected_Object转换成HashMap：Result
+//                    Result = CommonUtil.Convert_JsonObject_HashMap(Selected_Object);
+//                    Intent result = new Intent();
+//                    result.putExtra("SelectItem", (Serializable) Result);
+//                    setResult(1, result);
+//                    finish();
+//                }
+//            }
+//        });
+//    }
 
 
-    private void bindObjectListsToAdapterBU(final List<BUItemBean> beanList){
-        adapter.setData(beanList);
+    private void bindObjectListsToAdapterBU(final List<BUItemBean> beanList) {
+        if (beanList != null && beanList.size() > 0) {
+            adapter.setData(beanList);
+        }
 
     }
 
@@ -291,9 +302,9 @@ public class SelectItemActivity extends AppCompatActivity {
         title = (String) who.getStringExtra("Title");
 
         SQL = (String) who.getStringExtra("SQL");
-        ColWidthList = (List<Integer>) who.getSerializableExtra("ColWidthList");
-        ColCaptionList = (List<String>) who.getSerializableExtra("ColCaptionList");
-        hiddenColList = (List<String>) who.getSerializableExtra("hiddenColList");
+//        ColWidthList = (List<Integer>) who.getSerializableExtra("ColWidthList");
+//        ColCaptionList = (List<String>) who.getSerializableExtra("ColCaptionList");
+//        hiddenColList = (List<String>) who.getSerializableExtra("hiddenColList");
 
     }
 
@@ -336,28 +347,33 @@ public class SelectItemActivity extends AppCompatActivity {
         super.onResume();
     }
 
-//    private Handler uiHandler = new Handler(this.getMainLooper()){
-    private Handler uiHandler = new Handler(){
+    //    private Handler uiHandler = new Handler(this.getMainLooper()){
+    private Handler uiHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            bindObjectListsToAdapterBU(objectDataList);
+            bindObjectListsToAdapterBU(originalDataList);
         }
     };
-    private class GetListAsyncTask extends AsyncTask<String, Void, Void> {
+
+    private class GetListAsyncTask extends AsyncTask<String, Void, List<BUItemBean>> {
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected List<BUItemBean> doInBackground(String... params) {
             if (SQL.isEmpty()) {
                 return null;
             }
             //执行SQL
-//            objectDataList = WebServiceUtil.getJsonList(SQL);
-            objectDataList = WebServiceUtil.getBUBeanList(SQL);
-            if (objectDataList != null && objectDataList.size() > 0) {
-//                sample = objectDataList.get(0);
-                //todo
-                uiHandler.sendEmptyMessage(0);
+//            originalDataList = WebServiceUtil.getJsonList(SQL);
+            List<BUItemBean> buBeanList = WebServiceUtil.getBUBeanList(SQL);
+//            if (originalDataList != null && originalDataList.size() > 0) {
+////                sample = originalDataList.get(0);
+//                //todo
+//                uiHandler.sendEmptyMessage(0);
+//            }
+            if (buBeanList != null && buBeanList.size() > 0) {
+                originalDataList = buBeanList;
+                return buBeanList;
             }
             return null;
         }
@@ -372,15 +388,15 @@ public class SelectItemActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(List<BUItemBean> resultList) {
             //tv.setText(fahren + "∞ F");
-            if (objectDataList == null || objectDataList.size() == 0) {
+            if (resultList == null || resultList.size() == 0) {
                 return;
             }
             //建立标题行
-            dynamicCreateRowTitle();
-//            bindObjectListsToAdapter(objectDataList);
-            bindObjectListsToAdapterBU(objectDataList);
+//            dynamicCreateRowTitle();
+//            bindObjectListsToAdapter(originalDataList);
+            bindObjectListsToAdapterBU(resultList);
 //            pbBackground.setVisibility(View.GONE);
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
@@ -391,40 +407,40 @@ public class SelectItemActivity extends AppCompatActivity {
         protected void onProgressUpdate(Void... values) {
         }
 
-        protected void dynamicCreateRowTitle() {
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT);
-
-            Integer i = 0;
-            if (sample != null) {
-                Set<String> cols = sample.keySet();
-                Iterator<String> iterator = cols.iterator();
-                while (iterator.hasNext()) {
-                    String colname = iterator.next();
-
-                    if (hiddenColList != null && hiddenColList.contains(colname)) {
-                        i++;
-                        continue;
-                    }
-                    TextView textView = addTextView(colname);
-                    if (ColWidthList != null && ColWidthList.size() > i) {
-                        textView.setWidth(calculateDpToPx(ColWidthList.get(i)));
-                    }
-
-                    if (ColCaptionList != null && ColCaptionList.size() > i) {
-                        textView.setText(ColCaptionList.get(i));
-                    } else {
-                        textView.setText(colname);
-                    }
-
-                    llTitle.addView(textView, lp);
-
-                    i++;
-                }
-
-            }
-        }
+//        protected void dynamicCreateRowTitle() {
+//            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+//                    LinearLayout.LayoutParams.WRAP_CONTENT,
+//                    LinearLayout.LayoutParams.MATCH_PARENT);
+//
+//            Integer i = 0;
+//            if (sample != null) {
+//                Set<String> cols = sample.keySet();
+//                Iterator<String> iterator = cols.iterator();
+//                while (iterator.hasNext()) {
+//                    String colname = iterator.next();
+//
+//                    if (hiddenColList != null && hiddenColList.contains(colname)) {
+//                        i++;
+//                        continue;
+//                    }
+//                    TextView textView = addTextView(colname);
+//                    if (ColWidthList != null && ColWidthList.size() > i) {
+//                        textView.setWidth(calculateDpToPx(ColWidthList.get(i)));
+//                    }
+//
+//                    if (ColCaptionList != null && ColCaptionList.size() > i) {
+//                        textView.setText(ColCaptionList.get(i));
+//                    } else {
+//                        textView.setText(colname);
+//                    }
+//
+//                    llTitle.addView(textView, lp);
+//
+//                    i++;
+//                }
+//
+//            }
+//        }
 
         private int calculateDpToPx(int dp) {
             final float scale = getResources().getDisplayMetrics().density;

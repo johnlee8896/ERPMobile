@@ -13,6 +13,7 @@ import android.view.View;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -117,7 +118,7 @@ public class SelectMPIWCStepOneActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
 
             String sql="Select Case When Ac_Type=1 Then '部件' When Ac_Type=2 Then '成品' Else '' End As WCL_Type, LID, Bu_ID, ListName From WC_List Where Bu_ID="
-                    + StockMainActivity.userInfo.getBu_ID() + " Order By Case When Ac_Type=1 Then '部件' When Ac_Type=2 Then '成品' Else '' End";
+                    + UserSingleton.get().getUserInfo().getBu_ID() + " Order By Case When Ac_Type=1 Then '部件' When Ac_Type=2 Then '成品' Else '' End";
 
 
             WsResult r = WebServiceUtil.getDataTable(sql);

@@ -25,6 +25,7 @@ import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -86,7 +87,7 @@ public class StockCheckPartInv extends AppCompatActivity {
 
         getExtras();
 
-        userInfo=StockMainActivity.userInfo;
+        userInfo= UserSingleton.get().getUserInfo();
         saveditems = new ArrayList<>();
 
         resumestate(savedInstanceState);
@@ -152,7 +153,7 @@ public class StockCheckPartInv extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(StockCheckPartInv.this, SelectItemActivity.class);
 
-                Integer Bu_ID = StockMainActivity.userInfo.getBu_ID();
+                Integer Bu_ID = UserSingleton.get().getUserInfo().getBu_ID();
 
 
                 String W ="Select Distinct Warehouse_ID From Bu_W_Ac " +

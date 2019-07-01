@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
 
         android:paddingTop="@dimen/dimen_size_10"
-        android:text="公司简称: "
+        android:text="公司简称:"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_15"
         app:layout_constraintStart_toStartOf="@id/item_search_company_info_textView"
@@ -104,7 +104,8 @@
         android:paddingTop="@dimen/dimen_size_10"
         android:text="钣金车间"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_size_15"
+        android:textSize="@dimen/text_size_17"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/item_search_bu_name_info_textView"
         app:layout_constraintLeft_toRightOf="@id/item_search_bu_name_info_textView"
         app:layout_constraintTop_toTopOf="@id/item_search_bu_name_info_textView" />

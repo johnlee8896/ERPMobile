@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,7 +32,6 @@ import com.google.zxing.integration.android.IntentResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -53,7 +51,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
     private RadioGroup netRadioGroup;
     private RadioButton intranetRadioButton;
     private RadioButton internetRadioButton;
-    private ProgressBar scanProgressBar;
+//    private ProgressBar scanProgressBar;
 
     private NetWorkReceiver netWorkReceiver;
 //    private int mobile_erp_ver_id = 1;
@@ -88,15 +86,15 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 //            userInfo = (UserInfoEntity) savedInstanceState.getSerializable("userInfo");
 //        }
         int HRID = getIntent().getIntExtra(IntentConstant.Intent_Extra_hr_id, -1);
-        if (HRID > 0) {
-            GetHrNameAsyncTask task = new GetHrNameAsyncTask();
-            task.execute(String.valueOf(HRID));
-        }
+//        if (HRID > 0) {
+//            GetHrNameAsyncTask task = new GetHrNameAsyncTask();
+//            task.execute(String.valueOf(HRID));
+//        }
 
         warehouseMainTextView.setOnClickListener(this);
         conversationTextView.setOnClickListener(this);
         taskTextView.setOnClickListener(this);
-
+        userNameTextView.setText(UserSingleton.get().getUserInfo().getBu_Name() + ":" + UserSingleton.get().getHRName());
 
     }
 
@@ -176,7 +174,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         intranetRadioButton = (RadioButton) findViewById(R.id.main_intranet_radioButton);
         internetRadioButton = (RadioButton) findViewById(R.id.main_internet_radioButton);
 
-        scanProgressBar = (ProgressBar) findViewById(R.id.main_scan_progressBar);
+//        scanProgressBar = (ProgressBar) findViewById(R.id.main_scan_progressBar);
     }
 
     protected void setViewListeners() {
@@ -491,7 +489,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
         @Override
         protected void onPreExecute() {
-            scanProgressBar.setVisibility(View.VISIBLE);
+//            scanProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -505,7 +503,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
                 Toast.makeText(MobileMainActivity.this, "无法访问服务器，请检查网络连接是否正常", Toast.LENGTH_LONG).show();
             }
 
-            scanProgressBar.setVisibility(View.GONE);
+//            scanProgressBar.setVisibility(View.GONE);
         }
 
         @Override

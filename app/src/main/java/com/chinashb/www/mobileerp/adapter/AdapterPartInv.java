@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.Part_Inv;
+import com.chinashb.www.mobileerp.basicobject.PartsEntity;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 
 import java.text.DecimalFormat;
@@ -24,30 +24,31 @@ import java.util.List;
 public class AdapterPartInv extends RecyclerView.Adapter<AdapterPartInv.ProInvViewHolder> {
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
-    private List<Part_Inv>  dataSoure;
+    private List<PartsEntity> dataSoure;
     private OnItemClickListener mClickListener;
 
-    public AdapterPartInv(Context context, List<Part_Inv> Part_InvList) {
+    public AdapterPartInv(Context context, List<PartsEntity> Part_InvList) {
         dataSoure = Part_InvList;
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public List<Part_Inv> getDataList(){
-        return  dataSoure;
+    public List<PartsEntity> getDataList() {
+        return dataSoure;
     }
+
     @Override
     public ProInvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = mLayoutInflater
                 .inflate(R.layout.listview_part_inv, parent, false);
-        ProInvViewHolder vh = new ProInvViewHolder(v,mClickListener);
+        ProInvViewHolder vh = new ProInvViewHolder(v, mClickListener);
         return vh;
 
     }
 
     @Override
     public void onBindViewHolder(final ProInvViewHolder holder, int position) {
-        final Part_Inv Part_Inv = dataSoure.get(position);
+        final PartsEntity Part_Inv = dataSoure.get(position);
         holder.tvItemID.setText(String.valueOf(Part_Inv.getItem_ID()));
         holder.tvItem.setText(String.valueOf(Part_Inv.getItem()));
         holder.tvName.setText(Part_Inv.getItem_Name());
@@ -67,8 +68,7 @@ public class AdapterPartInv extends RecyclerView.Adapter<AdapterPartInv.ProInvVi
         this.mClickListener = mClickListener;
     }
 
-    public static class ProInvViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener
-    {
+    public static class ProInvViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tvItemID;
         TextView tvItem;
@@ -78,20 +78,20 @@ public class AdapterPartInv extends RecyclerView.Adapter<AdapterPartInv.ProInvVi
         TextView tvQty;
         TextView tvUnit;
 
-        private  OnItemClickListener mListener;
+        private OnItemClickListener mListener;
 
-       public ProInvViewHolder(View view, OnItemClickListener listener) {
+        public ProInvViewHolder(View view, OnItemClickListener listener) {
             super(view);
 
-            mListener=listener;
+            mListener = listener;
             view.setOnClickListener((View.OnClickListener) this);
 
-            tvItemID = (TextView)view.findViewById(R.id.tv_part_inv_item_ID);
-            tvItem = (TextView)view.findViewById(R.id.tv_part_inv_item);
-            tvName = (TextView)view.findViewById(R.id.tv_part_inv_name);
-            tvSpec = (TextView)view.findViewById(R.id.tv_part_inv_spec);
-            tvQty = (TextView)view.findViewById(R.id.tv_part_inv_qty);
-            tvUnit = (TextView)view.findViewById(R.id.tv_part_inv_unit);
+            tvItemID = (TextView) view.findViewById(R.id.tv_part_inv_item_ID);
+            tvItem = (TextView) view.findViewById(R.id.tv_part_inv_item);
+            tvName = (TextView) view.findViewById(R.id.tv_part_inv_name);
+            tvSpec = (TextView) view.findViewById(R.id.tv_part_inv_spec);
+            tvQty = (TextView) view.findViewById(R.id.tv_part_inv_qty);
+            tvUnit = (TextView) view.findViewById(R.id.tv_part_inv_unit);
 
             tvQty.setTextColor(Color.GREEN);
             tvQty.setBackgroundColor(Color.BLACK);
@@ -102,12 +102,12 @@ public class AdapterPartInv extends RecyclerView.Adapter<AdapterPartInv.ProInvVi
         ProInvViewHolder(View view) {
             super(view);
 
-            tvItemID = (TextView)view.findViewById(R.id.tv_part_inv_item_ID);
-            tvItem = (TextView)view.findViewById(R.id.tv_part_inv_item);
-            tvName = (TextView)view.findViewById(R.id.tv_part_inv_name);
-            tvSpec = (TextView)view.findViewById(R.id.tv_part_inv_spec);
-            tvQty = (TextView)view.findViewById(R.id.tv_part_inv_qty);
-            tvUnit = (TextView)view.findViewById(R.id.tv_part_inv_unit);
+            tvItemID = (TextView) view.findViewById(R.id.tv_part_inv_item_ID);
+            tvItem = (TextView) view.findViewById(R.id.tv_part_inv_item);
+            tvName = (TextView) view.findViewById(R.id.tv_part_inv_name);
+            tvSpec = (TextView) view.findViewById(R.id.tv_part_inv_spec);
+            tvQty = (TextView) view.findViewById(R.id.tv_part_inv_qty);
+            tvUnit = (TextView) view.findViewById(R.id.tv_part_inv_unit);
 
 
         }
@@ -115,8 +115,9 @@ public class AdapterPartInv extends RecyclerView.Adapter<AdapterPartInv.ProInvVi
         @Override
         public void onClick(View v) {
             Integer p = getPosition();
-            if (mListener != null)
-            {mListener.OnItemClick(v,p);}
+            if (mListener != null) {
+                mListener.OnItemClick(v, p);
+            }
 
         }
     }

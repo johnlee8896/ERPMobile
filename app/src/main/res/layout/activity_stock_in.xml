@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
     android:orientation="vertical">
 
     <LinearLayout
@@ -17,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="托盘入库"
-            android:textColor="#ffffff" />
+            android:textColor="@color/black" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,14 +27,32 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_add_tray"
+                android:id="@+id/btn_add_tray_scanner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_weight="1"
-                android:text="开始扫描"
-                 />
-            <!--android:text="扫描增加托盘"-->
+                android:text="扫码枪扫描" />
+
+            <Button
+                android:id="@+id/btn_add_tray_photo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:text="相机扫描" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
 
             <Button
                 android:id="@+id/btn_scan_area"
@@ -54,23 +71,23 @@
 
         </LinearLayout>
 
+
     </LinearLayout>
 
     <EditText
         android:id="@+id/input_EditeText"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_45"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
         android:hint="接收扫描结果"
-        android:visibility="gone"
-        android:textColorHint="@color/white"
         android:paddingLeft="@dimen/dimen_size_10"
         android:paddingRight="@dimen/dimen_size_10"
-        android:gravity="center_vertical"
+        android:textColor="@color/black"
         android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
         android:textSize="@dimen/text_size_14"
-        android:textColor="@color/color_333333"
-        android:background="@color/transparent"
-        />
+        android:visibility="gone"
+         />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -89,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="物品"
-                android:textColor="#ffffff" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/tv_bu_name_col"
@@ -98,7 +115,7 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="车间"
-                android:textColor="#ffffff" />
+                android:textColor="@color/black" />
         </LinearLayout>
 
 
@@ -116,7 +133,7 @@
                 android:layout_weight="1"
 
                 android:text="批次"
-                android:textColor="#ffffff" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/tv_qty_col"
@@ -128,7 +145,6 @@
                 android:textColor="@android:color/holo_green_dark" />
 
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -144,20 +160,19 @@
                 android:layout_weight="1"
 
                 android:text="仓位"
-                android:textColor="#ffffff" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/tv_inv_in_selected"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="选择"
                 android:gravity="center_horizontal"
-                android:textColor="#ffffff" />
+                android:text="选择"
+                android:textColor="@color/black" />
 
 
         </LinearLayout>
-
 
 
     </LinearLayout>

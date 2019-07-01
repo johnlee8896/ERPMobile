@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +27,7 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
-import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.ScanInputDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -39,7 +40,8 @@ import java.util.List;
 public class StockInActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private Button addTrayButton;
+    private Button addTrayScannerButton;
+    private Button addTrayPhotoButton;
     private Button scanAreaButton;
     //    private Button stockInButton;
 //    private Button btnStartMoving;
@@ -61,7 +63,8 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_stock_in);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_box_item);
-        addTrayButton = (Button) findViewById(R.id.btn_add_tray);
+        addTrayScannerButton = (Button) findViewById(R.id.btn_add_tray_scanner);
+        addTrayPhotoButton = findViewById(R.id.btn_add_tray_photo);
         scanAreaButton = (Button) findViewById(R.id.btn_scan_area);
         warehouseInButton = (Button) findViewById(R.id.btn_exe_warehouse_in);
         inputEditText = (EditText) findViewById(R.id.input_EditeText);
@@ -80,9 +83,20 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void setViewsListener() {
-        addTrayButton.setOnClickListener(this);
+        addTrayScannerButton.setOnClickListener(this);
+        addTrayPhotoButton.setOnClickListener(this);
         scanAreaButton.setOnClickListener(this);
         warehouseInButton.setOnClickListener(this);
+        inputEditText.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                if (editable.toString().endsWith("\n")){
+                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
+                    System.out.println("========================扫描结果:" + editable.toString());
+                    parseScanResult(editable.toString());
+                }
+            }
+        });
     }
 
 
@@ -118,7 +132,10 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void parseScanResult(String content) {
-        Toast.makeText(this, "Scanned: " + content, Toast.LENGTH_LONG).show();
+        if (TextUtils.isEmpty(content)){
+            return;
+        }
+//        Toast.makeText(this, "Scanned: " + content, Toast.LENGTH_LONG).show();
         System.out.println("============ scan content = " + content);
         // VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
 //        String content = result.getContents();
@@ -151,7 +168,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View view) {
-        if (view == addTrayButton) {
+        if (view == addTrayScannerButton) {
             //scanContent= "VG/404731";
             //StockInActivity.AsyncGetBox task = new StockInActivity.AsyncGetBox();
             //task.execute();
@@ -186,16 +203,19 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 
 //            new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
+            //todo通过扫描枪 当控制editText显示隐藏时，这个方法会随着扫描反复调用 ，故需要做些处理
             if (inputEditText.getVisibility() == View.GONE) {
 
                 inputEditText.setVisibility(View.VISIBLE);
-                addTrayButton.setText("扫描增加托盘");
+                addTrayScannerButton.setText("扫描增加托盘");
             } else {
-                addTrayButton.setText("开始扫描");
+                addTrayScannerButton.setText("开始扫描");
                 parseScanResult(inputEditText.getText().toString());
 
             }
-        } else if (view == scanAreaButton) {
+        } else if (view == addTrayPhotoButton){
+            new IntentIntegrator( StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+        }else if (view == scanAreaButton) {
             if (boxitemList.size() > 0) {
                 int selectedcount = 0;
                 for (int i = 0; i < boxitemList.size(); i++) {
@@ -239,10 +259,8 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         protected Void doInBackground(String... params) {
 
             BoxItemEntity bi = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanContent);
-
             scanresult = bi;
-
-            if (bi.getResult() == true) {
+            if (bi.getResult()) {
                 if (!is_box_existed(bi)) {
                     bi.setSelect(true);
                     boxitemList.add(bi);
@@ -250,7 +268,6 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                     bi.setResult(false);
                     bi.setErrorInfo("该包装已经在装载列表中");
                 }
-
 
             } else {
 
@@ -261,7 +278,6 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 
         protected Boolean is_box_existed(BoxItemEntity box_item) {
             Boolean result = false;
-
             if (boxitemList != null) {
                 for (int i = 0; i < boxitemList.size(); i++) {
                     if (boxitemList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
@@ -277,7 +293,6 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-
             if (scanresult != null) {
                 if (scanresult.getResult() == false) {
                     Toast.makeText(StockInActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
@@ -433,7 +448,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 
     BroadcastReceiver mFoundReceiver = new BroadcastReceiver() {
 
-        public void onReceive(Context context, Intent intent) {
+        @Override public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             //找到设备
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
