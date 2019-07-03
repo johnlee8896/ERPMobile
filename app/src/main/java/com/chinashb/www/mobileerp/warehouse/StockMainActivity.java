@@ -13,16 +13,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.Mpi_Wc;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.ShbTcpTest;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class StockMainActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView mRecyclerView;
@@ -31,9 +26,9 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
     private Button scanToStockButton;
     private Button moveStockAreaButton;
     private Button freezeStockButton;
-    private Button productSupplyButton;
+    private Button productSupplyButton;//生产投料
     private Button returnWCButton;
-    private Button departMentInButton;
+    private Button departMentInButton;//部门领料
     private Button partStockCheckButton;//零部件盘点
     private Button makingProductButton;//在制品盘存
     private Button selfProductButton;//自制车间成品盘点
@@ -41,12 +36,11 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
     private Button partStockInButton;//零部件库存
     private Button lookQRButton;
 
-
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
     private UserInfoEntity userInfo;
     public static Bitmap userpic;
-    public static List<Mpi_Wc> selected_mws = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,27 +56,19 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
         departMentInButton = (Button) findViewById(R.id.btn_stock_out_dep);
         lookQRButton = (Button) findViewById(R.id.look_qr_button);
         makingProductButton = (Button) findViewById(R.id.btn_check_inv_worksite);
-
         partStockCheckButton = (Button) findViewById(R.id.btn_check_part_inv);
         selfProductButton = (Button) findViewById(R.id.btn_check_pro_part_inv);
-
-
         completeProductButton = (Button) findViewById(R.id.btn_query_product_inv);
         partStockInButton = (Button) findViewById(R.id.btn_query_part_inv);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
-
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
         userInfo = UserSingleton.get().getUserInfo();
         userpic = CommonUtil.pictureBitmap;
-
         tvTitle.setText(userInfo.getBu_Name() + ":" + "仓库管理");
-
         String Test;
-
         setHomeButton();
         setViewsListener();
-
 
     }
 
@@ -105,7 +91,7 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
         if (userInfo == null) {
             Toast.makeText(StockMainActivity.this, "请先扫描职工二维码登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockOutActivity.class);
+            Intent intent = new Intent(StockMainActivity.this, StockPutActivity.class);
             startActivity(intent);
         }
     }
@@ -227,7 +213,7 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
         if (userInfo == null) {
             Toast.makeText(StockMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockOutDepActivity.class);
+            Intent intent = new Intent(StockMainActivity.this, StockDepartmentInActivity.class);
             startActivity(intent);
         }
     }

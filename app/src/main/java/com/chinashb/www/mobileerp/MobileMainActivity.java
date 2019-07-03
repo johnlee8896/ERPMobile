@@ -86,15 +86,16 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 //            userInfo = (UserInfoEntity) savedInstanceState.getSerializable("userInfo");
 //        }
         int HRID = getIntent().getIntExtra(IntentConstant.Intent_Extra_hr_id, -1);
-//        if (HRID > 0) {
-//            GetHrNameAsyncTask task = new GetHrNameAsyncTask();
-//            task.execute(String.valueOf(HRID));
-//        }
+        if (HRID > 0 && getIntent().getBooleanExtra(IntentConstant.Intent_Extra_from_name_pwd,false)) {
+            GetHrNameAsyncTask task = new GetHrNameAsyncTask();
+            task.execute(String.valueOf(HRID));
+        }
 
         warehouseMainTextView.setOnClickListener(this);
         conversationTextView.setOnClickListener(this);
         taskTextView.setOnClickListener(this);
-        userNameTextView.setText(UserSingleton.get().getUserInfo().getBu_Name() + ":" + UserSingleton.get().getHRName());
+        userNameTextView.setText(UserSingleton.get().getUserInfo() != null ? UserSingleton.get().getUserInfo().getBu_Name() : ""
+                + ":" + UserSingleton.get().getHRName());
 
     }
 

@@ -15,13 +15,14 @@ import android.widget.TextView;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.MealTypeEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.utils.StaticVariableUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.WorkCenterAdapter;
 import com.chinashb.www.mobileerp.basicobject.Issued_Item;
-import com.chinashb.www.mobileerp.basicobject.Mpi_Wc;
+import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WorkCenter;
 import com.chinashb.www.mobileerp.basicobject.s_WCList;
@@ -35,52 +36,35 @@ import java.util.List;
 
 public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
 
-
-
-    RecyclerView rvSelectWC;
-
+    private RecyclerView recyclerView;
     private s_WCList selected_wclist;
-    private WorkCenter selected_wc;
-
+    private WorkCenter selectWorkcenter;
     private ProgressBar pbScan;
-
     private String displayText;
-
     public UserInfoEntity userInfo;
     private List<Date> weekDates;
     private List<MealTypeEntity> mealTypes;
-
     private List<WorkCenter> ws;
     private WorkCenterAdapter wcAdapter;
-
     private TextView tvWc;
-
-    private Mpi_Wc select_mw;
-
+    private MpiWcBean select_mw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_mpi_wc_step2);
-
-        tvWc=(TextView)findViewById(R.id.tv_select_wc);
-
+        tvWc = (TextView) findViewById(R.id.tv_select_wc);
         Intent who = getIntent();
-        selected_wclist= (s_WCList) who.getSerializableExtra("wclist");
-        if(selected_wclist !=null)
-        {
+        selected_wclist = (s_WCList) who.getSerializableExtra("wclist");
+        if (selected_wclist != null) {
             tvWc.setText(selected_wclist.getListName() + "的生产线");
         }
 
-        rvSelectWC =(RecyclerView)findViewById(R.id.rv_select_wc);
-
+        recyclerView = (RecyclerView) findViewById(R.id.rv_select_wc);
         setHomeButton();
 
-
-        SelectMPIWCStepTwoActivity.AsyncGetWC t = new SelectMPIWCStepTwoActivity.AsyncGetWC();
+        GetWCAsyncTask t = new GetWCAsyncTask();
         t.execute();
-
-
 
     }
 
@@ -95,9 +79,9 @@ public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void setHomeButton(){
+    protected void setHomeButton() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -107,103 +91,82 @@ public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (requestCode==100 && resultCode==1)
-        {
-            select_mw= (Mpi_Wc) data.getSerializableExtra("mw");
+        if (requestCode == 100 && resultCode == 1) {
+            select_mw = (MpiWcBean) data.getSerializableExtra("mw");
 
-            if(select_mw !=null)
-            {
+            if (select_mw != null) {
 
                 Intent re = new Intent();
-                re.putExtra("mw",select_mw);
-                setResult(1,re);
+                re.putExtra("mw", select_mw);
+                setResult(1, re);
                 finish();
             }
         }
 
-        if(result != null) {
-            if(result.getContents() == null) {
+        if (result != null) {
+            if (result.getContents() == null) {
                 //new IntentIntegrator(MainActivity.this).initiateScan();
                 //startScanHR();
-            }
-            else
-            {
+            } else {
 
             }
-        }
-        else {
+        } else {
             // This is important, otherwise the result will not be passed to the fragment
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
-
-
-    private class AsyncGetWC extends AsyncTask<String, Void, Void> {
-        Mpi_Wc scanresult;
+    private class GetWCAsyncTask extends AsyncTask<String, Void, Void> {
+        MpiWcBean scanresult;
         List<Issued_Item> li;
-
         @Override
         protected Void doInBackground(String... params) {
 
-            String sql="Select Wi.WC_ID, Wi.List_No,WC_Name From WC_List_Item As Wi Inner Join P_WC As C On Wi.Wc_ID=C.WC_ID Where Wi.LID= " + selected_wclist.getLID() + " Order By Wi.List_No";
-
+            String sql = "Select Wi.WC_ID, Wi.List_No,WC_Name From WC_List_Item As Wi Inner Join P_WC As C On Wi.Wc_ID=C.WC_ID Where Wi.LID= " + selected_wclist.getLID() + " Order By Wi.List_No";
             WsResult r = WebServiceUtil.getDataTable(sql);
-
-            if(r!=null && r.getResult()==true)
-            {
-                String js=r.getErrorInfo();
-                ArrayList<WorkCenter> us = new ArrayList<WorkCenter>();
-                Gson gson= new Gson();
-                us= gson.fromJson(js,new TypeToken<List<WorkCenter>>(){}.getType());
-
-
+            if (r != null && r.getResult() == true) {
+                String js = r.getErrorInfo();
+                ArrayList<WorkCenter> workCenterList = new ArrayList<WorkCenter>();
+                Gson gson = new Gson();
+                workCenterList = gson.fromJson(js, new TypeToken<List<WorkCenter>>() {
+                }.getType());
                 //wcLists= us;
-                ws= us;
-
+                ws = workCenterList;
             }
-                        return null;
+            return null;
         }
-
-
 
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-
-            wcAdapter= new WorkCenterAdapter( SelectMPIWCStepTwoActivity.this, ws);
-
-            rvSelectWC.setLayoutManager( new LinearLayoutManager(SelectMPIWCStepTwoActivity.this));
-            rvSelectWC.setAdapter(wcAdapter);
-
+            wcAdapter = new WorkCenterAdapter(SelectMPIWCStepTwoActivity.this, ws);
+            recyclerView.setLayoutManager(new LinearLayoutManager(SelectMPIWCStepTwoActivity.this));
+            recyclerView.setAdapter(wcAdapter);
             wcAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void OnItemClick(View view, int position) {
                     //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
-                    if(ws!=null)
-                    {selected_wc= ws.get(position);
+                    if (ws != null) {
+                        selectWorkcenter = ws.get(position);
                         //保存下来
-                        StockOutActivity.selected_wc =selected_wc;
-
-                        NextStep_SelectWM();
+                        StaticVariableUtils.selected_wc = selectWorkcenter;
+                        goNextStepSelectWM();
                     }
                 }
             });
 
             //直接按前面的选择，显示下一步
-            if(StockOutActivity.selected_wc!=null)
-            {
-                selected_wc =StockOutActivity.selected_wc;
-                NextStep_SelectWM();
+            if (StaticVariableUtils.selected_wc != null) {
+                selectWorkcenter = StaticVariableUtils.selected_wc;
+                goNextStepSelectWM();
             }
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
-        protected  void NextStep_SelectWM()
-        {
+        protected void goNextStepSelectWM() {
             Intent intent = new Intent(SelectMPIWCStepTwoActivity.this, SelectMPIWCStepThreeActivity.class);
-            intent.putExtra("wc", (Serializable) selected_wc);
-            startActivityForResult(intent,100);
+            intent.putExtra("wc", (Serializable) selectWorkcenter);
+            startActivityForResult(intent, 100);
         }
 
         @Override
@@ -220,9 +183,8 @@ public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
 //设置为竖屏幕
-        if(getRequestedOrientation()!= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT )
-        {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
         super.onResume();

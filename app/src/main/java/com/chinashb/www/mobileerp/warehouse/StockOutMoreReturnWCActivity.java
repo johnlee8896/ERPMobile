@@ -18,8 +18,8 @@ import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.ReturnItemAdapter;
-import com.chinashb.www.mobileerp.basicobject.Ist_Place;
-import com.chinashb.www.mobileerp.basicobject.Mpi_Wc;
+import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
+import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
@@ -31,7 +31,7 @@ import java.util.List;
 
 public class StockOutMoreReturnWCActivity extends AppCompatActivity {
 
-    private Mpi_Wc themw;
+    private MpiWcBean themw;
 
     private Button btnAddTray;
 
@@ -41,7 +41,7 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
 
     private ReturnItemAdapter returnItemAdapter;
     private List<BoxItemEntity> newissuelist;
-    private Ist_Place thePlace;
+    private IstPlaceEntity thePlace;
     private String scanstring;
 
     @Override
@@ -69,7 +69,7 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(returnItemAdapter);
 
         Intent who = getIntent();
-        themw= (Mpi_Wc) who.getSerializableExtra("mw");
+        themw= (MpiWcBean) who.getSerializableExtra("mw");
         if(themw !=null)
         {
         }

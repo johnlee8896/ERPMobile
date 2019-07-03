@@ -2,7 +2,7 @@ package com.chinashb.www.mobileerp.basicobject;
 
 import java.io.Serializable;
 
-public class Ist_Place implements Serializable {
+public class IstPlaceEntity implements Serializable {
     private boolean result;
     private String ErrorInfo;
     private long Ist_ID;

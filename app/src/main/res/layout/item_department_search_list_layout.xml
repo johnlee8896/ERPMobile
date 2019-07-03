@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_margin="@dimen/dimen_size_10"
+    android:orientation="vertical">
+
+    <android.support.constraint.Barrier
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="item_department_id_info_textView,item_department_higher_info_textView,item_department_dep_name_info_textView"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/item_department_id_info_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="部门ID:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_department_id_value_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_40"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_department_id_info_textView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_department_higher_info_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="上级部门:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/item_department_id_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/item_department_id_info_textView" />
+
+    <TextView
+        android:id="@+id/item_department_higher_name_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="总经理"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_department_higher_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/item_department_higher_info_textView"
+        app:layout_constraintTop_toTopOf="@id/item_department_higher_info_textView" />
+
+
+    <TextView
+        android:id="@+id/item_department_dep_name_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="部门名称: "
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/item_department_higher_info_textView" />
+
+    <TextView
+        android:id="@+id/item_department_dep_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="运营中心"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_17"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/item_department_dep_name_info_textView"
+        app:layout_constraintLeft_toRightOf="@id/item_department_dep_name_info_textView"
+        app:layout_constraintTop_toTopOf="@id/item_department_dep_name_info_textView" />
+
+
+
+</android.support.constraint.ConstraintLayout>

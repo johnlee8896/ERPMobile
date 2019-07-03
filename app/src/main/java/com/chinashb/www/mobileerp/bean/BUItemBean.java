@@ -21,16 +21,11 @@ public class BUItemBean implements Parcelable {
      * bu_name : 座椅电机
      */
 
-    @SerializedName("Company_ID")
-    private int CompanyID;
-    @SerializedName("Company_Chinese_Name")
-    private String CompanyChineseName;
-    @SerializedName("Brief")
-    private String Brief;
-    @SerializedName("bu_id")
-    private int BUId;
-    @SerializedName("bu_name")
-    private String BUName;
+    @SerializedName("Company_ID") private int CompanyID;
+    @SerializedName("Company_Chinese_Name") private String CompanyChineseName;
+    @SerializedName("Brief") private String Brief;
+    @SerializedName("bu_id") private int BUId;
+    @SerializedName("bu_name") private String BUName;
 
     protected BUItemBean(Parcel in) {
         CompanyID = in.readInt();

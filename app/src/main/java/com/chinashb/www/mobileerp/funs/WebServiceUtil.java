@@ -1,21 +1,21 @@
 package com.chinashb.www.mobileerp.funs;
 
-import android.app.Service;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.telecom.Call;
 import android.util.Base64;
 import android.util.Log;
 
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.Issued_Item;
-import com.chinashb.www.mobileerp.basicobject.Ist_Place;
+import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.JUser;
-import com.chinashb.www.mobileerp.basicobject.Mpi_Wc;
+import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
+import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -33,7 +33,6 @@ import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
 import java.lang.reflect.Type;
-import java.security.Provider;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -42,6 +41,7 @@ import java.util.List;
 
 import static com.chinashb.www.mobileerp.funs.CommonUtil.isNothing2String;
 
+//这里的T只是为了getcommonbean方法使用
 public class WebServiceUtil {
 
     public static final Class<BUItemBean> bu = BUItemBean.class;
@@ -419,7 +419,7 @@ public class WebServiceUtil {
     }
 
     //VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
-    public static Ist_Place op_Check_Commit_IST_Barcode(String scanContent) {
+    public static IstPlaceEntity op_Check_Commit_IST_Barcode(String scanContent) {
         String webMethodName = "op_Check_Commit_IST_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
@@ -431,7 +431,7 @@ public class WebServiceUtil {
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Ist_Place istPlace = new Ist_Place();
+        IstPlaceEntity istPlace = new IstPlaceEntity();
         if (obj != null) {
             int count = obj.getPropertyCount();
             SoapObject obj2;
@@ -491,7 +491,7 @@ public class WebServiceUtil {
     }
 
 
-    public static Mpi_Wc op_Check_Commit_MW_Barcode(String X) {
+    public static MpiWcBean op_Check_Commit_MW_Barcode(String X) {
         String webMethodName = "op_Check_Commit_MW_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
@@ -504,7 +504,7 @@ public class WebServiceUtil {
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        Mpi_Wc mw = new Mpi_Wc();
+        MpiWcBean mw = new MpiWcBean();
 
         if (obj != null) {
             int count = obj.getPropertyCount();
@@ -1478,6 +1478,29 @@ public class WebServiceUtil {
 
     }
 
+    public static List<DepartmentBean> getDepartmentBeanList(String SQL) {
+        WsResult result = getDataTable(SQL);
+        if (result == null) {
+            return null;
+        }
+        if (!result.getResult()) {
+            return null;
+        }
+        String resultData = result.getErrorInfo();
+        if (resultData.isEmpty() || resultData.equalsIgnoreCase("null")) {
+            return null;
+        }
+        //变成List
+//        List<JsonObject> ojsonObjectList = ConvertJstring2List(resultData);
+//        BUItemBean buItemBean = JsonUtil.parseJsonToObject(resultData, BUItemBean.class);
+        Type type = new TypeToken<List<DepartmentBean>>() {
+        }.getType();
+        List<DepartmentBean> list = JsonUtil.parseJsonToObject(resultData, type);
+        //结果
+        return list;
+
+    }
+
     public static List<JsonObject> ConvertJstring2List(String js) {
         //变成List
         JsonArray jsonArray = (JsonArray) new JsonParser().parse(js);
@@ -1643,9 +1666,7 @@ public class WebServiceUtil {
 
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
-
                 result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-
                 if (result.getResult() == false) {
                     result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {

@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.InBoxItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
-import com.chinashb.www.mobileerp.basicobject.Ist_Place;
+import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
@@ -52,7 +52,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 
     private InBoxItemAdapter boxItemAdapter;
     private List<BoxItemEntity> boxitemList = new ArrayList<>();
-    private Ist_Place thePlace;
+    private IstPlaceEntity thePlace;
     private String scanContent;
 
     private ScanInputDialog inputDialog;
@@ -322,7 +322,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
-            Ist_Place bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanContent);
+            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanContent);
             if (bi.getResult()) {
                 thePlace = bi;
                 if (bi.getResult() == true) {

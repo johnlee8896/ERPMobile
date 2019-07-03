@@ -19,12 +19,12 @@ import java.util.List;
  */
 
 
-public class AdapterIssuedItem extends RecyclerView.Adapter<AdapterIssuedItem.IssuedItemViewHolder> {
+public class IssuedItemAdapter extends RecyclerView.Adapter<IssuedItemAdapter.IssuedItemViewHolder> {
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
     private List<Issued_Item>  dataSoure;
 
-    public AdapterIssuedItem(Context context, List<Issued_Item> Issued_ItemList) {
+    public IssuedItemAdapter(Context context, List<Issued_Item> Issued_ItemList) {
         dataSoure = Issued_ItemList;
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);

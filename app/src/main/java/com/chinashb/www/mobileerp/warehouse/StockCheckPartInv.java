@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
-import com.chinashb.www.mobileerp.basicobject.Ist_Place;
+import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
@@ -47,7 +47,7 @@ public class StockCheckPartInv extends AppCompatActivity {
     Integer CI_ID;
     Boolean ShowERPInv = false;
     String ScanFor;
-    private Ist_Place thePlace;
+    private IstPlaceEntity thePlace;
     private BoxItemEntity scanitem;
 
     private  List<BoxItemEntity> saveditems;
@@ -137,7 +137,7 @@ public class StockCheckPartInv extends AppCompatActivity {
         if(savedInstanceState!=null)
         {
             CI_ID=savedInstanceState.getInt("CI_ID");
-            thePlace=(Ist_Place)savedInstanceState.getSerializable("thePlace");
+            thePlace=(IstPlaceEntity)savedInstanceState.getSerializable("thePlace");
             scanitem=(BoxItemEntity)savedInstanceState.getSerializable("scanitem");
             scanstring=savedInstanceState.getString("scanstring");
             ScanFor=savedInstanceState.getString("ScanFor");
@@ -568,7 +568,7 @@ public class StockCheckPartInv extends AppCompatActivity {
         protected Void doInBackground(String... params) {
 
 
-            Ist_Place bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
+            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
 
             if (bi.getResult()==true)
             {

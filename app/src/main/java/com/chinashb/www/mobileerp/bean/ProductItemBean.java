@@ -19,18 +19,12 @@ public class ProductItemBean {
      * 标注 :
      */
 
-    @SerializedName("LotID")
-    private int LotID;
-    @SerializedName("数量")
-    private int 数量;
-    @SerializedName("状态")
-    private String 状态;
-    @SerializedName("批次号")
-    private String 批次号;
-    @SerializedName("入库日期")
-    private String 入库日期;
-    @SerializedName("标注")
-    private String 标注;
+    @SerializedName("LotID") private int LotID;
+    @SerializedName("数量") private int 数量;
+    @SerializedName("状态") private String 状态;
+    @SerializedName("批次号") private String 批次号;
+    @SerializedName("入库日期") private String 入库日期;
+    @SerializedName("标注") private String 标注;
 
     public int getLotID() {
         return LotID;

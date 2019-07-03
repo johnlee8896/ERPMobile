@@ -14,28 +14,56 @@ public class WorkCenter implements Serializable {
 
     private int WC_ID;
 
-    public  boolean getResult(){return result;}
-    public void setResult(boolean result){this.result=result;}
+    public boolean getResult() {
+        return result;
+    }
+
+    public void setResult(boolean result) {
+        this.result = result;
+    }
 
     private String ErrorInfo;
-    public  String getErrorInfo(){return ErrorInfo;}
-    public void setErrorInfo(String ErrorInfo){this.ErrorInfo=ErrorInfo;}
+
+    public String getErrorInfo() {
+        return ErrorInfo;
+    }
+
+    public void setErrorInfo(String ErrorInfo) {
+        this.ErrorInfo = ErrorInfo;
+    }
 
 
     private String WC_Name;
-    public  String getWC_Name(){return WC_Name;}
-    public void setWC_Name(String WC_Name){this.WC_Name=WC_Name;}
+
+    public String getWC_Name() {
+        return WC_Name;
+    }
+
+    public void setWC_Name(String WC_Name) {
+        this.WC_Name = WC_Name;
+    }
 
 
     private int Bu_ID;
-    public  int getBu_ID(){return Bu_ID;}
-    public void setBu_ID(int Bu_ID){this.Bu_ID=Bu_ID;}
+
+    public int getBu_ID() {
+        return Bu_ID;
+    }
+
+    public void setBu_ID(int Bu_ID) {
+        this.Bu_ID = Bu_ID;
+    }
 
 
     private String BuName;
-    public  String getBuName(){return BuName;}
-    public void setBuName(String BuName){this.BuName=BuName;}
 
+    public String getBuName() {
+        return BuName;
+    }
+
+    public void setBuName(String BuName) {
+        this.BuName = BuName;
+    }
 
 
     public int getList_No() {

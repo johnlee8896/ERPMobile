@@ -57,13 +57,9 @@ public class CommonUtil {
 
     public static String SqlDate(Date d) {
         String r;
-
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         r = sdf.format(d);
-
-
         r = " '" + r + "' ";
-
         return r;
     }
 

@@ -254,7 +254,6 @@ public class LoginActivity extends AppCompatActivity {
 //                    query_erp_id = ErpVerID;
                     if (mobile_erp_ver_id >= ErpVerID) {
                         versionOk = true;
-
 //                        debugLogin();
                     } else {
                         String newVerWarning = "当前App 版本已经过时。\n" +
@@ -292,10 +291,10 @@ public class LoginActivity extends AppCompatActivity {
 
     protected void checkNamePwd() {
 
-        String Name = nameEditText.getText().toString();
+        String userName = nameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        if (Name.isEmpty() || password.isEmpty()) {
+        if (userName.isEmpty() || password.isEmpty()) {
             ToastUtil.showToastLong("请输入名字/密码");
         } else {
 //            String Name = nameEditText.getText().toString();
@@ -348,7 +347,9 @@ public class LoginActivity extends AppCompatActivity {
                 UserSingleton.get().setHRName(nameEditText.getText().toString());
 
                 SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
+
                 Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
+                intent.putExtra(IntentConstant.Intent_Extra_from_name_pwd,true);
                 intent.putExtra(IntentConstant.Intent_Extra_hr_id, wsResult.getID().intValue());
                 startActivity(intent);
                 finish();

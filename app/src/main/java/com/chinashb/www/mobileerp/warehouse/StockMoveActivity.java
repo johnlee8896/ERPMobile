@@ -20,7 +20,7 @@ import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.AdapterMoveBoxItem;
-import com.chinashb.www.mobileerp.basicobject.Ist_Place;
+import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 
@@ -42,7 +42,7 @@ public class StockMoveActivity extends AppCompatActivity {
 
     private AdapterMoveBoxItem boxitemAdapter;
     private List<BoxItemEntity> boxitemList;
-    private Ist_Place thePlace;
+    private IstPlaceEntity thePlace;
     private String scanstring;
 
     @Override
@@ -305,7 +305,7 @@ public class StockMoveActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
 
 
-            Ist_Place bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
+            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
 
             if (bi.getResult()==true)
             {

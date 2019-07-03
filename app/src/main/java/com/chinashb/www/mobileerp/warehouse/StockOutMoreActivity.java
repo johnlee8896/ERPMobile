@@ -22,8 +22,8 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.Issued_Item;
-import com.chinashb.www.mobileerp.basicobject.Ist_Place;
-import com.chinashb.www.mobileerp.basicobject.Mpi_Wc;
+import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
+import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 
@@ -34,7 +34,7 @@ import java.util.List;
 
 public class StockOutMoreActivity extends AppCompatActivity {
 
-    private Mpi_Wc themw;
+    private MpiWcBean themw;
     private List<Issued_Item> IssuedItemList;
 
     private TextView txtMw_Title;
@@ -47,7 +47,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
 
     private IssueMoreItemAdapter issueMoreItemAdapter;
     private List<BoxItemEntity> newissuelist;
-    private Ist_Place thePlace;
+    private IstPlaceEntity thePlace;
     private String scanedItem;
     private ProgressBar pbScan;
 
@@ -78,7 +78,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(issueMoreItemAdapter);
 
         Intent who = getIntent();
-        themw= (Mpi_Wc) who.getSerializableExtra("mw");
+        themw= (MpiWcBean) who.getSerializableExtra("mw");
         if(themw !=null)
         {
             themw.setMwNameTextView(txtMw_Title);
@@ -399,7 +399,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
 
 
-            Ist_Place bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanedItem);
+            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanedItem);
 
             if (bi.getResult()==true)
             {

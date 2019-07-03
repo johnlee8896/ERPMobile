@@ -5,7 +5,16 @@ import android.widget.TextView;
 
 import java.io.Serializable;
 
-public class Mpi_Wc implements Serializable {
+public class MpiWcBean implements Serializable {
+    //todo  教训啊  这里重命名会出现json啥的出错
+
+//    {
+//        "MPIWC_ID":581617,
+//            "MwName":"生产日期=2019-07-03,生产线=装配A9线,班次=白,班次序号=1,产品=OMEGA调角电机 F-OMEGA-GML-1301037X.M 04,计划数=1200",
+//            "HtmlMwName":"生产日期=<font color='#00FF00'>2019-07-03</font>,生产线=<font color='#FF0000'>装配A9线</font>,班次=<font color='#00FF00'>白</font>,班次序号=1,产品=<font color='#0000FF'>OMEGA调角电机 F-OMEGA-GML-1301037X.M 04</font>,计划数=<font color='#00FF00'>1200</font>",
+//            "MPI_Remark":""
+//    }
+
     private boolean result;
     /**
      * MPIWC_ID : 477592
@@ -26,7 +35,6 @@ public class Mpi_Wc implements Serializable {
      * IV_ID : 43542
      * MPI_Quantity : 2000
      * MPI_Remark : 国内
-
      */
 
     private Long MPIWC_ID;
@@ -48,12 +56,23 @@ public class Mpi_Wc implements Serializable {
     private int MPI_Quantity;
     private String MPI_Remark;
 
-    public  boolean getResult(){return result;}
-    public void setResult(boolean result){this.result=result;}
+    public boolean getResult() {
+        return result;
+    }
+
+    public void setResult(boolean result) {
+        this.result = result;
+    }
 
     private String ErrorInfo;
-    public  String getErrorInfo(){return ErrorInfo;}
-    public void setErrorInfo(String ErrorInfo){this.ErrorInfo=ErrorInfo;}
+
+    public String getErrorInfo() {
+        return ErrorInfo;
+    }
+
+    public void setErrorInfo(String ErrorInfo) {
+        this.ErrorInfo = ErrorInfo;
+    }
 
     /*
     private long Mpiwc_ID;
@@ -62,27 +81,57 @@ public class Mpi_Wc implements Serializable {
 */
 
     private String MwName;
-    public  String getMwName(){return MwName;}
-    public void setMwName(String MwName){this.MwName=MwName;}
+
+    public String getMwName() {
+        return MwName;
+    }
+
+    public void setMwName(String MwName) {
+        this.MwName = MwName;
+    }
 
     private String HtmlMwName;
-    public  String getHtmlMwName(){return HtmlMwName;}
-    public void setHtmlMwName(String HtmlMwName){this.HtmlMwName=HtmlMwName;}
+
+    public String getHtmlMwName() {
+        return HtmlMwName;
+    }
+
+    public void setHtmlMwName(String HtmlMwName) {
+        this.HtmlMwName = HtmlMwName;
+    }
 
 
     private long Wc_ID;
-    public  long getWc_ID(){return Wc_ID;}
-    public void setWc_ID(long Wc_ID){this.Wc_ID=Wc_ID;}
+
+    public long getWc_ID() {
+        return Wc_ID;
+    }
+
+    public void setWc_ID(long Wc_ID) {
+        this.Wc_ID = Wc_ID;
+    }
 
 
     private int Bu_ID;
-    public  int getBu_ID(){return Bu_ID;}
-    public void setBu_ID(int Bu_ID){this.Bu_ID=Bu_ID;}
+
+    public int getBu_ID() {
+        return Bu_ID;
+    }
+
+    public void setBu_ID(int Bu_ID) {
+        this.Bu_ID = Bu_ID;
+    }
 
 
     private String BuName;
-    public  String getBuName(){return BuName;}
-    public void setBuName(String BuName){this.BuName=BuName;}
+
+    public String getBuName() {
+        return BuName;
+    }
+
+    public void setBuName(String BuName) {
+        this.BuName = BuName;
+    }
 
 
     public Long getMPIWC_ID() {
@@ -229,16 +278,16 @@ public class Mpi_Wc implements Serializable {
         this.MPI_Remark = MPI_Remark;
     }
 
-    public void setMwNameTextView(TextView tv)
-    {
-        if(tv !=null)
-        {
-            if ( !HtmlMwName.equals(""))
-            {
+    public void setMwNameTextView(TextView tv) {
+        if (HtmlMwName == null){
+            return;
+        }
+        if (tv != null) {
+            if (!HtmlMwName.equals("")) {
                 tv.setText(Html.fromHtml(HtmlMwName));
+            } else {
+                tv.setText(MwName);
             }
-            else
-            {tv.setText(MwName);}
         }
 
     }

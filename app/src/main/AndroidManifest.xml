@@ -52,7 +52,7 @@
         <!--android:name=".commonactivity.LoginActivity"-->
         <!--android:screenOrientation="portrait" />-->
         <activity
-            android:name=".warehouse.StockOutActivity"
+            android:name=".warehouse.StockPutActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.StockOutMoreActivity"
@@ -93,7 +93,7 @@
             android:name=".warehouse.StockQueryProductItemActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".warehouse.StockOutDepActivity"
+            android:name=".warehouse.StockDepartmentInActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".commonactivity.SelectItemActivity"

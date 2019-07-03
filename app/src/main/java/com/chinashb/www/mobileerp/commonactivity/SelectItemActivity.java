@@ -19,9 +19,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.adapter.JsonListAdapter;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
+import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
@@ -58,9 +59,13 @@ public class SelectItemActivity extends AppCompatActivity {
     //    ProgressBar pbBackground;
     private CommProgressDialog progressDialog;
     private String SQL;
-    private List<BUItemBean> originalDataList;
+    private List<BUItemBean> originalBUDataList;
+    private List<DepartmentBean> departmentBeanList;
     //    private JsonListAdapter dataAdapter;
-    private SearchJsonListAdapter adapter;
+    private BUSearchListAdapter buAdapter;
+    private DepartmentSearchListAdapter departmentAdapter;
+
+    private int fromValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,15 +89,16 @@ public class SelectItemActivity extends AppCompatActivity {
         getListAsyncTask.execute();
         setViewsListener();
 
-        adapter = new SearchJsonListAdapter();
-        recyclerView.setAdapter(adapter);
+        buAdapter = new BUSearchListAdapter();
+        departmentAdapter = new DepartmentSearchListAdapter();
+        recyclerView.setAdapter(buAdapter);
 //        AddScrollShow();
 
     }
 
     protected void setViewsListener() {
         if (searchTextView != null) {
-            //筛选清单 originalDataList
+            //筛选清单 originalBUDataList
             searchTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -107,7 +113,7 @@ public class SelectItemActivity extends AppCompatActivity {
                 clearImageView.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
                 searchTextView.setText(s.length() > 0 ? "搜索" : "取消");
                 if (s.length() == 0) {
-                    bindObjectListsToAdapterBU(originalDataList);
+                    bindObjectListsToAdapterBU(originalBUDataList);
                 }
             }
         });
@@ -134,7 +140,7 @@ public class SelectItemActivity extends AppCompatActivity {
     }
 
     private void doSearchAction(String input) {
-        if (originalDataList == null) {
+        if (originalBUDataList == null) {
             return;
         }
         if (!input.isEmpty()) {
@@ -142,7 +148,7 @@ public class SelectItemActivity extends AppCompatActivity {
             bindObjectListsToAdapterBU(tempList);
         } else {
             //todo
-            bindObjectListsToAdapterBU(originalDataList);
+            bindObjectListsToAdapterBU(originalBUDataList);
         }
     }
 
@@ -231,17 +237,17 @@ public class SelectItemActivity extends AppCompatActivity {
     //todo
     protected List<BUItemBean> getFilterList(String keyWord) {
         List<BUItemBean> tempList = new ArrayList<>();
-        if (originalDataList != null) {
-            for (int i = 0; i < originalDataList.size(); i++) {
-//                JsonObject j = originalDataList.get(i);
+        if (originalBUDataList != null) {
+            for (int i = 0; i < originalBUDataList.size(); i++) {
+//                JsonObject j = originalBUDataList.get(i);
 //                if (IsJsonObjectContainsKeyString(j, Key)) {
 //                    tempList.add(j);
 //                }
 
             }
 
-            for (BUItemBean buItemBean : originalDataList){
-                if (buItemBean.getCompanyChineseName().contains(keyWord) || buItemBean.getBUName().contains(keyWord) ){
+            for (BUItemBean buItemBean : originalBUDataList) {
+                if (buItemBean.getCompanyChineseName().contains(keyWord) || buItemBean.getBUName().contains(keyWord)) {
                     tempList.add(buItemBean);
                 }
             }
@@ -289,19 +295,33 @@ public class SelectItemActivity extends AppCompatActivity {
 //    }
 
 
-    private void bindObjectListsToAdapterBU(final List<BUItemBean> beanList) {
+//    private void bindObjectListsToAdapterBU(final List<BUItemBean> beanList) {
+//        if (beanList != null && beanList.size() > 0) {
+//            buAdapter.setData(beanList);
+//        }
+//
+//    }
+
+    private void bindObjectListsToAdapterBU( List<BUItemBean> beanList) {
         if (beanList != null && beanList.size() > 0) {
-            adapter.setData(beanList);
+            buAdapter.setData(beanList);
+        }
+
+    }
+
+    private void bindObjectListsToAdapterDepartment( List<DepartmentBean> beanList) {
+        if (beanList != null && beanList.size() > 0) {
+            departmentAdapter.setData(beanList);
         }
 
     }
 
     protected void getBundleExtras() {
-        Intent who = getIntent();
+        Intent intent = getIntent();
+        title = (String) intent.getStringExtra("Title");
+        SQL = (String) intent.getStringExtra("SQL");
+        fromValue = intent.getIntExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, 0);
 
-        title = (String) who.getStringExtra("Title");
-
-        SQL = (String) who.getStringExtra("SQL");
 //        ColWidthList = (List<Integer>) who.getSerializableExtra("ColWidthList");
 //        ColCaptionList = (List<String>) who.getSerializableExtra("ColCaptionList");
 //        hiddenColList = (List<String>) who.getSerializableExtra("hiddenColList");
@@ -352,7 +372,7 @@ public class SelectItemActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            bindObjectListsToAdapterBU(originalDataList);
+            bindObjectListsToAdapterBU(originalBUDataList);
         }
     };
 
@@ -364,15 +384,26 @@ public class SelectItemActivity extends AppCompatActivity {
                 return null;
             }
             //执行SQL
-//            originalDataList = WebServiceUtil.getJsonList(SQL);
+//            originalBUDataList = WebServiceUtil.getJsonList(SQL);
+
+            switch (fromValue) {
+                case IntentConstant.Select_Search_From_Select_BU:
+
+                    break;
+                case IntentConstant.Select_Search_From_Select_Department:
+                    List<DepartmentBean> commonItemBeanList = WebServiceUtil.getDepartmentBeanList(SQL);
+                    break;
+//                default:
+//                    break;
+            }
             List<BUItemBean> buBeanList = WebServiceUtil.getBUBeanList(SQL);
-//            if (originalDataList != null && originalDataList.size() > 0) {
-////                sample = originalDataList.get(0);
+//            if (originalBUDataList != null && originalBUDataList.size() > 0) {
+////                sample = originalBUDataList.get(0);
 //                //todo
 //                uiHandler.sendEmptyMessage(0);
 //            }
             if (buBeanList != null && buBeanList.size() > 0) {
-                originalDataList = buBeanList;
+                originalBUDataList = buBeanList;
                 return buBeanList;
             }
             return null;
@@ -395,7 +426,7 @@ public class SelectItemActivity extends AppCompatActivity {
             }
             //建立标题行
 //            dynamicCreateRowTitle();
-//            bindObjectListsToAdapter(originalDataList);
+//            bindObjectListsToAdapter(originalBUDataList);
             bindObjectListsToAdapterBU(resultList);
 //            pbBackground.setVisibility(View.GONE);
             if (progressDialog != null && progressDialog.isShowing()) {
