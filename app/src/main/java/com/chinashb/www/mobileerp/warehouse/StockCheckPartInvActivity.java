@@ -21,11 +21,12 @@ import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
-import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
-import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -36,7 +37,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class StockCheckPartInv extends AppCompatActivity {
+public class StockCheckPartInvActivity extends AppCompatActivity {
 
     Button btnSelectCheckFile;
     Button btnScanIst;
@@ -70,7 +71,7 @@ public class StockCheckPartInv extends AppCompatActivity {
     private Integer Ac_Type = 1;
     private UserInfoEntity userInfo;
 
-    public StockCheckPartInv() {
+    public StockCheckPartInvActivity() {
     }
 
     @Override
@@ -151,7 +152,8 @@ public class StockCheckPartInv extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StockCheckPartInv.this, SelectItemActivity.class);
+//                Intent intent = new Intent(StockCheckPartInvActivity.this, SelectItemActivity.class);
+                Intent intent = new Intent(StockCheckPartInvActivity.this, CommonSelectItemActivity.class);
 
                 Integer Bu_ID = UserSingleton.get().getUserInfo().getBu_ID();
 
@@ -178,6 +180,7 @@ public class StockCheckPartInv extends AppCompatActivity {
                 intent.putExtra("ColWidthList", (Serializable) ColWith);
                 intent.putExtra("ColCaptionList", (Serializable) ColCaption);
                 intent.putExtra("hiddenColList", (Serializable) HiddenCol);
+                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition,IntentConstant.Select_Search_From_Select_Check_File);
 
                 startActivityForResult(intent,200);
 
@@ -191,11 +194,11 @@ public class StockCheckPartInv extends AppCompatActivity {
             public void onClick(View v) {
                 if(SelectCI==null)
                 {
-                    Toast.makeText(StockCheckPartInv.this, "请先选择盘点文件", Toast.LENGTH_LONG).show();
+                    Toast.makeText(StockCheckPartInvActivity.this, "请先选择盘点文件", Toast.LENGTH_LONG).show();
                     return;
                 }
                 ScanFor="Ist";
-                new IntentIntegrator( StockCheckPartInv.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                new IntentIntegrator( StockCheckPartInvActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
             }
         });
@@ -207,12 +210,12 @@ public class StockCheckPartInv extends AppCompatActivity {
             public void onClick(View v) {
                 if(thePlace==null)
                 {
-                    Toast.makeText(StockCheckPartInv.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
+                    Toast.makeText(StockCheckPartInvActivity.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 ScanFor="Item";
-                new IntentIntegrator( StockCheckPartInv.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                new IntentIntegrator( StockCheckPartInvActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
             }
         });
@@ -224,18 +227,18 @@ public class StockCheckPartInv extends AppCompatActivity {
             public void onClick(View v) {
                 if(SelectCI==null)
                 {
-                    Toast.makeText(StockCheckPartInv.this, "请先选择盘点文件", Toast.LENGTH_LONG).show();
+                    Toast.makeText(StockCheckPartInvActivity.this, "请先选择盘点文件", Toast.LENGTH_LONG).show();
                     return;
                 }
                 if(thePlace==null)
                 {
-                    Toast.makeText(StockCheckPartInv.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
+                    Toast.makeText(StockCheckPartInvActivity.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
                     return;
                 }
 
                 if(scanitem==null)
                 {
-                    Toast.makeText(StockCheckPartInv.this, "请扫描物料", Toast.LENGTH_LONG).show();
+                    Toast.makeText(StockCheckPartInvActivity.this, "请扫描物料", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -247,7 +250,7 @@ public class StockCheckPartInv extends AppCompatActivity {
 
                 if(is_box_existed(scanitem))
                 {
-                    CommonUtil.ShowToast(StockCheckPartInv.this,
+                    CommonUtil.ShowToast(StockCheckPartInvActivity.this,
                             "前面已经提交过",R.mipmap.warning, Toast.LENGTH_SHORT);
                     return;
                 }
@@ -285,7 +288,7 @@ public class StockCheckPartInv extends AppCompatActivity {
     }
 
     protected void Commit_Result(){
-        StockCheckPartInv.AsyncCommitStockResult task = new StockCheckPartInv.AsyncCommitStockResult();
+        StockCheckPartInvActivity.AsyncCommitStockResult task = new StockCheckPartInvActivity.AsyncCommitStockResult();
         task.execute();
     }
 
@@ -366,6 +369,7 @@ public class StockCheckPartInv extends AppCompatActivity {
     {
         if(data!=null)
         {
+//            SelectCI= (HashMap<String,String>) data.getSerializableExtra("SelectItem");
             SelectCI= (HashMap<String,String>) data.getSerializableExtra("SelectItem");
             if(SelectCI!=null)
             {
@@ -395,7 +399,7 @@ public class StockCheckPartInv extends AppCompatActivity {
             //仓库位置码
             scanstring= X;
 
-            StockCheckPartInv.AsyncGetIst task = new StockCheckPartInv.AsyncGetIst();
+            StockCheckPartInvActivity.AsyncGetIst task = new StockCheckPartInvActivity.AsyncGetIst();
             task.execute();
 
         }
@@ -499,7 +503,7 @@ public class StockCheckPartInv extends AppCompatActivity {
             {
                 if(scanresult.getResult()==false)
                 {
-                    Toast.makeText(StockCheckPartInv.this,scanresult.getErrorInfo(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(StockCheckPartInvActivity.this,scanresult.getErrorInfo(),Toast.LENGTH_LONG).show();
                 }
 
                 BoxItemEntity bi = scanresult;
@@ -507,7 +511,7 @@ public class StockCheckPartInv extends AppCompatActivity {
                 {
                     if(is_box_existed(bi))
                     {
-                        CommonUtil.ShowToast(StockCheckPartInv.this,
+                        CommonUtil.ShowToast(StockCheckPartInvActivity.this,
                                 "前面已经扫描过",R.mipmap.warning, Toast.LENGTH_SHORT);
                         return;
                     }
@@ -579,7 +583,7 @@ public class StockCheckPartInv extends AppCompatActivity {
             }
             else
             {
-                Toast.makeText(StockCheckPartInv.this,bi.getErrorInfo(),Toast.LENGTH_LONG).show();
+                Toast.makeText(StockCheckPartInvActivity.this,bi.getErrorInfo(),Toast.LENGTH_LONG).show();
             }
 
             return null;
@@ -647,7 +651,7 @@ public class StockCheckPartInv extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             if (ws_result.getResult()==true)
             {
-                CommonUtil.ShowToast(StockCheckPartInv.this,
+                CommonUtil.ShowToast(StockCheckPartInvActivity.this,
                         "提交成功",R.mipmap.smiley, Toast.LENGTH_SHORT);
 
                 saveditems.add(scanitem);
@@ -664,7 +668,7 @@ public class StockCheckPartInv extends AppCompatActivity {
             }
             else
             {
-                CommonUtil.ShowToast(StockCheckPartInv.this,
+                CommonUtil.ShowToast(StockCheckPartInvActivity.this,
                         "提交失败" + ws_result.getErrorInfo(),R.mipmap.warning, Toast.LENGTH_SHORT);
 
             }

@@ -5,13 +5,10 @@ import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.BaseRecycleAdapter;
 import com.chinashb.www.mobileerp.adapter.BaseViewHolder;
-import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -20,7 +17,7 @@ import butterknife.ButterKnife;
  * @author 作者: xxblwf
  * @description 部门列表，之后会与Bu车间合并
  */
-
+@Deprecated
 public class DepartmentSearchListAdapter extends BaseRecycleAdapter<DepartmentBean, DepartmentSearchListAdapter.DepartmentSearchViewHolder> {
     @Override
     public DepartmentSearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

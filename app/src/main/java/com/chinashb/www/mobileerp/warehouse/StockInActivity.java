@@ -151,7 +151,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
                         scanContent = content;
-                        AsyncGetBox task = new AsyncGetBox();
+                        GetBoxAsyncTask task = new GetBoxAsyncTask();
                         task.execute();
                     }
                 }
@@ -170,7 +170,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         if (view == addTrayScannerButton) {
             //scanContent= "VG/404731";
-            //StockInActivity.AsyncGetBox task = new StockInActivity.AsyncGetBox();
+            //StockInActivity.GetBoxAsyncTask task = new StockInActivity.GetBoxAsyncTask();
             //task.execute();
 //            CommAlertDialog.with(StockInActivity.this).setTitle("请点击扫描枪")
 //                    .setMessage("请确保蓝牙已连接，若未连接请打开设置--蓝牙--连接QScanner")
@@ -252,7 +252,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    private class AsyncGetBox extends AsyncTask<String, Void, Void> {
+    private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity scanresult;
 
         @Override

@@ -14,6 +14,7 @@ import com.chinashb.www.mobileerp.bean.BUItemBean;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@Deprecated
 public class BUSearchListAdapter extends BaseRecycleAdapter<BUItemBean, BUSearchListAdapter.BUSearchViewHolder> {
     @Override
     public BUSearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -38,13 +39,13 @@ public class BUSearchListAdapter extends BaseRecycleAdapter<BUItemBean, BUSearch
 
     public static class BUSearchViewHolder extends BaseViewHolder {
 
-        @BindView(R.id.item_search_company_textView)
+        @BindView(R.id.item_search_first_name_textView)
         TextView companyTextView;
-        @BindView(R.id.item_search_brief_company_textView)
+        @BindView(R.id.item_search_second_name_textView)
         TextView briefCompanyTextView;
-        @BindView(R.id.item_search_bu_number_textView)
+        @BindView(R.id.item_search_third_name_textView)
         TextView buNumberTextView;
-        @BindView(R.id.item_search_bu_name_textView)
+        @BindView(R.id.item_search_fourth_name_textView)
         TextView buNameTextView;
 
         public BUSearchViewHolder(ViewGroup viewGroup) {

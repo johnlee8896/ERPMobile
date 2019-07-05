@@ -1,6 +1,9 @@
 package com.chinashb.www.mobileerp.utils;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import com.chinashb.www.mobileerp.APP;
 
@@ -29,5 +32,12 @@ public class AppUtil {
      */
     public static boolean isListEmpty(List<?> list) {
         return list == null || list.size() == 0;
+    }
+
+    public static void forceHideInputMethod(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (activity.getCurrentFocus() != null && activity.getCurrentFocus().getWindowToken() != null) {
+            imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

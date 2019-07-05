@@ -17,23 +17,26 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
+import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.DepartmentBean;
+import com.chinashb.www.mobileerp.bean.ResearchItemBean;
+import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
-import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
-import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
-import com.chinashb.www.mobileerp.basicobject.WsResult;
-import com.chinashb.www.mobileerp.funs.CommonUtil;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -47,19 +50,22 @@ public class StockDepartmentInActivity extends AppCompatActivity {
     private MpiWcBean themw;
     private TextView txtMw_Title;
     private Button selectDepartmentButton;
-    private Button selectReseachProgramButton;
+    private Button selectResearchProgramButton;
     private Button scanAddTrayButton;
     private Button outStockButton;
     private TextView tvDep;
-    static HashMap<String, String> SelectDep;
+    //    static HashMap<String, String> SelectDep;
     private TextView tvReseachProgram;
-    static HashMap<String, String> SelectReaseach;
-    private RecyclerView mRecyclerView;
+    //    static HashMap<String, String> SelectReaseach;
+    private RecyclerView recyclerView;
     private IssueMoreItemAdapter issueMoreItemAdapter;
-    private List<BoxItemEntity> newissuelist;
+    private List<BoxItemEntity> boxItemEntityList;
     private String scanstring;
+    private DepartmentBean departmentBean;
+    private ResearchItemBean researchItemBean;
 
     private ProgressBar pbBackground;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,7 +127,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 
         mLl_parent = (LinearLayout) findViewById(R.id.box);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_issue_more_extra);
+        recyclerView = (RecyclerView) findViewById(R.id.rv_issue_more_extra);
 
         txtMw_Title = (TextView) findViewById(R.id.tv_issue_more_mw_title);
         tvDep = (TextView) findViewById(R.id.tv_stock_out_dep_select_dep);
@@ -131,26 +137,26 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         pbBackground.setVisibility(View.GONE);
 
         selectDepartmentButton = (Button) findViewById(R.id.btn_stock_out_dep_select_dep);
-        selectReseachProgramButton = (Button) findViewById(R.id.btn_stock_out_dep_select_program);
+        selectResearchProgramButton = (Button) findViewById(R.id.btn_stock_out_dep_select_program);
         scanAddTrayButton = (Button) findViewById(R.id.btn_issue_more_add_extra);
         outStockButton = (Button) findViewById(R.id.btn_exe_warehouse_out);
 
-        newissuelist = new ArrayList<>();
+        boxItemEntityList = new ArrayList<>();
         if (savedInstanceState != null) {
-            newissuelist = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
+            boxItemEntityList = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
         }
 
-        issueMoreItemAdapter = new IssueMoreItemAdapter(StockDepartmentInActivity.this, newissuelist);
+        issueMoreItemAdapter = new IssueMoreItemAdapter(StockDepartmentInActivity.this, boxItemEntityList);
         issueMoreItemAdapter.showNeedMore = false;
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
-        mRecyclerView.setAdapter(issueMoreItemAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        recyclerView.setAdapter(issueMoreItemAdapter);
 
         //按照上次选择的结果，直接显示
-        if (SelectDep != null) {
-            tvDep.setText(SelectDep.get("Department_Name"));
+        if (departmentBean != null) {
+            tvDep.setText(departmentBean.getDepartmentName());
         }
-        if (SelectReaseach != null) {
-            tvReseachProgram.setText(SelectReaseach.get("Abb") + "  --  " + SelectReaseach.get("Program"));
+        if (researchItemBean != null) {
+            tvReseachProgram.setText(researchItemBean.getAbb() + "  --  " + researchItemBean.getProgram());
         }
     }
 
@@ -158,7 +164,8 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         selectDepartmentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StockDepartmentInActivity.this, SelectItemActivity.class);
+//                Intent intent = new Intent(StockDepartmentInActivity.this, SelectItemActivity.class);
+                Intent intent = new Intent(StockDepartmentInActivity.this, CommonSelectItemActivity.class);
                 String sql = "\n" +
                         "select cd.Department_ID, pd.Department_Name as PDN, cd.Department_Name  from org " +
                         " left join department as pd on org.pid=pd.Department_ID " +
@@ -177,17 +184,18 @@ public class StockDepartmentInActivity extends AppCompatActivity {
                 intent.putExtra("SQL", sql);
                 intent.putExtra("ColWidthList", (Serializable) ColWith);
                 intent.putExtra("ColCaptionList", (Serializable) ColCaption);
-                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition,IntentConstant.Select_Search_From_Select_Department);
+                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_Department);
 
                 startActivityForResult(intent, 100);
             }
 
         });
 
-        selectReseachProgramButton.setOnClickListener(new View.OnClickListener() {
+        selectResearchProgramButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(StockDepartmentInActivity.this, SelectItemActivity.class);
+//                Intent intent = new Intent(StockDepartmentInActivity.this, SelectItemActivity.class);
+                Intent intent = new Intent(StockDepartmentInActivity.this, CommonSelectItemActivity.class);
 
                 String sql = "Select Product.Product_ID,PS_Version.PS_ID,Product.Abb,Fi_Standard_Product_Type.FiPT_ID," +
                         "Fi_Standard_Product_Type.TypeName As Program, St.FSPD_ID,St.Fi_Standard_Product_Developing_Status As Status,Program.Program_ID " +
@@ -209,6 +217,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
                 intent.putExtra("ColWidthList", (Serializable) ColWith);
                 intent.putExtra("ColCaptionList", (Serializable) ColCaption);
                 intent.putExtra("hiddenColList", (Serializable) HiddenCol);
+                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_ReSearch_Program);
 
                 startActivityForResult(intent, 200);
             }
@@ -225,17 +234,18 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         outStockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (newissuelist.size() > 0) {
-                    if (SelectDep == null) {
+                if (boxItemEntityList.size() > 0) {
+                    if (departmentBean == null) {
                         CommonUtil.ShowToast(StockDepartmentInActivity.this, "没有选择部门", R.mipmap.warning);
                         return;
                     }
-                    if (SelectReaseach == null) {
-                        CommonUtil.ShowToast(StockDepartmentInActivity.this, "没有选择研发项目", R.mipmap.warning);
-                        return;
-                    }
+                    //// TODO: 2019/7/5 研发项目是非必填，有的为空
+//                    if (researchItemBean == null) {
+//                        CommonUtil.ShowToast(StockDepartmentInActivity.this, "没有选择研发项目", R.mipmap.warning);
+//                        return;
+//                    }
 
-                    StockDepartmentInActivity.AsyncExeWarehouseOut task = new StockDepartmentInActivity.AsyncExeWarehouseOut();
+                    AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
                     task.execute();
                 }
             }
@@ -290,18 +300,19 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 
     protected void ActivityResultSelectDep(Intent data) {
         if (data != null) {
-            SelectDep = (HashMap<String, String>) data.getSerializableExtra("SelectItem");
-            if (SelectDep != null) {
-                tvDep.setText(SelectDep.get("Department_Name"));
+//            SelectDep = (HashMap<String, String>) data.getSerializableExtra("SelectItem");
+            departmentBean = data.getParcelableExtra("SelectItem");
+            if (departmentBean != null) {
+                tvDep.setText(departmentBean.getDepartmentName());
             }
         }
     }
 
     protected void ActivityResultSelectResearchProgram(Intent data) {
         if (data != null) {
-            SelectReaseach = (HashMap<String, String>) data.getSerializableExtra("SelectItem");
-            if (SelectReaseach != null) {
-                tvReseachProgram.setText(SelectReaseach.get("Abb") + "  --  " + SelectReaseach.get("Program"));
+            researchItemBean = data.getParcelableExtra("SelectItem");
+            if (researchItemBean != null) {
+                tvReseachProgram.setText(researchItemBean.getAbb() + "  --  " + researchItemBean.getProgram());
             }
         }
     }
@@ -344,7 +355,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
             if (bi.getResult() == true) {
                 if (!is_box_existed(bi)) {
                     bi.setSelect(true);
-                    newissuelist.add(bi);
+                    boxItemEntityList.add(bi);
                 } else {
                     bi.setResult(false);
                     bi.setErrorInfo("该包装已经在装载列表中");
@@ -358,21 +369,21 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         protected Boolean is_box_existed(BoxItemEntity box_item) {
             Boolean result = false;
 
-            if (newissuelist != null) {
-                for (int i = 0; i < newissuelist.size(); i++) {
-                    if (newissuelist.get(i).getSMLI_ID() == box_item.getSMLI_ID() && box_item.getSMLI_ID() > 0) {
+            if (boxItemEntityList != null) {
+                for (int i = 0; i < boxItemEntityList.size(); i++) {
+                    if (boxItemEntityList.get(i).getSMLI_ID() == box_item.getSMLI_ID() && box_item.getSMLI_ID() > 0) {
                         return true;
                     }
-                    if (newissuelist.get(i).getSMM_ID() == box_item.getSMM_ID() && box_item.getSMM_ID() > 0) {
+                    if (boxItemEntityList.get(i).getSMM_ID() == box_item.getSMM_ID() && box_item.getSMM_ID() > 0) {
                         return true;
                     }
-                    if (newissuelist.get(i).getSMT_ID() == box_item.getSMT_ID() && box_item.getSMT_ID() > 0) {
+                    if (boxItemEntityList.get(i).getSMT_ID() == box_item.getSMT_ID() && box_item.getSMT_ID() > 0) {
                         return true;
                     }
-                    if (newissuelist.get(i).getSMT_ID() == box_item.getSMT_ID() && box_item.getSMT_ID() == 0
-                            && newissuelist.get(i).getSMM_ID() == box_item.getSMM_ID() && box_item.getSMM_ID() == 0
-                            && newissuelist.get(i).getSMLI_ID() == box_item.getSMLI_ID() && box_item.getSMLI_ID() == 0
-                            && newissuelist.get(i).getLotID() == box_item.getLotID()) {
+                    if (boxItemEntityList.get(i).getSMT_ID() == box_item.getSMT_ID() && box_item.getSMT_ID() == 0
+                            && boxItemEntityList.get(i).getSMM_ID() == box_item.getSMM_ID() && box_item.getSMM_ID() == 0
+                            && boxItemEntityList.get(i).getSMLI_ID() == box_item.getSMLI_ID() && box_item.getSMLI_ID() == 0
+                            && boxItemEntityList.get(i).getLotID() == box_item.getLotID()) {
                         return true;
                     }
 
@@ -396,7 +407,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 
 
             issueMoreItemAdapter.notifyDataSetChanged();
-            mRecyclerView.setAdapter(issueMoreItemAdapter);
+            recyclerView.setAdapter(issueMoreItemAdapter);
 
             //pbScan.setVisibility(View.INVISIBLE);
         }
@@ -417,34 +428,29 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(String... params) {
-
             int count = 0;
-            int newissuesize = newissuelist.size();
-            while (count < newissuesize && newissuelist.size() > 0) {
-                BoxItemEntity bi = newissuelist.get(0);
-                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), SelectDep, SelectReaseach, bi);
-
-                if (ws_result.getResult() == true) {
-                    newissuelist.remove(bi);
+            int boxItemSize = boxItemEntityList.size();
+            while (count < boxItemSize && boxItemEntityList.size() > 0) {
+                BoxItemEntity boxItemEntity = boxItemEntityList.get(0);
+//                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), SelectDep, SelectReaseach, bi);
+                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity);
+                if (ws_result.getResult()) {
+                    boxItemEntityList.remove(boxItemEntity);
                 } else {
                     return null;
                 }
-
                 count++;
             }
-
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
             issueMoreItemAdapter.notifyDataSetChanged();
-            mRecyclerView.setAdapter(issueMoreItemAdapter);
-
+            recyclerView.setAdapter(issueMoreItemAdapter);
             pbBackground.setVisibility(View.GONE);
-
             if (ws_result != null) {
-                if (ws_result.getResult() == false) {
+                if (!ws_result.getResult()) {
                     CommonUtil.ShowToast(StockDepartmentInActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
                 } else {
                     CommonUtil.ShowToast(StockDepartmentInActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
@@ -463,7 +469,6 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onResume() {
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
@@ -472,12 +477,10 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         super.onResume();
     }
 
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        outState.putSerializable("BoxItemList", (Serializable) newissuelist);
+        outState.putSerializable("BoxItemList", (Serializable) boxItemEntityList);
 
     }
 }

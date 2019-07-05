@@ -173,7 +173,7 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
         if (userInfo == null) {
             Toast.makeText(StockMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockCheckPartInv.class);
+            Intent intent = new Intent(StockMainActivity.this, StockCheckPartInvActivity.class);
             intent.putExtra("Ac_Type", 2);
 
             startActivity(intent);
@@ -184,7 +184,7 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
         if (userInfo == null) {
             Toast.makeText(StockMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockCheckPartInv.class);
+            Intent intent = new Intent(StockMainActivity.this, StockCheckPartInvActivity.class);
             intent.putExtra("Ac_Type", 1);
 
             startActivity(intent);

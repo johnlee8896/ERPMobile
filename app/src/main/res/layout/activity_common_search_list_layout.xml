@@ -15,6 +15,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_50"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:layout_marginLeft="@dimen/dimen_size_10">
 
         <TextView
@@ -100,10 +102,16 @@
         app:app_item_decoration_type="ITEM_SPACE"
         android:scrollbars="vertical"
         tools:itemCount="10"
-        tools:listitem= "@layout/item_bu_search_list_layout"
+        tools:listitem= "@layout/item_common_search_layout"
         >
 
     </com.chinashb.www.mobileerp.widget.CustomRecyclerView>
+    <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+        android:id="@+id/common_search_list_emptyManager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:app_empty_text="没有数据"
+        app:app_empty_image_src="@mipmap/ic_empty_no_data"/>
 
     <!--<ProgressBar-->
     <!--android:id="@+id/pb_webservice_progressbar"-->

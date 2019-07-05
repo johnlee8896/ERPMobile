@@ -14,6 +14,7 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
+import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.gson.Gson;
@@ -882,38 +883,73 @@ public class WebServiceUtil {
     }
 
 
-    public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, HashMap<String, String> SelectDep, HashMap<String, String> SelectReaseach, BoxItemEntity bi) {
-        String sqty = String.valueOf(bi.getQty());
+//    public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, HashMap<String, String> SelectDep, HashMap<String, String> SelectReaseach, BoxItemEntity bi) {
+//        String sqty = String.valueOf(bi.getQty());
+//
+//        String webMethodName = "op_Commit_Dep_Out_Item";
+//        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+//
+//        AddPrpertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+//        AddPrpertyInfo(propertyInfos, "Exer", UserInfoEntity.ID);
+//        AddPrpertyInfo(propertyInfos, "EntityID", Long.valueOf(SelectDep.get("Department_ID")));
+//        AddPrpertyInfo(propertyInfos, "EntityName", SelectDep.get("Department_Name"));
+//        AddPrpertyInfo(propertyInfos, "Fi_Product_Type_ID", Integer.valueOf(SelectReaseach.get("FiPT_ID")));
+//        AddPrpertyInfo(propertyInfos, "Fi_Product_Status_ID", Integer.valueOf(SelectReaseach.get("FSPD_ID")));
+//        AddPrpertyInfo(propertyInfos, "Out_Product_ID", Long.valueOf(SelectReaseach.get("Product_ID")));
+//        AddPrpertyInfo(propertyInfos, "Out_Program_ID", Long.valueOf(SelectReaseach.get("Program_ID")));
+//
+//        AddPrpertyInfo(propertyInfos, "Item_ID", bi.getItem_ID());
+//        AddPrpertyInfo(propertyInfos, "IV_ID", bi.getIV_ID());
+//        AddPrpertyInfo(propertyInfos, "LotID", bi.getLotID());
+//        AddPrpertyInfo(propertyInfos, "LotNo", bi.getLotNo());
+//        AddPrpertyInfo(propertyInfos, "Ist_ID", bi.getIst_ID());
+//        AddPrpertyInfo(propertyInfos, "Sub_Ist_ID", bi.getSub_Ist_ID());
+//        AddPrpertyInfo(propertyInfos, "SMLI_ID", bi.getSMLI_ID());
+//        AddPrpertyInfo(propertyInfos, "SMM_ID", bi.getSMM_ID());
+//        AddPrpertyInfo(propertyInfos, "SMT_ID", bi.getSMT_ID());
+//
+//        AddPrpertyInfo(propertyInfos, "Qty", sqty);
+//
+//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+//        SoapObject obj = (SoapObject) envelope.bodyIn;
+//
+//        WsResult ws_result = Get_WS_Result(obj);
+//
+//        return ws_result;
+//    }
 
+    public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, DepartmentBean departmentBean, ResearchItemBean researchItemBean, BoxItemEntity bi) {
+        String sqty = String.valueOf(bi.getQty());
         String webMethodName = "op_Commit_Dep_Out_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
-
         AddPrpertyInfo(propertyInfos, "Bu_ID", Bu_ID);
         AddPrpertyInfo(propertyInfos, "Exer", UserInfoEntity.ID);
-        AddPrpertyInfo(propertyInfos, "EntityID", Long.valueOf(SelectDep.get("Department_ID")));
-        AddPrpertyInfo(propertyInfos, "EntityName", SelectDep.get("Department_Name"));
-        AddPrpertyInfo(propertyInfos, "Fi_Product_Type_ID", Integer.valueOf(SelectReaseach.get("FiPT_ID")));
-        AddPrpertyInfo(propertyInfos, "Fi_Product_Status_ID", Integer.valueOf(SelectReaseach.get("FSPD_ID")));
-        AddPrpertyInfo(propertyInfos, "Out_Product_ID", Long.valueOf(SelectReaseach.get("Product_ID")));
-        AddPrpertyInfo(propertyInfos, "Out_Program_ID", Long.valueOf(SelectReaseach.get("Program_ID")));
+        if (departmentBean != null) {
+            AddPrpertyInfo(propertyInfos, "EntityID", departmentBean.getDepartmentID());
+            AddPrpertyInfo(propertyInfos, "EntityName", departmentBean.getDepartmentName());
+        }
+        if (researchItemBean != null) {
+            AddPrpertyInfo(propertyInfos, "Fi_Product_Type_ID", researchItemBean.getFiPTID());
+            AddPrpertyInfo(propertyInfos, "Fi_Product_Status_ID", researchItemBean.getFSPDID());
+            AddPrpertyInfo(propertyInfos, "Out_Product_ID", researchItemBean.getProductID());
+            AddPrpertyInfo(propertyInfos, "Out_Program_ID", researchItemBean.getProgramID());
+        }
+        if (bi != null) {
+            AddPrpertyInfo(propertyInfos, "Item_ID", bi.getItem_ID());
+            AddPrpertyInfo(propertyInfos, "IV_ID", bi.getIV_ID());
+            AddPrpertyInfo(propertyInfos, "LotID", bi.getLotID());
+            AddPrpertyInfo(propertyInfos, "LotNo", bi.getLotNo());
+            AddPrpertyInfo(propertyInfos, "Ist_ID", bi.getIst_ID());
+            AddPrpertyInfo(propertyInfos, "Sub_Ist_ID", bi.getSub_Ist_ID());
+            AddPrpertyInfo(propertyInfos, "SMLI_ID", bi.getSMLI_ID());
+            AddPrpertyInfo(propertyInfos, "SMM_ID", bi.getSMM_ID());
+            AddPrpertyInfo(propertyInfos, "SMT_ID", bi.getSMT_ID());
 
-        AddPrpertyInfo(propertyInfos, "Item_ID", bi.getItem_ID());
-        AddPrpertyInfo(propertyInfos, "IV_ID", bi.getIV_ID());
-        AddPrpertyInfo(propertyInfos, "LotID", bi.getLotID());
-        AddPrpertyInfo(propertyInfos, "LotNo", bi.getLotNo());
-        AddPrpertyInfo(propertyInfos, "Ist_ID", bi.getIst_ID());
-        AddPrpertyInfo(propertyInfos, "Sub_Ist_ID", bi.getSub_Ist_ID());
-        AddPrpertyInfo(propertyInfos, "SMLI_ID", bi.getSMLI_ID());
-        AddPrpertyInfo(propertyInfos, "SMM_ID", bi.getSMM_ID());
-        AddPrpertyInfo(propertyInfos, "SMT_ID", bi.getSMT_ID());
-
+        }
         AddPrpertyInfo(propertyInfos, "Qty", sqty);
-
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
-
         WsResult ws_result = Get_WS_Result(obj);
-
         return ws_result;
     }
 
@@ -1415,16 +1451,8 @@ public class WebServiceUtil {
     }
 
     public static List<JsonObject> getJsonList(String SQL) {
-        WsResult result = getDataTable(SQL);
-
-        if (result == null) {
-            return null;
-        }
-        if (!result.getResult()) {
-            return null;
-        }
-        String resultData = result.getErrorInfo();
-        if (resultData.isEmpty() || resultData.equalsIgnoreCase("null")) {
+        String resultData = getJsonDataBySQL(SQL);
+        if (resultData == null) {
             return null;
         }
         //变成List
@@ -1456,15 +1484,8 @@ public class WebServiceUtil {
     }
 
     public static List<BUItemBean> getBUBeanList(String SQL) {
-        WsResult result = getDataTable(SQL);
-        if (result == null) {
-            return null;
-        }
-        if (!result.getResult()) {
-            return null;
-        }
-        String resultData = result.getErrorInfo();
-        if (resultData.isEmpty() || resultData.equalsIgnoreCase("null")) {
+        String resultData = getJsonDataBySQL(SQL);
+        if (resultData == null) {
             return null;
         }
         //变成List
@@ -1478,16 +1499,25 @@ public class WebServiceUtil {
 
     }
 
+    public static <T> List<T> getCommonItemBeanList(String SQL, T t) {
+        String resultData = getJsonDataBySQL(SQL);
+        if (resultData == null) {
+            return null;
+        }
+        //变成List
+//        List<JsonObject> ojsonObjectList = ConvertJstring2List(resultData);
+//        BUItemBean buItemBean = JsonUtil.parseJsonToObject(resultData, BUItemBean.class);
+        Type type = new TypeToken<List<T>>() {
+        }.getType();
+        List<T> list = JsonUtil.parseJsonToObject(resultData, type);
+        //结果
+        return list;
+
+    }
+
     public static List<DepartmentBean> getDepartmentBeanList(String SQL) {
-        WsResult result = getDataTable(SQL);
-        if (result == null) {
-            return null;
-        }
-        if (!result.getResult()) {
-            return null;
-        }
-        String resultData = result.getErrorInfo();
-        if (resultData.isEmpty() || resultData.equalsIgnoreCase("null")) {
+        String resultData = getJsonDataBySQL(SQL);
+        if (resultData == null) {
             return null;
         }
         //变成List
@@ -1499,6 +1529,37 @@ public class WebServiceUtil {
         //结果
         return list;
 
+    }
+
+    public static List<ResearchItemBean> getResearchItemBeanList(String SQL) {
+        String resultData = getJsonDataBySQL(SQL);
+        if (resultData == null) {
+            return null;
+        }
+        //变成List
+//        List<JsonObject> ojsonObjectList = ConvertJstring2List(resultData);
+//        BUItemBean buItemBean = JsonUtil.parseJsonToObject(resultData, BUItemBean.class);
+        Type type = new TypeToken<List<ResearchItemBean>>() {
+        }.getType();
+        List<ResearchItemBean> list = JsonUtil.parseJsonToObject(resultData, type);
+        //结果
+        return list;
+
+    }
+
+    private static String getJsonDataBySQL(String SQL) {
+        WsResult result = getDataTable(SQL);
+        if (result == null) {
+            return null;
+        }
+        if (!result.getResult()) {
+            return null;
+        }
+        String resultData = result.getErrorInfo();
+        if (resultData.isEmpty() || resultData.equalsIgnoreCase("null")) {
+            return null;
+        }
+        return resultData;
     }
 
     public static List<JsonObject> ConvertJstring2List(String js) {

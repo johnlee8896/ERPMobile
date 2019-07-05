@@ -16,8 +16,8 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
+import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.NetWorkReceiver;
-import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
@@ -438,7 +438,8 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
                 return;
             }
 
-            Intent intent = new Intent(MobileMainActivity.this, SelectItemActivity.class);
+//            Intent intent = new Intent(MobileMainActivity.this, SelectItemActivity.class);
+            Intent intent = new Intent(MobileMainActivity.this, CommonSelectItemActivity.class);
             String sql = getSqlBu();
 
             List<Integer> ColWidth = new ArrayList<Integer>(Arrays.asList(50, 200, 100, 50, 180));
@@ -451,6 +452,8 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
             intent.putExtra("ColWidthList", (Serializable) ColWidth);
             intent.putExtra("ColCaptionList", (Serializable) ColCaption);
             intent.putExtra("hiddenColList", (Serializable) HiddenCol);
+
+            intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition,IntentConstant.Select_Search_From_Select_BU);
             startActivityForResult(intent, 200);
         }
     }

@@ -98,6 +98,9 @@
         <activity
             android:name=".commonactivity.SelectItemActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".commonactivity.CommonSelectItemActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".talk.FuncTcpServer" />
         <activity android:name=".talk.FuncTcpClient" />
         <activity android:name=".talk.ShbTcpTest" />
@@ -131,7 +134,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".commonactivity.CustomScannerActivity"></activity>
         <activity
-            android:name=".warehouse.StockCheckPartInv"
+            android:name=".warehouse.StockCheckPartInvActivity"
             android:label="@string/title_activity_stock_check_part_inv"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

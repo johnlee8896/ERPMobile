@@ -1,8 +1,9 @@
 package com.chinashb.www.mobileerp.bean;
 
-import com.google.gson.annotations.SerializedName;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.io.Serializable;
+import com.google.gson.annotations.SerializedName;
 
 /***
  * @date 创建时间 2019/7/3 15:05
@@ -10,7 +11,7 @@ import java.io.Serializable;
  * @description 部门选择的bean
  */
 
-public class DepartmentBean implements Serializable {
+public class DepartmentBean implements Parcelable {
 
     /**
      * Department_ID : 10
@@ -21,6 +22,24 @@ public class DepartmentBean implements Serializable {
     @SerializedName("Department_ID") private int DepartmentID;
     @SerializedName("PDN") private String PDN;
     @SerializedName("Department_Name") private String DepartmentName;
+
+    protected DepartmentBean(Parcel in) {
+        DepartmentID = in.readInt();
+        PDN = in.readString();
+        DepartmentName = in.readString();
+    }
+
+    public static final Creator<DepartmentBean> CREATOR = new Creator<DepartmentBean>() {
+        @Override
+        public DepartmentBean createFromParcel(Parcel in) {
+            return new DepartmentBean(in);
+        }
+
+        @Override
+        public DepartmentBean[] newArray(int size) {
+            return new DepartmentBean[size];
+        }
+    };
 
     public int getDepartmentID() {
         return DepartmentID;
@@ -44,5 +63,15 @@ public class DepartmentBean implements Serializable {
 
     public void setDepartmentName(String DepartmentName) {
         this.DepartmentName = DepartmentName;
+    }
+
+    @Override public int describeContents() {
+        return 0;
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(DepartmentID);
+        dest.writeString(PDN);
+        dest.writeString(DepartmentName);
     }
 }
