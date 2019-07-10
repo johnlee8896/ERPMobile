@@ -7,14 +7,18 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.ReturnItemAdapter;
@@ -32,12 +36,10 @@ import java.util.List;
 public class StockOutMoreReturnWCActivity extends AppCompatActivity {
 
     private MpiWcBean themw;
-
     private Button btnAddTray;
-
     private Button btnWarehouseOut;
-
     private RecyclerView mRecyclerView;
+    private EditText inputEditText;
 
     private ReturnItemAdapter returnItemAdapter;
     private List<BoxItemEntity> newissuelist;
@@ -47,67 +49,83 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stock_out_return_wc);
+        setContentView(R.layout.activity_stock_out_return_wc_layout);
 
 //        tv = (TextView)findViewById(R.id.tv_stock_system_title);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_return_items);
+        btnAddTray = (Button) findViewById(R.id.btn_return_item_add_extra);
+        btnWarehouseOut = (Button) findViewById(R.id.btn_exe_warehouse_out);
+        inputEditText = findViewById(R.id.stock_out_return_wc_input_EditeText);
 
-        btnAddTray = (Button)findViewById(R.id.btn_return_item_add_extra);
-
-        btnWarehouseOut =(Button) findViewById(R.id.btn_exe_warehouse_out);
-
-
-        newissuelist =  new ArrayList<>();
-
-        if(savedInstanceState!=null)
-        {
-            newissuelist=(List<BoxItemEntity>)savedInstanceState.getSerializable("BoxItemList");
+        newissuelist = new ArrayList<>();
+        if (savedInstanceState != null) {
+            newissuelist = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
         }
         returnItemAdapter = new ReturnItemAdapter(StockOutMoreReturnWCActivity.this, newissuelist);
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(returnItemAdapter);
 
-        Intent who = getIntent();
-        themw= (MpiWcBean) who.getSerializableExtra("mw");
-        if(themw !=null)
-        {
+        Intent intent = getIntent();
+        themw = (MpiWcBean) intent.getSerializableExtra("mw");
+        if (themw != null) {
         }
 
         setHomeButton();
 
-        btnAddTray.setOnClickListener(new View.OnClickListener(){
+        btnAddTray.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
 
                 //StockOutMoreActivity.AsyncDirectGetBox task = new StockOutMoreActivity.AsyncDirectGetBox();
                 //task.execute();
-
-                new IntentIntegrator( StockOutMoreReturnWCActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                new IntentIntegrator(StockOutMoreReturnWCActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
             }
 
         });
 
-
-
-        btnWarehouseOut.setOnClickListener(new View.OnClickListener(){
+        btnWarehouseOut.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
 
-                if (newissuelist.size()>0)
-                {
+                if (newissuelist.size() > 0) {
                     StockOutMoreReturnWCActivity.AsyncExeWarehouseOut task = new StockOutMoreReturnWCActivity.AsyncExeWarehouseOut();
                     task.execute();
-
                 }
-
             }
-
         });
 
+        inputEditText.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                if (editable.toString().endsWith("\n")){
+                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
+                    System.out.println("========================扫描结果:" + editable.toString());
+                    parseScanResult(editable.toString());
+                }
+            }
+        });
 
     }
 
+    private void parseScanResult(String result) {
+        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
+//        String X = result.getContents();
+        if (result.contains("/")) {
+            String[] qrContent;
+            qrContent = result.split("/");
+            if (qrContent.length >= 2) {
+                String qrTitle = qrContent[0];
+                if (!qrTitle.equals("")) {
+                    if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
+                        //物品条码
+                        scanstring = result;
+                        GetReturnBoxAsyncTask task = new GetReturnBoxAsyncTask();
+                        task.execute();
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -119,9 +137,9 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void setHomeButton(){
+    protected void setHomeButton() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
+        if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -130,46 +148,11 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() == null) {
+        if (result != null) {
+            if (result.getContents() == null) {
                 //new IntentIntegrator(StockOutMoreActivity.this).initiateScan();
-
             } else {
-
-                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-
-                String X = result.getContents();
-                if(X.contains("/"))
-                {
-                    String [] qrContent;
-                    qrContent = X.split("/");
-                    if (qrContent.length >=2)
-                    {
-
-                        String qrTitle = qrContent[0];
-
-                        if (! qrTitle.equals(""))
-                        {
-                            if (qrTitle.equals("VE")|| qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB")|| qrTitle.equals("VC"))
-                            {
-//物品条码
-                                scanstring= X;
-
-                                AsyncGetReturnBox task = new AsyncGetReturnBox();
-
-                                task.execute();
-                            }
-
-
-
-                        }
-
-
-
-                    }
-                }
-
-
+               parseScanResult(result.getContents());
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
@@ -178,50 +161,33 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
     }
 
 
-
-    private class AsyncGetReturnBox extends AsyncTask<String, Void, Void> {
+    private class GetReturnBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity scanresult;
         @Override
         protected Void doInBackground(String... params) {
-
-
             BoxItemEntity bi = WebServiceUtil.op_Check_Commit_WC_Return_Item_Barcode(scanstring);
-
-            scanresult=bi;
-
-            if (bi.getResult()==true)
-            {
-                if (!is_box_existed(bi))
-                {
+            scanresult = bi;
+            if (bi.getResult() == true) {
+                if (!is_box_existed(bi)) {
                     bi.setSelect(true);
                     newissuelist.add(bi);
+                } else {
+                    bi.setResult(false);
+                    bi.setErrorInfo("该包装已经在装载列表中");
                 }
-                else
-                    {
-                        bi.setResult(false);
-                        bi.setErrorInfo("该包装已经在装载列表中");
-                    }
 
-
-
-            }
-            else
-            {
+            } else {
 
             }
 
             return null;
         }
 
-        protected Boolean is_box_existed(BoxItemEntity box_item){
-            Boolean result=false;
-
-            if ( newissuelist != null)
-            {
-                for(int i = 0; i< newissuelist.size(); i++)
-                {
-                    if(newissuelist.get(i).getDIII_ID()==box_item.getDIII_ID())
-                    {
+        protected boolean is_box_existed(BoxItemEntity box_item) {
+            boolean result = false;
+            if (newissuelist != null) {
+                for (int i = 0; i < newissuelist.size(); i++) {
+                    if (newissuelist.get(i).getDIII_ID() == box_item.getDIII_ID()) {
                         return true;
                     }
                 }
@@ -235,11 +201,9 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            if ( scanresult!=null)
-            {
-                if(scanresult.getResult()==false)
-                {
-                    Toast.makeText(StockOutMoreReturnWCActivity.this,scanresult.getErrorInfo(),Toast.LENGTH_LONG).show();
+            if (scanresult != null) {
+                if (scanresult.getResult() == false) {
+                    Toast.makeText(StockOutMoreReturnWCActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -260,24 +224,20 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
     }
 
 
-
-
     private class AsyncExeWarehouseOut extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
 
         @Override
         protected Void doInBackground(String... params) {
 
-            int count=0;
+            int count = 0;
 
-            while(count<10 && newissuelist.size()>0)
-            {
+            while (count < 10 && newissuelist.size() > 0) {
                 BoxItemEntity bi = newissuelist.get(0);
                 ws_result = WebServiceUtil.op_Commit_Return_Item(bi);
 
 
-                if (ws_result.getResult()==true)
-                {
+                if (ws_result.getResult() == true) {
                     newissuelist.remove(bi);
                     newissuelist.remove(bi);
                 }
@@ -292,21 +252,17 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            if (ws_result!=null)
-            {
-                if (ws_result.getResult()==false)
-                {
-                    CommonUtil.ShowToast(StockOutMoreReturnWCActivity.this, ws_result.getErrorInfo(),R.mipmap.warning);
+            if (ws_result != null) {
+                if (ws_result.getResult() == false) {
+                    CommonUtil.ShowToast(StockOutMoreReturnWCActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
 
-                }
-                else
-                {
-                    CommonUtil.ShowToast(StockOutMoreReturnWCActivity.this, "出库完成",R.mipmap.smiley);
+                } else {
+                    CommonUtil.ShowToast(StockOutMoreReturnWCActivity.this, "出库完成", R.mipmap.smiley);
                 }
 
             }
 
-            returnItemAdapter= new ReturnItemAdapter(StockOutMoreReturnWCActivity.this, newissuelist);
+            returnItemAdapter = new ReturnItemAdapter(StockOutMoreReturnWCActivity.this, newissuelist);
             mRecyclerView.setAdapter(returnItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
         }
@@ -326,8 +282,7 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
 //设置为横屏幕
-        if(getRequestedOrientation()!= ActivityInfo.SCREEN_ORIENTATION_PORTRAIT )
-        {
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
         }
 

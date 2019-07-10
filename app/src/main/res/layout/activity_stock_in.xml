@@ -86,7 +86,6 @@
         android:textColor="@color/black"
         android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
         android:textSize="@dimen/text_size_14"
-        android:visibility="gone"
          />
 
     <LinearLayout

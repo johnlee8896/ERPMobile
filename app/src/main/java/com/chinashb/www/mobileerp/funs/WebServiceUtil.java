@@ -537,7 +537,7 @@ public class WebServiceUtil {
 
 
     //获取已经投料的内容
-    public static List<Issued_Item> op_Get_MW_Issed_Items(Long mw_id) {
+    public static List<Issued_Item> opGetMWIssedItems(Long mw_id) {
         String webMethodName = "op_Get_MW_Issued_Items";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();

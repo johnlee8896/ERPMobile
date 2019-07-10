@@ -89,7 +89,7 @@ public class StockPutActivity extends AppCompatActivity {
                 if (mpiWcBeanList != null) {
                     if (mpiWcBeanList.size() >= 1) {
                         Intent intent = new Intent(StockPutActivity.this, SelectMPIWCStepThreeActivity.class);
-                        intent.putExtra("mpiWcBeanList", (Serializable) mpiWcBeanList);
+                        intent.putExtra("mws", (Serializable) mpiWcBeanList);
                         startActivityForResult(intent, 200);
                     }
 
@@ -244,7 +244,7 @@ public class StockPutActivity extends AppCompatActivity {
             if (bi.getResult() == true) {
                 mpiWcBean = bi;
 
-                li = WebServiceUtil.op_Get_MW_Issed_Items(bi.getMPIWC_ID());
+                li = WebServiceUtil.opGetMWIssedItems(bi.getMPIWC_ID());
 
             } else {
 
@@ -298,7 +298,7 @@ public class StockPutActivity extends AppCompatActivity {
 
             if (mpiWcBean != null) {
 
-                li = WebServiceUtil.op_Get_MW_Issed_Items(mpiWcBean.getMPIWC_ID());
+                li = WebServiceUtil.opGetMWIssedItems(mpiWcBean.getMPIWC_ID());
 
             } else {
 
@@ -340,7 +340,7 @@ public class StockPutActivity extends AppCompatActivity {
         @Override
         protected List<Issued_Item> doInBackground(String... params) {
 
-            List<Issued_Item> li = WebServiceUtil.op_Get_MW_Issed_Items((long) 471058);
+            List<Issued_Item> li = WebServiceUtil.opGetMWIssedItems((long) 471058);
 
 
             return li;

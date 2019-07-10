@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,12 +11,12 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_freeze_box_title"
+            android:id="@+id/tv_return_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="冻结/解冻托盘"
-            android:textColor="#ffffff" />
+            android:text="返工出库"
+             />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,31 +27,35 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_move_add_tray"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:text="扫描增加托盘" />
-
-            <Button
-                android:id="@+id/btn_freeze_box"
+                android:id="@+id/btn_return_item_add_extra"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="冻结托盘" />
+                android:text="扫描返工出库物料" />
 
             <Button
-                android:id="@+id/btn_freeze_not"
+                android:id="@+id/btn_exe_warehouse_out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="解除冻结" />
+                android:text="出库登账" />
 
         </LinearLayout>
-
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/stock_out_return_wc_input_EditeText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="接收扫描结果"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -60,36 +63,28 @@
         android:gravity="fill">
 
         <TextView
-            android:id="@+id/tv_item_name_col"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_issue_more_item_col"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="物品"
-            android:textColor="#ffffff" />
+             />
 
         <TextView
-            android:id="@+id/tv_qty_col"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_issue_more_lotno_col"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="批次"
+             />
+
+        <TextView
+            android:id="@+id/tv_issue_more_qty_col"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="数量"
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/tv_ist_name_col"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="仓位"
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/tv_inv_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="状态"
-            android:textColor="#ffffff" />
+             />
 
     </LinearLayout>
 
@@ -100,7 +95,7 @@
         android:orientation="horizontal">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_freeze_box"
+            android:id="@+id/rv_return_items"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -113,12 +108,5 @@
 
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progressbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:visibility="invisible"
-        />
 </LinearLayout>
 

@@ -204,29 +204,35 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 //            new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
             //todo通过扫描枪 当控制editText显示隐藏时，这个方法会随着扫描反复调用 ，故需要做些处理
-            if (inputEditText.getVisibility() == View.GONE) {
-
-                inputEditText.setVisibility(View.VISIBLE);
-                addTrayScannerButton.setText("扫描增加托盘");
-            } else {
-                addTrayScannerButton.setText("开始扫描");
-                parseScanResult(inputEditText.getText().toString());
-
-            }
+//            if (inputEditText.getVisibility() == View.GONE) {
+//
+//                inputEditText.setVisibility(View.VISIBLE);
+//                addTrayScannerButton.setText("扫描增加托盘");
+//            } else {
+//                addTrayScannerButton.setText("开始扫描");
+//                parseScanResult(inputEditText.getText().toString());
+//
+//            }
+            ToastUtil.showToastLong("请直接用扫码枪进行扫描，确保蓝牙已连接配对！");
         } else if (view == addTrayPhotoButton){
             new IntentIntegrator( StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
         }else if (view == scanAreaButton) {
             if (boxitemList.size() > 0) {
                 int selectedcount = 0;
                 for (int i = 0; i < boxitemList.size(); i++) {
-                    if (boxitemList.get(i).getSelect() == true) {
+                    if (boxitemList.get(i).getSelect()) {
                         selectedcount++;
                     }
                 }
                 if (selectedcount > 0) {
                     new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                    inputEditText.setText("");
+                }else{
+                    ToastUtil.showToastShort("请选择条目！");
                 }
 
+            }else{
+                ToastUtil.showToastShort("没有物品条码或仓库位置码没有成功，请重新扫描！");
             }
         } else if (view == warehouseInButton) {
             if (boxitemList.size() > 0) {
@@ -234,8 +240,8 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                 for (int i = 0; i < boxitemList.size(); i++) {
                     if (boxitemList.get(i).getSelect() == true) {
                         if (boxitemList.get(i).getIst_ID() == 0) {
-                            CommonUtil.ShowToast(StockInActivity.this, "还没有扫描库位", R.mipmap.warning, Toast.LENGTH_SHORT);
-
+//                            CommonUtil.ShowToast(StockInActivity.this, "还没有扫描库位", R.mipmap.warning, Toast.LENGTH_SHORT);
+                            ToastUtil.showToastLong("还没有扫描库位");
                             return;
                         }
                         selectedcount++;
@@ -245,9 +251,11 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                 if (selectedcount > 0) {
                     StockInActivity.AsyncExeWarehouseIn task = new StockInActivity.AsyncExeWarehouseIn();
                     task.execute();
-
                 }
 
+            }else{
+                //// TODO: 2019/7/10  这里应控件按钮的可用性
+                ToastUtil.showToastShort("没有物品条码或仓库位置码没有成功，请重新扫描！");
             }
         }
     }
@@ -294,13 +302,15 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
             if (scanresult != null) {
-                if (scanresult.getResult() == false) {
+                if (!scanresult.getResult() ) {
                     Toast.makeText(StockInActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
 
             boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxitemList);
             mRecyclerView.setAdapter(boxItemAdapter);
+            inputEditText.setText("");
+            inputEditText.setHint("请继续使用扫描枪");
 //            if (inputDialog != null && inputDialog.isShowing()) {
 //                inputDialog.dismiss();
 //            }
@@ -335,7 +345,8 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 }
             } else {
-                Toast.makeText(StockInActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(StockInActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
+                ToastUtil.showToastLong(bi.getErrorInfo());
             }
             return null;
         }

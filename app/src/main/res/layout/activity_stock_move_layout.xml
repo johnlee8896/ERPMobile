@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,20 +11,11 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_issue_more_title"
+            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="生产投料"
-            android:textColor="#ffffff" />
-
-        <TextView
-            android:id="@+id/tv_issue_more_mw_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="生产计划"
-            android:textColor="#FF0000" />
+            android:text="托盘移动" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,62 +26,105 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btn_issue_more_add"
+                android:id="@+id/btn_move_add_tray"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_weight="1"
-                android:text="扫描新投料" />
+                android:text="扫描增加托盘" />
 
             <Button
-                android:id="@+id/btn_issue_more_add_extra"
+                android:id="@+id/btn_move_scan_new_place"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="扫描额外领料"
-                android:visibility="gone" />
+                android:text="扫描新库位" />
 
             <Button
-                android:id="@+id/btn_exe_warehouse_out"
+                android:id="@+id/btn_move_execute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="出库登账" />
+                android:text="执行移库" />
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/stock_move_input_EditeText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="接收扫描结果"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="fill">
+
+        <TextView
+            android:id="@+id/tv_item_name_col"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="物品" />
+
+        <TextView
+            android:id="@+id/tv_item_boxno_col"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="托盘" />
+
+        <TextView
+            android:id="@+id/tv_qty_col"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="数量" />
+
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="fill"
-        android:visibility="invisible">
+        android:gravity="fill">
 
         <TextView
-            android:id="@+id/tv_issue_more_item_col"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_old_ist_col"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="物品"
-            android:textColor="#ffffff" />
+            android:gravity="center_horizontal"
+            android:text="原位置" />
 
         <TextView
-            android:id="@+id/tv_issue_more_lotno_col"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_new_ist_col"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="批次"
-            android:textColor="#ffffff" />
+            android:gravity="center_horizontal"
+            android:text="新位置" />
 
         <TextView
-            android:id="@+id/tv_issue_more_qty_col"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_move_selected"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="数量"
-            android:textColor="#ffffff" />
+            android:gravity="center_horizontal"
+            android:text="选择" />
+
 
     </LinearLayout>
 
@@ -102,7 +135,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_issue_more"
+            android:id="@+id/rv_move_box"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -118,7 +151,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
             android:visibility="invisible" />
 
     </LinearLayout>

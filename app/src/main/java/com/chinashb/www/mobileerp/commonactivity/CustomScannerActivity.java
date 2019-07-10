@@ -15,8 +15,8 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.journeyapps.barcodescanner.ViewfinderView;
 
 import java.util.Random;
-public class CustomScannerActivity extends Activity implements
-        DecoratedBarcodeView.TorchListener {
+
+public class CustomScannerActivity extends Activity implements DecoratedBarcodeView.TorchListener {
 
     private CaptureManager capture;
     private DecoratedBarcodeView barcodeScannerView;
@@ -26,13 +26,10 @@ public class CustomScannerActivity extends Activity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_custom_scanner);
-
-        barcodeScannerView = (DecoratedBarcodeView)findViewById(R.id.zxing_barcode_scanner);
+        setContentView(R.layout.activity_custom_scanner_layout);
+        barcodeScannerView = (DecoratedBarcodeView) findViewById(R.id.zxing_barcode_scanner);
         barcodeScannerView.setTorchListener(this);
-
-        switchFlashlightButton = (Button)findViewById(R.id.switch_flashlight);
-
+        switchFlashlightButton = (Button) findViewById(R.id.switch_flashlight);
         viewfinderView = (ViewfinderView) findViewById(R.id.zxing_viewfinder_view);
 
         // if the device does not have flashlight in its camera,
@@ -40,9 +37,7 @@ public class CustomScannerActivity extends Activity implements
         if (!hasFlash()) {
             switchFlashlightButton.setVisibility(View.GONE);
 
-        }
-        else
-        {
+        } else {
             //默认先打开？
             //switchFlashlight(switchFlashlightButton);
             //默认不打开
@@ -86,6 +81,7 @@ public class CustomScannerActivity extends Activity implements
 
     /**
      * Check if the device's camera has a Flashlight.
+     *
      * @return true if there is Flashlight, otherwise false.
      */
     private boolean hasFlash() {

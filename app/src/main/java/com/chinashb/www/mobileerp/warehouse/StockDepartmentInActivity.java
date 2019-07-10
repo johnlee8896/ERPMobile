@@ -8,11 +8,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -31,6 +33,8 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -56,6 +60,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
     private TextView tvDep;
     //    static HashMap<String, String> SelectDep;
     private TextView tvReseachProgram;
+    private EditText inputEditText;
     //    static HashMap<String, String> SelectReaseach;
     private RecyclerView recyclerView;
     private IssueMoreItemAdapter issueMoreItemAdapter;
@@ -132,7 +137,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         txtMw_Title = (TextView) findViewById(R.id.tv_issue_more_mw_title);
         tvDep = (TextView) findViewById(R.id.tv_stock_out_dep_select_dep);
         tvReseachProgram = (TextView) findViewById(R.id.tv_stock_out_dep_select_program);
-
+        inputEditText = findViewById(R.id.stock_out_dep_input_EditeText);
         pbBackground = (ProgressBar) findViewById(R.id.pb_webservice_progressbar);
         pbBackground.setVisibility(View.GONE);
 
@@ -250,6 +255,17 @@ public class StockDepartmentInActivity extends AppCompatActivity {
                 }
             }
         });
+        inputEditText.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                if (editable.toString().endsWith("\n")){
+                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
+                    System.out.println("========================扫描结果:" + editable.toString());
+//                    parseScanResult(editable.toString());
+                    ActivityResultScan(inputEditText.getText().toString());
+                }
+            }
+        });
     }
 
 
@@ -290,7 +306,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
             //选择物料
             if (result.getContents() == null) {
             } else {
-                ActivityResultScan(result);
+                ActivityResultScan(result.getContents());
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
@@ -317,21 +333,21 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         }
     }
 
-    protected void ActivityResultScan(IntentResult result) {
+    protected void ActivityResultScan(String result) {
 
-        Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 
-        String X = result.getContents();
-        if (X.contains("/")) {
+//        String X = result.getContents();
+        if (result.contains("/")) {
             String[] qrContent;
-            qrContent = X.split("/");
+            qrContent = result.split("/");
             if (qrContent.length >= 2) {
                 String qrTitle = qrContent[0];
 
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
-                        scanstring = X;
+                        scanstring = result;
                         AsyncGetIssueMoreExtraBox task = new AsyncGetIssueMoreExtraBox();
                         task.execute();
                     }
