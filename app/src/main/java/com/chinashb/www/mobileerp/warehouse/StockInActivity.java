@@ -90,8 +90,8 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         inputEditText.addTextChangedListener(new TextWatcherImpl(){
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                if (editable.toString().endsWith("\n")){
-                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
+                if (editable.toString().length() > 7 && editable.toString().endsWith("\n")){
+//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
                     parseScanResult(editable.toString());
                 }
@@ -135,6 +135,8 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         if (TextUtils.isEmpty(content)){
             return;
         }
+//        content = content.trim();
+//        content = content.replace(" ",""); 不能随便去空格，因有些 D00 A5样式
 //        Toast.makeText(this, "Scanned: " + content, Toast.LENGTH_LONG).show();
         System.out.println("============ scan content = " + content);
         // VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
@@ -142,9 +144,22 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         if (content.contains("\n")){
             content = content.replace("\n","");
         }
-        if (content.contains("/")) {
+        if (content.contains("/") || content.contains("／")) {
+            String splitStr = "";
+//            if (content.contains("/")){
+//                splitStr = "/";
+//            }else if (content.contains("／")){
+//                splitStr = "／";
+//            }
+
+            if (content.contains("／")){
+//                splitStr = "／";
+                content = content.replace("／","/");
+            }
+
             String[] qrContent;
             qrContent = content.split("/");
+//            qrContent = content.split(splitStr);
             if (qrContent.length >= 2) {
                 String qrTitle = qrContent[0];
                 if (!qrTitle.equals("")) {
