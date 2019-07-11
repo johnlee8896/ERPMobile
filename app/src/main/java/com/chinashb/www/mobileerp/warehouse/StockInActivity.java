@@ -171,7 +171,16 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                     }
                 }
 
-                if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
+                if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/") ||
+                        content.startsWith("/SUB——IST——ID/") || content.startsWith("/IST——ID/" )) {
+                    if (content.startsWith("/SUB——IST——ID/")){
+                        content = content.replace("/SUB——IST——ID/","/SUB_IST_ID/");
+                    }
+
+                    if (content.startsWith("/IST——ID/" )){
+                        content = content.replace("/IST——ID/","/IST_ID/");
+                    }
+
                     //仓库位置码
                     scanContent = content;
                     GetIstAsyncTask task = new GetIstAsyncTask();
@@ -250,28 +259,32 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                 ToastUtil.showToastShort("没有物品条码或仓库位置码没有成功，请重新扫描！");
             }
         } else if (view == warehouseInButton) {
-            if (boxitemList.size() > 0) {
-                int selectedcount = 0;
-                for (int i = 0; i < boxitemList.size(); i++) {
-                    if (boxitemList.get(i).getSelect() == true) {
-                        if (boxitemList.get(i).getIst_ID() == 0) {
+            handleIntoWareHouse();
+        }
+    }
+
+    private void handleIntoWareHouse() {
+        if (boxitemList.size() > 0) {
+            int selectedcount = 0;
+            for (int i = 0; i < boxitemList.size(); i++) {
+                if (boxitemList.get(i).getSelect() == true) {
+                    if (boxitemList.get(i).getIst_ID() == 0) {
 //                            CommonUtil.ShowToast(StockInActivity.this, "还没有扫描库位", R.mipmap.warning, Toast.LENGTH_SHORT);
-                            ToastUtil.showToastLong("还没有扫描库位");
-                            return;
-                        }
-                        selectedcount++;
+                        ToastUtil.showToastLong("还没有扫描库位");
+                        return;
                     }
-
-                }
-                if (selectedcount > 0) {
-                    StockInActivity.AsyncExeWarehouseIn task = new StockInActivity.AsyncExeWarehouseIn();
-                    task.execute();
+                    selectedcount++;
                 }
 
-            }else{
-                //// TODO: 2019/7/10  这里应控件按钮的可用性
-                ToastUtil.showToastShort("没有物品条码或仓库位置码没有成功，请重新扫描！");
             }
+            if (selectedcount > 0) {
+                AsyncExeWarehouseIn task = new AsyncExeWarehouseIn();
+                task.execute();
+            }
+
+        }else{
+            //// TODO: 2019/7/10  这里应控件按钮的可用性
+            ToastUtil.showToastShort("没有物品条码或仓库位置码没有成功，请重新扫描！");
         }
     }
 
@@ -372,6 +385,10 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 
             mRecyclerView.setAdapter(boxItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
+            inputEditText.setText("");
+            //todo 直接执行入库登帐
+            handleIntoWareHouse();
+
         }
 
         @Override
