@@ -50,7 +50,9 @@ public class WebServiceUtil {
 
     private static String NAMESPACE = "http://tempuri.org/";
     private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
     private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//    private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
     private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     private static String SOAP_ACTION = "http://tempuri.org/IService/";
 
@@ -1456,9 +1458,9 @@ public class WebServiceUtil {
             return null;
         }
         //变成List
-        List<JsonObject> ojsonObjectList = ConvertJstring2List(resultData);
+        List<JsonObject> jsonObjectList = ConvertJstring2List(resultData);
         //结果
-        return ojsonObjectList;
+        return jsonObjectList;
 
     }
 
@@ -1567,11 +1569,9 @@ public class WebServiceUtil {
         JsonArray jsonArray = (JsonArray) new JsonParser().parse(js);
         Iterator<JsonElement> iter = jsonArray.iterator();
         List<JsonObject> objs = new ArrayList<JsonObject>();
-
         while (iter.hasNext()) {
             JsonObject obj = iter.next().getAsJsonObject();
             objs.add(obj);
-
         }
         return objs;
     }

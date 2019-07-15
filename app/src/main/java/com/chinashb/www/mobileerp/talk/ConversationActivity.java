@@ -19,7 +19,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.MsgAdapter;
 import com.chinashb.www.mobileerp.basicobject.Msg;
@@ -58,30 +57,21 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
     private boolean firstLoad = true;
     private boolean loading = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
         ButterKnife.bind(this);
-
         setHomeButton();
-
         tvContactWho = (TextView) findViewById(R.id.tvconversation_withwho);
-
         recyclerView = (RecyclerView) findViewById(R.id.rv_conversation_msgs);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         messageList = new ArrayList<>();
-
-
         msgAdapter = new MsgAdapter(this, messageList);
         recyclerView.setAdapter(msgAdapter);
-
         Intent who = getIntent();
-
         contactType = who.getIntExtra("ContactType", 0);
         contactMap = (HashMap<String, String>) who.getSerializableExtra("Contact");
-
 
         if (contactType == 0 || contactType == 1) {
             String HR_Name2 = contactMap.get("联系人");
@@ -94,23 +84,22 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
 
         sendButton = (Button) findViewById(R.id.btn_send_new_conversation_msg);
         txtNewMessage = (EditText) findViewById(R.id.et_send_new_message);
-
         addViewListeners();
 
         AddScrollShow();
         addRvMsgScrollListener();
 
-        AsyncQueryMessage t = new AsyncQueryMessage();
+        QueryMessageAsyncTask t = new QueryMessageAsyncTask();
         t.execute();
         setDataShowGone();
 
     }
 
     private void setDataShowGone() {
-        if (messageList != null && messageList.size() > 0){
+        if (messageList != null && messageList.size() > 0) {
             recyclerView.setVisibility(View.VISIBLE);
             emptyManagerView.setVisibility(View.GONE);
-        }else{
+        } else {
             recyclerView.setVisibility(View.GONE);
             emptyManagerView.setVisibility(View.VISIBLE);
         }
@@ -118,7 +107,6 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
 
 
     protected void addRvMsgScrollListener() {
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                                              @Override
                                              public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -132,7 +120,7 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                                                  } else {
                                                      loading = true;
                                                      firstLoad = false;
-                                                     AsyncQueryMessage t = new AsyncQueryMessage();
+                                                     QueryMessageAsyncTask t = new QueryMessageAsyncTask();
                                                      t.execute();
                                                  }
                                              }
@@ -225,40 +213,38 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    public String SQL_GetMsg_HR_MsID(int HR_ID1, int HR_ID2, int Msg_Count, int existedMinID) {
-
+    private String getMsgHRMsIDSQL(int myId, int otherId, int Msg_Count, int existedMinID) {
         String aboutMinID = "";
         if (existedMinID > 0) {
             aboutMinID = " Where MSID<" + existedMinID;
         }
-
         //要排除公共信息，群组信息，任务系统信息（单独显示）
-        String Msg1_2;
-        Msg1_2 = "Select Msg.MSID,Msg.Sender,HR.HR_Name As SenderName,Convert(nvarchar(100),Msg.SendTime,20) As SendTime,MsgReader.Receiver, Convert(nvarchar(2000), Msg_Text) As Msg_Text From Msg " +
+        String otherToMeSql;
+        otherToMeSql = "Select Msg.MSID,Msg.Sender,HR.HR_Name As SenderName,Convert(nvarchar(100),Msg.SendTime,20) As SendTime,MsgReader.Receiver, Convert(nvarchar(2000), Msg_Text) As Msg_Text From Msg " +
                 "Inner Join MsgReader On Msg.MsID=MsgReader.MsID " +
                 "Inner Join HR on HR.HR_ID=Msg.Sender " +
                 "Where Msg.ForAll=0 And (MG_ID=0 Or MG_ID=null) " +
                 " And Not Msg.SubTypeID=601" +
                 " And Isnull(Msg.Revoked,0)=0 " +
-                "And MsgReader.Receiver=" + String.valueOf(HR_ID1) + " And Msg.Sender=" + String.valueOf(HR_ID2);
+                "And MsgReader.Receiver=" + myId + " And Msg.Sender=" + otherId;
 
-        String Msg2_1;
-        Msg2_1 = "Select Msg.MSID,Msg.Sender,HR.HR_Name As SenderName,Convert(nvarchar(100),Msg.SendTime,20) As SendTime,MsgReader.Receiver, Convert(nvarchar(2000), Msg_Text) As Msg_Text From Msg " +
+        String meToOtherSql;
+        meToOtherSql = "Select Msg.MSID,Msg.Sender,HR.HR_Name As SenderName,Convert(nvarchar(100),Msg.SendTime,20) As SendTime,MsgReader.Receiver, Convert(nvarchar(2000), Msg_Text) As Msg_Text From Msg " +
                 "Inner Join MsgReader On Msg.MsID=MsgReader.MsID " +
                 "Inner Join HR on HR.HR_ID=Msg.Sender " +
                 "Where Msg.ForAll=0 And (MG_ID=0 Or MG_ID=null) " +
                 " And Not Msg.SubTypeID=601" +
                 "  And Isnull(Msg.Revoked,0)=0 " +
-                "And MsgReader.Receiver=" + String.valueOf(HR_ID2) + " And Msg.Sender=" + String.valueOf(HR_ID1);
+                "And MsgReader.Receiver=" + otherId + " And Msg.Sender=" + myId;
 
-        String S = "Select Top " + String.valueOf(Msg_Count) + " MsID,Sender,SenderName,SendTime,Receiver,Msg_Text From " +
-                " (" + Msg1_2 +
-                " Union " + Msg2_1 + ") " +
+        String sql = "Select Top " + Msg_Count + " MsID,Sender,SenderName,SendTime,Receiver,Msg_Text From " +
+                " (" + otherToMeSql +
+                " Union " + meToOtherSql + ") " +
                 " As Convers " + aboutMinID + " Order By MSID Desc ";
 
         //再按顺序
-        S = "Select * From (" + S + ") As M Order By MSID Asc ";
-        return S;
+        sql = "Select * From (" + sql + ") As M Order By MSID Asc ";
+        return sql;
     }
 
     public String SQL_getMsg_from_MSIDString(String IDS) {
@@ -292,46 +278,37 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private class AsyncQueryMessage extends AsyncTask<String, Void, Void> {
-
-
-        int HR_ID1;
-        int HR_ID2;
-
-        String HR_Name2;
-        Bitmap HR_Pic2;
+    private class QueryMessageAsyncTask extends AsyncTask<String, Void, Void> {
+        int myId;
+        int otherId;
+        String otherName;
+        Bitmap otherPicBitmap;
 
         @Override
         protected Void doInBackground(String... params) {
-
-            if (contactType == 0 || contactType == 1) {
-                loadHRMsg();
+            switch (contactType) {
+                case 0:
+                case 1:
+                    loadHRMsg();
+                    break;
+                case 2:
+                    loadGroupMsg();
+                default:
+                    break;
             }
-            if (contactType == 2) {
-                loadGroupMsg();
-            }
-
-
             return null;
         }
 
         private void loadHRMsg() {
-            HR_ID1 = UserSingleton.get().getHRID();
-            HR_ID2 = Integer.valueOf(contactMap.get("HR_ID"));
-
-            HR_Name2 = WebServiceUtil.getHRName(HR_ID2);
-
-            HR_Pic2 = CommonUtil.getUserPic(ConversationActivity.this, CommonUtil.userPictureMap, HR_ID2);
-
-            Integer existedMinID = getMinMsID();
-
-            String sql = SQL_GetMsg_HR_MsID(HR_ID1, HR_ID2, 10, existedMinID);
-
+            myId = UserSingleton.get().getHRID();
+            otherId = Integer.valueOf(contactMap.get("HR_ID"));
+            otherName = WebServiceUtil.getHRName(otherId);
+            otherPicBitmap = CommonUtil.getUserPic(ConversationActivity.this, CommonUtil.userPictureMap, otherId);
+            int existedMinID = getMinMsID();
+            String sql = getMsgHRMsIDSQL(myId, otherId, 10, existedMinID);
             //List<JsonObject> newobjects;
             ObjectLists = WebServiceUtil.getJsonList(sql);
-
-
-            Append_Query_Msg();
+            appendQueryMsg();
         }
 
         private Integer getMinMsID() {
@@ -374,21 +351,16 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                 ObjectLists = WebServiceUtil.getJsonList(sql);
 
                 List<Integer> Senders = CommonUtil.getIDListFromJsonList(ObjectLists, "Sender");
-
                 CommonUtil.getUsersPic(ConversationActivity.this, CommonUtil.userPictureMap, Senders);
-
-                Append_Query_Msg();
+                appendQueryMsg();
             }
 
         }
 
-        private void Append_Query_Msg() {
+        private void appendQueryMsg() {
             if (ObjectLists != null && messageList != null) {
                 for (int i = 0; i < ObjectLists.size(); i++) {
-
-
                     Msg msg = new Msg();
-
                     JsonObject mo = ObjectLists.get(i);
                     int messageId = mo.getAsJsonPrimitive("MsID").getAsInt();
                     if (!isHasThisMessage(messageId)) {
@@ -397,13 +369,9 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
                         msg.Msg = mo.getAsJsonPrimitive("Msg_Text").getAsString();
                         msg.mSenderID = mo.getAsJsonPrimitive("Sender").getAsInt();
                         msg.mSender = mo.getAsJsonPrimitive("SenderName").getAsString();
-
-
                         if (msg.mSenderID != UserSingleton.get().getHRID()) {
                             msg.HR_Pic2 = CommonUtil.getUserPic(ConversationActivity.this, CommonUtil.userPictureMap, msg.mSenderID);
                         }
-
-
                         messageList.add(msg);
                     }
                     //mo.getAsJsonPrimitive("MsID").getAsBigInteger();
@@ -417,19 +385,14 @@ public class ConversationActivity extends AppCompatActivity implements View.OnCl
 
         @Override
         protected void onPostExecute(Void result) {
-
-
             //第一次直接滚到最后
             msgAdapter.notifyDataSetChanged();
-
             if (firstLoad) {
                 recyclerView.scrollToPosition(messageList.size() - 1);
             } else {
                 recyclerView.scrollToPosition(ObjectLists.size());
             }
             setDataShowGone();
-
-
             //pbScan.setVisibility(View.INVISIBLE);
         }
 

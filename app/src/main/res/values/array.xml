@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--部门领料中常用用途-->
+    <string-array name="transport_status_array">
+        <item>样品试制</item>
+        <item>试验验证</item>
+        <item>客户试用</item>
+        <item>生产使用</item>
+        <item>调试机器</item>
+        <item>其他</item>
+    </string-array>
+</resources>

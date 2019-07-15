@@ -70,6 +70,8 @@ public class StockDepartmentInActivity extends AppCompatActivity {
     private ResearchItemBean researchItemBean;
 
     private ProgressBar pbBackground;
+    private Button selectUseButton;
+    private Button scanHRCodeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,9 +133,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         //mLinearLayout=(LinearLayout)findViewById(R.id.box);
 
         mLl_parent = (LinearLayout) findViewById(R.id.box);
-
         recyclerView = (RecyclerView) findViewById(R.id.rv_issue_more_extra);
-
         txtMw_Title = (TextView) findViewById(R.id.tv_issue_more_mw_title);
         tvDep = (TextView) findViewById(R.id.tv_stock_out_dep_select_dep);
         tvReseachProgram = (TextView) findViewById(R.id.tv_stock_out_dep_select_program);
@@ -145,6 +145,8 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         selectResearchProgramButton = (Button) findViewById(R.id.btn_stock_out_dep_select_program);
         scanAddTrayButton = (Button) findViewById(R.id.btn_issue_more_add_extra);
         outStockButton = (Button) findViewById(R.id.btn_exe_warehouse_out);
+        scanHRCodeButton = findViewById(R.id.deparment_in_scan_hr_code_button);
+        selectUseButton = findViewById(R.id.deparment_in_select_use_button);
 
         boxItemEntityList = new ArrayList<>();
         if (savedInstanceState != null) {
@@ -259,12 +261,20 @@ public class StockDepartmentInActivity extends AppCompatActivity {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 if (editable.toString().endsWith("\n")){
-                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
+//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
 //                    parseScanResult(editable.toString());
                     ActivityResultScan(inputEditText.getText().toString());
                 }
             }
+        });
+
+        selectUseButton.setOnClickListener(v ->{
+
+        });
+
+        scanHRCodeButton.setOnClickListener(v ->{
+
         });
     }
 

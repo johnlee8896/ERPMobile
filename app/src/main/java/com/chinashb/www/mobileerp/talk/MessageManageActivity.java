@@ -70,24 +70,20 @@ public class MessageManageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message_layout);
-
+        setContentView(R.layout.activity_message_main_layout);
         setHomeButton();
-
         recyclerView = (RecyclerView) findViewById(R.id.rv_conversation_contactlist);
         contacts = new ArrayList<>();
         JsonListAdapter jsonListAdapter = new JsonListAdapter(this, contacts);
         recyclerView.setAdapter(jsonListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         emptyLayoutManageView = (EmptyLayoutManageView) findViewById(R.id.message_emptyManager);
-
-
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_contact);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 //        HR_ID= UserSingleton.get().getHRID();
 //        HR_ID= UserSingleton.get().getHRID();
-
         loadContactUsual();
 
     }
@@ -129,11 +125,8 @@ public class MessageManageActivity extends AppCompatActivity {
     }
 
     private class GetMessageAsyncTask extends AsyncTask<String, Void, Void> {
-
         @Override
         protected Void doInBackground(String... params) {
-
-
             switch (contactType) {
                 case 0:
                     loadContactUsualData();
@@ -145,8 +138,6 @@ public class MessageManageActivity extends AppCompatActivity {
                     loadContactGroupData();
                     break;
             }
-
-
             return null;
         }
 
@@ -161,10 +152,7 @@ public class MessageManageActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-
             bindObjectListsToAdapter(contacts);
-
-
             //pbScan.setVisibility(View.INVISIBLE);
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
@@ -178,9 +166,7 @@ public class MessageManageActivity extends AppCompatActivity {
         private void loadContactUsualData() {
             String sql = "Select Distinct Common_Contact_ID As HR_ID, Common_Contact_Name As 联系人 " +
                     " From Msg_Common_Contact Where Owner=" + UserSingleton.get().getHRID();
-
             contacts = WebServiceUtil.getJsonList(sql);
-
             ColWidth = new ArrayList<>(Arrays.asList(10, 300));
             ColCaption = new ArrayList<>(Arrays.asList("HR_ID", "联系人"));
             HiddenCol = new ArrayList<>(Arrays.asList("HR_ID"));
@@ -188,7 +174,7 @@ public class MessageManageActivity extends AppCompatActivity {
         }
 
         //交流历史人员，近30天有过聊天的人
-        private void loadContactHistoryData(Integer Days) {
+        private void loadContactHistoryData(int Days) {
             int HR_ID = UserSingleton.get().getHRID();
             String sql = "Select distinct MsgReader.Receiver As HR_ID, MsgReader.ReceiverName As 联系人 from msgReader " +
                     " Inner Join Msg on msg.MSID = MsgReader.MSID Where Datediff(Day,MSG.SendTime,GetDate())<" + Days + " And MSG.Sender = " + HR_ID +
@@ -198,20 +184,15 @@ public class MessageManageActivity extends AppCompatActivity {
                     " Order by 联系人 ";
 
             contacts = WebServiceUtil.getJsonList(sql);
-
             ColWidth = new ArrayList<>(Arrays.asList(10, 300));
             ColCaption = new ArrayList<>(Arrays.asList("HR_ID", "联系人"));
             HiddenCol = new ArrayList<>(Arrays.asList("HR_ID"));
-
         }
 
         private void loadContactGroupData() {
-
             WsResult w = WebServiceUtil.getShbCommunicationFun("t_Msg_Group", "GetMyGroup", new Object[]{UserSingleton.get().getHRID(), 60});
-
             if (w.getResult()) {
                 String js = w.getErrorInfo();
-
                 contacts = WebServiceUtil.ConvertJstring2List(js);
                 ColWidth = new ArrayList<>(Arrays.asList(10, 80, 300));
                 //ColCaptionList=new ArrayList<String>(Arrays.asList("HR_ID","联系人"));
@@ -221,14 +202,12 @@ public class MessageManageActivity extends AppCompatActivity {
 
         protected void bindObjectListsToAdapter(final List<JsonObject> JList) {
             if (contacts != null && contacts.size() > 0) {
-
                 ObjectAdapter = new JsonListAdapter(MessageManageActivity.this, contacts);
                 //赋值 列宽度
                 ObjectAdapter.ColWidth = ColWidth;
                 ObjectAdapter.HiddenCol = HiddenCol;
                 recyclerView.setLayoutManager(new LinearLayoutManager(MessageManageActivity.this));
                 recyclerView.setAdapter(ObjectAdapter);
-
                 ObjectAdapter.setOnItemClickListener(new OnItemClickListener() {
                     @Override
                     public void OnItemClick(View view, int position) {

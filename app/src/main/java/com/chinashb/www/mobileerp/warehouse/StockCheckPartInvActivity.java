@@ -291,9 +291,8 @@ public class StockCheckPartInvActivity extends AppCompatActivity {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 if (editable.toString().endsWith("\n")){
-                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
+//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
-
                     if (ScanFor.endsWith("Ist")) {
                         ActivityResultScanIst(inputEditText.getText().toString());
                     } else {
