@@ -25,7 +25,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".commonactivity.LoginActivity">
+        <activity android:name=".commonactivity.LoginActivity"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,12 +48,14 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.StockInActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity android:name=".permission.PermissionsUtil" />        <!--<activity-->
         <!--android:name=".commonactivity.LoginActivity"-->
         <!--android:screenOrientation="portrait" />-->
         <activity
             android:name=".warehouse.StockPutActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.StockOutMoreActivity"
@@ -64,24 +67,30 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".warehouse.StockMoveActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.StockFreezeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.SelectMPIWCStepOneActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.SelectMPIWCStepTwoActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.SelectMPIWCStepThreeActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.StockOutMoreReturnWCActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.StockQueryProductActivity"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.StockQueryPartActivity"

@@ -15,4 +15,6 @@ public class IntentConstant {
     public static final int Select_Search_From_Select_Department = 0x2;
     public static final int Select_Search_From_Select_ReSearch_Program = 0x3;
     public static final int Select_Search_From_Select_Check_File = 0x4;
+
+    public static final String Intent_continue_put_directly = "continue_put_directly";
 }

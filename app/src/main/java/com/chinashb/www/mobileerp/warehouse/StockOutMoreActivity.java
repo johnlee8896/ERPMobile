@@ -17,48 +17,51 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
-import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
-import com.chinashb.www.mobileerp.funs.WebServiceUtil;
-import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
-import com.chinashb.www.mobileerp.utils.ToastUtil;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
+import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.Issued_Item;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
-
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 继续投料页面
+ */
+
 public class StockOutMoreActivity extends AppCompatActivity {
 
     private MpiWcBean themw;
-    private List<Issued_Item> IssuedItemList;
+    private List<Issued_Item> issuedItemList;
     private TextView txtMw_Title;
     private Button btnAddTray;
     private Button btnScanWC;
     private Button btnWarehouseOut;
-    private RecyclerView mRecyclerView;
+    private RecyclerView recyclerView;
     private IssueMoreItemAdapter issueMoreItemAdapter;
     private List<BoxItemEntity> boxItemEntityList;
     private IstPlaceEntity thePlace;
     private String scanedItem;
     private ProgressBar pbScan;
     private EditText inputEditText;
+    private boolean isDirect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_out_more_layout);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_issue_more);
-
+        recyclerView = (RecyclerView) findViewById(R.id.rv_issue_more);
         txtMw_Title = (TextView) findViewById(R.id.tv_issue_more_mw_title);
         btnAddTray = (Button) findViewById(R.id.btn_issue_more_add);
         //btnScanWC = (Button) findViewById(R.id.btn_issue_more_wc);
@@ -75,18 +78,16 @@ public class StockOutMoreActivity extends AppCompatActivity {
 
         issueMoreItemAdapter = new IssueMoreItemAdapter(StockOutMoreActivity.this, boxItemEntityList);
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
-        mRecyclerView.setAdapter(issueMoreItemAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        recyclerView.setAdapter(issueMoreItemAdapter);
 
-        Intent who = getIntent();
-        themw = (MpiWcBean) who.getSerializableExtra("mw");
+        Intent intent = getIntent();
+        themw = (MpiWcBean) intent.getSerializableExtra("mw");
         if (themw != null) {
             themw.setMwNameTextView(txtMw_Title);
-
-
         }
-        IssuedItemList = (List<Issued_Item>) who.getSerializableExtra("IssuedItemList");
-
+        issuedItemList = (List<Issued_Item>) intent.getSerializableExtra("IssuedItemList");
+        isDirect = intent.getBooleanExtra(IntentConstant.Intent_continue_put_directly, false);
         setHomeButton();
 
         btnAddTray.setOnClickListener(new View.OnClickListener() {
@@ -99,16 +100,14 @@ public class StockOutMoreActivity extends AppCompatActivity {
         btnWarehouseOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (boxItemEntityList.size() > 0) {
-                    StockOutMoreActivity.AsyncExeWarehouseOut task = new StockOutMoreActivity.AsyncExeWarehouseOut();
-                    task.execute();
-                }
+                handleStockOut();
             }
 
         });
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
+            @Override
+            public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 if (editable.toString().endsWith("\n")) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
@@ -119,6 +118,21 @@ public class StockOutMoreActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable("BoxItemList", (Serializable) boxItemEntityList);
+
+    }
+
+    private void handleStockOut() {
+        if (boxItemEntityList.size() > 0) {
+            AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
+            task.execute();
+        }
     }
 
     @Override
@@ -147,7 +161,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
                 //new IntentIntegrator(StockOutMoreActivity.this).initiateScan();
             } else {
                 String contents = result.getContents();
-                Toast.makeText(this, "Scanned: " + contents, Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Scanned: " + contents, Toast.LENGTH_LONG).show();
                 AfterGetItemBarcode(contents);
 
             }
@@ -157,21 +171,28 @@ public class StockOutMoreActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        //设置为横屏幕
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+        super.onResume();
+    }
+
     void AfterGetItemBarcode(String content) {
         //简单分析判别错误条码
         if (content.contains("/")) {
             String[] qrContent;
             qrContent = content.split("/");
             if (qrContent.length >= 2) {
-
                 String qrTitle = qrContent[0];
-
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
                         scanedItem = content;
-
-                        AsyncGetIssueMoreBox task = new AsyncGetIssueMoreBox();
+                        GetIssueMoreBoxAsyncTask task = new GetIssueMoreBoxAsyncTask();
                         task.execute();
                     }
                 }
@@ -179,16 +200,14 @@ public class StockOutMoreActivity extends AppCompatActivity {
         }
     }
 
-
-    private class AsyncGetIssueMoreBox extends AsyncTask<String, Void, Void> {
-        BoxItemEntity scanresult;
+    private class GetIssueMoreBoxAsyncTask extends AsyncTask<String, Void, Void> {
+        BoxItemEntity boxItemEntity;
 
         @Override
         protected Void doInBackground(String... params) {
-
             Long MW_ID = themw.getMPIWC_ID();
             BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_MW_Issue_Item_Barcode(MW_ID, scanedItem);
-            scanresult = boxItemEntity;
+            this.boxItemEntity = boxItemEntity;
             if (boxItemEntity.getResult()) {
                 if (!isBoxExist(boxItemEntity)) {
                     boxItemEntity.setSelect(true);
@@ -199,12 +218,10 @@ public class StockOutMoreActivity extends AppCompatActivity {
                     boxItemEntity.setErrorInfo("该包装已经在列表中");
                 }
             }
-
             return null;
         }
 
-
-        protected boolean isBoxExist(BoxItemEntity boxItemEntity) {
+        private boolean isBoxExist(BoxItemEntity boxItemEntity) {
             if (boxItemEntityList != null) {
                 for (int i = 0; i < boxItemEntityList.size(); i++) {
                     if (boxItemEntity.getSMT_ID() > 0) {
@@ -219,15 +236,14 @@ public class StockOutMoreActivity extends AppCompatActivity {
 
                 }
             }
-
             return false;
         }
 
         //获取还需求数
         protected void setNeedQty(BoxItemEntity box_item) {
-            if (box_item != null && IssuedItemList != null) {
-                for (int i = 0; i < IssuedItemList.size(); i++) {
-                    Issued_Item issued_item = IssuedItemList.get(i);
+            if (box_item != null && issuedItemList != null) {
+                for (int i = 0; i < issuedItemList.size(); i++) {
+                    Issued_Item issued_item = issuedItemList.get(i);
                     if (issued_item.getItem_ID() == box_item.getItem_ID()) {
                         box_item.setNeedMoreQty(issued_item.getMoreQty());
                     }
@@ -235,19 +251,19 @@ public class StockOutMoreActivity extends AppCompatActivity {
             }
         }
 
-
         @Override
         protected void onPostExecute(Void result) {
-
-            if (scanresult != null) {
-                if (scanresult.getResult() == false) {
-                    CommonUtil.ShowToast(StockOutMoreActivity.this, scanresult.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
+            if (boxItemEntity != null) {
+                if (!boxItemEntity.getResult()) {
+                    CommonUtil.ShowToast(StockOutMoreActivity.this, boxItemEntity.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
                 }
             }
-
             issueMoreItemAdapter.notifyDataSetChanged();
-            mRecyclerView.setAdapter(issueMoreItemAdapter);
+            recyclerView.setAdapter(issueMoreItemAdapter);
             pbScan.setVisibility(View.INVISIBLE);
+            if (isDirect) {
+                handleStockOut();
+            }
             inputEditText.setText("");
             inputEditText.setHint("请继续扫描");
         }
@@ -263,34 +279,9 @@ public class StockOutMoreActivity extends AppCompatActivity {
 
     }
 
-
     //测试从服务器扫码，查看条码是否合规
     private class AsyncDirectGetBox extends AsyncTask<String, Void, Void> {
         BoxItemEntity scanresult;
-
-        @Override
-        protected Void doInBackground(String... params) {
-
-            BoxItemEntity bi = WebServiceUtil.op_Check_Commit_MW_Issue_Item_Barcode((long) 471059, "VE/3655118");
-
-            scanresult = bi;
-
-            if (bi.getResult() == true) {
-                if (!is_box_existed(bi)) {
-                    bi.setSelect(true);
-                    boxItemEntityList.add(bi);
-                } else {
-                    bi.setResult(false);
-                    bi.setErrorInfo("该包装已经在装载列表中");
-                }
-
-
-            } else {
-
-            }
-
-            return null;
-        }
 
         protected Boolean is_box_existed(BoxItemEntity box_item) {
             Boolean result = false;
@@ -320,6 +311,30 @@ public class StockOutMoreActivity extends AppCompatActivity {
             return result;
         }
 
+        @Override
+        protected Void doInBackground(String... params) {
+
+            BoxItemEntity bi = WebServiceUtil.op_Check_Commit_MW_Issue_Item_Barcode((long) 471059, "VE/3655118");
+
+            scanresult = bi;
+
+            if (bi.getResult() == true) {
+                if (!is_box_existed(bi)) {
+                    bi.setSelect(true);
+                    boxItemEntityList.add(bi);
+                } else {
+                    bi.setResult(false);
+                    bi.setErrorInfo("该包装已经在装载列表中");
+                }
+
+
+            } else {
+
+            }
+
+            return null;
+        }
+
 
         @Override
         protected void onPostExecute(Void result) {
@@ -332,7 +347,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
             }
 
             issueMoreItemAdapter = new IssueMoreItemAdapter(StockOutMoreActivity.this, boxItemEntityList);
-            mRecyclerView.setAdapter(issueMoreItemAdapter);
+            recyclerView.setAdapter(issueMoreItemAdapter);
 
             //pbScan.setVisibility(View.INVISIBLE);
         }
@@ -395,7 +410,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            mRecyclerView.setAdapter(issueMoreItemAdapter);
+            recyclerView.setAdapter(issueMoreItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -410,9 +425,22 @@ public class StockOutMoreActivity extends AppCompatActivity {
 
     }
 
-
     private class AsyncExeWarehouseOut extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
+
+        protected void UpdateNeedQty(BoxItemEntity box_item) {
+            if (box_item != null && issuedItemList != null) {
+                for (int i = 0; i < issuedItemList.size(); i++) {
+                    Issued_Item issued_item = issuedItemList.get(i);
+                    if (issued_item.getItem_ID() == box_item.getItem_ID()) {
+                        float oldmoreqty = issued_item.getMoreQty();
+                        float newmoreqty = oldmoreqty - box_item.getQty();
+                        issued_item.setMoreQty(newmoreqty);
+
+                    }
+                }
+            }
+        }
 
         @Override
         protected Void doInBackground(String... params) {
@@ -441,25 +469,11 @@ public class StockOutMoreActivity extends AppCompatActivity {
         }
 
 
-        protected void UpdateNeedQty(BoxItemEntity box_item) {
-            if (box_item != null && IssuedItemList != null) {
-                for (int i = 0; i < IssuedItemList.size(); i++) {
-                    Issued_Item issued_item = IssuedItemList.get(i);
-                    if (issued_item.getItem_ID() == box_item.getItem_ID()) {
-                        float oldmoreqty = issued_item.getMoreQty();
-                        float newmoreqty = oldmoreqty - box_item.getQty();
-                        issued_item.setMoreQty(newmoreqty);
-
-                    }
-                }
-            }
-        }
-
         @Override
         protected void onPostExecute(Void result) {
 
             issueMoreItemAdapter.notifyDataSetChanged();
-            mRecyclerView.setAdapter(issueMoreItemAdapter);
+            recyclerView.setAdapter(issueMoreItemAdapter);
             pbScan.setVisibility(View.INVISIBLE);
 
             if (ws_result != null) {
@@ -479,25 +493,6 @@ public class StockOutMoreActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Void... values) {
         }
-
-    }
-
-
-    @Override
-    protected void onResume() {
-//设置为横屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-
-        super.onResume();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putSerializable("BoxItemList", (Serializable) boxItemEntityList);
 
     }
 

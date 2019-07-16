@@ -20,10 +20,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.OnQRScanListenerImpl;
+import com.chinashb.www.mobileerp.QRCodeScanActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
+import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
@@ -33,8 +36,10 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.SelectUseDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -68,10 +73,14 @@ public class StockDepartmentInActivity extends AppCompatActivity {
     private String scanstring;
     private DepartmentBean departmentBean;
     private ResearchItemBean researchItemBean;
+    private TextView useTextView;
+    private TextView titleTextView;
 
     private ProgressBar pbBackground;
     private Button selectUseButton;
     private Button scanHRCodeButton;
+    private SelectUseDialog selectUseDialog;
+    private boolean hasSelectUse = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +156,8 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         outStockButton = (Button) findViewById(R.id.btn_exe_warehouse_out);
         scanHRCodeButton = findViewById(R.id.deparment_in_scan_hr_code_button);
         selectUseButton = findViewById(R.id.deparment_in_select_use_button);
+        useTextView = findViewById(R.id.department_in_use_textView);
+        titleTextView = findViewById(R.id.tv_stock_out_dep_title);
 
         boxItemEntityList = new ArrayList<>();
         if (savedInstanceState != null) {
@@ -241,6 +252,10 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         outStockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!hasSelectUse){
+                    ToastUtil.showToastShort("您还没有选择用途，请选择!");
+                    return;
+                }
                 if (boxItemEntityList.size() > 0) {
                     if (departmentBean == null) {
                         CommonUtil.ShowToast(StockDepartmentInActivity.this, "没有选择部门", R.mipmap.warning);
@@ -270,11 +285,63 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         });
 
         selectUseButton.setOnClickListener(v ->{
+            if (selectUseDialog == null){
+                selectUseDialog = new SelectUseDialog(StockDepartmentInActivity.this);
+            }
+            selectUseDialog.show();
+            selectUseDialog.setOnViewClickListener(new OnViewClickListener() {
+                @Override
+                public <T> void onClickAction(View v, String tag, T t) {
+                    ToastUtil.showToastShort("您选择了" + (String)t);
+                    useTextView.setText((String) t);
+                    hasSelectUse = true;
+                    if (selectUseDialog != null && selectUseDialog.isShowing()){
+                        selectUseDialog.dismiss();
+                    }
+                }
+            });
 
         });
 
         scanHRCodeButton.setOnClickListener(v ->{
+            startScanHR();
+        });
+    }
 
+    private void startScanHR() {
+
+        QRCodeScanActivity.startQRCodeScanner(this, new OnQRScanListenerImpl() {
+            @Override
+            public void onScanQRCodeSuccess(String result) {
+                if (result.startsWith("http")) {
+//                    WebViewActivity.gotoWebViewActivity(LoginActivity.this, result);
+                } else {
+//                    CommAlertDialog.with(LoginActivity.this).setTitle("扫描结果展示")
+//                            .setMessage(result)
+//                            .setMiddleText("确定")
+//                            .setCancelAble(false).setTouchOutsideCancel(false)
+//                            .setClickButtonDismiss(true)
+//                            .create().show();
+
+                    String[] qrContent;
+                    UserInfoEntity userInfo = new UserInfoEntity();
+                    if (result.contains("/")) {
+                        qrContent = result.split("/");
+                        if (qrContent.length >= 4) {
+                            userInfo.setHR_ID(Integer.parseInt(qrContent[2]));
+                            userInfo.setHrNum(qrContent[4]);
+                            GetHrNameAsyncTask task = new GetHrNameAsyncTask();
+                            task.execute(qrContent[2]);
+//                SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
+//                            Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
+//                            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
+//                            startActivity(intent);
+//                            finish();
+                        }
+
+                    }
+                }
+            }
         });
     }
 
@@ -458,6 +525,8 @@ public class StockDepartmentInActivity extends AppCompatActivity {
             int boxItemSize = boxItemEntityList.size();
             while (count < boxItemSize && boxItemEntityList.size() > 0) {
                 BoxItemEntity boxItemEntity = boxItemEntityList.get(0);
+                //// TODO: 2019/7/15 确认，这是用途备注
+                boxItemEntity.setLotDescription(useTextView.getText().toString());
 //                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), SelectDep, SelectReaseach, bi);
                 ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity);
                 if (ws_result.getResult()) {
@@ -479,7 +548,9 @@ public class StockDepartmentInActivity extends AppCompatActivity {
                 if (!ws_result.getResult()) {
                     CommonUtil.ShowToast(StockDepartmentInActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
                 } else {
+                    //// TODO: 2019/7/15 哪些页面是执行成功后要跳离的？
                     CommonUtil.ShowToast(StockDepartmentInActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
+                    finish();
                 }
             }
         }
@@ -487,6 +558,59 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             pbBackground.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+    //// TODO: 2019/7/15 这里根存储的可能有出入，可能有问题
+    private class GetHrNameAsyncTask extends AsyncTask<String, Void, UserInfoEntity> {
+        //Image hr_photo;
+
+        @Override
+        protected UserInfoEntity doInBackground(String... params) {
+
+            int hrId = Integer.parseInt(params[0]);
+//            userInfo = WebServiceUtil.getHRName_Bu(userInfo.getHR_ID());
+            UserInfoEntity userInfoEntity = WebServiceUtil.getHRName_Bu(hrId);
+            //// TODO: 2019/7/15 这里根存储的可能有出入，可能有问题
+//            UserSingleton.get().setHRID(hrId);
+//            UserSingleton.get().setHRName(userInfo.getHR_Name());
+//            UserSingleton.get().setUserInfo(userInfo);
+//            if (userInfo != null) {
+//                Bitmap userPic = CommonUtil.getUserPic(StockDepartmentInActivity.this, userPictureMap, userInfo.getHR_ID());
+//            }
+            return userInfoEntity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+//            scanProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(UserInfoEntity userInfoEntity) {
+//            if (userInfo != null) {
+////                setTvUserName();
+////                if (pictureBitmap != null) {
+////                    avatarImageView.setImageBitmap(pictureBitmap);
+////                }
+//            } else {
+//                Toast.makeText(LoginActivity.this, "无法访问服务器，请检查网络连接是否正常", Toast.LENGTH_LONG).show();
+//            }
+
+//            scanProgressBar.setVisibility(View.GONE);
+//            if (UserSingleton.get().getUserInfo() != null) {
+//                Intent intent = new Intent(StockDepartmentInActivity.this, MobileMainActivity.class);
+////            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
+//                intent.putExtra(IntentConstant.Intent_Extra_hr_id, UserSingleton.get().getHRID());
+//                startActivity(intent);
+//                finish();
+//            }
+            titleTextView.setText("操作员：" + userInfoEntity.getHR_Name());
         }
 
         @Override
@@ -508,5 +632,13 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putSerializable("BoxItemList", (Serializable) boxItemEntityList);
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (selectUseDialog != null && selectUseDialog.isShowing()){
+            selectUseDialog.dismiss();
+        }
     }
 }

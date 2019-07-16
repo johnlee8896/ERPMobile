@@ -19,6 +19,7 @@ import com.chinashb.www.mobileerp.basicobject.Issued_Item;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.StaticVariableUtils;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -37,6 +38,7 @@ public class StockPutActivity extends AppCompatActivity {
     private Button selectMWHasPlanButton;//既选计划
     private Button selectMWNewPlanButton;//新选计划
     private Button continuePutButton;
+    private Button continueDirectPutButton;//不需要修改
     private Button extraPutButton;
     private MpiWcBean mpiWcBean;
 
@@ -58,7 +60,7 @@ public class StockPutActivity extends AppCompatActivity {
     }
 
     protected void bindView() {
-        setContentView(R.layout.activity_stock_out);
+        setContentView(R.layout.activity_stock_out_layout);
         mrv_issued_items = (RecyclerView) findViewById(R.id.rv_issed_items);
         titleTextView = (TextView) findViewById(R.id.tv_stock_out_title);
         txtMW = (TextView) findViewById(R.id.tv_mpi_wc_title);
@@ -66,6 +68,7 @@ public class StockPutActivity extends AppCompatActivity {
         selectMWNewPlanButton = (Button) findViewById(R.id.btn_select_mpiwc);
         continuePutButton = (Button) findViewById(R.id.btn_continue_stock_out);
         extraPutButton = (Button) findViewById(R.id.btn_continue_stock_out_extra);
+        continueDirectPutButton = findViewById(R.id.btn_continue_stock_out_direct_button);
 
         mpiWcBeanList = StaticVariableUtils.selected_mws;
         IssuedItemList = new ArrayList<>();
@@ -112,17 +115,13 @@ public class StockPutActivity extends AppCompatActivity {
         continuePutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-                if (mpiWcBean != null) {
-                    Intent intent = new Intent(StockPutActivity.this, StockOutMoreActivity.class);
-                    intent.putExtra("mw", mpiWcBean);
-                    intent.putExtra("IssuedItemList", (Serializable) IssuedItemList);
-                    startActivityForResult(intent, 300);
-                }
+                handleContinuePut(false);
 
             }
 
+        });
+        continueDirectPutButton.setOnClickListener(v ->{
+            handleContinuePut(true);
         });
 
         extraPutButton.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +138,16 @@ public class StockPutActivity extends AppCompatActivity {
 
         });
 
+    }
+
+    private void handleContinuePut(boolean isDirect) {
+        if (mpiWcBean != null) {
+            Intent intent = new Intent(StockPutActivity.this, StockOutMoreActivity.class);
+            intent.putExtra("mw", mpiWcBean);
+            intent.putExtra("IssuedItemList", (Serializable) IssuedItemList);
+            intent.putExtra(IntentConstant.Intent_continue_put_directly, isDirect);
+            startActivityForResult(intent, 300);
+        }
     }
 
 

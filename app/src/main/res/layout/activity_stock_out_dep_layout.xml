@@ -15,13 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="部门领料"
-             />
-        <Button
-            android:id="@+id/deparment_in_scan_hr_code_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="扫描工位码" />
+            android:text="部门领料" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,6 +24,14 @@
             android:layout_weight="1"
             android:gravity="bottom"
             android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/deparment_in_scan_hr_code_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="扫描工位码" />
 
             <Button
                 android:id="@+id/btn_stock_out_dep_select_dep"
@@ -46,6 +49,7 @@
                 android:text="选择研发项目" />
 
         </LinearLayout>
+
         <EditText
             android:id="@+id/stock_out_dep_input_EditeText"
             android:layout_width="match_parent"
@@ -57,8 +61,8 @@
             android:paddingRight="@dimen/dimen_size_10"
             android:textColor="@color/black"
             android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
-            android:textSize="@dimen/text_size_14"
-            />
+            android:textSize="@dimen/text_size_14" />
+
         <TextView
             android:id="@+id/tv_stock_out_dep_select_dep"
             android:layout_width="match_parent"
@@ -78,11 +82,15 @@
             android:text="研发项目"
             android:textColor="@android:color/holo_purple"
             android:textStyle="bold" />
-        <Button
-            android:id="@+id/deparment_in_select_use_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="选择用途" />
+
+        <TextView
+            android:id="@+id/department_in_use_textView"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center|left"
+            android:paddingLeft="@dimen/dimen_size_15"
+            tools:text="实验难" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -98,6 +106,14 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:text="扫描领料" />
+
+            <Button
+                android:id="@+id/deparment_in_select_use_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="选择用途" />
 
             <Button
                 android:id="@+id/btn_exe_warehouse_out"

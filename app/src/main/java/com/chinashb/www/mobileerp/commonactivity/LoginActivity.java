@@ -32,7 +32,6 @@ import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.SPDefine;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
-import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -328,7 +327,7 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPreExecute() {
 //            progressBar.setVisibility(View.VISIBLE);
             progressDialog = new CommProgressDialog.Builder(LoginActivity.this)
-                    .setTitle("正在上传中...").create();
+                    .setTitle("正在登录..").create();
 
             progressDialog.show();
         }

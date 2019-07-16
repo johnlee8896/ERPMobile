@@ -1,136 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_issue_more_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="生产投料" />
-
-        <TextView
-            android:id="@+id/tv_issue_more_mw_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="生产计划"
-            android:textColor="#FF0000" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="bottom"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_issue_more_add"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:text="扫描新投料" />
-
-            <Button
-                android:id="@+id/btn_issue_more_add_extra"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:text="扫描额外领料"
-                android:visibility="gone" />
-
-            <Button
-                android:id="@+id/btn_exe_warehouse_out"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="出库登账" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/stock_out_more_input_EditeText"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_45"
-        android:background="@color/transparent"
-        android:gravity="center_vertical"
-        android:hint="接收扫描结果"
-        android:paddingLeft="@dimen/dimen_size_10"
-        android:paddingRight="@dimen/dimen_size_10"
-        android:textColor="@color/black"
-        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
-        android:textSize="@dimen/text_size_14" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="fill"
-        android:visibility="invisible"
-        tools:visibility="visible">
-
-        <TextView
-            android:id="@+id/tv_issue_more_item_col"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="物品" />
-
-        <TextView
-            android:id="@+id/tv_issue_more_lotno_col"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="批次" />
-
-        <TextView
-            android:id="@+id/tv_issue_more_qty_col"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="数量" />
-
-    </LinearLayout>
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_issue_more"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_issue_more_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="生产投料" />
+
+            <TextView
+                android:id="@+id/tv_issue_more_mw_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="生产计划"
+                android:textColor="#FF0000" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_issue_more_add"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+                    android:text="扫描新投料" />
+
+                <Button
+                    android:id="@+id/btn_issue_more_add_extra"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="扫描额外领料"
+                    android:visibility="gone" />
+
+                <Button
+                    android:id="@+id/btn_exe_warehouse_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="出库登账" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/stock_out_more_input_EditeText"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_45"
+            android:background="@color/transparent"
+            android:gravity="center_vertical"
+            android:hint="接收扫描结果"
+            android:paddingLeft="@dimen/dimen_size_10"
+            android:paddingRight="@dimen/dimen_size_10"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+            android:textSize="@dimen/text_size_14" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="fill"
+            android:visibility="invisible"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_issue_more_item_col"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="物品" />
+
+            <TextView
+                android:id="@+id/tv_issue_more_lotno_col"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="批次" />
+
+            <TextView
+                android:id="@+id/tv_issue_more_qty_col"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="数量" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#bbccaa"
-            android:clickable="true"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp">
+            android:orientation="vertical">
 
-        </android.support.v7.widget.RecyclerView>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_issue_more"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#bbccaa"
+                android:clickable="true"
+                tools:layout_editor_absoluteX="8dp"
+                tools:layout_editor_absoluteY="8dp">
 
-        <ProgressBar
-            android:id="@+id/pb_scan_progressbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:visibility="invisible" />
+            </android.support.v7.widget.RecyclerView>
+
+            <ProgressBar
+                android:id="@+id/pb_scan_progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:visibility="invisible" />
+
+        </LinearLayout>
 
     </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
 
-</LinearLayout>
 
