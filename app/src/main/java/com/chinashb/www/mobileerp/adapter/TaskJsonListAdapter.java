@@ -69,23 +69,23 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
 
         Integer creater = obj.get("Creater").getAsInt();
 
-        if (obj.get("任务").isJsonNull() == false) {
+        if (!obj.get("任务").isJsonNull() ) {
             holder.tvTask.setText(obj.get("任务").getAsString());
         } else {
             holder.tvTask.setText("（没有填写任务标题）");
         }
-        if (obj.get("责任人").isJsonNull() == false) {
+        if (!obj.get("责任人").isJsonNull() ) {
             holder.tvExer.setText(obj.get("责任人").getAsString());
         } else {
             holder.tvExer.setText("");
         }
-        if (obj.get("Create_Time").isJsonNull() == false) {
+        if (!obj.get("Create_Time").isJsonNull() ) {
             holder.tvCreateTime.setText(obj.get("Create_Time").getAsString());
         } else {
             holder.tvCreateTime.setText("?");
         }
 
-        if (obj.get("End_Time").isJsonNull() == false) {
+        if (!obj.get("End_Time").isJsonNull() ) {
             holder.tvEndTime.setText(obj.get("End_Time").getAsString());
         } else {
             holder.tvEndTime.setText("TBD");
@@ -94,7 +94,7 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
         if (CommonUtil.userPictureMap.containsKey(creater)) {
             holder.ivCreater.setImageBitmap(CommonUtil.userPictureMap.get(creater));
         }
-        if (obj.get("制定人").isJsonNull() == false) {
+        if (!obj.get("制定人").isJsonNull() ) {
             holder.tvCreater.setText(obj.get("制定人").getAsString());
         } else {
             holder.tvCreater.setText("");

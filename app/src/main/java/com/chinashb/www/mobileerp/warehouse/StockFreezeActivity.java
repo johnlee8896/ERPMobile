@@ -189,7 +189,7 @@ public class StockFreezeActivity extends AppCompatActivity {
 
             scanresult = bi;
 
-            if (bi.getResult() == true) {
+            if (bi.getResult() ) {
                 if (!is_box_existed(bi)) {
                     bi.setSelect(true);
                     boxitemList.add(bi);
@@ -225,7 +225,7 @@ public class StockFreezeActivity extends AppCompatActivity {
             //tv.setText(fahren + "∞ F");
 
             if (scanresult != null) {
-                if (scanresult.getResult() == false) {
+                if (!scanresult.getResult() ) {
                     Toast.makeText(StockFreezeActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -255,7 +255,7 @@ public class StockFreezeActivity extends AppCompatActivity {
                 BoxItemEntity bi = boxitemList.get(i);
                 WsResult result = WebServiceUtil.op_Commit_Freeze_Inv(bi);
                 bi.setWs_result(result);
-                if (result.getResult() == true) {
+                if (result.getResult() ) {
                     bi.setFreezeStatus("冻结");
                 }
             }
@@ -293,7 +293,7 @@ public class StockFreezeActivity extends AppCompatActivity {
                 BoxItemEntity bi = boxitemList.get(i);
                 WsResult result = WebServiceUtil.op_Commit_FreezeNot_Inv(bi);
                 bi.setWs_result(result);
-                if (result.getResult() == true) {
+                if (result.getResult() ) {
                     bi.setFreezeStatus("正常");
                 }
             }

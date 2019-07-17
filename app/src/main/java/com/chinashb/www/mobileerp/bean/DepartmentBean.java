@@ -23,6 +23,10 @@ public class DepartmentBean implements Parcelable {
     @SerializedName("PDN") private String PDN;
     @SerializedName("Department_Name") private String DepartmentName;
 
+    public DepartmentBean(){
+
+    }
+
     protected DepartmentBean(Parcel in) {
         DepartmentID = in.readInt();
         PDN = in.readString();

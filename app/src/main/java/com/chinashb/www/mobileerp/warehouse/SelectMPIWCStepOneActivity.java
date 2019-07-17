@@ -99,7 +99,7 @@ public class SelectMPIWCStepOneActivity extends AppCompatActivity {
             String sql = "Select Case When Ac_Type=1 Then '部件' When Ac_Type=2 Then '成品' Else '' End As WCL_Type, LID, Bu_ID, ListName From WC_List Where Bu_ID="
                     + UserSingleton.get().getUserInfo().getBu_ID() + " Order By Case When Ac_Type=1 Then '部件' When Ac_Type=2 Then '成品' Else '' End";
             WsResult result = WebServiceUtil.getDataTable(sql);
-            if (result != null && result.getResult() == true) {
+            if (result != null && result.getResult() ) {
                 String jsonData = result.getErrorInfo();
                 ArrayList<s_WCList> us = new ArrayList<s_WCList>();
                 Gson gson = new Gson();

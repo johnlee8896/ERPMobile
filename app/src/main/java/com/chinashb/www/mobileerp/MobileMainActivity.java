@@ -113,7 +113,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 //
 //        QueryAsyncTask query = new QueryAsyncTask();
 //        query.execute(sql);
-//        query.setLoadDataCompleteListener(new isLoadDataListener() {
+//        query.setLoadDataCompleteListener(new OnLoadDataListener() {
 //            @Override
 //            public void loadComplete(List<JsonObject> result) {
 //                if (result != null && result.size() == 1) {
@@ -482,8 +482,6 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 //            userInfo = WebServiceUtil.getHRName_Bu(userInfo.getHR_ID());
             UserInfoEntity userInfoEntity = WebServiceUtil.getHRName_Bu(hrId);
             UserSingleton.get().setUserInfo(userInfoEntity);
-
-
             if (userInfoEntity != null) {
                 CommonUtil.pictureBitmap = CommonUtil.getUserPic(MobileMainActivity.this, CommonUtil.userPictureMap, userInfoEntity.getHR_ID());
             }

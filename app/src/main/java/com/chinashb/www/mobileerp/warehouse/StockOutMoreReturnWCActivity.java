@@ -167,7 +167,7 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
             BoxItemEntity bi = WebServiceUtil.op_Check_Commit_WC_Return_Item_Barcode(scanstring);
             scanresult = bi;
-            if (bi.getResult() == true) {
+            if (bi.getResult() ) {
                 if (!is_box_existed(bi)) {
                     bi.setSelect(true);
                     newissuelist.add(bi);
@@ -202,7 +202,7 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
             //tv.setText(fahren + "∞ F");
 
             if (scanresult != null) {
-                if (scanresult.getResult() == false) {
+                if (!scanresult.getResult() ) {
                     Toast.makeText(StockOutMoreReturnWCActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -237,7 +237,7 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
                 ws_result = WebServiceUtil.op_Commit_Return_Item(bi);
 
 
-                if (ws_result.getResult() == true) {
+                if (ws_result.getResult() ) {
                     newissuelist.remove(bi);
                     newissuelist.remove(bi);
                 }
@@ -253,7 +253,7 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
             //tv.setText(fahren + "∞ F");
 
             if (ws_result != null) {
-                if (ws_result.getResult() == false) {
+                if (!ws_result.getResult() ) {
                     CommonUtil.ShowToast(StockOutMoreReturnWCActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
 
                 } else {

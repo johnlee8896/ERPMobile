@@ -318,7 +318,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
 
             scanresult = bi;
 
-            if (bi.getResult() == true) {
+            if (bi.getResult() ) {
                 if (!is_box_existed(bi)) {
                     bi.setSelect(true);
                     boxItemEntityList.add(bi);
@@ -341,7 +341,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
             //tv.setText(fahren + "∞ F");
 
             if (scanresult != null) {
-                if (scanresult.getResult() == false) {
+                if (!scanresult.getResult() ) {
                     Toast.makeText(StockOutMoreActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -370,12 +370,12 @@ public class StockOutMoreActivity extends AppCompatActivity {
 
             IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanedItem);
 
-            if (bi.getResult() == true) {
+            if (bi.getResult() ) {
                 thePlace = bi;
 
-                if (bi.getResult() == true) {
+                if (bi.getResult() ) {
                     for (int i = 0; i < boxItemEntityList.size(); i++) {
-                        if (boxItemEntityList.get(i).getSelect() == true) {
+                        if (boxItemEntityList.get(i).getSelect() ) {
                             boxItemEntityList.get(i).setIstName(bi.getIstName());
                             boxItemEntityList.get(i).setIst_ID(bi.getIst_ID());
                             boxItemEntityList.get(i).setSub_Ist_ID(bi.getSub_Ist_ID());
@@ -454,7 +454,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
 
                 ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(themw.getMPIWC_ID(), bi);
 
-                if (ws_result.getResult() == true) {
+                if (ws_result.getResult() ) {
                     boxItemEntityList.remove(bi);
                     UpdateNeedQty(bi);
                 } else {
@@ -477,7 +477,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
             pbScan.setVisibility(View.INVISIBLE);
 
             if (ws_result != null) {
-                if (ws_result.getResult() == false) {
+                if (!ws_result.getResult() ) {
                     CommonUtil.ShowToast(StockOutMoreActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
                 } else {
                     CommonUtil.ShowToast(StockOutMoreActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);

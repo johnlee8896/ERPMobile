@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
+import com.chinashb.www.mobileerp.basicobject.UserAllInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
@@ -36,10 +38,12 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.SelectUseDialog;
+import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -81,6 +85,9 @@ public class StockDepartmentInActivity extends AppCompatActivity {
     private Button scanHRCodeButton;
     private SelectUseDialog selectUseDialog;
     private boolean hasSelectUse = false;
+    private String operatorName;
+    private String description;
+    private boolean hasScanHrCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,12 +142,10 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         return (int) (padding_in_dp * scale + 0.5f);
     }
 
-
     protected void bindView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_stock_out_dep_layout);
         mContext = this;
         //mLinearLayout=(LinearLayout)findViewById(R.id.box);
-
         mLl_parent = (LinearLayout) findViewById(R.id.box);
         recyclerView = (RecyclerView) findViewById(R.id.rv_issue_more_extra);
         txtMw_Title = (TextView) findViewById(R.id.tv_issue_more_mw_title);
@@ -252,7 +257,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         outStockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!hasSelectUse){
+                if (!hasSelectUse) {
                     ToastUtil.showToastShort("您还没有选择用途，请选择!");
                     return;
                 }
@@ -267,35 +272,45 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 //                        return;
 //                    }
 
-                    AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
+                    WarehouseOutAsyncTask task = new WarehouseOutAsyncTask();
                     task.execute();
+                }else{
+                    ToastUtil.showToastShort("没有领料信息！");
                 }
             }
         });
-        inputEditText.addTextChangedListener(new TextWatcherImpl(){
+        inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                if (editable.toString().endsWith("\n")){
+                if (editable.toString().endsWith("\n")) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
 //                    parseScanResult(editable.toString());
-                    ActivityResultScan(inputEditText.getText().toString());
+                    parseScanResult(inputEditText.getText().toString());
                 }
             }
         });
 
-        selectUseButton.setOnClickListener(v ->{
-            if (selectUseDialog == null){
+        selectUseButton.setOnClickListener(v -> {
+            if (selectUseDialog == null) {
                 selectUseDialog = new SelectUseDialog(StockDepartmentInActivity.this);
             }
             selectUseDialog.show();
             selectUseDialog.setOnViewClickListener(new OnViewClickListener() {
                 @Override
                 public <T> void onClickAction(View v, String tag, T t) {
-                    ToastUtil.showToastShort("您选择了" + (String)t);
+                    if (!hasScanHrCode) {
+                        ToastUtil.showToastShort("请先扫描员工ID信息码！");
+                        if (selectUseDialog != null && selectUseDialog.isShowing()) {
+                            selectUseDialog.dismiss();
+                        }
+                        return;
+                    }
+                    ToastUtil.showToastShort("您选择了" + (String) t);
                     useTextView.setText((String) t);
+                    description = description + " 用途：" + (String) t;
                     hasSelectUse = true;
-                    if (selectUseDialog != null && selectUseDialog.isShowing()){
+                    if (selectUseDialog != null && selectUseDialog.isShowing()) {
                         selectUseDialog.dismiss();
                     }
                 }
@@ -303,13 +318,12 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 
         });
 
-        scanHRCodeButton.setOnClickListener(v ->{
+        scanHRCodeButton.setOnClickListener(v -> {
             startScanHR();
         });
     }
 
     private void startScanHR() {
-
         QRCodeScanActivity.startQRCodeScanner(this, new OnQRScanListenerImpl() {
             @Override
             public void onScanQRCodeSuccess(String result) {
@@ -379,11 +393,10 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
-
             //选择物料
             if (result.getContents() == null) {
             } else {
-                ActivityResultScan(result.getContents());
+                parseScanResult(result.getContents());
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
@@ -410,17 +423,19 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         }
     }
 
-    protected void ActivityResultScan(String result) {
-
-        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
-
+    protected void parseScanResult(String result) {
+//        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
         if (result.contains("/")) {
             String[] qrContent;
             qrContent = result.split("/");
-            if (qrContent.length >= 2) {
+            if (result.contains("HRID") && result.contains("HRNO")) {
+                if (qrContent.length >= 4) {
+                    GetHrNameAsyncTask task = new GetHrNameAsyncTask();
+                    task.execute(qrContent[2]);
+                }
+            } else if (qrContent.length >= 2) {
                 String qrTitle = qrContent[0];
-
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
@@ -429,39 +444,31 @@ public class StockDepartmentInActivity extends AppCompatActivity {
                         task.execute();
                     }
                 }
-
             }
         }
     }
 
-
     private class AsyncGetIssueMoreExtraBox extends AsyncTask<String, Void, Void> {
-        BoxItemEntity scanresult;
+        private BoxItemEntity scanresult;
 
         @Override
         protected Void doInBackground(String... params) {
-
-            BoxItemEntity bi = WebServiceUtil.op_Check_Commit_Inv_Out_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(), scanstring);
-
-            scanresult = bi;
-
-            if (bi.getResult() == true) {
-                if (!is_box_existed(bi)) {
-                    bi.setSelect(true);
-                    boxItemEntityList.add(bi);
+            BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_Inv_Out_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(), scanstring);
+            scanresult = boxItemEntity;
+            if (boxItemEntity.getResult()) {
+                if (!is_box_existed(boxItemEntity)) {
+                    boxItemEntity.setSelect(true);
+                    boxItemEntityList.add(boxItemEntity);
                 } else {
-                    bi.setResult(false);
-                    bi.setErrorInfo("该包装已经在装载列表中");
+                    boxItemEntity.setResult(false);
+                    boxItemEntity.setErrorInfo("该包装已经在装载列表中");
                 }
             }
-
             return null;
         }
 
-
-        protected Boolean is_box_existed(BoxItemEntity box_item) {
-            Boolean result = false;
-
+        private boolean is_box_existed(BoxItemEntity box_item) {
+            boolean result = false;
             if (boxItemEntityList != null) {
                 for (int i = 0; i < boxItemEntityList.size(); i++) {
                     if (boxItemEntityList.get(i).getSMLI_ID() == box_item.getSMLI_ID() && box_item.getSMLI_ID() > 0) {
@@ -479,29 +486,21 @@ public class StockDepartmentInActivity extends AppCompatActivity {
                             && boxItemEntityList.get(i).getLotID() == box_item.getLotID()) {
                         return true;
                     }
-
-
                 }
             }
-
             return result;
         }
-
 
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-
             if (scanresult != null) {
-                if (scanresult.getResult() == false) {
+                if (!scanresult.getResult()) {
                     Toast.makeText(StockDepartmentInActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
-
-
             issueMoreItemAdapter.notifyDataSetChanged();
             recyclerView.setAdapter(issueMoreItemAdapter);
-
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -516,8 +515,8 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 
     }
 
-    private class AsyncExeWarehouseOut extends AsyncTask<String, Void, Void> {
-        WsResult ws_result;
+    private class WarehouseOutAsyncTask extends AsyncTask<String, Void, Void> {
+        private WsResult ws_result;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -526,9 +525,10 @@ public class StockDepartmentInActivity extends AppCompatActivity {
             while (count < boxItemSize && boxItemEntityList.size() > 0) {
                 BoxItemEntity boxItemEntity = boxItemEntityList.get(0);
                 //// TODO: 2019/7/15 确认，这是用途备注
-                boxItemEntity.setLotDescription(useTextView.getText().toString());
+//                boxItemEntity.setLotDescription(useTextView.getText().toString());
+//                boxItemEntity.setLotDescription(description);
 //                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), SelectDep, SelectReaseach, bi);
-                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity);
+                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity,description);
                 if (ws_result.getResult()) {
                     boxItemEntityList.remove(boxItemEntity);
                 } else {
@@ -550,6 +550,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
                 } else {
                     //// TODO: 2019/7/15 哪些页面是执行成功后要跳离的？
                     CommonUtil.ShowToast(StockDepartmentInActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
+                    description = "";
                     finish();
                 }
             }
@@ -566,16 +567,33 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 
     }
 
+//    private void handleGetAllUserEntity(int hrId) {
+//        if (UserSingleton.get().getUserAllInfoEntity() == null) {
+//            String sql = "select * from hr where hr_id = " + hrId;
+//            QueryAsyncTask query = new QueryAsyncTask();
+//            query.execute(sql);
+//            query.setLoadDataCompleteListener(new OnLoadDataListener() {
+//                @Override public void loadComplete(List<JsonObject> jsonObjectList) {
+//                    if (jsonObjectList != null && jsonObjectList.size() > 0) {
+//                        //                    JsonObject jsonObject = jsonObjectList.get(0);
+//                        UserAllInfoEntity userAllInfoEntity = JsonUtil.parseJsonToObject(jsonObjectList.get(0).toString(), UserAllInfoEntity.class);
+//                        if (userAllInfoEntity != null) {
+//                            UserSingleton.get().setUserAllInfoEntity(userAllInfoEntity);
+//                        }
+//                    }
+//                }
+//            });
+//        }
+//    }
+
     //// TODO: 2019/7/15 这里根存储的可能有出入，可能有问题
-    private class GetHrNameAsyncTask extends AsyncTask<String, Void, UserInfoEntity> {
+    private class GetHrNameAsyncTask extends AsyncTask<String, Void, UserAllInfoEntity> {
         //Image hr_photo;
-
         @Override
-        protected UserInfoEntity doInBackground(String... params) {
-
+        protected UserAllInfoEntity doInBackground(String... params) {
             int hrId = Integer.parseInt(params[0]);
 //            userInfo = WebServiceUtil.getHRName_Bu(userInfo.getHR_ID());
-            UserInfoEntity userInfoEntity = WebServiceUtil.getHRName_Bu(hrId);
+//            UserInfoEntity userInfoEntity = WebServiceUtil.getHRName_Bu(hrId);
             //// TODO: 2019/7/15 这里根存储的可能有出入，可能有问题
 //            UserSingleton.get().setHRID(hrId);
 //            UserSingleton.get().setHRName(userInfo.getHR_Name());
@@ -583,7 +601,21 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 //            if (userInfo != null) {
 //                Bitmap userPic = CommonUtil.getUserPic(StockDepartmentInActivity.this, userPictureMap, userInfo.getHR_ID());
 //            }
-            return userInfoEntity;
+
+
+            String sql = "select * from hr where hr_id = " + hrId;
+            List<JsonObject> jsonObjectList;
+            jsonObjectList = WebServiceUtil.getJsonList(sql);
+
+            if (jsonObjectList != null && jsonObjectList.size() > 0) {
+                //                    JsonObject jsonObject = jsonObjectList.get(0);
+                UserAllInfoEntity userAllInfoEntity = JsonUtil.parseJsonToObject(jsonObjectList.get(0).toString(), UserAllInfoEntity.class);
+                if (userAllInfoEntity != null) {
+                    UserSingleton.get().setUserAllInfoEntity(userAllInfoEntity);
+                }
+                return userAllInfoEntity;
+            }
+            return null;
         }
 
         @Override
@@ -592,7 +624,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(UserInfoEntity userInfoEntity) {
+        protected void onPostExecute(UserAllInfoEntity userAllInfoEntity) {
 //            if (userInfo != null) {
 ////                setTvUserName();
 ////                if (pictureBitmap != null) {
@@ -610,7 +642,23 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 //                startActivity(intent);
 //                finish();
 //            }
-            titleTextView.setText("操作员：" + userInfoEntity.getHR_Name());
+//            titleTextView.setText("操作员：" + UserSingleton.get().getDepartmentMap().get(userInfoEntity) userInfoEntity.getHR_Name());
+            String departmentName ;
+            if (userAllInfoEntity.getHRDepartment() == null || TextUtils.isEmpty(userAllInfoEntity.getHRDepartment().toString())) {
+                departmentName = UserSingleton.get().getDepartmentMap().get(userAllInfoEntity.getDepartmentID());
+            }else{
+                departmentName = userAllInfoEntity.getHRDepartment().toString();
+            }
+            titleTextView.setText("操作员：" + departmentName + "-" + userAllInfoEntity.getHRName());
+            if (departmentBean == null){
+                departmentBean = new DepartmentBean();
+                departmentBean.setDepartmentID(userAllInfoEntity.getDepartmentID());
+                departmentBean.setDepartmentName(departmentName);
+            }
+            operatorName = userAllInfoEntity.getHRName();
+            description = departmentName + "-" + operatorName + "领料";
+            inputEditText.setText("");
+            hasScanHrCode = true;
         }
 
         @Override
@@ -637,7 +685,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (selectUseDialog != null && selectUseDialog.isShowing()){
+        if (selectUseDialog != null && selectUseDialog.isShowing()) {
             selectUseDialog.dismiss();
         }
     }

@@ -37,7 +37,7 @@ public class NetWorkReceiver extends BroadcastReceiver {
                         ((ipAddress >> 16) & 0xFF) + "." +
                         (ipAddress >> 24 & 0xFF);
 
-                UserInfoEntity.IP = ip;
+//                UserInfoEntity.IP = ip;
 
                 if (ip.startsWith("172.16.6.") ||
                         ip.startsWith("172.16.7.") ||

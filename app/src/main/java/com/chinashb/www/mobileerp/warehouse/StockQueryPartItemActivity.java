@@ -189,7 +189,7 @@ public class StockQueryPartItemActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
 
             if (ws_result != null) {
-                if (ws_result.getResult() == true) {
+                if (ws_result.getResult() ) {
                     EditingLot.setLotDescription(NewLotDes);
                     partItemAdpater.notifyDataSetChanged();
                 }

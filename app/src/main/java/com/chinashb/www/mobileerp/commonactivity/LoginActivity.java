@@ -25,8 +25,8 @@ import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
-import com.chinashb.www.mobileerp.funs.isLoadDataListener;
 import com.chinashb.www.mobileerp.singleton.SPSingleton;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
@@ -59,19 +59,14 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_layout);
-
-
         nameEditText = (EditText) findViewById(R.id.et_login_name);
         passwordEditText = (EditText) findViewById(R.id.et_login_password);
         loginButton = (Button) findViewById(R.id.name_sign_in_button);
         scanHRButton = (Button) findViewById(R.id.main_scan_hr_card_button);
 //        progressBar = (ProgressBar) findViewById(R.id.login_progress);
-
         //最新版本检测
         checkErpVersionOk();
-
         CommonUtil.initNetWorkLink(this);
-
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,7 +159,6 @@ public class LoginActivity extends AppCompatActivity {
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-
         super.onResume();
     }
 
@@ -234,22 +228,19 @@ public class LoginActivity extends AppCompatActivity {
     private void checkErpVersionOk() {
         String sql = "select top 1 VerID,Version,Convert(nvarchar(100),UpdateDate,23) As UpdateDate, Des " +
                 " from ERP_Mobile_Ver Where RequireUpdate=1 Order By VerID Desc";
-
         QueryAsyncTask query = new QueryAsyncTask();
         query.execute(sql);
-        query.setLoadDataCompleteListener(new isLoadDataListener() {
+        query.setLoadDataCompleteListener(new OnLoadDataListener() {
             @Override
             public void loadComplete(List<JsonObject> result) {
                 if (result != null && result.size() == 1) {
                     //返回结果，说明网络访问没有问题
                     isNetReady = true;
-
                     JsonObject o = result.get(0);
                     Integer ErpVerID = o.get("VerID").getAsInt();
                     String Version = o.get("Version").getAsString();
                     String UpdateDate = o.get("UpdateDate").getAsString();
                     String Des = o.get("Des").getAsString();
-
 //                    query_erp_id = ErpVerID;
                     if (mobile_erp_ver_id >= ErpVerID) {
                         versionOk = true;
@@ -259,7 +250,6 @@ public class LoginActivity extends AppCompatActivity {
                                 "系统已于" + UpdateDate + "升级到版本" + Version + "\n" +
                                 "版本描述：\n" +
                                 Des;
-
                         CommonUtil.ShowToast(LoginActivity.this, newVerWarning, R.mipmap.warning, Toast.LENGTH_SHORT);
                     }
                 } else {
@@ -289,10 +279,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     protected void checkNamePwd() {
-
         String userName = nameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
-
         if (userName.isEmpty() || password.isEmpty()) {
             ToastUtil.showToastLong("请输入名字/密码");
         } else {
@@ -301,15 +289,11 @@ public class LoginActivity extends AppCompatActivity {
             CheckNameAndPasswordAsyncTask task = new CheckNameAndPasswordAsyncTask();
             task.execute(nameEditText.getText().toString(), passwordEditText.getText().toString());
         }
-
     }
 
-
     private class CheckNameAndPasswordAsyncTask extends AsyncTask<String, Void, Void> {
-
         private WsResult wsResult = null;
         private CommProgressDialog progressDialog;
-
         @Override
         protected Void doInBackground(String... params) {
 //            String Name = nameEditText.getText().toString();
@@ -328,23 +312,19 @@ public class LoginActivity extends AppCompatActivity {
 //            progressBar.setVisibility(View.VISIBLE);
             progressDialog = new CommProgressDialog.Builder(LoginActivity.this)
                     .setTitle("正在登录..").create();
-
             progressDialog.show();
         }
 
         @Override
         protected void onPostExecute(Void result) {
-
             if (this.wsResult.getResult()) {
 //                UserInfoEntity.ID = this.wsResult.getID().intValue();
 
 //                Intent resultIntent = new Intent();
 //                setResult(1, resultIntent);
 //                finish();
-
                 UserSingleton.get().setHRID(wsResult.getID().intValue());
                 UserSingleton.get().setHRName(nameEditText.getText().toString());
-
                 SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
 
                 Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
@@ -352,11 +332,9 @@ public class LoginActivity extends AppCompatActivity {
                 intent.putExtra(IntentConstant.Intent_Extra_hr_id, wsResult.getID().intValue());
                 startActivity(intent);
                 finish();
-
             } else {
                 ToastUtil.showToastLong(wsResult.getErrorInfo());
             }
-
 //            progressBar.setVisibility(View.INVISIBLE);
             progressDialog.dismiss();
         }
@@ -372,10 +350,8 @@ public class LoginActivity extends AppCompatActivity {
 //
     private class GetHrNameAsyncTask extends AsyncTask<String, Void, Void> {
         //Image hr_photo;
-
         @Override
         protected Void doInBackground(String... params) {
-
             int hrId = Integer.parseInt(params[0]);
 //            userInfo = WebServiceUtil.getHRName_Bu(userInfo.getHR_ID());
             UserInfoEntity userInfo = WebServiceUtil.getHRName_Bu(hrId);

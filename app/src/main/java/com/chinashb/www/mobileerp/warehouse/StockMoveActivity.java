@@ -20,7 +20,6 @@ import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
-import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.AdapterMoveBoxItem;
@@ -33,17 +32,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/***
+ * 移动库位页面
+ */
 public class StockMoveActivity extends AppCompatActivity {
-
-
     private Button btnAddTray;
     private Button btnScanArea;
     private Button btnWarehouseMove;
     private EditText inputEditText;
     private RecyclerView mRecyclerView;
-
     private ProgressBar pbScan;
-
     private AdapterMoveBoxItem boxitemAdapter;
     private List<BoxItemEntity> boxitemList;
     private IstPlaceEntity thePlace;
@@ -53,31 +51,22 @@ public class StockMoveActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_move_layout);
-
 //        tv = (TextView)findViewById(R.id.tv_stock_system_title);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_move_box);
         pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
-
         btnAddTray = (Button) findViewById(R.id.btn_move_add_tray);
         btnScanArea = (Button) findViewById(R.id.btn_move_scan_new_place);
         btnWarehouseMove = (Button) findViewById(R.id.btn_move_execute);
         inputEditText = findViewById(R.id.stock_move_input_EditeText);
 
-
         boxitemList = new ArrayList<>();
-
-
         if (savedInstanceState != null) {
             boxitemList = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
         }
-
         boxitemAdapter = new AdapterMoveBoxItem(StockMoveActivity.this, boxitemList);
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(boxitemAdapter);
-
         setHomeButton();
-
 
         btnAddTray.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,11 +83,10 @@ public class StockMoveActivity extends AppCompatActivity {
         btnScanArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (boxitemList.size() > 0) {
                     int selectedcount = 0;
                     for (int i = 0; i < boxitemList.size(); i++) {
-                        if (boxitemList.get(i).getSelect() == true) {
+                        if (boxitemList.get(i).getSelect() ) {
                             selectedcount++;
                         }
                     }
@@ -112,28 +100,11 @@ public class StockMoveActivity extends AppCompatActivity {
 
         });
 
-
         btnWarehouseMove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (boxitemList.size() > 0) {
-                    int selectedcount = 0;
-                    for (int i = 0; i < boxitemList.size(); i++) {
-                        if (boxitemList.get(i).getSelect() == true) {
-                            selectedcount++;
-                        }
-                    }
-                    if (selectedcount > 0) {
-                        AsyncExeWarehouseMove task = new AsyncExeWarehouseMove();
-                        task.execute();
-
-                    }
-
-                }
-
+                handleMoveStockArea();
             }
-
         });
 
         inputEditText.addTextChangedListener(new TextWatcherImpl(){
@@ -147,12 +118,25 @@ public class StockMoveActivity extends AppCompatActivity {
             }
         });
 
+    }
 
+    private void handleMoveStockArea() {
+        if (boxitemList.size() > 0) {
+            int selectedcount = 0;
+            for (int i = 0; i < boxitemList.size(); i++) {
+                if (boxitemList.get(i).getSelect() ) {
+                    selectedcount++;
+                }
+            }
+            if (selectedcount > 0) {
+                AsyncExeWarehouseMove task = new AsyncExeWarehouseMove();
+                task.execute();
+            }
+        }
     }
 
     private void parseScanResult(String result) {
-        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
-
+//        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
         if (result.contains("/")) {
             String[] qrContent;
@@ -205,12 +189,8 @@ public class StockMoveActivity extends AppCompatActivity {
             if (result.getContents() == null) {
                 //不要重复启动扫码
                 //new IntentIntegrator(StockMoveActivity.this).initiateScan();
-
             } else {
-
                parseScanResult(result.getContents());
-
-
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
@@ -218,15 +198,13 @@ public class StockMoveActivity extends AppCompatActivity {
         }
     }
 
-
     private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
-        BoxItemEntity scanresult;
-
+        BoxItemEntity boxItemEntity;
         @Override
         protected Void doInBackground(String... params) {
             BoxItemEntity bi = WebServiceUtil.op_Check_Commit_Move_Item_Barcode(scanstring);
-            scanresult = bi;
-            if (bi.getResult() == true) {
+            boxItemEntity = bi;
+            if (bi.getResult() ) {
                 if (!is_box_existed(bi)) {
                     bi.setSelect(true);
                     boxitemList.add(bi);
@@ -242,8 +220,8 @@ public class StockMoveActivity extends AppCompatActivity {
             return null;
         }
 
-        protected Boolean is_box_existed(BoxItemEntity box_item) {
-            Boolean result = false;
+        protected boolean is_box_existed(BoxItemEntity box_item) {
+            boolean result = false;
             if (boxitemList != null) {
                 for (int i = 0; i < boxitemList.size(); i++) {
                     if (boxitemList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
@@ -254,13 +232,12 @@ public class StockMoveActivity extends AppCompatActivity {
             return result;
         }
 
-
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-            if (scanresult != null) {
-                if (scanresult.getResult() == false) {
-                    Toast.makeText(StockMoveActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
+            if (boxItemEntity != null) {
+                if (!boxItemEntity.getResult() ) {
+                    Toast.makeText(StockMoveActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
             mRecyclerView.setAdapter(boxitemAdapter);
@@ -285,11 +262,11 @@ public class StockMoveActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... params) {
             IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
-            if (bi.getResult() == true) {
+            if (bi.getResult() ) {
                 thePlace = bi;
-                if (bi.getResult() == true) {
+                if (bi.getResult() ) {
                     for (int i = 0; i < boxitemList.size(); i++) {
-                        if (boxitemList.get(i).getSelect() == true) {
+                        if (boxitemList.get(i).getSelect() ) {
                             boxitemList.get(i).setIstName(bi.getIstName());
                             boxitemList.get(i).setIst_ID(bi.getIst_ID());
                             boxitemList.get(i).setSub_Ist_ID(bi.getSub_Ist_ID());
@@ -310,6 +287,7 @@ public class StockMoveActivity extends AppCompatActivity {
             pbScan.setVisibility(View.INVISIBLE);
             inputEditText.setText("");
             inputEditText.setHint("请继续扫描");
+            handleMoveStockArea();
         }
 
         @Override
@@ -340,7 +318,7 @@ public class StockMoveActivity extends AppCompatActivity {
                     return null;
                 }
 
-                if (boxitemList.get(i).getSelect() == true) {
+                if (boxitemList.get(i).getSelect() ) {
                     SelectList.add(boxitemList.get(i));
                 }
 
@@ -355,7 +333,7 @@ public class StockMoveActivity extends AppCompatActivity {
 
                 WsResult result = WebServiceUtil.op_Commit_Move_Item(bi);
 
-                if (result.getResult() == true) {
+                if (result.getResult() ) {
                     boxitemList.remove(bi);
 
                     SelectList.remove(bi);
@@ -373,7 +351,7 @@ public class StockMoveActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            if (NoNewPlace == true) {
+            if (NoNewPlace ) {
                 pbScan.setVisibility(View.INVISIBLE);
                 CommonUtil.ShowToast(StockMoveActivity.this, "还没有扫描新位置", R.mipmap.warning);
             } else {

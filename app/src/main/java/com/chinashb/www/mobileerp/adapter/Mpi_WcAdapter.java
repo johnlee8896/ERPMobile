@@ -55,7 +55,7 @@ public class Mpi_WcAdapter extends RecyclerView.Adapter<Mpi_WcAdapter.Mpi_WcView
         wc.setMwNameTextView(holder.tvMWName);
         holder.tvMWRemark.setText(wc.getMPI_Remark());
 
-        if (showdeletebutton == false) {
+        if (!showdeletebutton ) {
             holder.btnDelete.setVisibility(View.GONE);
         }
 

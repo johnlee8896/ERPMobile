@@ -184,7 +184,7 @@ public class StockQueryProductItemActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
 
             if (ws_result != null) {
-                if (ws_result.getResult() == true) {
+                if (ws_result.getResult() ) {
                     selectInnerItem.set标注(NewLotDes);
                     productItemAdpater.notifyDataSetChanged();
                 }

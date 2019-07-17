@@ -67,7 +67,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".warehouse.StockMoveActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="stateAlwaysVisible|adjustResize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.StockFreezeActivity"
@@ -103,7 +103,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.StockDepartmentInActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
         <activity
             android:name=".commonactivity.SelectItemActivity"
             android:screenOrientation="portrait" />

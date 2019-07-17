@@ -124,7 +124,7 @@ public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
 
             String sql = "Select Wi.WC_ID, Wi.List_No,WC_Name From WC_List_Item As Wi Inner Join P_WC As C On Wi.Wc_ID=C.WC_ID Where Wi.LID= " + selected_wclist.getLID() + " Order By Wi.List_No";
             WsResult r = WebServiceUtil.getDataTable(sql);
-            if (r != null && r.getResult() == true) {
+            if (r != null && r.getResult() ) {
                 String js = r.getErrorInfo();
                 ArrayList<WorkCenter> workCenterList = new ArrayList<WorkCenter>();
                 Gson gson = new Gson();

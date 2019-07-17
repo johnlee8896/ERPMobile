@@ -204,7 +204,7 @@ public class CommonUtil {
         JsonObject o = list.get(0);
 
         Set<String> cols = o.keySet();
-        if (cols.contains(Member) == false) {
+        if (!cols.contains(Member) ) {
             return " (-9999) ";
         }
 
@@ -241,19 +241,19 @@ public class CommonUtil {
 
 
     public static List<Integer> getIDListFromJsonList(List<JsonObject> list, String Member) {
-        List<Integer> l = new ArrayList<Integer>();
+        List<Integer> tempList = new ArrayList<Integer>();
 
         if (list == null) {
-            return l;
+            return tempList;
         }
         if (list.size() == 0) {
-            return l;
+            return tempList;
         }
         JsonObject o = list.get(0);
 
         Set<String> cols = o.keySet();
-        if (cols.contains(Member) == false) {
-            return l;
+        if (!cols.contains(Member) ) {
+            return tempList;
         }
 
 
@@ -263,12 +263,12 @@ public class CommonUtil {
             if (om.isEmpty() || om.equals("null")) {
             } else {
                 Integer iID = Integer.valueOf(om);
-                if (l.contains(iID) == false) {
-                    l.add(iID);
+                if (!tempList.contains(iID) ) {
+                    tempList.add(iID);
                 }
             }
         }
-        return l;
+        return tempList;
 
 
     }
@@ -304,7 +304,7 @@ public class CommonUtil {
         if (userPics == null) {
             userPics = new HashMap<Integer, Bitmap>();
         }
-        if (userPics.containsKey(HR_ID) == false) {
+        if (!userPics.containsKey(HR_ID) ) {
             userPics.put(HR_ID, UserPic);
         }
     }
@@ -399,7 +399,7 @@ public class CommonUtil {
                         ((ipAddress >> 16) & 0xFF) + "." +
                         (ipAddress >> 24 & 0xFF);
 
-                UserInfoEntity.IP = ip;
+//                UserInfoEntity.IP = ip;
 
                 if (ip.startsWith("172.16.6.") ||
                         ip.startsWith("172.16.7.") ||

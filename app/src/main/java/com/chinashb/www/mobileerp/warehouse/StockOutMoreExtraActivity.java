@@ -186,7 +186,7 @@ public class StockOutMoreExtraActivity extends AppCompatActivity {
             Long MW_ID = themw.getMPIWC_ID();
             BoxItemEntity bi = WebServiceUtil.op_Check_Commit_MW_Issue_Extra_Item_Barcode(MW_ID, scanstring);
             scanresult = bi;
-            if (bi.getResult() == true) {
+            if (bi.getResult() ) {
                 if (!is_box_existed(bi)) {
                     bi.setSelect(true);
                     newissuelist.add(bi);
@@ -234,7 +234,7 @@ public class StockOutMoreExtraActivity extends AppCompatActivity {
             //tv.setText(fahren + "∞ F");
 
             if (scanresult != null) {
-                if (scanresult.getResult() == false) {
+                if (!scanresult.getResult() ) {
                     Toast.makeText(StockOutMoreExtraActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -269,7 +269,7 @@ public class StockOutMoreExtraActivity extends AppCompatActivity {
                 BoxItemEntity bi = newissuelist.get(0);
                 ws_result = WebServiceUtil.op_Commit_MW_Issue_Extra_Item(themw.getMPIWC_ID(), bi);
 
-                if (ws_result.getResult() == true) {
+                if (ws_result.getResult() ) {
                     newissuelist.remove(bi);
                 } else {
                     return null;
@@ -288,7 +288,7 @@ public class StockOutMoreExtraActivity extends AppCompatActivity {
             //pbScan.setVisibility(View.INVISIBLE);
 
             if (ws_result != null) {
-                if (ws_result.getResult() == false) {
+                if (!ws_result.getResult() ) {
                     CommonUtil.ShowToast(StockOutMoreExtraActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
                 } else {
                     CommonUtil.ShowToast(StockOutMoreExtraActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);

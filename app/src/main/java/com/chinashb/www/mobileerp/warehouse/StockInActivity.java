@@ -37,9 +37,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 扫描入库
+ */
 public class StockInActivity extends AppCompatActivity implements View.OnClickListener {
-
-
     private Button addTrayScannerButton;
     private Button addTrayPhotoButton;
     private Button scanAreaButton;
@@ -60,7 +61,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stock_in);
+        setContentView(R.layout.activity_stock_in_layout);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_box_item);
         addTrayScannerButton = (Button) findViewById(R.id.btn_add_tray_scanner);
@@ -267,7 +268,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         if (boxitemList.size() > 0) {
             int selectedcount = 0;
             for (int i = 0; i < boxitemList.size(); i++) {
-                if (boxitemList.get(i).getSelect() == true) {
+                if (boxitemList.get(i).getSelect() ) {
                     if (boxitemList.get(i).getIst_ID() == 0) {
 //                            CommonUtil.ShowToast(StockInActivity.this, "还没有扫描库位", R.mipmap.warning, Toast.LENGTH_SHORT);
                         ToastUtil.showToastLong("还没有扫描库位");
@@ -363,9 +364,9 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
             IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanContent);
             if (bi.getResult()) {
                 thePlace = bi;
-                if (bi.getResult() == true) {
+                if (bi.getResult() ) {
                     for (int i = 0; i < boxitemList.size(); i++) {
-                        if (boxitemList.get(i).getSelect() == true) {
+                        if (boxitemList.get(i).getSelect() ) {
                             boxitemList.get(i).setIstName(bi.getIstName());
                             boxitemList.get(i).setIst_ID(bi.getIst_ID());
                             boxitemList.get(i).setSub_Ist_ID(bi.getSub_Ist_ID());
@@ -413,20 +414,17 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
             SelectList = new ArrayList<>();
 
             for (int i = 0; i < boxitemList.size(); i++) {
-                if (boxitemList.get(i).getSelect() == true) {
+                if (boxitemList.get(i).getSelect() ) {
                     SelectList.add(boxitemList.get(i));
                 }
             }
 
             int count = 0;
-            int selectedcount = SelectList.size();
-
-            while (count < selectedcount && SelectList.size() > 0) {
+            int selectedCount = SelectList.size();
+            while (count < selectedCount && SelectList.size() > 0) {
                 BoxItemEntity boxItemEntity = SelectList.get(0);
                 ws_result = WebServiceUtil.op_Commit_DS_Item(boxItemEntity);
-
-
-                if (ws_result.getResult() == true) {
+                if (ws_result.getResult() ) {
                     boxitemList.remove(boxItemEntity);
                     SelectList.remove(boxItemEntity);
                 }

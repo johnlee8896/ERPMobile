@@ -250,7 +250,7 @@ public class StockPutActivity extends AppCompatActivity {
 
             scanresult = bi;
 
-            if (bi.getResult() == true) {
+            if (bi.getResult() ) {
                 mpiWcBean = bi;
 
                 li = WebServiceUtil.opGetMWIssedItems(bi.getMPIWC_ID());
@@ -268,7 +268,7 @@ public class StockPutActivity extends AppCompatActivity {
             //tv.setText(fahren + "∞ F");
 
             if (scanresult != null) {
-                if (scanresult.getResult() == false) {
+                if (!scanresult.getResult() ) {
                     Toast.makeText(StockPutActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 } else {
                     txtMW.setText(scanresult.getMwName());

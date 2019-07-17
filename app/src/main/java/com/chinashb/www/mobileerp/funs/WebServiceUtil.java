@@ -15,6 +15,7 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.gson.Gson;
@@ -50,9 +51,9 @@ public class WebServiceUtil {
 
     private static String NAMESPACE = "http://tempuri.org/";
     private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-//    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
+    //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
     private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-//    private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
+    //    private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
     private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     private static String SOAP_ACTION = "http://tempuri.org/IService/";
 
@@ -188,13 +189,13 @@ public class WebServiceUtil {
         if (response != null) {
             result = response.toString();
             Gson gson = new Gson();
-            ArrayList<JUser> us = new ArrayList<JUser>();
-            us = gson.fromJson(result, new TypeToken<List<JUser>>() {
+            ArrayList<JUser> juseList = new ArrayList<JUser>();
+            juseList = gson.fromJson(result, new TypeToken<List<JUser>>() {
             }.getType());
-            if (us != null) {
-                if (us.size() >= 1) {
+            if (juseList != null) {
+                if (juseList.size() >= 1) {
                     //Object o = us.get(0);
-                    JUser j = us.get(0);
+                    JUser j = juseList.get(0);
                     userInfoEntity = new UserInfoEntity();
                     userInfoEntity.setHR_ID(j.getHR_ID());
                     userInfoEntity.setHR_Name(j.getHR_Name());
@@ -388,7 +389,7 @@ public class WebServiceUtil {
 
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
-                if (box_item.getResult() == false) {
+                if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
                     box_item.setDIII_ID(Long.parseLong(obj2.getProperty("DIII_ID").toString()));
@@ -441,7 +442,7 @@ public class WebServiceUtil {
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
                 istPlace.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-                if (istPlace.getResult() == false) {
+                if (!istPlace.getResult()) {
                     istPlace.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
                     istPlace.setIst_ID(Long.parseLong(obj2.getProperty("Ist_ID").toString()));
@@ -460,7 +461,8 @@ public class WebServiceUtil {
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
         propertyInfo.setName("SenderID");
-        propertyInfo.setValue(UserInfoEntity.ID);
+//        propertyInfo.setValue(UserInfoEntity.ID);
+        propertyInfo.setValue(UserSingleton.get().getHRID());
         propertyInfo.setType(Integer.class);
         propertyInfos.add(propertyInfo);
 
@@ -518,7 +520,7 @@ public class WebServiceUtil {
 
                 mw.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
-                if (mw.getResult() == false) {
+                if (!mw.getResult()) {
                     mw.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
                     mw.setMPIWC_ID(Long.parseLong(obj2.getProperty("Mpiwc_ID").toString()));
@@ -573,7 +575,7 @@ public class WebServiceUtil {
                     im.setItem_ID(Long.parseLong(obj3.getProperty("Item_ID").toString()));
                     im.setIV_ID(Long.parseLong(obj3.getProperty("IV_ID").toString()));
                     im.setItemName(obj3.getProperty("ItemName").toString());
-                    if (obj3.getProperty("NextLocation").toString().equals("anyType{}") == false) {
+                    if (!obj3.getProperty("NextLocation").toString().equals("anyType{}")) {
                         im.setNextLocation(obj3.getProperty("NextLocation").toString());
                     } else {
                         im.setNextLocation("(无?)");
@@ -623,7 +625,7 @@ public class WebServiceUtil {
 
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
-                if (box_item.getResult() == false) {
+                if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
                     fill_box_item(box_item, obj2);
@@ -678,7 +680,7 @@ public class WebServiceUtil {
 
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
-                if (box_item.getResult() == false) {
+                if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
 
@@ -729,7 +731,7 @@ public class WebServiceUtil {
                 obj2 = (SoapObject) obj.getProperty(i);
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
-                if (box_item.getResult() == false) {
+                if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
                     fill_box_item(box_item, obj2);
@@ -790,7 +792,7 @@ public class WebServiceUtil {
 
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
-                if (box_item.getResult() == false) {
+                if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
                     fill_box_item(box_item, obj2);
@@ -818,8 +820,8 @@ public class WebServiceUtil {
 
     public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, BoxItemEntity bi) {
         String sqty = String.valueOf(bi.getQty());
-
-        WsResult Result = op_Commit_MW_Issue_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
+//        WsResult Result = op_Commit_MW_Issue_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
+        WsResult Result = op_Commit_MW_Issue_Item(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
 
         return Result;
     }
@@ -852,9 +854,8 @@ public class WebServiceUtil {
 
     public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, BoxItemEntity bi) {
         String sqty = String.valueOf(bi.getQty());
-
-        WsResult Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
-
+//        WsResult Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
+        WsResult Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
         return Result;
     }
 
@@ -920,12 +921,13 @@ public class WebServiceUtil {
 //        return ws_result;
 //    }
 
-    public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, DepartmentBean departmentBean, ResearchItemBean researchItemBean, BoxItemEntity bi) {
-        String sqty = String.valueOf(bi.getQty());
+    public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, DepartmentBean departmentBean, ResearchItemBean researchItemBean, BoxItemEntity boxItemEntity, String remark) {
+        String sqty = String.valueOf(boxItemEntity.getQty());
         String webMethodName = "op_Commit_Dep_Out_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         AddPrpertyInfo(propertyInfos, "Bu_ID", Bu_ID);
-        AddPrpertyInfo(propertyInfos, "Exer", UserInfoEntity.ID);
+//        AddPrpertyInfo(propertyInfos, "Exer", UserInfoEntity.ID);
+        AddPrpertyInfo(propertyInfos, "Exer", UserSingleton.get().getHRID());
         if (departmentBean != null) {
             AddPrpertyInfo(propertyInfos, "EntityID", departmentBean.getDepartmentID());
             AddPrpertyInfo(propertyInfos, "EntityName", departmentBean.getDepartmentName());
@@ -936,19 +938,21 @@ public class WebServiceUtil {
             AddPrpertyInfo(propertyInfos, "Out_Product_ID", researchItemBean.getProductID());
             AddPrpertyInfo(propertyInfos, "Out_Program_ID", researchItemBean.getProgramID());
         }
-        if (bi != null) {
-            AddPrpertyInfo(propertyInfos, "Item_ID", bi.getItem_ID());
-            AddPrpertyInfo(propertyInfos, "IV_ID", bi.getIV_ID());
-            AddPrpertyInfo(propertyInfos, "LotID", bi.getLotID());
-            AddPrpertyInfo(propertyInfos, "LotNo", bi.getLotNo());
-            AddPrpertyInfo(propertyInfos, "Ist_ID", bi.getIst_ID());
-            AddPrpertyInfo(propertyInfos, "Sub_Ist_ID", bi.getSub_Ist_ID());
-            AddPrpertyInfo(propertyInfos, "SMLI_ID", bi.getSMLI_ID());
-            AddPrpertyInfo(propertyInfos, "SMM_ID", bi.getSMM_ID());
-            AddPrpertyInfo(propertyInfos, "SMT_ID", bi.getSMT_ID());
+        if (boxItemEntity != null) {
+            AddPrpertyInfo(propertyInfos, "Item_ID", boxItemEntity.getItem_ID());
+            AddPrpertyInfo(propertyInfos, "IV_ID", boxItemEntity.getIV_ID());
+            AddPrpertyInfo(propertyInfos, "LotID", boxItemEntity.getLotID());
+            AddPrpertyInfo(propertyInfos, "LotNo", boxItemEntity.getLotNo());
+            AddPrpertyInfo(propertyInfos, "Ist_ID", boxItemEntity.getIst_ID());
+            AddPrpertyInfo(propertyInfos, "Sub_Ist_ID", boxItemEntity.getSub_Ist_ID());
+            AddPrpertyInfo(propertyInfos, "SMLI_ID", boxItemEntity.getSMLI_ID());
+            AddPrpertyInfo(propertyInfos, "SMM_ID", boxItemEntity.getSMM_ID());
+            AddPrpertyInfo(propertyInfos, "SMT_ID", boxItemEntity.getSMT_ID());
+
 
         }
         AddPrpertyInfo(propertyInfos, "Qty", sqty);
+        AddPrpertyInfo(propertyInfos, "Remark", remark);
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
         WsResult ws_result = Get_WS_Result(obj);
@@ -956,9 +960,8 @@ public class WebServiceUtil {
     }
 
     public static WsResult op_Commit_Return_Item(BoxItemEntity bi) {
-
-        WsResult Result = op_Commit_Return_Item(UserInfoEntity.ID, bi.getDIII_ID());
-
+//        WsResult Result = op_Commit_Return_Item(UserInfoEntity.ID, bi.getDIII_ID());
+        WsResult Result = op_Commit_Return_Item(UserSingleton.get().getHRID(), bi.getDIII_ID());
         return Result;
     }
 
@@ -1027,7 +1030,7 @@ public class WebServiceUtil {
 
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
-                if (box_item.getResult() == false) {
+                if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
 
@@ -1083,7 +1086,7 @@ public class WebServiceUtil {
 
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
-                if (box_item.getResult() == false) {
+                if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
 
@@ -1118,7 +1121,7 @@ public class WebServiceUtil {
 
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
-                if (box_item.getResult() == false) {
+                if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
 
@@ -1262,10 +1265,9 @@ public class WebServiceUtil {
 
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
-                if (box_item.getResult() == false) {
+                if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
-
                     fill_box_item(box_item, obj2);
 
                     /*
@@ -1293,7 +1295,8 @@ public class WebServiceUtil {
         String webMethodName = "op_Commit_Inv_Move";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
-        AddPrpertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+//        AddPrpertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+        AddPrpertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
         AddPrpertyInfo(propertyInfos, "SMLI_ID", box_item.getSMLI_ID());
         AddPrpertyInfo(propertyInfos, "SMM_ID", box_item.getSMM_ID());
         AddPrpertyInfo(propertyInfos, "SMT_ID", box_item.getSMT_ID());
@@ -1315,7 +1318,8 @@ public class WebServiceUtil {
         String webMethodName = "op_Commit_Freeze_Inv";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
-        AddPrpertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+//        AddPrpertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+        AddPrpertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
         AddPrpertyInfo(propertyInfos, "SMLI_ID", box_item.getSMLI_ID());
         AddPrpertyInfo(propertyInfos, "SMT_ID", box_item.getSMT_ID());
 
@@ -1334,7 +1338,8 @@ public class WebServiceUtil {
         String webMethodName = "op_Commit_FreezeNot_Inv";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
-        AddPrpertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+//        AddPrpertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+        AddPrpertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
         AddPrpertyInfo(propertyInfos, "SMLI_ID", box_item.getSMLI_ID());
         AddPrpertyInfo(propertyInfos, "SMT_ID", box_item.getSMT_ID());
 
@@ -1728,7 +1733,7 @@ public class WebServiceUtil {
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
                 result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-                if (result.getResult() == false) {
+                if (!result.getResult()) {
                     result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
                     result.setID(Long.parseLong(obj2.getProperty("ID").toString()));

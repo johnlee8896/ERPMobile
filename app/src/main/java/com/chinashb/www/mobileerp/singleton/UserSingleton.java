@@ -1,6 +1,9 @@
 package com.chinashb.www.mobileerp.singleton;
 
+import com.chinashb.www.mobileerp.basicobject.UserAllInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
+
+import java.util.HashMap;
 
 /***
  * @date 创建时间 2019/6/17 10:46 AM
@@ -8,6 +11,9 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
  * @description 用单例模式管理用户，包含登录状态等
  */
 public class UserSingleton {
+    private HashMap<Integer, String> departmentMap;
+    private UserAllInfoEntity userAllInfoEntity;
+
     private UserSingleton(){
 
     }
@@ -47,6 +53,21 @@ public class UserSingleton {
         return UserSingletonHelper.instance;
     }
 
+    public void setDepartmentMap(HashMap<Integer, String> departmentIDNameMap) {
+        this.departmentMap = departmentIDNameMap;
+    }
+
+    public HashMap<Integer, String> getDepartmentMap() {
+        return departmentMap;
+    }
+
+    public void setUserAllInfoEntity(UserAllInfoEntity userAllInfoEntity) {
+        this.userAllInfoEntity = userAllInfoEntity;
+    }
+
+    public UserAllInfoEntity getUserAllInfoEntity() {
+        return userAllInfoEntity;
+    }
 
     private static class UserSingletonHelper {
         private static UserSingleton instance = new UserSingleton();

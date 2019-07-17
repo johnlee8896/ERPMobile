@@ -14,10 +14,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
+import com.chinashb.www.mobileerp.basicobject.UserAllInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.ShbTcpTest;
+import com.chinashb.www.mobileerp.utils.JsonUtil;
+import com.google.gson.JsonObject;
+
+import java.util.HashMap;
+import java.util.List;
 
 public class StockMainActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView mRecyclerView;
@@ -69,7 +77,29 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
         String Test;
         setHomeButton();
         setViewsListener();
+        handleGetDepartment();
 
+    }
+
+    private void handleGetDepartment() {
+        String sql = "select department_id,department_name from department";
+        if (!(UserSingleton.get().getDepartmentMap() != null && UserSingleton.get().getDepartmentMap().keySet().size() > 0)) {
+            QueryAsyncTask query = new QueryAsyncTask();
+            query.execute(sql);
+            query.setLoadDataCompleteListener(new OnLoadDataListener() {
+                @Override public void loadComplete(List<JsonObject> jsonObjectList) {
+                    if (jsonObjectList != null && jsonObjectList.size() > 0) {
+                        HashMap<Integer, String> departmentIDNameMap = new HashMap<>();
+                        for (JsonObject jsonObject : jsonObjectList) {
+                            int departmentID = jsonObject.get("department_id").getAsInt();
+                            String departmentName = jsonObject.get("department_name").getAsString();
+                            departmentIDNameMap.put(departmentID, departmentName);
+                        }
+                        UserSingleton.get().setDepartmentMap(departmentIDNameMap);
+                    }
+                }
+            });
+        }
     }
 
     private void setViewsListener() {

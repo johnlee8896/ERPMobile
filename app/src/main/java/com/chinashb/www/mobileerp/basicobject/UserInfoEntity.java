@@ -8,22 +8,22 @@ import java.io.Serializable;
 
 public class UserInfoEntity implements Serializable {
 
-    public static int ID;
-    public static String IP;
+    //    public static int ID;
+//    public static String IP;
     private int HR_ID;
     private String hrNum;
     private String HR_Name;
     private String Bu_Name;
-    private Integer Bu_ID;
+    private int Bu_ID;
     private String Company_Name;
-    private Integer Company_ID;
+    private int Company_ID;
 
     public int getHR_ID() {
         return HR_ID;
     }
 
     public void setHR_ID(int hrID) {
-        ID = hrID;
+//        ID = hrID;
         this.HR_ID = hrID;
     }
 
@@ -51,11 +51,11 @@ public class UserInfoEntity implements Serializable {
         this.Bu_Name = Bu_Name;
     }
 
-    public Integer getBu_ID() {
+    public int getBu_ID() {
         return Bu_ID;
     }
 
-    public void setBu_ID(Integer Bu_ID) {
+    public void setBu_ID(int Bu_ID) {
         this.Bu_ID = Bu_ID;
     }
 
@@ -67,11 +67,11 @@ public class UserInfoEntity implements Serializable {
         this.Company_Name = Company_Name;
     }
 
-    public Integer getCompany_ID() {
+    public int getCompany_ID() {
         return Company_ID;
     }
 
-    public void setCompany_ID(Integer Company_ID) {
+    public void setCompany_ID(int Company_ID) {
         this.Company_ID = Company_ID;
     }
 

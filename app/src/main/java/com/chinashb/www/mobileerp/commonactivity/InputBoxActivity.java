@@ -41,8 +41,8 @@ public class InputBoxActivity extends AppCompatActivity {
 
         String OriText = who.getStringExtra("OriText");
         etInput.setText("");
-        if (OriText.isEmpty() == false) {
-            if (OriText.equals("null") == false) {
+        if (!OriText.isEmpty() ) {
+            if (!OriText.equals("null") ) {
                 etInput.setText(OriText);
             }
 

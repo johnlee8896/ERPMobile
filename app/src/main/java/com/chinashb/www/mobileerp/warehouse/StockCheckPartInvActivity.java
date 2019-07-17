@@ -495,12 +495,12 @@ public class StockCheckPartInvActivity extends AppCompatActivity {
             tvItemCode.setText(scanstring);
 
             if (scanresult != null) {
-                if (scanresult.getResult() == false) {
+                if (!scanresult.getResult() ) {
                     Toast.makeText(StockCheckPartInvActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
 
                 BoxItemEntity bi = scanresult;
-                if (bi.getResult() == true) {
+                if (bi.getResult() ) {
                     if (is_box_existed(bi)) {
                         CommonUtil.ShowToast(StockCheckPartInvActivity.this,
                                 "前面已经扫描过", R.mipmap.warning, Toast.LENGTH_SHORT);
@@ -559,7 +559,7 @@ public class StockCheckPartInvActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... params) {
             IstPlaceEntity istPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
-            if (istPlaceEntity.getResult() == true) {
+            if (istPlaceEntity.getResult() ) {
                 thePlace = istPlaceEntity;
                 //清空
                 scanitem = null;
@@ -626,7 +626,7 @@ public class StockCheckPartInvActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            if (ws_result.getResult() == true) {
+            if (ws_result.getResult() ) {
                 CommonUtil.ShowToast(StockCheckPartInvActivity.this,
                         "提交成功", R.mipmap.smiley, Toast.LENGTH_SHORT);
 
