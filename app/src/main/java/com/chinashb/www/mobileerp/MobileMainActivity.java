@@ -43,6 +43,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
     private TextView warehouseMainTextView;
     private TextView conversationTextView;
     private TextView taskTextView;
+    private TextView planTextView;
     //    private Button scanHRButton;
 //    private Button loginButton;
     private TextView switchBUTextView;
@@ -77,10 +78,8 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
 //        //最新版本检测
 //        checkErpVersionOk();
+
         setViewListeners();
-        warehouseMainTextView = (TextView) findViewById(R.id.main_warehouse_manage_button);
-        conversationTextView = (TextView) findViewById(R.id.main_message_button);
-        taskTextView = (TextView) findViewById(R.id.main_task_manage_button);
 
 //        if (savedInstanceState != null) {
 //            userInfo = (UserInfoEntity) savedInstanceState.getSerializable("userInfo");
@@ -91,9 +90,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
             task.execute(String.valueOf(HRID));
         }
 
-        warehouseMainTextView.setOnClickListener(this);
-        conversationTextView.setOnClickListener(this);
-        taskTextView.setOnClickListener(this);
+
         userNameTextView.setText(UserSingleton.get().getUserInfo() != null ? UserSingleton.get().getUserInfo().getBu_Name() : ""
                 + ":" + UserSingleton.get().getHRName());
 
@@ -175,6 +172,11 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         intranetRadioButton = (RadioButton) findViewById(R.id.main_intranet_radioButton);
         internetRadioButton = (RadioButton) findViewById(R.id.main_internet_radioButton);
 
+
+        warehouseMainTextView = (TextView) findViewById(R.id.main_warehouse_manage_button);
+        conversationTextView = (TextView) findViewById(R.id.main_message_button);
+        taskTextView = (TextView) findViewById(R.id.main_task_manage_button);
+
 //        scanProgressBar = (ProgressBar) findViewById(R.id.main_scan_progressBar);
     }
 
@@ -217,6 +219,11 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 //        });
 
         switchBUTextView.setOnClickListener(this);
+        planTextView.setOnClickListener(this);
+
+        warehouseMainTextView.setOnClickListener(this);
+        conversationTextView.setOnClickListener(this);
+        taskTextView.setOnClickListener(this);
     }
 
     private String getSqlBu() {
@@ -455,6 +462,13 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
             intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition,IntentConstant.Select_Search_From_Select_BU);
             startActivityForResult(intent, 200);
+        }else if (view == planTextView){
+            if (!UserSingleton.get().hasLogin()) {
+                ToastUtil.showToastLong("请先登录");
+                return;
+            }
+            Intent intent = new Intent(this,PlanManagerActivity.class);
+            startActivity(intent);
         }
     }
 

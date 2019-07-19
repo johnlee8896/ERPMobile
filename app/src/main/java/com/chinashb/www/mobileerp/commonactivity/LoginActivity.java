@@ -29,6 +29,8 @@ import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.SPSingleton;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.upgrade.APPUpgradeManager;
+import com.chinashb.www.mobileerp.utils.FileUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.SPDefine;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -108,17 +110,31 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public int GetApkInfo(Context context, String apkPath) {
-        PackageManager pm = context.getPackageManager();
-        PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
-        if (info != null) {
-            ApplicationInfo appInfo = info.applicationInfo;
-            String packageName = appInfo.packageName;  //得到安装包名称
-            String version = info.versionName;//获取安装包的版本号
-            return info.versionCode;
+//    private int GetApkInfo(Context context, String apkPath) {
+//        PackageManager pm = context.getPackageManager();
+//        PackageInfo info = pm.getPackageArchiveInfo(apkPath, PackageManager.GET_ACTIVITIES);
+//        pm.getPackageInfo()
+//        if (info != null) {
+//            ApplicationInfo appInfo = info.applicationInfo;
+//            String packageName = appInfo.packageName;  //得到安装包名称
+//            String version = info.versionName;//获取安装包的版本号
+//            return info.versionCode;
+//        }
+//        return -1;
+//    }
+
+    private int getVersionCode(Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(
+                    context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return -1;
+        return 0;
     }
+
 
     private void initView() {
         String userName = SPSingleton.get().getString(SPDefine.SP_login_user_name);
@@ -238,20 +254,36 @@ public class LoginActivity extends AppCompatActivity {
                     isNetReady = true;
                     JsonObject o = result.get(0);
                     Integer ErpVerID = o.get("VerID").getAsInt();
+                    //// TODO: 2019/7/19 这里根据数据库中Version 的值来判断 Version为实际versionCode值
+//                    String Version = o.get("Version").getAsString();
                     String Version = o.get("Version").getAsString();
                     String UpdateDate = o.get("UpdateDate").getAsString();
                     String Des = o.get("Des").getAsString();
 //                    query_erp_id = ErpVerID;
-                    if (mobile_erp_ver_id >= ErpVerID) {
-                        versionOk = true;
-//                        debugLogin();
-                    } else {
-                        String newVerWarning = "当前App 版本已经过时。\n" +
-                                "系统已于" + UpdateDate + "升级到版本" + Version + "\n" +
-                                "版本描述：\n" +
-                                Des;
-                        CommonUtil.ShowToast(LoginActivity.this, newVerWarning, R.mipmap.warning, Toast.LENGTH_SHORT);
+
+//                    if (mobile_erp_ver_id >= ErpVerID) {
+//                        versionOk = true;
+////                        debugLogin();
+//                    } else {
+//                        String newVerWarning = "当前App 版本已经过时。\n" +
+//                                "系统已于" + UpdateDate + "升级到版本" + Version + "\n" +
+//                                "版本描述：\n" +
+//                                Des;
+//                        CommonUtil.ShowToast(LoginActivity.this, newVerWarning, R.mipmap.warning, Toast.LENGTH_SHORT);
+//                    }
+
+                    if (getVersionCode(LoginActivity.this) < Integer.parseInt(Version)){
+                        APPUpgradeManager.with(LoginActivity.this)
+                                .setNeedShowToast(true)
+//                                .setAPIService(APIDefine.SERVICE_BASE)
+//                                .setAPIUrl(APIDefine.API_check_new_version)
+//                                .setAppName(getString(R.string.app_name))
+                                .setApkDownloadedPath(FileUtil.getCachePath())
+//                                .setVersionName(APPUtil.getVersionName()).setVersionCode(APPUtil.getVersionCode() + "")
+//                                .builder().checkNewVersion(APPUpgradeManager.NAME_MaterialsManager);
+                                .builder().showForceUpdateDialog();
                     }
+
                 } else {
 
                 }

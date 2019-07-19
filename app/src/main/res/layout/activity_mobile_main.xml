@@ -131,7 +131,17 @@
             android:layout_marginLeft="@dimen/dimen_size_20"
             android:layout_marginRight="@dimen/dimen_size_20"
             android:layout_marginTop="@dimen/dimen_size_15"
-            android:text="消息" />
+            android:text="消息管理" />
+    <TextView
+        android:id="@+id/main_plan_button"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:text="计划管理" />
 
         <!--<ProgressBar-->
             <!--android:id="@+id/main_scan_progressBar"-->

@@ -126,12 +126,17 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.6.0'
     implementation files('libs/ksoap2-android-assembly-3.6.2-jar-with-dependencies.jar')
 
+    //流利说的下载开源工具
+    implementation 'com.liulishuo.filedownloader:library:1.7.2'
+
 //    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 //    implementation 'com.jakewharton:butterknife:10.1.0'
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.jakewharton:butterknife:8.8.1'
 
+//    implementation project(':libapi')
+//    implementation project(':libbase')
     implementation project(':zxing')
     implementation project(':qrcodecore')
 }

@@ -1384,6 +1384,22 @@ public class WebServiceUtil {
 
 
     public static WsResult getDataTable(String sql) {
+        int maxCount = 1000;
+        if (sql.length() > maxCount) {
+            for (int i = 0; i < sql.length(); i += maxCount) {
+                if (i + maxCount < sql.length()) {
+                    Log.i("resCounter" + i, sql.substring(i, i + maxCount));
+//                   System.out.println("resCounter" + i + sql.substring(i, i + maxCount));
+                } else {
+                    Log.i("resCounter" + i, sql.substring(i, sql.length()));
+//                    System.out.println("resCounter" + i + sql.substring(i, sql.length()));
+                }
+            }
+        } else {
+//            Log.i("resinfo", sql);
+            Log.i("resCounter", sql);
+        }
+//        System.out.println(String.format("********* %s", sql));
 
         WsResult result = null;
         String webMethodName = "GetAndroidData";
@@ -1392,7 +1408,8 @@ public class WebServiceUtil {
         String crpSql = "";
         try {
             crpSql = DefaultEncryptor.encryptToBase64(sql, key);
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -1403,7 +1420,9 @@ public class WebServiceUtil {
 
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        result = getWS_Result(obj);
+        result =
+
+                getWS_Result(obj);
 
 
         return result;
