@@ -48,7 +48,7 @@ public class PlanShowListActivity extends AppCompatActivity {
                 String sql = " Select Wi.WC_ID, Wi.List_No,WC_Name,M.MPIWC_ID,dbo.get_mw_plan_show_name(mpiwc_ID) As MwName,dbo.get_mw_plan_show_name_html(mpiwc_ID) As HtmlMwName, M.MPI_Remark From" +
                         "        WC_List_Item As Wi Inner Join P_WC As C On Wi.Wc_ID=C.WC_ID" +
                         "        Inner Join MPI_WC As M On M.WC_ID=Wi.WC_ID" +
-                        "        Where Wi.LID= 1" +
+                        "        Where Wi.LID= 1" +  selectedWCEntity.getLID()
                         "        And M.Deleted=0 And  MPI_Date= '2019-07-22'" +
                         "        Order By Wi.List_No, PShift_ID, Shift_No"   ;
 //            String sql = "Select Case When Ac_Type=1 Then '部件' When Ac_Type=2 Then '成品' Else '' End As WCL_Type, LID, Bu_ID, ListName From WC_List Where Bu_ID="
