@@ -39,8 +39,7 @@ public class Mpi_WcAdapter extends RecyclerView.Adapter<Mpi_WcAdapter.Mpi_WcView
 
     @Override
     public Mpi_WcViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater
-                .inflate(R.layout.listview_mpi_wc, parent, false);
+        View v = mLayoutInflater.inflate(R.layout.listview_mpi_wc, parent, false);
         Mpi_WcViewHolder vh = new Mpi_WcViewHolder(v, mClickListener);
         return vh;
 

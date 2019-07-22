@@ -1,3 +1,5 @@
 include ':app'
 include ':zxing'
 include ':qrcodecore'
+//include ':libapi'
+//include ':libbase'

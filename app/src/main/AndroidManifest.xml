@@ -136,6 +136,8 @@
         <activity
             android:name=".talk.MessageManageActivity"
             android:label="@string/title_activity_conversation_contacts" />
+        <activity android:name=".PlanManagerActivity"/>
+        <activity android:name=".PlanShowListActivity"/>
         <activity
             android:name=".task.TaskViewActivity"
             android:label="@string/title_activity_task_view" />

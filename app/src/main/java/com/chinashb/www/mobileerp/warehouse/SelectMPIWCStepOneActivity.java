@@ -126,7 +126,7 @@ public class SelectMPIWCStepOneActivity extends AppCompatActivity {
                     s_WCList wcEntity = wcLists.get(position);
                     //存下来,重选了wcs_list, 需要清除已选生产线
                     StaticVariableUtils.selected_list = wcEntity;
-                    StaticVariableUtils.selected_wc = null;
+                    StaticVariableUtils.selectedWorkCenter = null;
                     doNextStepSelectWc(wcEntity);
 
                 }

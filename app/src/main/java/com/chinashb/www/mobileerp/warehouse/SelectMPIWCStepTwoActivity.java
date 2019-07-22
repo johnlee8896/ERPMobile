@@ -37,27 +37,27 @@ import java.util.List;
 public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private s_WCList selected_wclist;
-    private WorkCenter selectWorkcenter;
+    private s_WCList selectedWCEntity;
+    private WorkCenter selectWorkCenter;
     private ProgressBar pbScan;
     private String displayText;
     public UserInfoEntity userInfo;
     private List<Date> weekDates;
     private List<MealTypeEntity> mealTypes;
-    private List<WorkCenter> ws;
+    private List<WorkCenter> workCenterList;
     private WorkCenterAdapter wcAdapter;
-    private TextView tvWc;
+    private TextView subTitleTextView;
     private MpiWcBean select_mw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_mpi_wc_step2);
-        tvWc = (TextView) findViewById(R.id.tv_select_wc);
-        Intent who = getIntent();
-        selected_wclist = (s_WCList) who.getSerializableExtra("wclist");
-        if (selected_wclist != null) {
-            tvWc.setText(selected_wclist.getListName() + "的生产线");
+        subTitleTextView = (TextView) findViewById(R.id.tv_select_wc);
+        Intent intent = getIntent();
+        selectedWCEntity = (s_WCList) intent.getSerializableExtra("wclist");
+        if (selectedWCEntity != null) {
+            subTitleTextView.setText(selectedWCEntity.getListName() + "的生产线");
         }
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_select_wc);
@@ -117,12 +117,12 @@ public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
     }
 
     private class GetWCAsyncTask extends AsyncTask<String, Void, Void> {
-        MpiWcBean scanresult;
+        MpiWcBean mpiWcBean;
         List<Issued_Item> li;
         @Override
         protected Void doInBackground(String... params) {
 
-            String sql = "Select Wi.WC_ID, Wi.List_No,WC_Name From WC_List_Item As Wi Inner Join P_WC As C On Wi.Wc_ID=C.WC_ID Where Wi.LID= " + selected_wclist.getLID() + " Order By Wi.List_No";
+            String sql = "Select Wi.WC_ID, Wi.List_No,WC_Name From WC_List_Item As Wi Inner Join P_WC As C On Wi.Wc_ID=C.WC_ID Where Wi.LID= " + selectedWCEntity.getLID() + " Order By Wi.List_No";
             WsResult r = WebServiceUtil.getDataTable(sql);
             if (r != null && r.getResult() ) {
                 String js = r.getErrorInfo();
@@ -131,7 +131,7 @@ public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
                 workCenterList = gson.fromJson(js, new TypeToken<List<WorkCenter>>() {
                 }.getType());
                 //wcLists= us;
-                ws = workCenterList;
+                SelectMPIWCStepTwoActivity.this.workCenterList = workCenterList;
             }
             return null;
         }
@@ -139,25 +139,25 @@ public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-            wcAdapter = new WorkCenterAdapter(SelectMPIWCStepTwoActivity.this, ws);
+            wcAdapter = new WorkCenterAdapter(SelectMPIWCStepTwoActivity.this, workCenterList);
             recyclerView.setLayoutManager(new LinearLayoutManager(SelectMPIWCStepTwoActivity.this));
             recyclerView.setAdapter(wcAdapter);
             wcAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void OnItemClick(View view, int position) {
                     //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
-                    if (ws != null) {
-                        selectWorkcenter = ws.get(position);
+                    if (workCenterList != null) {
+                        selectWorkCenter = workCenterList.get(position);
                         //保存下来
-                        StaticVariableUtils.selected_wc = selectWorkcenter;
+                        StaticVariableUtils.selectedWorkCenter = selectWorkCenter;
                         goNextStepSelectWM();
                     }
                 }
             });
 
             //直接按前面的选择，显示下一步
-            if (StaticVariableUtils.selected_wc != null) {
-                selectWorkcenter = StaticVariableUtils.selected_wc;
+            if (StaticVariableUtils.selectedWorkCenter != null) {
+                selectWorkCenter = StaticVariableUtils.selectedWorkCenter;
                 goNextStepSelectWM();
             }
             //pbScan.setVisibility(View.INVISIBLE);
@@ -165,7 +165,7 @@ public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
 
         protected void goNextStepSelectWM() {
             Intent intent = new Intent(SelectMPIWCStepTwoActivity.this, SelectMPIWCStepThreeActivity.class);
-            intent.putExtra("wc", (Serializable) selectWorkcenter);
+            intent.putExtra("wc", (Serializable) selectWorkCenter);
             startActivityForResult(intent, 100);
         }
 

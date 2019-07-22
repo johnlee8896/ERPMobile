@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50"
+        app:app_title_text="计划展示列表" />
+        <!--android:background="@color/color_blue_228BE0"-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/plan_show_list_time_select_textView"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:layout_width="@dimen/dimen_size_100"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_18"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:text="时间选择" />
+        <TextView
+            android:id="@+id/plan_show_list_work_center_select_textView"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:layout_width="@dimen/dimen_size_100"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_18"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:text="产线选择" />
+    </LinearLayout>
+
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/plan_main_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:scrollbars="vertical"
+        app:app_item_decoration_type="ITEM_SPACE"
+        app:app_layout_style="list_vertical"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_plan_show_list_layout" />
+</LinearLayout>

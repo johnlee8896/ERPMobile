@@ -70,7 +70,7 @@ public class StockPutActivity extends AppCompatActivity {
         extraPutButton = (Button) findViewById(R.id.btn_continue_stock_out_extra);
         continueDirectPutButton = findViewById(R.id.btn_continue_stock_out_direct_button);
 
-        mpiWcBeanList = StaticVariableUtils.selected_mws;
+        mpiWcBeanList = StaticVariableUtils.selectMpiWcBeanList;
         IssuedItemList = new ArrayList<>();
         issuedItemAdapter = new IssuedItemAdapter(StockPutActivity.this, IssuedItemList);
         mrv_issued_items.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview

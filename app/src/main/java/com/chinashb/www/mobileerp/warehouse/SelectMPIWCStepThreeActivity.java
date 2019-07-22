@@ -34,10 +34,10 @@ import java.util.List;
 public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
     private String action = "";
     private RecyclerView selectMWRecyclerView;
-    private WorkCenter select_wc;
-    private MpiWcBean select_mw;
-    private TextView tvTitle;
-    private List<MpiWcBean> mws;
+    private WorkCenter selectWorkCenter;
+    private MpiWcBean selectMpiWcBean;
+    private TextView subTitleTextView;
+    private List<MpiWcBean> mpiWcBeanList;
     private Mpi_WcAdapter adapter;
     private ProgressBar pbScan;
     private Date showdate = Calendar.getInstance().getTime();
@@ -52,7 +52,7 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_mpi_wc_step3);
-        tvTitle = (TextView) findViewById(R.id.tv_select_mpi_wc_show_wc);
+        subTitleTextView = (TextView) findViewById(R.id.tv_select_mpi_wc_show_wc);
         selectMWRecyclerView = (RecyclerView) findViewById(R.id.rv_select_mpi_wc_byday);
         txtDay = (TextView) findViewById(R.id.tv_select_mpi_wc_show_day);
         preDayButton = (Button) findViewById(R.id.btn_select_mpi_wc_pre_day);
@@ -63,27 +63,27 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
         pbScan = (ProgressBar) findViewById(R.id.progressbar2);
         setHomeButton();
         Intent intent = getIntent();
-        select_wc = (WorkCenter) intent.getSerializableExtra("wc");
-        if (select_wc != null) {
+        selectWorkCenter = (WorkCenter) intent.getSerializableExtra("wc");
+        if (selectWorkCenter != null) {
             action = "日计划选择";
             initActionDailyPlan();
         }
 
-        mws = (List<MpiWcBean>) intent.getSerializableExtra("mws");
-        if (mws != null) {
+        mpiWcBeanList = (List<MpiWcBean>) intent.getSerializableExtra("mws");
+        if (mpiWcBeanList != null) {
             actionExistedPlans();
         }
 
     }
 
     protected void initActionDailyPlan() {
-        tvTitle.setText(select_wc.getWC_Name() + "的生产计划");
-        showplan();
+        subTitleTextView.setText(selectWorkCenter.getWC_Name() + "的生产计划");
+        showPlan();
         preDayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showdate = CommonUtil.DateAdd(showdate, -1);
-                showplan();
+                showPlan();
             }
         });
 
@@ -91,7 +91,7 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showdate = CommonUtil.DateAdd(showdate, -7);
-                showplan();
+                showPlan();
             }
         });
 
@@ -99,7 +99,7 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showdate = CommonUtil.DateAdd(showdate, 1);
-                showplan();
+                showPlan();
             }
         });
 
@@ -107,7 +107,7 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showdate = CommonUtil.DateAdd(showdate, 7);
-                showplan();
+                showPlan();
             }
         });
     }
@@ -118,9 +118,9 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
         nextDayButton.setEnabled(false);
         nextSevenButton.setEnabled(false);
 
-        tvTitle.setText("已经选过的生产计划");
+        subTitleTextView.setText("已经选过的生产计划");
         txtDay.setText("");
-        show_mws(true);
+        showMpiList(true);
     }
 
 
@@ -142,7 +142,7 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
         }
     }
 
-    protected void showplan() {
+    protected void showPlan() {
         String dateString;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         dateString = sdf.format(showdate);
@@ -172,16 +172,16 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
         protected Void doInBackground(String... params) {
             String sql = "Select M.MPIWC_ID,dbo.get_mw_plan_show_name(mpiwc_ID) As MwName,dbo.get_mw_plan_show_name_html(mpiwc_ID) As HtmlMwName, M.MPI_Remark " +
                     "From MPI_WC As M " +
-                    "Where M.Deleted=0 And M.WC_ID=" + select_wc.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + " " +
+                    "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + " " +
                     " Order By PShift_ID, Shift_No";
             WsResult result = WebServiceUtil.getDataTable(sql);
             if (result != null && result.getResult()) {
                 String js = result.getErrorInfo();
-                ArrayList<MpiWcBean> us = new ArrayList<MpiWcBean>();
+                ArrayList<MpiWcBean> mpiWcBeanList = new ArrayList<MpiWcBean>();
                 Gson gson = new Gson();
-                us = gson.fromJson(js, new TypeToken<List<MpiWcBean>>() {
+                mpiWcBeanList = gson.fromJson(js, new TypeToken<List<MpiWcBean>>() {
                 }.getType());
-                mws = us;
+                SelectMPIWCStepThreeActivity.this.mpiWcBeanList = mpiWcBeanList;
             }
             return null;
         }
@@ -189,7 +189,7 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-            show_mws(false);
+            showMpiList(false);
             pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -203,29 +203,26 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
         }
     }
 
-    protected void show_mws(Boolean showdeletebutton) {
+    protected void showMpiList(Boolean showdeletebutton) {
         //绑定到不同的计划列表
         if (showdeletebutton) {
-            adapter = new Mpi_WcAdapter(SelectMPIWCStepThreeActivity.this, StaticVariableUtils.selected_mws);
+            adapter = new Mpi_WcAdapter(SelectMPIWCStepThreeActivity.this, StaticVariableUtils.selectMpiWcBeanList);
             adapter.showdeletebutton = showdeletebutton;
             selectMWRecyclerView.setLayoutManager(new LinearLayoutManager(SelectMPIWCStepThreeActivity.this));
             selectMWRecyclerView.setAdapter(adapter);
-            adapter.setOnItemClickListener(new OnItemClickListener() {
-                                               @Override
-                                               public void OnItemClick(View view, int position) {
-                                                   //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
-                                                   if (StaticVariableUtils.selected_mws != null) {
-                                                       select_mw = StaticVariableUtils.selected_mws.get(position);
-                                                       Intent intent = new Intent();
-                                                       intent.putExtra("mw", select_mw);
-                                                       setResult(1, intent);
-                                                       finish();
-                                                   }
-                                               }
-                                           }
+            adapter.setOnItemClickListener((view, position) -> {
+                //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
+                if (StaticVariableUtils.selectMpiWcBeanList != null) {
+                    selectMpiWcBean = StaticVariableUtils.selectMpiWcBeanList.get(position);
+                    Intent intent = new Intent();
+                    intent.putExtra("mw", selectMpiWcBean);
+                    setResult(1, intent);
+                    finish();
+                }
+            }
             );
         } else {
-            adapter = new Mpi_WcAdapter(SelectMPIWCStepThreeActivity.this, mws);
+            adapter = new Mpi_WcAdapter(SelectMPIWCStepThreeActivity.this, mpiWcBeanList);
             adapter.showdeletebutton = showdeletebutton;
             selectMWRecyclerView.setLayoutManager(new LinearLayoutManager(SelectMPIWCStepThreeActivity.this));
             selectMWRecyclerView.setAdapter(adapter);
@@ -233,10 +230,10 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
                                                @Override
                                                public void OnItemClick(View view, int position) {
                                                    //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
-                                                   if (mws != null) {
-                                                       select_mw = mws.get(position);
+                                                   if (mpiWcBeanList != null) {
+                                                       selectMpiWcBean = mpiWcBeanList.get(position);
                                                        Intent result = new Intent();
-                                                       result.putExtra("mw", select_mw);
+                                                       result.putExtra("mw", selectMpiWcBean);
                                                        setResult(1, result);
                                                        finish();
                                                    }

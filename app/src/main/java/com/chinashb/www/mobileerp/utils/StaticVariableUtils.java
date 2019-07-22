@@ -16,6 +16,6 @@ import java.util.List;
 public class StaticVariableUtils {
     //用来保存先前选过的产线组
     public static s_WCList selected_list;
-    public static WorkCenter selected_wc;
-    public static List<MpiWcBean> selected_mws = new ArrayList<>();
+    public static WorkCenter selectedWorkCenter;
+    public static List<MpiWcBean> selectMpiWcBeanList = new ArrayList<>();
 }

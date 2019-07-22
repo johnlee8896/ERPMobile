@@ -176,6 +176,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         warehouseMainTextView = (TextView) findViewById(R.id.main_warehouse_manage_button);
         conversationTextView = (TextView) findViewById(R.id.main_message_button);
         taskTextView = (TextView) findViewById(R.id.main_task_manage_button);
+        planTextView = findViewById(R.id.main_plan_button);
 
 //        scanProgressBar = (ProgressBar) findViewById(R.id.main_scan_progressBar);
     }
@@ -488,7 +489,6 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
     private class GetHrNameAsyncTask extends AsyncTask<String, Void, Void> {
         //Image hr_photo;
-
         @Override
         protected Void doInBackground(String... params) {
 
