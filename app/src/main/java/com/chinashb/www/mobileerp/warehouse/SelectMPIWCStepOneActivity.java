@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
@@ -20,7 +21,6 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.WCListAdapter;
-import com.chinashb.www.mobileerp.basicobject.Issued_Item;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.s_WCList;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
@@ -92,7 +92,7 @@ public class SelectMPIWCStepOneActivity extends AppCompatActivity {
 
     private class GetWCListsAsyncTask extends AsyncTask<String, Void, Void> {
         MpiWcBean scanresult;
-        List<Issued_Item> li;
+        List<PlanInnerDetailEntity> li;
 
         @Override
         protected Void doInBackground(String... params) {

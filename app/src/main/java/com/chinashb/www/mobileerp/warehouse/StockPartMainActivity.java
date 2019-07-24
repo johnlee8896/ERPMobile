@@ -15,19 +15,17 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
-import com.chinashb.www.mobileerp.basicobject.UserAllInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.ShbTcpTest;
-import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class StockMainActivity extends AppCompatActivity implements View.OnClickListener {
+public class StockPartMainActivity extends AppCompatActivity implements View.OnClickListener {
     RecyclerView mRecyclerView;
     private TextView tvTitle;
     private TextView tvusername;
@@ -53,7 +51,7 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stock_in_out);
+        setContentView(R.layout.activity_stock_part_main_layout);
         tvTitle = (TextView) findViewById(R.id.tv_stock_system_title);
 
         scanToStockButton = (Button) findViewById(R.id.btn_scan_to_stock_in);
@@ -119,18 +117,18 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
 
     private void productSupply() {
         if (userInfo == null) {
-            Toast.makeText(StockMainActivity.this, "请先扫描职工二维码登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(StockPartMainActivity.this, "请先扫描职工二维码登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockPutActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockPutActivity.class);
             startActivity(intent);
         }
     }
 
     private void scanToStock() {
         if (userInfo == null) {
-            Toast.makeText(StockMainActivity.this, "请先扫描职工二维码登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(StockPartMainActivity.this, "请先扫描职工二维码登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockInActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockInActivity.class);
             startActivity(intent);
         }
     }
@@ -194,16 +192,16 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
         } else if (view == lookQRButton) {
 //            scanToStock();
         } else if (view == floatButton) {
-            Intent intent = new Intent(StockMainActivity.this, ShbTcpTest.class);
+            Intent intent = new Intent(StockPartMainActivity.this, ShbTcpTest.class);
             startActivity(intent);
         }
     }
 
     private void selfProduct() {
         if (userInfo == null) {
-            Toast.makeText(StockMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockCheckPartInvActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockCheckPartInvActivity.class);
             intent.putExtra("Ac_Type", 2);
 
             startActivity(intent);
@@ -212,56 +210,55 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
 
     private void partStockCheck() {
         if (userInfo == null) {
-            Toast.makeText(StockMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockCheckPartInvActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockCheckPartInvActivity.class);
             intent.putExtra("Ac_Type", 1);
-
             startActivity(intent);
         }
     }
 
     private void partStockIn() {
         if (userInfo == null) {
-            Toast.makeText(StockMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockQueryPartActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockQueryPartActivity.class);
             startActivity(intent);
         }
     }
 
     private void completeProduct() {
         if (userInfo == null) {
-            Toast.makeText(StockMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockQueryProductActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockQueryProductActivity.class);
             startActivity(intent);
         }
     }
 
     private void departMentIn() {
         if (userInfo == null) {
-            Toast.makeText(StockMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockDepartmentInActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockDepartmentInActivity.class);
             startActivity(intent);
         }
     }
 
     private void freezeStock() {
         if (userInfo == null) {
-            Toast.makeText(StockMainActivity.this, "请先扫描职工二维码登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(StockPartMainActivity.this, "请先扫描职工二维码登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockFreezeActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockFreezeActivity.class);
             startActivity(intent);
         }
     }
 
     private void moveStockArea() {
         if (userInfo == null) {
-            Toast.makeText(StockMainActivity.this, "请先扫描职工二维码登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(StockPartMainActivity.this, "请先扫描职工二维码登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockMoveActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockMoveActivity.class);
             startActivity(intent);
         }
     }
@@ -272,9 +269,9 @@ public class StockMainActivity extends AppCompatActivity implements View.OnClick
 
     private void returnToWC() {
         if (userInfo == null) {
-            Toast.makeText(StockMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
+            Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockMainActivity.this, StockOutMoreReturnWCActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockReworkWCActivity.class);
             startActivity(intent);
         }
     }

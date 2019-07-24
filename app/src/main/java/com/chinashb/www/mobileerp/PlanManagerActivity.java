@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.adapter.WCListAdapter;
-import com.chinashb.www.mobileerp.basicobject.Issued_Item;
+import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.basicobject.s_WCList;
@@ -20,7 +20,6 @@ import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.StaticVariableUtils;
-import com.chinashb.www.mobileerp.warehouse.SelectMPIWCStepTwoActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -87,7 +86,7 @@ public class PlanManagerActivity extends AppCompatActivity implements View.OnCli
 
     private class GetWCListsAsyncTask extends AsyncTask<String, Void, Void> {
         MpiWcBean scanresult;
-        List<Issued_Item> li;
+        List<PlanInnerDetailEntity> li;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -154,7 +153,8 @@ public class PlanManagerActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void doNextStepSelectWc(s_WCList wcEntity) {
-        Intent intent = new Intent(PlanManagerActivity.this, SelectMPIWCStepTwoActivity.class);
+//        Intent intent = new Intent(PlanManagerActivity.this, SelectMPIWCStepTwoActivity.class);
+        Intent intent = new Intent(PlanManagerActivity.this, PlanShowListActivity.class);
         intent.putExtra("wclist", (Serializable) wcEntity);
 //        startActivityForResult(intent, 100);
         startActivity(intent);

@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
-import com.chinashb.www.mobileerp.basicobject.Issued_Item;
+import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
@@ -42,7 +42,7 @@ import java.util.List;
 public class StockOutMoreActivity extends AppCompatActivity {
 
     private MpiWcBean themw;
-    private List<Issued_Item> issuedItemList;
+    private List<PlanInnerDetailEntity> issuedItemList;
     private TextView txtMw_Title;
     private Button btnAddTray;
     private Button btnScanWC;
@@ -86,7 +86,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
         if (themw != null) {
             themw.setMwNameTextView(txtMw_Title);
         }
-        issuedItemList = (List<Issued_Item>) intent.getSerializableExtra("IssuedItemList");
+        issuedItemList = (List<PlanInnerDetailEntity>) intent.getSerializableExtra("IssuedItemList");
         isDirect = intent.getBooleanExtra(IntentConstant.Intent_continue_put_directly, false);
         setHomeButton();
 
@@ -243,7 +243,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
         protected void setNeedQty(BoxItemEntity box_item) {
             if (box_item != null && issuedItemList != null) {
                 for (int i = 0; i < issuedItemList.size(); i++) {
-                    Issued_Item issued_item = issuedItemList.get(i);
+                    PlanInnerDetailEntity issued_item = issuedItemList.get(i);
                     if (issued_item.getItem_ID() == box_item.getItem_ID()) {
                         box_item.setNeedMoreQty(issued_item.getMoreQty());
                     }
@@ -431,7 +431,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
         protected void UpdateNeedQty(BoxItemEntity box_item) {
             if (box_item != null && issuedItemList != null) {
                 for (int i = 0; i < issuedItemList.size(); i++) {
-                    Issued_Item issued_item = issuedItemList.get(i);
+                    PlanInnerDetailEntity issued_item = issuedItemList.get(i);
                     if (issued_item.getItem_ID() == box_item.getItem_ID()) {
                         float oldmoreqty = issued_item.getMoreQty();
                         float newmoreqty = oldmoreqty - box_item.getQty();

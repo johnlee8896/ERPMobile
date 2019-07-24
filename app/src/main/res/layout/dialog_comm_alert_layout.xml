@@ -61,7 +61,7 @@
         app:layout_constraintTop_toBottomOf="@id/dialog_alert_message_container_layout">
 
         <Button
-            android:id="@+id/dialog_alert_left_Button"
+            android:id="@+id/dialog_work_line_confirm_Button"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"
@@ -85,7 +85,7 @@
             tools:visibility="visible" />
 
         <Button
-            android:id="@+id/dialog_alert_right_Button"
+            android:id="@+id/dialog_work_line_cancel_Button"
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_weight="1"

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_white_bg_conner_4dp"
+    android:divider="@drawable/shape_divide_line_horizontal"
+    android:paddingTop="@dimen/dimen_size_10"
+    android:showDividers="middle">
+
+    <TextView
+        android:id="@+id/dialog_work_line_title_textView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="请选择线别（可多选）"
+        android:textColor="#333"
+        android:textSize="18sp"
+         />
+    <LinearLayout
+        android:id="@+id/dialog_work_line_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:showDividers="middle">
+
+        <Button
+            android:id="@+id/dialog_work_line_confirm_Button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="确定"
+            android:textColor="#333"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/dialog_work_line_cancel_Button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="取消"
+            android:textColor="#333"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/dialog_select_work_line_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dialog_work_line_title_textView"
+        android:layout_above="@id/dialog_work_line_bottom_layout"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginRight="@dimen/dimen_size_20" />
+
+
+
+</RelativeLayout>

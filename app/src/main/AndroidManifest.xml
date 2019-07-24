@@ -44,7 +44,7 @@
             android:name=".warehouse.WarehousePartMainActivity"
             android:label="@string/title_activity_warehouse_part_main" />
         <activity
-            android:name=".warehouse.StockMainActivity"
+            android:name=".warehouse.StockPartMainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".warehouse.StockInActivity"
@@ -85,7 +85,7 @@
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".warehouse.StockOutMoreReturnWCActivity"
+            android:name=".warehouse.StockReworkWCActivity"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
         <activity
@@ -138,6 +138,8 @@
             android:label="@string/title_activity_conversation_contacts" />
         <activity android:name=".PlanManagerActivity"/>
         <activity android:name=".PlanShowListActivity"/>
+        <activity android:name=".PlanItemDetailActivity"/>
+        <activity android:name=".StockProductMainActivity"/>
         <activity
             android:name=".task.TaskViewActivity"
             android:label="@string/title_activity_task_view" />

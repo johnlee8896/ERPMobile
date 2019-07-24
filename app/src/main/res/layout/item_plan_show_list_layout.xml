@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="类型"
+                tools:text="类型"
                 android:textSize="17sp" />
 
             <TextView
@@ -61,7 +61,7 @@
                 android:layout_marginLeft="@dimen/dimen_size_15"
                 android:clickable="false"
                 android:padding="2dp"
-                android:text="生产线分组"
+                tools:text="生产线分组"
                 android:textSize="17sp" />
         </LinearLayout>
 

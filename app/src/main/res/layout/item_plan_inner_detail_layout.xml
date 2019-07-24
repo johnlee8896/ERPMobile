@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/underline"
+    android:orientation="vertical"
+    android:paddingTop="3dp"
+    android:paddingLeft="@dimen/dimen_size_20"
+    android:paddingRight="@dimen/dimen_size_20"
+    android:paddingBottom="3dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_issued_item_name_info"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:text="物品名称:" />
+        <TextView
+            android:id="@+id/tv_issued_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="物品" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_issued_nextlocation_info"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="库存："
+            android:textColor="#0000FF" />
+
+        <TextView
+            android:id="@+id/tv_issued_nextlocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="库存"
+            android:textColor="#0000FF" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_singleqty_info"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="单机用量："
+             />
+
+        <TextView
+            android:id="@+id/tv_singleqty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="单机用量"
+             />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_needqty_info"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="需要量："
+             />
+
+        <TextView
+            android:id="@+id/tv_needqty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="需要量"
+             />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_issuedqty_info"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="已投料："
+             />
+
+        <TextView
+            android:id="@+id/tv_issuedqty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="已投料"
+             />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_issued_last_moment_info"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="最近投料："
+             />
+
+        <TextView
+            android:id="@+id/tv_issued_last_moment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="最近投料"
+             />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_moreqty_info"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="差额："
+            android:textColor="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/tv_moreqty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="差额"
+            android:textColor="@color/colorAccent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_singleqty"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:text="单机用量" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_needqty"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:text="需要量" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_issuedqty"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:text="已投料" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_issued_last_moment"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:text="最近投料" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/tv_moreqty"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center_horizontal"-->
+            <!--android:text="差额"-->
+            <!--android:textColor="@color/colorAccent" />-->
+    </LinearLayout>
+
+</LinearLayout>

@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssuedItemAdapter;
-import com.chinashb.www.mobileerp.basicobject.Issued_Item;
+import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
@@ -42,10 +42,10 @@ public class StockPutActivity extends AppCompatActivity {
     private Button extraPutButton;
     private MpiWcBean mpiWcBean;
 
-    private RecyclerView mrv_issued_items;
+    private RecyclerView issuedItemRecyclerView;
 
     private IssuedItemAdapter issuedItemAdapter;
-    private List<Issued_Item> IssuedItemList;
+    private List<PlanInnerDetailEntity> IssuedItemList;
 
     private IstPlaceEntity thePlace;
     private String scanstring;
@@ -61,7 +61,7 @@ public class StockPutActivity extends AppCompatActivity {
 
     protected void bindView() {
         setContentView(R.layout.activity_stock_out_layout);
-        mrv_issued_items = (RecyclerView) findViewById(R.id.rv_issed_items);
+        issuedItemRecyclerView = (RecyclerView) findViewById(R.id.rv_issed_items);
         titleTextView = (TextView) findViewById(R.id.tv_stock_out_title);
         txtMW = (TextView) findViewById(R.id.tv_mpi_wc_title);
         selectMWHasPlanButton = (Button) findViewById(R.id.btn_select_mpi_wc_from_selected);
@@ -73,8 +73,8 @@ public class StockPutActivity extends AppCompatActivity {
         mpiWcBeanList = StaticVariableUtils.selectMpiWcBeanList;
         IssuedItemList = new ArrayList<>();
         issuedItemAdapter = new IssuedItemAdapter(StockPutActivity.this, IssuedItemList);
-        mrv_issued_items.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
-        mrv_issued_items.setAdapter(issuedItemAdapter);
+        issuedItemRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        issuedItemRecyclerView.setAdapter(issuedItemAdapter);
 
     }
 
@@ -172,48 +172,38 @@ public class StockPutActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-
         if ((requestCode == 100 || requestCode == 200) && resultCode == 1) {
             MpiWcBean select_mw;
             select_mw = (MpiWcBean) data.getSerializableExtra("mw");
-
             if (select_mw != null) {
                 mpiWcBean = select_mw;
-
                 if (!Exist_mws()) {
                     mpiWcBeanList.add(mpiWcBean);
                 }
-
                 titleTextView.setText("投料出库 #" + mpiWcBean.getMPIWC_ID().toString());
+                //// TODO: 2019/7/23
                 mpiWcBean.setMwNameTextView(txtMW);
-
-                StockPutActivity.AsyncShowIssuedMW task = new StockPutActivity.AsyncShowIssuedMW();
+                AsyncShowIssuedMW task = new AsyncShowIssuedMW();
                 task.execute();
             }
         }
 
         //投料之后，总刷新已投清单
         if (requestCode == 300 || requestCode == 400) {
-            StockPutActivity.AsyncShowIssuedMW task = new StockPutActivity.AsyncShowIssuedMW();
+            AsyncShowIssuedMW task = new AsyncShowIssuedMW();
             task.execute();
         }
-
         if (result != null) {
             if (result.getContents() == null) {
                 //new IntentIntegrator(StockPutActivity.this).initiateScan();
-
             } else {
-
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-
-                String X = result.getContents();
-                if (!X.equals("")) {
-                    if (X.startsWith(("MI"))) {
-                        scanstring = X;
-
-                        StockPutActivity.AsyncGetMW task = new StockPutActivity.AsyncGetMW();
+                String contents = result.getContents();
+                if (!contents.equals("")) {
+                    if (contents.startsWith(("MI"))) {
+                        scanstring = contents;
+                        AsyncGetMW task = new AsyncGetMW();
                         task.execute();
-
                     }
                 }
             }
@@ -240,21 +230,15 @@ public class StockPutActivity extends AppCompatActivity {
 
     private class AsyncGetMW extends AsyncTask<String, Void, Void> {
         MpiWcBean scanresult;
-        List<Issued_Item> li;
+        List<PlanInnerDetailEntity> li;
 
         @Override
         protected Void doInBackground(String... params) {
-
-            MpiWcBean bi = WebServiceUtil.op_Check_Commit_MW_Barcode(scanstring);
-
-
-            scanresult = bi;
-
-            if (bi.getResult() ) {
-                mpiWcBean = bi;
-
-                li = WebServiceUtil.opGetMWIssedItems(bi.getMPIWC_ID());
-
+            MpiWcBean mpiWcBean = WebServiceUtil.op_Check_Commit_MW_Barcode(scanstring);
+            scanresult = mpiWcBean;
+            if (mpiWcBean.getResult() ) {
+                StockPutActivity.this.mpiWcBean = mpiWcBean;
+                li = WebServiceUtil.opGetMWIssedItems(mpiWcBean.getMPIWC_ID());
             } else {
 
             }
@@ -266,23 +250,17 @@ public class StockPutActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-
             if (scanresult != null) {
                 if (!scanresult.getResult() ) {
                     Toast.makeText(StockPutActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 } else {
                     txtMW.setText(scanresult.getMwName());
-
                     IssuedItemList = li;
                     issuedItemAdapter = new IssuedItemAdapter(StockPutActivity.this, IssuedItemList);
-
-                    mrv_issued_items.setAdapter(issuedItemAdapter);
+                    issuedItemRecyclerView.setAdapter(issuedItemAdapter);
                 }
 
-
             }
-
-
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -299,16 +277,11 @@ public class StockPutActivity extends AppCompatActivity {
 
 
     private class AsyncShowIssuedMW extends AsyncTask<String, Void, Void> {
-        List<Issued_Item> li;
-
+        List<PlanInnerDetailEntity> planInnerDetailEntityList;
         @Override
         protected Void doInBackground(String... params) {
-
-
             if (mpiWcBean != null) {
-
-                li = WebServiceUtil.opGetMWIssedItems(mpiWcBean.getMPIWC_ID());
-
+                planInnerDetailEntityList = WebServiceUtil.opGetMWIssedItems(mpiWcBean.getMPIWC_ID());
             } else {
 
             }
@@ -319,16 +292,11 @@ public class StockPutActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-
-            if (li != null) {
-                IssuedItemList = li;
+            if (planInnerDetailEntityList != null) {
+                IssuedItemList = planInnerDetailEntityList;
                 issuedItemAdapter = new IssuedItemAdapter(StockPutActivity.this, IssuedItemList);
-
-                mrv_issued_items.setAdapter(issuedItemAdapter);
-
+                issuedItemRecyclerView.setAdapter(issuedItemAdapter);
             }
-
-
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -343,27 +311,21 @@ public class StockPutActivity extends AppCompatActivity {
 
     }
 
-    private class AsyncGetMWItems extends AsyncTask<String, Void, List<Issued_Item>> {
+    private class AsyncGetMWItems extends AsyncTask<String, Void, List<PlanInnerDetailEntity>> {
         MpiWcBean scanresult;
-
         @Override
-        protected List<Issued_Item> doInBackground(String... params) {
-
-            List<Issued_Item> li = WebServiceUtil.opGetMWIssedItems((long) 471058);
-
-
-            return li;
+        protected List<PlanInnerDetailEntity> doInBackground(String... params) {
+            List<PlanInnerDetailEntity> planInnerDetailEntityList = WebServiceUtil.opGetMWIssedItems((long) 471058);
+            return planInnerDetailEntityList;
         }
 
-
         @Override
-        protected void onPostExecute(List<Issued_Item> result) {
+        protected void onPostExecute(List<PlanInnerDetailEntity> result) {
             //tv.setText(fahren + "∞ F");
-
             if (result != null) {
                 IssuedItemList = result;
                 issuedItemAdapter = new IssuedItemAdapter(StockPutActivity.this, IssuedItemList);
-                mrv_issued_items.setAdapter(issuedItemAdapter);
+                issuedItemRecyclerView.setAdapter(issuedItemAdapter);
             }
 
 

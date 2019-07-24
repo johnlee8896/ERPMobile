@@ -135,6 +135,9 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.jakewharton:butterknife:8.8.1'
 
+    //时间选择
+    implementation 'com.contrarywind:Android-PickerView:4.1.6'
+
 //    implementation project(':libapi')
 //    implementation project(':libbase')
     implementation project(':zxing')

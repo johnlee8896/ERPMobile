@@ -6,7 +6,7 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
-import com.chinashb.www.mobileerp.basicobject.Issued_Item;
+import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.JUser;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
@@ -17,7 +17,6 @@ import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
-import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -37,7 +36,6 @@ import org.ksoap2.transport.HttpTransportSE;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -541,7 +539,7 @@ public class WebServiceUtil {
 
 
     //获取已经投料的内容
-    public static List<Issued_Item> opGetMWIssedItems(Long mw_id) {
+    public static List<PlanInnerDetailEntity> opGetMWIssedItems(Long mw_id) {
         String webMethodName = "op_Get_MW_Issued_Items";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
@@ -554,7 +552,7 @@ public class WebServiceUtil {
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-        List<Issued_Item> result;
+        List<PlanInnerDetailEntity> result;
         result = new ArrayList<>();
 
 
@@ -570,7 +568,7 @@ public class WebServiceUtil {
                     SoapObject obj3;
                     obj3 = (SoapObject) obj2.getProperty(xi);
 
-                    Issued_Item im = new Issued_Item();
+                    PlanInnerDetailEntity im = new PlanInnerDetailEntity();
 
                     im.setItem_ID(Long.parseLong(obj3.getProperty("Item_ID").toString()));
                     im.setIV_ID(Long.parseLong(obj3.getProperty("IV_ID").toString()));

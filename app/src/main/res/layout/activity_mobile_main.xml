@@ -4,156 +4,201 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
         android:layout_width="match_parent"
-       app:app_hide_back_image="true"
-        app:app_title_text="SHB ERP 首页"
-        android:layout_height="50dp"/>
-
-    <ImageView
-        android:id="@+id/main_avatar_imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
-        android:src="@mipmap/smiley" />
-
-    <TextView
-        android:id="@+id/tv_current_user_name"
-        android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:gravity="center"
-        android:padding="@dimen/activity_horizontal_margin"
-        android:text="使用者" />
+        app:app_hide_back_image="true"
+        app:app_title_text="SHB ERP 首页" />
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:baselineAligned="false"-->
-    <!--android:orientation="horizontal">-->
-
-
-    <!--<Button-->
-    <!--android:id="@+id/main_login_button"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_vertical"-->
-    <!--android:layout_weight="1"-->
-    <!--android:text="登录"-->
-    <!--android:visibility="gone" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/main_scan_hr_card_button"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_vertical"-->
-    <!--android:text="扫描职工码" />-->
-
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="80dp"-->
-    <!--android:visibility="visible">-->
-
-    <RadioGroup
-        android:id="@+id/rg_net_link"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <RadioButton
-            android:id="@+id/main_intranet_radioButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:checked="true"
-            android:text="内网" />
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dimen_size_40">
 
-        <RadioButton
-            android:id="@+id/main_internet_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="外网" />
-    </RadioGroup>
+            <ImageView
+                android:id="@+id/main_avatar_imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="50dp"
+                android:src="@mipmap/smiley" />
 
-    <!--</LinearLayout>-->
+            <TextView
+                android:id="@+id/tv_current_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:text="使用者" />
 
-    <!--</LinearLayout>-->
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:baselineAligned="false"-->
+            <!--android:orientation="horizontal">-->
 
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_margin="@dimen/dimen_size_20"-->
-        <!--android:orientation="vertical">-->
+            <!--<Button-->
+            <!--android:id="@+id/main_login_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="登录"-->
+            <!--android:visibility="gone" />-->
 
-        <TextView
-            android:id="@+id/main_select_bu_button"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:background="@drawable/shape_conner_blue_button_bg"
-            android:layout_marginLeft="@dimen/dimen_size_20"
-            android:layout_marginRight="@dimen/dimen_size_20"
-            android:layout_marginTop="@dimen/dimen_size_15"
-            android:text="切换车间" />
+            <!--<Button-->
+            <!--android:id="@+id/main_scan_hr_card_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center_vertical"-->
+            <!--android:text="扫描职工码" />-->
 
-        <TextView
-            android:id="@+id/main_warehouse_manage_button"
-            android:background="@drawable/shape_conner_blue_button_bg"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:layout_marginLeft="@dimen/dimen_size_20"
-            android:layout_marginRight="@dimen/dimen_size_20"
-            android:layout_marginTop="@dimen/dimen_size_15"
-            android:text="仓库管理" />
 
-        <TextView
-            android:id="@+id/main_task_manage_button"
-            android:background="@drawable/shape_conner_blue_button_bg"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:layout_marginLeft="@dimen/dimen_size_20"
-            android:layout_marginRight="@dimen/dimen_size_20"
-            android:layout_marginTop="@dimen/dimen_size_15"
-            android:text="任务管理" />
+            <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:visibility="visible">-->
 
-        <TextView
-            android:id="@+id/main_message_button"
-            android:background="@drawable/shape_conner_blue_button_bg"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:gravity="center"
-            android:layout_marginLeft="@dimen/dimen_size_20"
-            android:layout_marginRight="@dimen/dimen_size_20"
-            android:layout_marginTop="@dimen/dimen_size_15"
-            android:text="消息管理" />
-    <TextView
-        android:id="@+id/main_plan_button"
-        android:background="@drawable/shape_conner_blue_button_bg"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginRight="@dimen/dimen_size_20"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:text="计划管理" />
+            <RadioGroup
+                android:id="@+id/rg_net_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
-        <!--<ProgressBar-->
+                <RadioButton
+                    android:id="@+id/main_intranet_radioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:gravity="center_vertical"
+                    android:text="内网" />
+
+                <RadioButton
+                    android:id="@+id/main_internet_radioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="外网" />
+            </RadioGroup>
+
+            <!--</LinearLayout>-->
+
+            <!--</LinearLayout>-->
+
+
+            <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_margin="@dimen/dimen_size_20"-->
+            <!--android:orientation="vertical">-->
+
+            <TextView
+                android:id="@+id/main_select_bu_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="切换车间" />
+
+            <!--<TextView-->
+                <!--android:id="@+id/main_warehouse_manage_button"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
+                <!--android:layout_marginTop="@dimen/dimen_size_15"-->
+                <!--android:layout_marginRight="@dimen/dimen_size_20"-->
+                <!--android:background="@drawable/shape_conner_blue_button_bg"-->
+                <!--android:gravity="center"-->
+                <!--android:text="仓库管理" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/main_warehouse_manage__product_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_marginTop="@dimen/dimen_size_15"
+                    android:layout_marginRight="@dimen/dimen_size_20"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_conner_blue_button_bg"
+                    android:gravity="center"
+                    android:text="成品仓库管理" />
+
+                <TextView
+                    android:id="@+id/main_warehouse_manage_part_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_marginTop="@dimen/dimen_size_15"
+                    android:layout_marginRight="@dimen/dimen_size_20"
+                    android:layout_weight="1"
+                    android:background="@drawable/shape_conner_blue_button_bg"
+                    android:gravity="center"
+                    android:text="零部件仓库管理" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/main_task_manage_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="任务管理" />
+
+            <TextView
+                android:id="@+id/main_message_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="消息管理" />
+
+            <TextView
+                android:id="@+id/main_plan_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="计划管理" />
+
+            <!--<ProgressBar-->
             <!--android:id="@+id/main_scan_progressBar"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->
             <!--android:layout_gravity="center_horizontal"-->
             <!--android:visibility="invisible" />-->
-    <!--</LinearLayout>-->
+            <!--</LinearLayout>-->
 
-    <!--<android.support.design.widget.BottomNavigationView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--app:menu="@menu/navigation_contact" />-->
+            <!--<android.support.design.widget.BottomNavigationView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--app:menu="@menu/navigation_contact" />-->
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
 
 </LinearLayout>

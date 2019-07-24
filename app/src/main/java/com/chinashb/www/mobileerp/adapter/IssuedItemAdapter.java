@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.Issued_Item;
+import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -20,34 +20,33 @@ import java.util.List;
 
 
 public class IssuedItemAdapter extends RecyclerView.Adapter<IssuedItemAdapter.IssuedItemViewHolder> {
-    private final LayoutInflater mLayoutInflater;
+    private final LayoutInflater inflater;
     private final Context mContext;
-    private List<Issued_Item>  dataSoure;
+    private List<PlanInnerDetailEntity> planInnerDetailEntityList;
 
-    public IssuedItemAdapter(Context context, List<Issued_Item> Issued_ItemList) {
-        dataSoure = Issued_ItemList;
+    public IssuedItemAdapter(Context context, List<PlanInnerDetailEntity> Issued_ItemList) {
+        planInnerDetailEntityList = Issued_ItemList;
         mContext = context;
-        mLayoutInflater = LayoutInflater.from(context);
+        inflater = LayoutInflater.from(context);
     }
 
-    public List<Issued_Item> getDataList(){
-        return  dataSoure;
+    public List<PlanInnerDetailEntity> getDataList(){
+        return planInnerDetailEntityList;
     }
     @Override
     public IssuedItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater
-                .inflate(R.layout.listview_issued_items, parent, false);
-        IssuedItemViewHolder vh = new IssuedItemViewHolder(v);
-        return vh;
+        View view = inflater.inflate(R.layout.item_plan_inner_detail_layout, parent, false);
+        IssuedItemViewHolder viewHolder = new IssuedItemViewHolder(view);
+        return viewHolder;
 
     }
 
     @Override
     public void onBindViewHolder(final IssuedItemViewHolder holder, int position) {
-        final Issued_Item Issued_Item = dataSoure.get(position);
+        final PlanInnerDetailEntity Issued_Item = planInnerDetailEntityList.get(position);
         holder.tvItem.setText(Issued_Item.getItemName());
         holder.tvNextLocation.setText(Issued_Item.getNextLocation());
-        //holder.tvNextLotNo.setText(Issued_Item.getNextLotNo());
+        //holder.tvNextLotNo.setText(PlanInnerDetailEntity.getNextLotNo());
 
         DecimalFormat df4=new DecimalFormat("#####.####");
 
@@ -63,7 +62,7 @@ public class IssuedItemAdapter extends RecyclerView.Adapter<IssuedItemAdapter.Is
 
     @Override
     public int getItemCount() {
-        return dataSoure == null ? 0 : dataSoure.size();
+        return planInnerDetailEntityList == null ? 0 : planInnerDetailEntityList.size();
     }
 
     public static class IssuedItemViewHolder extends RecyclerView.ViewHolder {

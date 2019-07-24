@@ -17,4 +17,6 @@ public class IntentConstant {
     public static final int Select_Search_From_Select_Check_File = 0x4;
 
     public static final String Intent_continue_put_directly = "continue_put_directly";
+    public static String Intent_Extra_mpiWcBean = "intent_mpiWcBean";
+    public static String Intent_PlanItemDetailBean = "PlanItemDetailBean";
 }

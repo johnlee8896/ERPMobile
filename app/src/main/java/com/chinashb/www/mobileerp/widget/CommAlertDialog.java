@@ -70,9 +70,9 @@ public class CommAlertDialog extends Dialog implements View.OnClickListener {
     private void initViewFromXML() {
         titleTextView = (TextView) findViewById(R.id.dialog_alert_title_TextView);
         messageTextView = (TextView) findViewById(R.id.dialog_alert_message_TextView);
-        leftButton = (Button) findViewById(R.id.dialog_alert_left_Button);
+        leftButton = (Button) findViewById(R.id.dialog_work_line_confirm_Button);
         middleButton = (Button) findViewById(R.id.dialog_alert_middle_Button);
-        rightButton = (Button) findViewById(R.id.dialog_alert_right_Button);
+        rightButton = (Button) findViewById(R.id.dialog_work_line_cancel_Button);
         bottomGroup = (Group) findViewById(R.id.dialog_alert_bottom_button_group);
         messageEditText = (EditText) findViewById(R.id.dialog_alert_message_EditText);
         scrollView = (NestedScrollView) findViewById(R.id.dialog_alert_message_container_layout);

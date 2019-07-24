@@ -18,7 +18,6 @@ import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
-import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.ReturnItemAdapter;
@@ -33,7 +32,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockOutMoreReturnWCActivity extends AppCompatActivity {
+/**
+ * 返工出库处理页面
+ */
+public class StockReworkWCActivity extends AppCompatActivity {
 
     private MpiWcBean themw;
     private Button btnAddTray;
@@ -61,7 +63,7 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             newissuelist = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
         }
-        returnItemAdapter = new ReturnItemAdapter(StockOutMoreReturnWCActivity.this, newissuelist);
+        returnItemAdapter = new ReturnItemAdapter(StockReworkWCActivity.this, newissuelist);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(returnItemAdapter);
 
@@ -78,7 +80,7 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
 
                 //StockOutMoreActivity.AsyncDirectGetBox task = new StockOutMoreActivity.AsyncDirectGetBox();
                 //task.execute();
-                new IntentIntegrator(StockOutMoreReturnWCActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                new IntentIntegrator(StockReworkWCActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
             }
 
         });
@@ -88,7 +90,7 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (newissuelist.size() > 0) {
-                    StockOutMoreReturnWCActivity.AsyncExeWarehouseOut task = new StockOutMoreReturnWCActivity.AsyncExeWarehouseOut();
+                    StockReworkWCActivity.AsyncExeWarehouseOut task = new StockReworkWCActivity.AsyncExeWarehouseOut();
                     task.execute();
                 }
             }
@@ -200,14 +202,14 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-
+            //// TODO: 2019/7/24 返工出库处理
             if (scanresult != null) {
                 if (!scanresult.getResult() ) {
-                    Toast.makeText(StockOutMoreReturnWCActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(StockReworkWCActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
 
-            returnItemAdapter = new ReturnItemAdapter(StockOutMoreReturnWCActivity.this, newissuelist);
+            returnItemAdapter = new ReturnItemAdapter(StockReworkWCActivity.this, newissuelist);
             mRecyclerView.setAdapter(returnItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
         }
@@ -254,15 +256,15 @@ public class StockOutMoreReturnWCActivity extends AppCompatActivity {
 
             if (ws_result != null) {
                 if (!ws_result.getResult() ) {
-                    CommonUtil.ShowToast(StockOutMoreReturnWCActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
+                    CommonUtil.ShowToast(StockReworkWCActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
 
                 } else {
-                    CommonUtil.ShowToast(StockOutMoreReturnWCActivity.this, "出库完成", R.mipmap.smiley);
+                    CommonUtil.ShowToast(StockReworkWCActivity.this, "出库完成", R.mipmap.smiley);
                 }
 
             }
 
-            returnItemAdapter = new ReturnItemAdapter(StockOutMoreReturnWCActivity.this, newissuelist);
+            returnItemAdapter = new ReturnItemAdapter(StockReworkWCActivity.this, newissuelist);
             mRecyclerView.setAdapter(returnItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
         }

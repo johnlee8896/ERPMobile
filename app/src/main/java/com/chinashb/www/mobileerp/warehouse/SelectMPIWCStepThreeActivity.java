@@ -51,7 +51,7 @@ public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_mpi_wc_step3);
+        setContentView(R.layout.activity_select_mpi_wc_step3_layout);
         subTitleTextView = (TextView) findViewById(R.id.tv_select_mpi_wc_show_wc);
         selectMWRecyclerView = (RecyclerView) findViewById(R.id.rv_select_mpi_wc_byday);
         txtDay = (TextView) findViewById(R.id.tv_select_mpi_wc_show_day);

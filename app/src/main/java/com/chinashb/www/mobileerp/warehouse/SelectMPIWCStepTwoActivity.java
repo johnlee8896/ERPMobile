@@ -21,7 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.WorkCenterAdapter;
-import com.chinashb.www.mobileerp.basicobject.Issued_Item;
+import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WorkCenter;
@@ -118,7 +118,7 @@ public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
 
     private class GetWCAsyncTask extends AsyncTask<String, Void, Void> {
         MpiWcBean mpiWcBean;
-        List<Issued_Item> li;
+        List<PlanInnerDetailEntity> li;
         @Override
         protected Void doInBackground(String... params) {
 

@@ -25,7 +25,7 @@ import com.chinashb.www.mobileerp.talk.MessageManageActivity;
 import com.chinashb.www.mobileerp.task.TasksActivity;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
-import com.chinashb.www.mobileerp.warehouse.StockMainActivity;
+import com.chinashb.www.mobileerp.warehouse.StockPartMainActivity;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -40,7 +40,8 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
     //    public static UserInfoEntity userInfo;
 
 
-    private TextView warehouseMainTextView;
+    private TextView warehousePartTextView;
+    private TextView warehouseProductTextView;
     private TextView conversationTextView;
     private TextView taskTextView;
     private TextView planTextView;
@@ -85,7 +86,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 //            userInfo = (UserInfoEntity) savedInstanceState.getSerializable("userInfo");
 //        }
         int HRID = getIntent().getIntExtra(IntentConstant.Intent_Extra_hr_id, -1);
-        if (HRID > 0 && getIntent().getBooleanExtra(IntentConstant.Intent_Extra_from_name_pwd,false)) {
+        if (HRID > 0 && getIntent().getBooleanExtra(IntentConstant.Intent_Extra_from_name_pwd, false)) {
             GetHrNameAsyncTask task = new GetHrNameAsyncTask();
             task.execute(String.valueOf(HRID));
         }
@@ -173,7 +174,8 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         internetRadioButton = (RadioButton) findViewById(R.id.main_internet_radioButton);
 
 
-        warehouseMainTextView = (TextView) findViewById(R.id.main_warehouse_manage_button);
+        warehousePartTextView = (TextView) findViewById(R.id.main_warehouse_manage_part_button);
+        warehouseProductTextView = findViewById(R.id.main_warehouse_manage__product_button);
         conversationTextView = (TextView) findViewById(R.id.main_message_button);
         taskTextView = (TextView) findViewById(R.id.main_task_manage_button);
         planTextView = findViewById(R.id.main_plan_button);
@@ -222,7 +224,8 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         switchBUTextView.setOnClickListener(this);
         planTextView.setOnClickListener(this);
 
-        warehouseMainTextView.setOnClickListener(this);
+        warehousePartTextView.setOnClickListener(this);
+        warehouseProductTextView.setOnClickListener(this);
         conversationTextView.setOnClickListener(this);
         taskTextView.setOnClickListener(this);
     }
@@ -322,7 +325,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
 
         if (result != null) {
             if (result.getContents() == null) {
-                //new IntentIntegrator(StockMainActivity.this).initiateScan();
+                //new IntentIntegrator(StockPartMainActivity.this).initiateScan();
                 //st/////////////art_scan_HR();
             } else {
                 Toast.makeText(this, " scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
@@ -421,7 +424,6 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
                 ToastUtil.showToastLong("请先登录");
                 return;
             }
-
             Intent intent = new Intent(MobileMainActivity.this, MessageManageActivity.class);
             startActivity(intent);
         } else if (view == taskTextView) {
@@ -429,23 +431,28 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
                 ToastUtil.showToastLong("请先登录");
                 return;
             }
-
             Intent intent = new Intent(MobileMainActivity.this, TasksActivity.class);
             startActivity(intent);
-        } else if (view == warehouseMainTextView) {
+        } else if (view == warehousePartTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
                 return;
             }
-
-            Intent intent = new Intent(MobileMainActivity.this, StockMainActivity.class);
+            Intent intent = new Intent(MobileMainActivity.this, StockPartMainActivity.class);
             startActivity(intent);
-        } else if (view == switchBUTextView) {
+        }
+        else if (view == warehouseProductTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
                 return;
             }
-
+            Intent intent = new Intent(MobileMainActivity.this, StockProductMainActivity.class);
+            startActivity(intent);
+        }else if (view == switchBUTextView) {
+            if (!UserSingleton.get().hasLogin()) {
+                ToastUtil.showToastLong("请先登录");
+                return;
+            }
 //            Intent intent = new Intent(MobileMainActivity.this, SelectItemActivity.class);
             Intent intent = new Intent(MobileMainActivity.this, CommonSelectItemActivity.class);
             String sql = getSqlBu();
@@ -461,14 +468,14 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
             intent.putExtra("ColCaptionList", (Serializable) ColCaption);
             intent.putExtra("hiddenColList", (Serializable) HiddenCol);
 
-            intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition,IntentConstant.Select_Search_From_Select_BU);
+            intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_BU);
             startActivityForResult(intent, 200);
-        }else if (view == planTextView){
+        } else if (view == planTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
                 return;
             }
-            Intent intent = new Intent(this,PlanManagerActivity.class);
+            Intent intent = new Intent(this, PlanManagerActivity.class);
             startActivity(intent);
         }
     }
@@ -484,14 +491,12 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
             }
         }
 
-
     }
 
     private class GetHrNameAsyncTask extends AsyncTask<String, Void, Void> {
         //Image hr_photo;
         @Override
         protected Void doInBackground(String... params) {
-
             int hrId = Integer.parseInt(params[0]);
 //            userInfo = WebServiceUtil.getHRName_Bu(userInfo.getHR_ID());
             UserInfoEntity userInfoEntity = WebServiceUtil.getHRName_Bu(hrId);
@@ -499,7 +504,6 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
             if (userInfoEntity != null) {
                 CommonUtil.pictureBitmap = CommonUtil.getUserPic(MobileMainActivity.this, CommonUtil.userPictureMap, userInfoEntity.getHR_ID());
             }
-
             return null;
         }
 

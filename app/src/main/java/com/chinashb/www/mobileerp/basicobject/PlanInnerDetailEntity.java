@@ -2,7 +2,7 @@ package com.chinashb.www.mobileerp.basicobject;
 
 import java.io.Serializable;
 
-public class Issued_Item implements Serializable {
+public class PlanInnerDetailEntity implements Serializable {
     private boolean result;
     public  boolean getResult(){return result;}
     public void setResult(boolean result){this.result=result;}
