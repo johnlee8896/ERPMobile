@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="50dp"
     xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:minHeight="50dp"
-        android:padding="@dimen/dimen_size_5"
+        android:textSize="@dimen/text_size_20"
         tools:text="验证实验">
 
     </TextView>
@@ -21,4 +21,9 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         android:src="@mipmap/duihao" />
+    <View
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:background="@color/color_grey_a5a5a5"
+        android:layout_height="0.8dp"/>
 </RelativeLayout>

@@ -41,9 +41,9 @@ public class FileUtil {
     public static String getRootPath() {
         if (rootPath == null) {
             if (AppUtil.isApkInDebug()) {
-                rootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Ahrwl/";
+                rootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Shb/";
             } else {
-                rootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.hrwl/";
+                rootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/.shb/";
             }
             checkOrMakeDir(rootPath);
         }

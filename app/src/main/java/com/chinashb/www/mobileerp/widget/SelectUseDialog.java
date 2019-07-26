@@ -50,6 +50,10 @@ public class SelectUseDialog extends BaseDialog {
 
     }
 
+    public void refreshContent(List<String> stringList){
+        adapter.setData(stringList);
+    }
+
     protected void configDialog(int gravity) {
         WindowManager.LayoutParams wl = getWindow().getAttributes();
         wl.gravity = gravity;// 设置重力

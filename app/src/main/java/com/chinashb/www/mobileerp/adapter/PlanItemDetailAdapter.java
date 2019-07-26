@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.Display;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +15,7 @@ import com.chinashb.www.mobileerp.PlanItemDetailActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.bean.PlanItemDetailBean;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.widget.SelectUseDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,6 +64,14 @@ public class PlanItemDetailAdapter extends BaseRecycleAdapter<PlanItemDetailBean
                 Intent intent = new Intent(itemView.getContext(), PlanItemDetailActivity.class);
                 intent.putExtra(IntentConstant.Intent_PlanItemDetailBean,bean);
                 itemView.getContext().startActivity(intent);
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override public boolean onLongClick(View v) {
+                    SelectUseDialog dialog = new SelectUseDialog(itemView.getContext());
+                    dialog.show();
+                    return false;
+                }
             });
         }
     }

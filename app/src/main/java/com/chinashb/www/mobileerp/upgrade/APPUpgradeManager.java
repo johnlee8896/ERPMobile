@@ -36,24 +36,6 @@ import java.util.Map;
  * @description APP 升级下载APK相关的处理，使用单例模式
  */
 public class APPUpgradeManager {
-    /*1, '华瑞物联钰翔版*/
-    public static final String NAME_YuXiang = "1";
-    /*2, '华瑞物联通用版'*/
-    public static final String NAME_logistics = "2";
-    /*3, '危化品'*/
-    public static final String NAME_hazardous = "3";
-    /*4, '银企直连'*/
-    public static final String NAME_BCLink = "4";
-    /*5, '华瑞物联OA'*/
-    public static final String NAME_OA = "5";
-    /*6, '.NET客户端'*/
-    public static final String NAME_NET = "6";
-    /*7, '智能地磅'*/
-    public static final String NAME_SmartPound = "7";
-    /*8, '材料管家'*/
-    public static final String NAME_MaterialsManager = "1";
-    /*10, '其它'*/
-    public static final String NAME_Other = "10";
 
     private static boolean hasShowedUpdateDialog = false;
     private DownloadingProgressDialog downloadingProgressDialog;
@@ -70,7 +52,6 @@ public class APPUpgradeManager {
 
     public void checkNewVersion(String nameCode) {
         Map<String, String> map = new HashMap<>();
-        //app_name: 钰翔版 - 1，通用版 - 2，危化品 - 3 ，银企直联 -4，其他 - 10
         map.put("app_name", nameCode);
         //app_client : ios - 1, Android - 2
         map.put("app_client", "2");
@@ -145,22 +126,25 @@ public class APPUpgradeManager {
         builder.create().show();
     }
 
-
-
-
-
     public void showForceUpdateDialog() {
         VersionBean appBean = new VersionBean();
-        appBean.setDescription("我就是想更新");
+//        appBean.setDescription("我就是想更新");
+        appBean.setDescription("2019-07-02\n" +
+                "Version1.1 更新日志\n" +
+                "\n" +
+                "1、可扫描工牌登录\n" +
+                "2、修复生产投料--新选计划--装配A20闪退的Bug");
         appBean.setUrl("http://www.chinashb.com/Download/Shberp.apk");
-       showUpdateDialog(appBean,true);
+//        appBean.setAppName("SHBERP");
+
+        showUpdateDialog(appBean, true);
     }
 
     /**
      * 优先申请SD卡的读写权限
      */
     private void executeUpdateAction(VersionBean appBean) {
-        if (TextUtils.isEmpty(appBean.getUrl())){
+        if (TextUtils.isEmpty(appBean.getUrl())) {
             ToastUtil.showToastShort("下载链接为空");
             return;
         }
@@ -214,8 +198,9 @@ public class APPUpgradeManager {
             path = builder.apkDownloadedPath;
         }
 
-        return String.format("%s%s_%s_%s.apk", path,
-                builder.appName, bean.getVersionName(), bean.getCode());
+//        return String.format("%s%s_%s_%s.apk", path,
+//                builder.appName, bean.getVersionName(), bean.getCode());
+        return String.format("%sSHBERP.apk", path);
     }
 
     private void downloadAPK(VersionBean bean) {
@@ -225,9 +210,11 @@ public class APPUpgradeManager {
         //如果存在这个和APK同名的文件，判断是不是APK，不是的话就删除这个文件
         File apkFile = new File(getAPKPath(bean));
         if (apkFile.exists()) {
-            if (!isApkFile(builder.context, getAPKPath(bean))) {
-                apkFile.delete();
-            }
+//            if (!isApkFile(builder.context, getAPKPath(bean))) {
+//                apkFile.delete();
+//            }
+            //// TODO: 2019/7/26
+            apkFile.delete();
         }
 
         FileDownloader.setup(builder.context);
@@ -237,7 +224,7 @@ public class APPUpgradeManager {
                     @Override
                     protected void started(BaseDownloadTask task) {
                         super.started(task);
-                        ToastUtil.showToastLong("正在后台下载更新...");
+//                        ToastUtil.showToastLong("正在后台下载更新...");
                     }
 
                     @Override
@@ -268,7 +255,6 @@ public class APPUpgradeManager {
     }
 
 
-
     private void installAPK(String apkPath) {
         if (!isForeground()) {
             return;
@@ -289,11 +275,16 @@ public class APPUpgradeManager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             apkUri = FileProvider.getUriForFile(builder.context, builder.context.getPackageName() + ".fileprovider", apkFile);
+//            apkUri = FileProvider.getUriForFile(APP.get(), "com.chinashb.www.mobileerp.fileprovider", apkFile);
         } else {
             apkUri = Uri.fromFile(apkFile);
         }
         installIntent.setDataAndType(apkUri, "application/vnd.android.package-archive");
         builder.context.startActivity(installIntent);
+
+        if (downloadingProgressDialog != null && downloadingProgressDialog.isShowing()){
+            downloadingProgressDialog.dismiss();
+        }
     }
 
     public boolean isForeground() {

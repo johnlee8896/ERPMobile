@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="350dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/shape_white_bg_conner_4dp"
     android:divider="@drawable/shape_divide_line_horizontal"
     android:paddingTop="@dimen/dimen_size_10"
@@ -55,8 +57,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/dialog_work_line_title_textView"
         android:layout_above="@id/dialog_work_line_bottom_layout"
+        app:app_item_decoration_type="ITEM_DIVIDE_LNE"
         android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginRight="@dimen/dimen_size_20" />
+        android:layout_marginRight="@dimen/dimen_size_20"
+        tools:listitem="@layout/item_select_work_line_layout"
+        />
 
 
 
