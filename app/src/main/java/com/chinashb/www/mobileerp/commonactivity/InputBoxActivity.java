@@ -11,10 +11,7 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
 
-import org.w3c.dom.Text;
-
 public class InputBoxActivity extends AppCompatActivity {
-
     TextView tvTitle;
     EditText etInput;
     Button btnOk;
@@ -23,23 +20,16 @@ public class InputBoxActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_input_box);
+        setContentView(R.layout.activity_input_box_layout);
+        getViewFromXML();
 
-        tvTitle = (TextView) findViewById(R.id.tv_input_box_title);
-        etInput = (EditText) findViewById(R.id.et_inputbox_text);
-        btnOk = (Button) findViewById(R.id.btn_input_box_commit);
-        btnCancel = (Button) findViewById(R.id.btn_input_box_cancel);
-
-
-        Intent who = getIntent();
-
-        String Title = who.getStringExtra("title");
-
+        Intent intent = getIntent();
+        String Title = intent.getStringExtra("title");
         if (Title != null && !Title.isEmpty()) {
             tvTitle.setText(Title);
         }
 
-        String OriText = who.getStringExtra("OriText");
+        String OriText = intent.getStringExtra("OriText");
         etInput.setText("");
         if (!OriText.isEmpty() ) {
             if (!OriText.equals("null") ) {
@@ -47,15 +37,11 @@ public class InputBoxActivity extends AppCompatActivity {
             }
 
         }
-
-
         setHomeButton();
-
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String T = etInput.getText().toString();
-
                 Intent result = new Intent();
                 result.putExtra("Input", T);
                 setResult(1, result);
@@ -69,6 +55,13 @@ public class InputBoxActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void getViewFromXML() {
+        tvTitle = (TextView) findViewById(R.id.tv_input_box_title);
+        etInput = (EditText) findViewById(R.id.et_inputbox_text);
+        btnOk = (Button) findViewById(R.id.btn_input_box_commit);
+        btnCancel = (Button) findViewById(R.id.btn_input_box_cancel);
     }
 
 

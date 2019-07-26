@@ -19,7 +19,7 @@ import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.chinashb.www.mobileerp.adapter.AdapterItemPartLotInv;
+import com.chinashb.www.mobileerp.adapter.ItemPartLotInvAdapter;
 import com.chinashb.www.mobileerp.basicobject.Item_Lot_Inv;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
@@ -33,13 +33,13 @@ public class StockQueryPartItemActivity extends AppCompatActivity {
     private UserInfoEntity user;
 
     private RecyclerView mRecyclerView;
-    private AdapterItemPartLotInv partItemAdpater;
+    private ItemPartLotInvAdapter partItemAdpater;
     private PartsEntity selected_item;
-    private List<Item_Lot_Inv> lots;
+    private List<Item_Lot_Inv> itemLotInvList;
     private TextView txtItem;
 
     private Item_Lot_Inv EditingLot;
-    private String NewLotDes = "";
+    private String description = "";
 
 
     @Override
@@ -61,7 +61,7 @@ public class StockQueryPartItemActivity extends AppCompatActivity {
             asyncQueryPartInvItem.execute();
         }
 
-        partItemAdpater = new AdapterItemPartLotInv(StockQueryPartItemActivity.this, lots);
+        partItemAdpater = new ItemPartLotInvAdapter(StockQueryPartItemActivity.this, itemLotInvList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(partItemAdpater);
 
@@ -75,15 +75,11 @@ public class StockQueryPartItemActivity extends AppCompatActivity {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == 1) {
             String Input = data.getStringExtra("Input");
-
             if (Input.isEmpty() || Input.equals("null")) {
                 Input = "";
             }
-
             if (EditingLot != null) {
-                NewLotDes = Input;
-
-
+                description = Input;
                 AsyncUpdateLotDescription t = new AsyncUpdateLotDescription();
                 t.execute();
             }
@@ -121,7 +117,7 @@ public class StockQueryPartItemActivity extends AppCompatActivity {
             String sql = "select ";
             String js = WebServiceUtil.getQueryPartInvItem(user.getBu_ID(), selected_item.getItem_ID());
             Gson gson = new Gson();
-            lots = gson.fromJson(js, new TypeToken<List<Item_Lot_Inv>>() {
+            itemLotInvList = gson.fromJson(js, new TypeToken<List<Item_Lot_Inv>>() {
             }.getType());
 
             return null;
@@ -132,26 +128,25 @@ public class StockQueryPartItemActivity extends AppCompatActivity {
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            partItemAdpater = new AdapterItemPartLotInv(StockQueryPartItemActivity.this, lots);
+            partItemAdpater = new ItemPartLotInvAdapter(StockQueryPartItemActivity.this, itemLotInvList);
             mRecyclerView.setAdapter(partItemAdpater);
             partItemAdpater.setOnItemClickListener(new OnItemClickListener() {
-                                                     @Override
-                                                     public void OnItemClick(View view, int position) {
-                                                         if (lots != null) {
-                                                             EditingLot = lots.get(position);
-                                                             Intent intent = new Intent(StockQueryPartItemActivity.this, InputBoxActivity.class);
-                                                             intent.putExtra("Title", "输入批次标注，" + EditingLot.getLotNo() + "：");
-                                                             String OldDes = "";
-                                                             if (EditingLot.getLotDescription() != null) {
-                                                                 OldDes = EditingLot.getLotDescription();
-                                                             }
+                                                       @Override
+                                                       public void OnItemClick(View view, int position) {
+                                                           if (itemLotInvList != null) {
+                                                               EditingLot = itemLotInvList.get(position);
+                                                               Intent intent = new Intent(StockQueryPartItemActivity.this, InputBoxActivity.class);
+                                                               intent.putExtra("Title", "输入批次标注，" + EditingLot.getLotNo() + "：");
+                                                               String originalDescription = "";
+                                                               if (EditingLot.getLotDescription() != null) {
+                                                                   originalDescription = EditingLot.getLotDescription();
+                                                               }
+                                                               intent.putExtra("OriText", originalDescription);
+                                                               startActivityForResult(intent, 100);
+                                                           }
 
-                                                             intent.putExtra("OriText", OldDes);
-                                                             startActivityForResult(intent, 100);
-                                                         }
-
-                                                     }
-                                                 }
+                                                       }
+                                                   }
             );
             //pbScan.setVisibility(View.INVISIBLE);
         }
@@ -169,34 +164,24 @@ public class StockQueryPartItemActivity extends AppCompatActivity {
 
 
     private class AsyncUpdateLotDescription extends AsyncTask<String, Void, Void> {
-
         WsResult ws_result;
 
         @Override
         protected Void doInBackground(String... params) {
-
             if (EditingLot != null) {
-                ws_result = WebServiceUtil.op_Commit_Update_Lot_Description(UserSingleton.get().getHRID(), EditingLot.getLotID(), NewLotDes);
-
+                ws_result = WebServiceUtil.op_Commit_Update_Lot_Description(UserSingleton.get().getHRID(), EditingLot.getLotID(), description);
             }
-
-
             return null;
         }
 
-
         @Override
         protected void onPostExecute(Void result) {
-
             if (ws_result != null) {
-                if (ws_result.getResult() ) {
-                    EditingLot.setLotDescription(NewLotDes);
+                if (ws_result.getResult()) {
+                    EditingLot.setLotDescription(description);
                     partItemAdpater.notifyDataSetChanged();
                 }
-
             }
-
-
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -213,7 +198,7 @@ public class StockQueryPartItemActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-//设置为横屏幕
+        //设置为横屏幕
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }

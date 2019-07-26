@@ -6,8 +6,8 @@
     android:background="@drawable/underline"
     android:minHeight="14dp"
     android:orientation="vertical"
-    android:paddingBottom="5dp"
-    android:paddingTop="5dp">
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -244,8 +244,7 @@
                 android:gravity="center_vertical|center_horizontal"
 
                 android:inputType="textMultiLine"
-                android:text="abc
-def" />
+                android:text="abcdef" />
 
             <ImageView
                 android:id="@+id/iv_inv_part_item_lot_tag_edit"

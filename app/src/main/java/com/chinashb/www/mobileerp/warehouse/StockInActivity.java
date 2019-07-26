@@ -1,5 +1,6 @@
 package com.chinashb.www.mobileerp.warehouse;
 
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -8,15 +9,19 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.R;
@@ -57,6 +62,9 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
     private String scanContent;
 
     private ScanInputDialog inputDialog;
+    private RelativeLayout switchLayout;
+    private Switch stockSwitch;
+    private boolean isOpenSuggestStock = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +77,9 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         scanAreaButton = (Button) findViewById(R.id.btn_scan_area);
         warehouseInButton = (Button) findViewById(R.id.btn_exe_warehouse_in);
         inputEditText = (EditText) findViewById(R.id.input_EditeText);
+
+        stockSwitch = findViewById(R.id.setting_open_suggest_stock_Switch);
+        switchLayout = findViewById(R.id.setting_open_suggest_stock_Layout);
 
         setHomeButton();
 
@@ -88,14 +99,28 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         addTrayPhotoButton.setOnClickListener(this);
         scanAreaButton.setOnClickListener(this);
         warehouseInButton.setOnClickListener(this);
-        inputEditText.addTextChangedListener(new TextWatcherImpl(){
+        inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                if (editable.toString().length() > 7 && editable.toString().endsWith("\n")){
+                if (editable.toString().length() > 7 && editable.toString().endsWith("\n")) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
                     parseScanResult(editable.toString());
                 }
+            }
+        });
+        switchLayout.setOnClickListener(this);
+
+        stockSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isChecked = stockSwitch.isChecked();
+                if (isChecked) {
+                    ToastUtil.showToastShort("您已打开建议仓库！");
+                } else {
+                    ToastUtil.showToastShort("您已关闭建议仓库！");
+                }
+                isOpenSuggestStock = isChecked;
             }
         });
     }
@@ -133,7 +158,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void parseScanResult(String content) {
-        if (TextUtils.isEmpty(content)){
+        if (TextUtils.isEmpty(content)) {
             return;
         }
 //        content = content.trim();
@@ -142,8 +167,8 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         System.out.println("============ scan content = " + content);
         // VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
 //        String content = result.getContents();
-        if (content.contains("\n")){
-            content = content.replace("\n","");
+        if (content.contains("\n")) {
+            content = content.replace("\n", "");
         }
         if (content.contains("/") || content.contains("／")) {
             String splitStr = "";
@@ -153,9 +178,9 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 //                splitStr = "／";
 //            }
 
-            if (content.contains("／")){
+            if (content.contains("／")) {
 //                splitStr = "／";
-                content = content.replace("／","/");
+                content = content.replace("／", "/");
             }
 
             String[] qrContent;
@@ -173,13 +198,13 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                 }
 
                 if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/") ||
-                        content.startsWith("/SUB——IST——ID/") || content.startsWith("/IST——ID/" )) {
-                    if (content.startsWith("/SUB——IST——ID/")){
-                        content = content.replace("/SUB——IST——ID/","/SUB_IST_ID/");
+                        content.startsWith("/SUB——IST——ID/") || content.startsWith("/IST——ID/")) {
+                    if (content.startsWith("/SUB——IST——ID/")) {
+                        content = content.replace("/SUB——IST——ID/", "/SUB_IST_ID/");
                     }
 
-                    if (content.startsWith("/IST——ID/" )){
-                        content = content.replace("/IST——ID/","/IST_ID/");
+                    if (content.startsWith("/IST——ID/")) {
+                        content = content.replace("/IST——ID/", "/IST_ID/");
                     }
 
                     //仓库位置码
@@ -239,9 +264,9 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 //
 //            }
             ToastUtil.showToastLong("请直接用扫码枪进行扫描，确保蓝牙已连接配对！");
-        } else if (view == addTrayPhotoButton){
-            new IntentIntegrator( StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-        }else if (view == scanAreaButton) {
+        } else if (view == addTrayPhotoButton) {
+            new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+        } else if (view == scanAreaButton) {
             if (boxitemList.size() > 0) {
                 int selectedcount = 0;
                 for (int i = 0; i < boxitemList.size(); i++) {
@@ -252,15 +277,17 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                 if (selectedcount > 0) {
                     new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
                     inputEditText.setText("");
-                }else{
+                } else {
                     ToastUtil.showToastShort("请选择条目！");
                 }
 
-            }else{
+            } else {
                 ToastUtil.showToastShort("没有物品条码或仓库位置码没有成功，请重新扫描！");
             }
         } else if (view == warehouseInButton) {
             handleIntoWareHouse();
+        } else if (view == switchLayout) {
+            stockSwitch.performClick();
         }
     }
 
@@ -268,7 +295,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         if (boxitemList.size() > 0) {
             int selectedcount = 0;
             for (int i = 0; i < boxitemList.size(); i++) {
-                if (boxitemList.get(i).getSelect() ) {
+                if (boxitemList.get(i).getSelect()) {
                     if (boxitemList.get(i).getIst_ID() == 0) {
 //                            CommonUtil.ShowToast(StockInActivity.this, "还没有扫描库位", R.mipmap.warning, Toast.LENGTH_SHORT);
                         ToastUtil.showToastLong("还没有扫描库位");
@@ -283,7 +310,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                 task.execute();
             }
 
-        }else{
+        } else {
             //// TODO: 2019/7/10  这里应控件按钮的可用性
             ToastUtil.showToastShort("没有物品条码或仓库位置码没有成功，请重新扫描！");
         }
@@ -299,6 +326,9 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
             scanresult = bi;
             if (bi.getResult()) {
                 if (!is_box_existed(bi)) {
+                    if (isOpenSuggestStock){
+                        ToastUtil.showToastLong("建议仓库存放:" + bi.getIstName());
+                    }
                     bi.setSelect(true);
                     boxitemList.add(bi);
                 } else {
@@ -331,7 +361,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
             if (scanresult != null) {
-                if (!scanresult.getResult() ) {
+                if (!scanresult.getResult()) {
                     Toast.makeText(StockInActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
@@ -364,9 +394,9 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
             IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanContent);
             if (bi.getResult()) {
                 thePlace = bi;
-                if (bi.getResult() ) {
+                if (bi.getResult()) {
                     for (int i = 0; i < boxitemList.size(); i++) {
-                        if (boxitemList.get(i).getSelect() ) {
+                        if (boxitemList.get(i).getSelect()) {
                             boxitemList.get(i).setIstName(bi.getIstName());
                             boxitemList.get(i).setIst_ID(bi.getIst_ID());
                             boxitemList.get(i).setSub_Ist_ID(bi.getSub_Ist_ID());
@@ -414,7 +444,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
             SelectList = new ArrayList<>();
 
             for (int i = 0; i < boxitemList.size(); i++) {
-                if (boxitemList.get(i).getSelect() ) {
+                if (boxitemList.get(i).getSelect()) {
                     SelectList.add(boxitemList.get(i));
                 }
             }
@@ -424,7 +454,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
             while (count < selectedCount && SelectList.size() > 0) {
                 BoxItemEntity boxItemEntity = SelectList.get(0);
                 ws_result = WebServiceUtil.op_Commit_DS_Item(boxItemEntity);
-                if (ws_result.getResult() ) {
+                if (ws_result.getResult()) {
                     boxitemList.remove(boxItemEntity);
                     SelectList.remove(boxItemEntity);
                 }

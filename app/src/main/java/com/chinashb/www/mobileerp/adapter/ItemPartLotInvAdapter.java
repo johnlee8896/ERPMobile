@@ -21,17 +21,16 @@ import java.util.List;
  */
 
 
-public class AdapterItemPartLotInv extends RecyclerView.Adapter<AdapterItemPartLotInv.ProInvViewHolder> {
-    private final LayoutInflater mLayoutInflater;
+public class ItemPartLotInvAdapter extends RecyclerView.Adapter<ItemPartLotInvAdapter.ProInvViewHolder> {
+    private final LayoutInflater inflater;
     private final Context mContext;
     private List<Item_Lot_Inv> dataSoure;
-    private OnItemClickListener mClickListener;
+    private OnItemClickListener onItemClickListener;
 
-    public AdapterItemPartLotInv(Context context, List<Item_Lot_Inv> Part_InvList) {
+    public ItemPartLotInvAdapter(Context context, List<Item_Lot_Inv> Part_InvList) {
         dataSoure = Part_InvList;
         mContext = context;
-        mLayoutInflater = LayoutInflater.from(context);
-
+        inflater = LayoutInflater.from(context);
 
     }
 
@@ -41,9 +40,8 @@ public class AdapterItemPartLotInv extends RecyclerView.Adapter<AdapterItemPartL
 
     @Override
     public ProInvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater
-                .inflate(R.layout.listview_part_item_inv, parent, false);
-        ProInvViewHolder vh = new ProInvViewHolder(v, mClickListener);
+        View view = inflater.inflate(R.layout.listview_part_item_inv, parent, false);
+        ProInvViewHolder vh = new ProInvViewHolder(view, onItemClickListener);
         return vh;
 
     }
@@ -76,7 +74,7 @@ public class AdapterItemPartLotInv extends RecyclerView.Adapter<AdapterItemPartL
     }
 
     public void setOnItemClickListener(OnItemClickListener mClickListener) {
-        this.mClickListener = mClickListener;
+        this.onItemClickListener = mClickListener;
     }
 
     public static class ProInvViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -91,19 +89,19 @@ public class AdapterItemPartLotInv extends RecyclerView.Adapter<AdapterItemPartL
         TextView tvInvQty;
         TextView tvLotTag;
 
-        ImageView ivLogTag;
+        ImageView descriptionImageView;
 
-        private OnItemClickListener mListener;
+        private OnItemClickListener onItemClickListener;
 
         public ProInvViewHolder(View view, OnItemClickListener listener) {
             super(view);
-            bindview(view);
-            mListener = listener;
-            ivLogTag.setOnClickListener((View.OnClickListener) this);
+            getViewFromXML(view);
+            onItemClickListener = listener;
+            descriptionImageView.setOnClickListener(this);
 
         }
 
-        protected void bindview(View view) {
+        protected void getViewFromXML(View view) {
             tvVer = (TextView) view.findViewById(R.id.tv_part_inv_item_version);
             tvIstName = (TextView) view.findViewById(R.id.tv_part_inv_item_ist);
             tvLotDate = (TextView) view.findViewById(R.id.tv_part_inv_item_indate);
@@ -113,19 +111,21 @@ public class AdapterItemPartLotInv extends RecyclerView.Adapter<AdapterItemPartL
             tvStauts = (TextView) view.findViewById(R.id.tv_part_inv_item_status);
             tvInvQty = (TextView) view.findViewById(R.id.tv_part_inv_item_qty);
             tvLotTag = (TextView) view.findViewById(R.id.tv_part_inv_item_lot_tag);
-            ivLogTag = (ImageView) view.findViewById(R.id.iv_inv_part_item_lot_tag_edit);
+            descriptionImageView = (ImageView) view.findViewById(R.id.iv_inv_part_item_lot_tag_edit);
         }
 
         ProInvViewHolder(View view) {
             super(view);
-            bindview(view);
+            getViewFromXML(view);
         }
 
         @Override
         public void onClick(View v) {
-            Integer p = getPosition();
-            if (mListener != null) {
-                mListener.OnItemClick(v, p);
+            if (v == descriptionImageView){
+                int position = getPosition();
+                if (onItemClickListener != null) {
+                    onItemClickListener.OnItemClick(v, position);
+                }
             }
 
         }

@@ -1830,40 +1830,29 @@ public class WebServiceUtil {
         return result;
     }
 
-    public static WsResult op_Commit_Update_Lot_Description(int Oper, int LotID, String Description) {
+    public static WsResult op_Commit_Update_Lot_Description(int operationHRID, int LotID, String Description) {
         String webMethodName = "op_Update_Lot_Description";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
-
-        AddPrpertyInfo(propertyInfos, "Editor", Oper);
+        AddPrpertyInfo(propertyInfos, "Editor", operationHRID);
         AddPrpertyInfo(propertyInfos, "LotID", LotID);
         AddPrpertyInfo(propertyInfos, "Description", Description);
-
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-
         SoapObject obj = (SoapObject) envelope.bodyIn;
-
         WsResult result = getWS_Result(obj);
-
-
         return result;
     }
 
-
     public static String getMobileVersion() {
         System.out.println("Polling...");
-
         String nameSpace = "http://tempuri.org/";
 //        String serviceURL = "http://******:8001/ChargeService.asmx";
         String serviceURL = "http://172.16.2.20:8002/WebService.asmx";
-
 //        String methodName = "GetPhoneUnCharged";
         String methodName = "ReadApkVersion";
 //        String soapAction = "http://tempuri.org/GetPhoneUnCharged";
         String soapAction = "http://tempuri.org/ReadApkVersion";
         SoapObject request = new SoapObject(nameSpace, methodName);
-
-        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(
-                SoapEnvelope.VER11);
+        SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
         envelope.bodyOut = request;
         envelope.dotNet = true;
         HttpTransportSE ht = new HttpTransportSE(serviceURL);
@@ -1873,12 +1862,9 @@ public class WebServiceUtil {
             if (envelope.getResponse() != null) {
                 String result = envelope.getResponse().toString();
                 Log.d("result", result);
-
 //                Gson gson = new Gson();
 //                List<cha_phonechargedto> ps = gson.fromJson(result, new TypeToken<List<cha_phonechargedto>>() {
 //                }.getType());
-
-
             }
         } catch (Exception e) {
             e.printStackTrace();
