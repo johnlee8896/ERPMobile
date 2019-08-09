@@ -59,6 +59,7 @@
         <activity
             android:name=".warehouse.WarehousePartMainActivity"
             android:label="@string/title_activity_warehouse_part_main" />
+        <activity android:name=".PartItemMiddleActivity"/>
         <activity
             android:name=".warehouse.StockPartMainActivity"
             android:screenOrientation="portrait" />

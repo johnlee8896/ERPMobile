@@ -50,9 +50,9 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
     private TextView switchBUTextView;
     private TextView userNameTextView;
     private ImageView avatarImageView;
-    private RadioGroup netRadioGroup;
-    private RadioButton intranetRadioButton;
-    private RadioButton internetRadioButton;
+//    private RadioGroup netRadioGroup;
+//    private RadioButton intranetRadioButton;
+//    private RadioButton internetRadioButton;
 //    private ProgressBar scanProgressBar;
 
     private NetWorkReceiver netWorkReceiver;
@@ -70,10 +70,10 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         setContentView(R.layout.activity_mobile_main);
         getViewFromXML();
 
-        CommonUtil.initNetWorkLink(this);
-        if (WebServiceUtil.Current_Net_Link.equals("Internet")) {
-            internetRadioButton.setChecked(true);
-        }
+//        CommonUtil.initNetWorkLink(this);
+//        if (WebServiceUtil.Current_Net_Link.equals("Internet")) {
+//            internetRadioButton.setChecked(true);
+//        }
 
 //        setHomeButton();
 
@@ -169,9 +169,9 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         switchBUTextView = (TextView) findViewById(R.id.main_select_bu_button);
         userNameTextView = (TextView) findViewById(R.id.tv_current_user_name);
 
-        netRadioGroup = (RadioGroup) findViewById(R.id.rg_net_link);
-        intranetRadioButton = (RadioButton) findViewById(R.id.main_intranet_radioButton);
-        internetRadioButton = (RadioButton) findViewById(R.id.main_internet_radioButton);
+//        netRadioGroup = (RadioGroup) findViewById(R.id.rg_net_link);
+//        intranetRadioButton = (RadioButton) findViewById(R.id.main_intranet_radioButton);
+//        internetRadioButton = (RadioButton) findViewById(R.id.main_internet_radioButton);
 
 
         warehousePartTextView = (TextView) findViewById(R.id.main_warehouse_manage_part_button);
@@ -184,7 +184,7 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
     }
 
     protected void setViewListeners() {
-        netRadioGroup.setOnCheckedChangeListener(new NetOnCheckedChangeListener());
+//        netRadioGroup.setOnCheckedChangeListener(new NetOnCheckedChangeListener());
 //
 //        scanHRButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -480,18 +480,18 @@ public class MobileMainActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
-    private class NetOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedID) {
-            if (intranetRadioButton.getId() == checkedID) {
-                WebServiceUtil.set_net_link_to_intranet();
-            }
-            if (internetRadioButton.getId() == checkedID) {
-                WebServiceUtil.set_net_link_to_internet();
-            }
-        }
-
-    }
+//    private class NetOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
+//        @Override
+//        public void onCheckedChanged(RadioGroup group, int checkedID) {
+//            if (intranetRadioButton.getId() == checkedID) {
+//                WebServiceUtil.set_net_link_to_intranet();
+//            }
+//            if (internetRadioButton.getId() == checkedID) {
+//                WebServiceUtil.set_net_link_to_internet();
+//            }
+//        }
+//
+//    }
 
     private class GetHrNameAsyncTask extends AsyncTask<String, Void, Void> {
         //Image hr_photo;

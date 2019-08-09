@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
     android:orientation="vertical">
 
     <LinearLayout
@@ -18,13 +17,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="零部件仓库库存查询"
-            android:textColor="#ffffff" />
+             />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="#FFFFFF"
             android:layout_weight="1"
             android:gravity="bottom"
             android:orientation="horizontal">
@@ -84,7 +82,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Item_ID"
-            android:textColor="#ffffff" />
+             />
 
         <TextView
             android:id="@+id/tv_part_inv_item_col"
@@ -92,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="物料编码"
-            android:textColor="#ffffff" />
+            />
 
         <TextView
             android:id="@+id/tv_part_inv_name_col"
@@ -100,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="名称"
-            android:textColor="#ffffff" />
+            />
 
         <TextView
             android:id="@+id/tv_part_inv_spec_col"
@@ -108,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="规格"
-            android:textColor="#ffffff" />
+             />
 
 
         <TextView
@@ -117,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="库存"
-            android:textColor="#ffffff" />
+             />
 
         <TextView
             android:id="@+id/tv_part_inv_unit_col"
@@ -125,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="单位"
-            android:textColor="#ffffff" />
+            />
 
     </LinearLayout>
 

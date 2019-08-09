@@ -19,4 +19,8 @@ public class IntentConstant {
     public static final String Intent_continue_put_directly = "continue_put_directly";
     public static String Intent_Extra_mpiWcBean = "intent_mpiWcBean";
     public static String Intent_PlanItemDetailBean = "PlanItemDetailBean";
+
+
+    public static String Intent_Part_middle_map= "Part_middle_map";
+    public static String Intent_Part_middle_map_list= "Part_middle_map_list";
 }

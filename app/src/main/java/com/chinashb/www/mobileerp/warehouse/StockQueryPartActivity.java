@@ -7,23 +7,27 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.chinashb.www.mobileerp.PartItemMiddleActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.adapter.AdapterPartInv;
+import com.chinashb.www.mobileerp.basicobject.Item_Lot_Inv;
 import com.chinashb.www.mobileerp.basicobject.PartsEntity;
+import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.chinashb.www.mobileerp.adapter.AdapterPartInv;
-import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
-import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class StockQueryPartActivity extends AppCompatActivity {
@@ -35,7 +39,7 @@ public class StockQueryPartActivity extends AppCompatActivity {
     private Button btnQueryNextPage;
     private Button btnQueryPrePage;
     private RecyclerView mRecyclerView;
-    private AdapterPartInv partsAdpater;
+    private AdapterPartInv partsAdapter;
     private List<PartsEntity> partsEntityList;//零部件
 
     private PartsEntity selected_item;
@@ -54,9 +58,9 @@ public class StockQueryPartActivity extends AppCompatActivity {
 
         user = UserSingleton.get().getUserInfo();
         partsEntityList = new ArrayList<>();
-        partsAdpater = new AdapterPartInv(StockQueryPartActivity.this, partsEntityList);
+        partsAdapter = new AdapterPartInv(StockQueryPartActivity.this, partsEntityList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
-        mRecyclerView.setAdapter(partsAdpater);
+        mRecyclerView.setAdapter(partsAdapter);
 
         setHomeButton();
 
@@ -127,14 +131,20 @@ public class StockQueryPartActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");b
-            partsAdpater = new AdapterPartInv(StockQueryPartActivity.this, partsEntityList);
-            mRecyclerView.setAdapter(partsAdpater);
-            partsAdpater.setOnItemClickListener((view, position) -> {
+            partsAdapter = new AdapterPartInv(StockQueryPartActivity.this, partsEntityList);
+            mRecyclerView.setAdapter(partsAdapter);
+            partsAdapter.setOnItemClickListener((view, position) -> {
                         if (partsEntityList != null) {
                             selected_item = partsEntityList.get(position);
-                            Intent intent = new Intent(StockQueryPartActivity.this, StockQueryPartItemActivity.class);
+
+//                            QueryPartInvItemAsyncTask task = new QueryPartInvItemAsyncTask();
+//                            task.execute(selected_item.getItem_ID());
+
+                            Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
                             intent.putExtra("selected_item", (Serializable) selected_item);
                             startActivityForResult(intent, 100);
+
+
                         }
                     }
             );
@@ -151,6 +161,92 @@ public class StockQueryPartActivity extends AppCompatActivity {
         }
 
     }
+
+//    private class QueryPartInvItemAsyncTask extends AsyncTask<Integer, Void, List<Item_Lot_Inv>> {
+//
+//        @Override
+//        protected List<Item_Lot_Inv> doInBackground(Integer... params) {
+//            int itemId = params[0];
+//            String js = WebServiceUtil.getQueryPartInvItem(UserSingleton.get().getUserInfo().getBu_ID(), itemId);
+//            Gson gson = new Gson();
+//            List<Item_Lot_Inv> itemLotInvList = gson.fromJson(js, new TypeToken<List<Item_Lot_Inv>>() {
+//            }.getType());
+//            return itemLotInvList;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(List<Item_Lot_Inv> itemLotInvList) {
+//            //tv.setText(fahren + "∞ F");
+////            partItemAdapter = new ItemPartLotInvAdapter(StockQueryPartActivity.this, itemLotInvList);
+////            recyclerView.setAdapter(partItemAdapter);
+////            partItemAdapter.setOnItemClickListener(new OnItemClickListener() {
+////                                                       @Override
+////                                                       public void OnItemClick(View view, int position) {
+////                                                           if (itemLotInvList != null) {
+////                                                               EditingLot = itemLotInvList.get(position);
+////                                                               Intent intent = new Intent(StockQueryPartItemActivity.this, InputBoxActivity.class);
+////                                                               intent.putExtra("Title", "输入批次标注，" + EditingLot.getLotNo() + "：");
+////                                                               String originalDescription = "";
+////                                                               if (EditingLot.getLotDescription() != null) {
+////                                                                   originalDescription = EditingLot.getLotDescription();
+////                                                               }
+////                                                               intent.putExtra("OriText", originalDescription);
+////                                                               startActivityForResult(intent, 100);
+////                                                           }
+////
+////                                                       }
+////                                                   }
+////            );
+//            //pbScan.setVisibility(View.INVISIBLE);
+//
+//            if (itemLotInvList != null && itemLotInvList.size() > 0){
+//                int count = 0;
+//                HashMap<String,ArrayList<Item_Lot_Inv>> map = new HashMap<>();
+//                List<String> stockNumberList = new ArrayList<>();
+//                for (Item_Lot_Inv entity : itemLotInvList){
+//                    if (!TextUtils.isEmpty(entity.getIstName())){
+//                        String[] strArray = entity.getIstName().split("#");
+//                        if (strArray.length > 0 && !strArray[0].contains("#")){
+//                            if (!stockNumberList.contains(strArray[0])){
+//                                stockNumberList.add(strArray[0]);
+//                                ArrayList<Item_Lot_Inv> list = new ArrayList<>();
+//                                list.add(entity);
+//                                map.put(strArray[0],list);
+//
+//                            }else{
+//                                ArrayList<Item_Lot_Inv> arrayList = map.get(strArray[0]);
+//                                if (arrayList != null){
+//                                    arrayList.add(entity);
+//                                }
+//                                map.put(strArray[0],arrayList);
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
+//                intent.putExtra(IntentConstant.Intent_Part_middle_map,map);
+//                intent.putExtra("selected_item", (Serializable) selected_item);
+////                startActivityForResult(intent, 100);
+//                startActivity(intent);
+//
+//
+////                Intent intent = new Intent(StockQueryPartActivity.this, StockQueryPartItemActivity.class);
+////                intent.putExtra("selected_item", (Serializable) selected_item);
+////                startActivityForResult(intent, 100);
+//            }
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            //pbScan.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Void... values) {
+//        }
+//
+//    }
 
 
     @Override

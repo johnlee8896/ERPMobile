@@ -1,6 +1,8 @@
 package com.chinashb.www.mobileerp.basicobject;
 
-public class Item_Lot_Inv {
+import java.io.Serializable;
+
+public class Item_Lot_Inv implements Serializable {
 
     /**
      * IV_ID : 25322

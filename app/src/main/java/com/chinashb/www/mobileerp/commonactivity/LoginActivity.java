@@ -7,6 +7,10 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.MobileMainActivity;
@@ -56,6 +62,10 @@ public class LoginActivity extends AppCompatActivity {
     private boolean versionOk = false;
     private boolean isNetReady = false;
 
+    private RadioGroup netRadioGroup;
+    private RadioButton intranetRadioButton;
+    private RadioButton internetRadioButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +75,18 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.et_login_password);
         loginButton = (Button) findViewById(R.id.name_sign_in_button);
         scanHRButton = (Button) findViewById(R.id.main_scan_hr_card_button);
+
+        netRadioGroup = (RadioGroup) findViewById(R.id.rg_net_link);
+        intranetRadioButton = (RadioButton) findViewById(R.id.main_intranet_radioButton);
+        internetRadioButton = (RadioButton) findViewById(R.id.main_internet_radioButton);
+
+
+
+        CommonUtil.initNetWorkLink(this);
+        if (WebServiceUtil.Current_Net_Link.equals("Internet")) {
+            internetRadioButton.setChecked(true);
+        }
+
 //        progressBar = (ProgressBar) findViewById(R.id.login_progress);
         //最新版本检测
         checkErpVersionOk();
@@ -75,6 +97,8 @@ public class LoginActivity extends AppCompatActivity {
                 checkNamePwd();
             }
         });
+
+        netRadioGroup.setOnCheckedChangeListener(new NetOnCheckedChangeListener());
 
         scanHRButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +131,19 @@ public class LoginActivity extends AppCompatActivity {
 //            passwordEditText.requestFocus();
 //            passwordEditText.setText("john1234@@");
 //        }
+
+    }
+
+    private class NetOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedID) {
+            if (intranetRadioButton.getId() == checkedID) {
+                WebServiceUtil.set_net_link_to_intranet();
+            }
+            if (internetRadioButton.getId() == checkedID) {
+                WebServiceUtil.set_net_link_to_internet();
+            }
+        }
 
     }
 
@@ -258,7 +295,7 @@ public class LoginActivity extends AppCompatActivity {
 //                    String Version = o.get("Version").getAsString();
                     String Version = o.get("Version").getAsString();
                     String UpdateDate = o.get("UpdateDate").getAsString();
-                    String Des = o.get("Des").getAsString();
+                    String updateLog = o.get("Des").getAsString();
 //                    query_erp_id = ErpVerID;
 
 //                    if (mobile_erp_ver_id >= ErpVerID) {
@@ -281,7 +318,7 @@ public class LoginActivity extends AppCompatActivity {
                                 .setApkDownloadedPath(FileUtil.getCachePath())
 //                                .setVersionName(APPUtil.getVersionName()).setVersionCode(APPUtil.getVersionCode() + "")
 //                                .builder().checkNewVersion(APPUpgradeManager.NAME_MaterialsManager);
-                                .builder().showForceUpdateDialog();
+                                .builder().showForceUpdateDialog(updateLog);
                     }
 
                 } else {

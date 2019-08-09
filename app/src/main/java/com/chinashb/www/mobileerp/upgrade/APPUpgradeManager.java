@@ -126,14 +126,16 @@ public class APPUpgradeManager {
         builder.create().show();
     }
 
-    public void showForceUpdateDialog() {
+    public void showForceUpdateDialog(String updateLog) {
         VersionBean appBean = new VersionBean();
 //        appBean.setDescription("我就是想更新");
-        appBean.setDescription("2019-07-02\n" +
-                "Version1.1 更新日志\n" +
-                "\n" +
-                "1、可扫描工牌登录\n" +
-                "2、修复生产投料--新选计划--装配A20闪退的Bug");
+//        appBean.setDescription("2019-08-09\n" +
+//                "Version1.4 更新日志\n" +
+//                "\n" +
+//                "1、自动升级\n" +
+//                "2、内网外网切换\n" +
+//                "3、零部件查询分仓库显示统计数量");
+        appBean.setDescription(updateLog);
         appBean.setUrl("http://www.chinashb.com/Download/Shberp.apk");
 //        appBean.setAppName("SHBERP");
 
