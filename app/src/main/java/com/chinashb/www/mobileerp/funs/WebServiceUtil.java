@@ -49,10 +49,13 @@ public class WebServiceUtil {
 
     private static String NAMESPACE = "http://tempuri.org/";
     private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//    private static String URL = "http://116.236.97.186:8001/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
     private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//    private static String URL_Intranet = "http://116.236.97.186:8001/Service.svc";
     //    private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
     private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
+//    private static String URL_Internet = "http://116.236.97.186:8001/Service.svc";
     private static String SOAP_ACTION = "http://tempuri.org/IService/";
 
     private static String key = "Money_For_GodMoneyForGod";
@@ -711,6 +714,11 @@ public class WebServiceUtil {
     }
 
     public static BoxItemEntity op_Check_Commit_Inv_Out_Item_Barcode(int Bu_ID, String X) {
+
+        System.out.println("************************** x = " + X);
+        //// TODO: 2019/8/13 为测试Webservice而用，方法结束换回来
+//        URL = "http://172.16.2.21:61272/Service.svc";
+//        URL = "http://116.236.97.186:8001/Service.svc";
         String webMethodName = "op_Check_Commit_Inv_Out_Item_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 

@@ -63,7 +63,7 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
         holder.tvQty.setText(dfs.format(Box_Item.getQty()));
 
 
-        if (showNeedMore==false)
+        if (!showNeedMore)
         {
             holder.tvNeedTitle.setVisibility(View.GONE);
             holder.tvNeed.setVisibility(View.GONE);

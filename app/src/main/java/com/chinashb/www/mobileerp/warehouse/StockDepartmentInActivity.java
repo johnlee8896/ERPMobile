@@ -251,6 +251,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 new IntentIntegrator(StockDepartmentInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+//                parseScanResult("VB/MT/604140/S/0/IV/132895/P/SG00400-1000B A6/D/20190818/L/20190818-B7-1-1/N/780/Q/1920");
             }
         });
 
@@ -274,7 +275,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 
                     WarehouseOutAsyncTask task = new WarehouseOutAsyncTask();
                     task.execute();
-                }else{
+                } else {
                     ToastUtil.showToastShort("没有领料信息！");
                 }
             }
@@ -299,6 +300,14 @@ public class StockDepartmentInActivity extends AppCompatActivity {
             selectUseDialog.setOnViewClickListener(new OnViewClickListener() {
                 @Override
                 public <T> void onClickAction(View v, String tag, T t) {
+//                    if (!TextUtils.isEmpty(description)) {
+//                        ToastUtil.showToastShort("您已经选择用途了");
+//                        return;
+//                    }
+                    if (hasSelectUse){
+                        ToastUtil.showToastShort("您已经选择用途了");
+                        return;
+                    }
                     if (!hasScanHrCode) {
                         ToastUtil.showToastShort("请先扫描员工ID信息码！");
                         if (selectUseDialog != null && selectUseDialog.isShowing()) {
@@ -528,7 +537,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 //                boxItemEntity.setLotDescription(useTextView.getText().toString());
 //                boxItemEntity.setLotDescription(description);
 //                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), SelectDep, SelectReaseach, bi);
-                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity,description);
+                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity, description);
                 if (ws_result.getResult()) {
                     boxItemEntityList.remove(boxItemEntity);
                 } else {
@@ -551,6 +560,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
                     //// TODO: 2019/7/15 哪些页面是执行成功后要跳离的？
                     CommonUtil.ShowToast(StockDepartmentInActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
                     description = "";
+                    hasSelectUse = false;
                     finish();
                 }
             }
@@ -643,14 +653,14 @@ public class StockDepartmentInActivity extends AppCompatActivity {
 //                finish();
 //            }
 //            titleTextView.setText("操作员：" + UserSingleton.get().getDepartmentMap().get(userInfoEntity) userInfoEntity.getHR_Name());
-            String departmentName ;
+            String departmentName;
             if (userAllInfoEntity.getHRDepartment() == null || TextUtils.isEmpty(userAllInfoEntity.getHRDepartment().toString())) {
                 departmentName = UserSingleton.get().getDepartmentMap().get(userAllInfoEntity.getDepartmentID());
-            }else{
+            } else {
                 departmentName = userAllInfoEntity.getHRDepartment().toString();
             }
             titleTextView.setText("操作员：" + departmentName + "-" + userAllInfoEntity.getHRName());
-            if (departmentBean == null){
+            if (departmentBean == null) {
                 departmentBean = new DepartmentBean();
                 departmentBean.setDepartmentID(userAllInfoEntity.getDepartmentID());
                 departmentBean.setDepartmentName(departmentName);
