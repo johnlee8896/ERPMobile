@@ -4,15 +4,19 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.adapter.WCListAdapter;
+import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.basicobject.s_WCList;
+import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.StaticVariableUtils;
@@ -20,16 +24,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.chinashb.www.mobileerp.adapter.WCListAdapter;
-import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
-import com.chinashb.www.mobileerp.basicobject.s_WCList;
-import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectMPIWCStepOneActivity extends AppCompatActivity {
+public class SelectMPIWCStepOneActivity extends BaseActivity {
 
     private RecyclerView selectWCListRecyclerView;
     private List<s_WCList> wcLists;

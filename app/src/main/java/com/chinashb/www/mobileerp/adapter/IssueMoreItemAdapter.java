@@ -26,19 +26,20 @@ import java.util.List;
 public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdapter.IssueMoreItemViewHolder> {
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
-    private List<BoxItemEntity>  dataSoure;
+    private List<BoxItemEntity> boxItemEntityList;
 
-    public Boolean showNeedMore =true;
+    public Boolean showNeedMore = true;
 
-    public IssueMoreItemAdapter(Context context, List<BoxItemEntity> Box_ItemList) {
-        dataSoure = Box_ItemList;
+    public IssueMoreItemAdapter(Context context, List<BoxItemEntity> boxItemEntityList) {
+        this.boxItemEntityList = boxItemEntityList;
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
     }
 
-    public List<BoxItemEntity> getDataList(){
-        return  dataSoure;
+    public List<BoxItemEntity> getDataList() {
+        return boxItemEntityList;
     }
+
     @Override
     public IssueMoreItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = mLayoutInflater
@@ -50,21 +51,20 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
 
     @Override
     public void onBindViewHolder(final IssueMoreItemViewHolder holder, int position) {
-        final BoxItemEntity Box_Item = dataSoure.get(position);
+        final BoxItemEntity Box_Item = boxItemEntityList.get(position);
         holder.tvItem.setText(Box_Item.getItemName());
 
         holder.tvLotNo.setText(Box_Item.getLotNo());
         holder.tvBoxNo.setText(Box_Item.getBoxNameNo());
 
-        holder.tvSMLRemark.setText(CommonUtil.isNothing2String(Box_Item.getSmlRemark(),""));
+        holder.tvSMLRemark.setText(CommonUtil.isNothing2String(Box_Item.getSmlRemark(), ""));
         holder.tvLotDescription.setText(Box_Item.getLotDescription());
 
-        DecimalFormat dfs= new DecimalFormat("####.####");
+        DecimalFormat dfs = new DecimalFormat("####.####");
         holder.tvQty.setText(dfs.format(Box_Item.getQty()));
 
 
-        if (!showNeedMore)
-        {
+        if (!showNeedMore) {
             holder.tvNeedTitle.setVisibility(View.GONE);
             holder.tvNeed.setVisibility(View.GONE);
         }
@@ -72,55 +72,49 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
 
         holder.tvQty.addTextChangedListener(new TextWatcher() {
 
-        @Override
+            @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-             // 输入的内容变化的监听
-            //Log.e("输入过程中执行该方法", "文字变化");
-        }
+                // 输入的内容变化的监听
+                //Log.e("输入过程中执行该方法", "文字变化");
+            }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
+                                          int after) {
                 // 输入前的监听
                 //Log.e("输入前确认执行该方法", "开始输入");
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-            // 输入后的监听
-            //Log.e("输入结束执行该方法", "输入结束");
+                // 输入后的监听
+                //Log.e("输入结束执行该方法", "输入结束");
 
-                try
-                {
+                try {
                     String q = s.toString();
-                    if(! q.isEmpty())
-                    {
-                        if(Float.parseFloat(q)>0)
-                        {
+                    if (!q.isEmpty()) {
+                        if (Float.parseFloat(q) > 0) {
                             Box_Item.setQty(Float.parseFloat(q));
+                        } else {
+                            Box_Item.setQty(0);
                         }
-                        else
-                        {Box_Item.setQty(0);}
-                        }
-                    else
-                    {Box_Item.setQty(0);}
-                }
-                finally {
+                    } else {
+                        Box_Item.setQty(0);
+                    }
+                } finally {
 
                 }
-
 
 
             }
         });
 
 
-
     }
 
-   @Override
+    @Override
     public int getItemCount() {
-        return dataSoure == null ? 0 : dataSoure.size();
+        return boxItemEntityList == null ? 0 : boxItemEntityList.size();
     }
 
     public static class IssueMoreItemViewHolder extends RecyclerView.ViewHolder {
@@ -134,18 +128,17 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
         EditText tvQty;
 
 
-
         IssueMoreItemViewHolder(View view) {
             super(view);
 
-            tvItem = (TextView)view.findViewById(R.id.tv_issue_more_item_name);
-            tvLotNo = (TextView)view.findViewById(R.id.tv_issue_more_item_lotno);
-            tvSMLRemark=(TextView)view.findViewById(R.id.tv_issue_more_item_smlremark);
-            tvBoxNo = (TextView)view.findViewById(R.id.tv_issue_more_item_boxno);
-            tvNeedTitle = (TextView)view.findViewById(R.id.tv_issue_more_item_needmore_row);
-            tvNeed = (TextView)view.findViewById(R.id.tv_issue_more_item_needmore);
-            tvLotDescription=(TextView)view.findViewById(R.id.tv_issue_more_item_lot_description);
-            tvQty = (EditText)view.findViewById(R.id.et_issue_more_qty);
+            tvItem = (TextView) view.findViewById(R.id.tv_issue_more_item_name);
+            tvLotNo = (TextView) view.findViewById(R.id.tv_issue_more_item_lotno);
+            tvSMLRemark = (TextView) view.findViewById(R.id.tv_issue_more_item_smlremark);
+            tvBoxNo = (TextView) view.findViewById(R.id.tv_issue_more_item_boxno);
+            tvNeedTitle = (TextView) view.findViewById(R.id.tv_issue_more_item_needmore_row);
+            tvNeed = (TextView) view.findViewById(R.id.tv_issue_more_item_needmore);
+            tvLotDescription = (TextView) view.findViewById(R.id.tv_issue_more_item_lot_description);
+            tvQty = (EditText) view.findViewById(R.id.et_issue_more_qty);
 
 
         }

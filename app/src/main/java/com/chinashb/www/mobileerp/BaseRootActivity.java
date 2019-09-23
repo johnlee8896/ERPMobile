@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.chinashb.www.mobileerp.utils.StatusBarUtil;
 
-public class BaseRootActivity extends AppCompatActivity {
+public class BaseRootActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

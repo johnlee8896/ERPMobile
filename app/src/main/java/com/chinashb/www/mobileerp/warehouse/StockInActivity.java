@@ -1,6 +1,5 @@
 package com.chinashb.www.mobileerp.warehouse;
 
-import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -9,11 +8,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -24,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.InBoxItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
@@ -45,7 +42,7 @@ import java.util.List;
 /**
  * 扫描入库
  */
-public class StockInActivity extends AppCompatActivity implements View.OnClickListener {
+public class StockInActivity extends BaseActivity implements View.OnClickListener {
     private Button addTrayScannerButton;
     private Button addTrayPhotoButton;
     private Button scanAreaButton;
@@ -163,29 +160,18 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
         }
 //        content = content.trim();
 //        content = content.replace(" ",""); 不能随便去空格，因有些 D00 A5样式
-//        Toast.makeText(this, "Scanned: " + content, Toast.LENGTH_LONG).show();
         System.out.println("============ scan content = " + content);
         // VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
-//        String content = result.getContents();
         if (content.contains("\n")) {
             content = content.replace("\n", "");
         }
         if (content.contains("/") || content.contains("／")) {
-            String splitStr = "";
-//            if (content.contains("/")){
-//                splitStr = "/";
-//            }else if (content.contains("／")){
-//                splitStr = "／";
-//            }
-
             if (content.contains("／")) {
-//                splitStr = "／";
                 content = content.replace("／", "/");
             }
 
             String[] qrContent;
             qrContent = content.split("/");
-//            qrContent = content.split(splitStr);
             if (qrContent.length >= 2) {
                 String qrTitle = qrContent[0];
                 if (!qrTitle.equals("")) {
@@ -206,7 +192,6 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
                     if (content.startsWith("/IST——ID/")) {
                         content = content.replace("/IST——ID/", "/IST_ID/");
                     }
-
                     //仓库位置码
                     scanContent = content;
                     GetIstAsyncTask task = new GetIstAsyncTask();
@@ -318,10 +303,8 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
 
     private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity scanresult;
-
         @Override
         protected Void doInBackground(String... params) {
-
             BoxItemEntity bi = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanContent);
             scanresult = bi;
             if (bi.getResult()) {
@@ -453,7 +436,7 @@ public class StockInActivity extends AppCompatActivity implements View.OnClickLi
             int selectedCount = SelectList.size();
             while (count < selectedCount && SelectList.size() > 0) {
                 BoxItemEntity boxItemEntity = SelectList.get(0);
-                ws_result = WebServiceUtil.op_Commit_DS_Item(boxItemEntity);
+                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity);
                 if (ws_result.getResult()) {
                     boxitemList.remove(boxItemEntity);
                     SelectList.remove(boxItemEntity);

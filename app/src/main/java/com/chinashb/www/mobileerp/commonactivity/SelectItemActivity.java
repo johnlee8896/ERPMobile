@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Deprecated
-public class SelectItemActivity extends AppCompatActivity {
+public class SelectItemActivity extends BaseActivity {
 
     //    public List<Integer> ColWidthList;
 //    public List<String> ColCaptionList;

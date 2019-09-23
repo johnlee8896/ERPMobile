@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.PartItemMiddleActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.AdapterPartInv;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class StockQueryPartActivity extends AppCompatActivity {
+public class StockQueryPartActivity extends BaseActivity {
 
     private UserInfoEntity user;
 

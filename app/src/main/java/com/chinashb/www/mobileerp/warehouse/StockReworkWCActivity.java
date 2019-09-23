@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
@@ -35,7 +36,7 @@ import java.util.List;
 /**
  * 返工出库处理页面
  */
-public class StockReworkWCActivity extends AppCompatActivity {
+public class StockReworkWCActivity extends BaseActivity {
 
     private MpiWcBean themw;
     private Button btnAddTray;

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssuedItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
@@ -31,7 +32,7 @@ import java.util.List;
 /**
  * 生产投料
  */
-public class StockPutActivity extends AppCompatActivity {
+public class StockPutActivity extends BaseActivity {
 
     private TextView titleTextView;
     private TextView txtMW;

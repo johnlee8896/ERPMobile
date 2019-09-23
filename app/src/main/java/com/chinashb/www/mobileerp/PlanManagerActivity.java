@@ -36,7 +36,7 @@ import butterknife.ButterKnife;
  * @description 计划管理页面
  */
 
-public class PlanManagerActivity extends AppCompatActivity implements View.OnClickListener {
+public class PlanManagerActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.plan_part_product_switch_textView) TextView switchTextView;
     private WCListAdapter wclAdapter;
     @BindView(R.id.plan_main_recyclerView) RecyclerView selectWCListRecyclerView;

@@ -138,6 +138,9 @@ dependencies {
     //时间选择
     implementation 'com.contrarywind:Android-PickerView:4.1.6'
 
+    implementation  'com.umeng.umsdk:analytics:8.0.0'
+    implementation  'com.umeng.umsdk:common:2.0.0'
+
 //    implementation project(':libapi')
 //    implementation project(':libbase')
     implementation project(':zxing')

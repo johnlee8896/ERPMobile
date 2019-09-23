@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.MealTypeEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class SelectMPIWCStepTwoActivity extends AppCompatActivity {
+public class SelectMPIWCStepTwoActivity extends BaseActivity {
 
     private RecyclerView recyclerView;
     private s_WCList selectedWCEntity;

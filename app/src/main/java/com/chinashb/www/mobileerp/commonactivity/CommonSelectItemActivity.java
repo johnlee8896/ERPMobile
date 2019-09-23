@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
@@ -45,7 +46,7 @@ import java.util.Set;
  * @description 通用的adapter类来展示搜索列表
  */
 
-public class CommonSelectItemActivity extends AppCompatActivity {
+public class CommonSelectItemActivity extends BaseActivity {
 
     //    public List<Integer> ColWidthList;
 //    public List<String> ColCaptionList;

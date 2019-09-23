@@ -19,6 +19,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.chinashb.www.mobileerp.BaseActivity;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +29,7 @@ import java.util.Map;
  * @author 作者: liweifeng
  * @description 权限申请的封装
  */
-public class PermissionsUtil extends AppCompatActivity {
+public class PermissionsUtil extends BaseActivity {
     private static final int PERMISSION_REQUEST_CODE = 64;
 
     private static final int REQUEST_SETTING_CODE = 121;

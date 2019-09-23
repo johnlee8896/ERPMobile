@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.AdapterItemProductLotInv;
 import com.chinashb.www.mobileerp.basicobject.ProductsEntity;
@@ -32,7 +33,7 @@ import java.util.List;
  * @description 成品库查询item详情
  */
 
-public class StockQueryProductItemActivity extends AppCompatActivity {
+public class StockQueryProductItemActivity extends BaseActivity {
 
     private UserInfoEntity user;
 

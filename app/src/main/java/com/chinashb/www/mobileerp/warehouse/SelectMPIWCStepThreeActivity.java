@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.utils.StaticVariableUtils;
@@ -31,7 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class SelectMPIWCStepThreeActivity extends AppCompatActivity {
+public class SelectMPIWCStepThreeActivity extends BaseActivity {
     private String action = "";
     private RecyclerView selectMWRecyclerView;
     private WorkCenter selectWorkCenter;

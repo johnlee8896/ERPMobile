@@ -9,9 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 
-public class InputBoxActivity extends AppCompatActivity {
+public class InputBoxActivity extends BaseActivity {
     TextView tvTitle;
     EditText etInput;
     Button btnOk;

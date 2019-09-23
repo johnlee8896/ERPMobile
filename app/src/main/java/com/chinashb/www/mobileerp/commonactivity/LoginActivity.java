@@ -23,6 +23,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.OnQRScanListenerImpl;
 import com.chinashb.www.mobileerp.QRCodeScanActivity;
@@ -39,17 +40,19 @@ import com.chinashb.www.mobileerp.upgrade.APPUpgradeManager;
 import com.chinashb.www.mobileerp.utils.FileUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.SPDefine;
+import com.chinashb.www.mobileerp.utils.StringConstantUtil;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 
 import static com.chinashb.www.mobileerp.funs.CommonUtil.userPictureMap;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private EditText nameEditText;
     private EditText passwordEditText;
@@ -71,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_layout);
+
         nameEditText = (EditText) findViewById(R.id.et_login_name);
         passwordEditText = (EditText) findViewById(R.id.et_login_password);
         loginButton = (Button) findViewById(R.id.name_sign_in_button);
@@ -396,6 +400,8 @@ public class LoginActivity extends AppCompatActivity {
                 UserSingleton.get().setHRName(nameEditText.getText().toString());
                 SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
 
+                MobclickAgent.onEvent(LoginActivity.this, StringConstantUtil.Umeng_event_login);
+
                 Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
                 intent.putExtra(IntentConstant.Intent_Extra_from_name_pwd,true);
                 intent.putExtra(IntentConstant.Intent_Extra_hr_id, wsResult.getID().intValue());
@@ -450,6 +456,7 @@ public class LoginActivity extends AppCompatActivity {
 //            }
 
 //            scanProgressBar.setVisibility(View.GONE);
+            MobclickAgent.onEvent(LoginActivity.this,StringConstantUtil.Umeng_event_scan_hr_login);
             if (UserSingleton.get().getUserInfo() != null) {
                 Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
 //            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));

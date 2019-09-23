@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.MsgAdapter;
 import com.chinashb.www.mobileerp.basicobject.Msg;
@@ -39,7 +40,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ConversationActivity extends AppCompatActivity implements View.OnClickListener {
+public class ConversationActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.conversation_image_button) Button imageButton;
     @BindView(R.id.conversation_video_button) Button videoButton;
     @BindView(R.id.conversation_file_button) Button fileButton;

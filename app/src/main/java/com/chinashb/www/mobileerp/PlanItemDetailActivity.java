@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
  * @description 计划条目的详情
  */
 
-public class PlanItemDetailActivity extends AppCompatActivity {
+public class PlanItemDetailActivity extends BaseActivity {
 
     @BindView(R.id.plan_item_detail_stock_out_title_textView) TextView stockOutTextView;
     @BindView(R.id.plan_item_detail_mpi_wc_title_textView) TextView mpiWcTextView;

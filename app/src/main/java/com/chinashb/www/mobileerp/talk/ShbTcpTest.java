@@ -9,9 +9,10 @@ import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 
-public class ShbTcpTest extends AppCompatActivity {
+public class ShbTcpTest extends BaseActivity {
 
     private RadioButton radioBtnServer,radioBtnClient;
     private Button btnFuncEnsure;

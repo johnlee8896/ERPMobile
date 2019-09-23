@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
@@ -27,7 +28,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockQueryProductActivity extends AppCompatActivity {
+public class StockQueryProductActivity extends BaseActivity {
 
     private UserInfoEntity user;
     private EditText etFilter;

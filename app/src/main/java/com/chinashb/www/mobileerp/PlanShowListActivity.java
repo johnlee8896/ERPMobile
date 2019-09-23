@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
  * @description 展示计划的页面
  */
 
-public class PlanShowListActivity extends AppCompatActivity implements View.OnClickListener, OnViewClickListener {
+public class PlanShowListActivity extends BaseActivity implements View.OnClickListener, OnViewClickListener {
     @BindView(R.id.plan_show_list_time_select_start_textView) TextView startTimeTextView;
     @BindView(R.id.plan_show_list_work_center_select_textView) TextView workLineSelectTextView;
     @BindView(R.id.plan_main_recyclerView) CustomRecyclerView recyclerView;

@@ -32,7 +32,7 @@
         android:layout_marginLeft="@dimen/dimen_size_20"
         android:paddingTop="@dimen/dimen_size_10"
         android:text="上海胜华波汽车电器有限公司"
-        android:textColor="@color/black"
+        android:textColor="@color/login_title_color"
         app:layout_constraintLeft_toRightOf="@id/item_search_common_first_info_textView"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -103,7 +103,8 @@
         android:layout_marginLeft="@dimen/dimen_size_20"
         android:paddingTop="@dimen/dimen_size_10"
         android:text="钣金车间"
-        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_20"
+        android:textColor="@color/color_orange_FF6A00"
         app:layout_constraintBottom_toBottomOf="@id/item_search_fourth_info_textView"
         app:layout_constraintLeft_toRightOf="@id/item_search_fourth_info_textView"
         app:layout_constraintTop_toTopOf="@id/item_search_fourth_info_textView" />

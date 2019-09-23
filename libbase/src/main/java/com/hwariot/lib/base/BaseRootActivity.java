@@ -12,7 +12,7 @@ import android.support.v7.app.AppCompatActivity;
  *@author 作者: yulong
  *@description 所有Activity的基类
  */
-public class BaseRootActivity extends AppCompatActivity {
+public class BaseRootActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

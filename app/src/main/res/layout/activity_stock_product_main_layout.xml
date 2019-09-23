@@ -273,24 +273,25 @@
                     android:textColor="#ffffff"
                     android:textSize="18sp" />
 
-                <!--<ImageView-->
 
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--android:visibility="visible"-->
-                    <!--app:srcCompat="@drawable/ic_settings_remote_black_24dp" />-->
+                <ImageView
 
-                <!--<Button-->
-                    <!--android:id="@+id/look_qr_button"-->
-                    <!--android:layout_width="100dp"-->
-                    <!--android:layout_height="60dp"-->
-                    <!--android:layout_gravity="left"-->
-                    <!--android:background="@drawable/squarebutton"-->
-                    <!--android:text="看看条码"-->
-                    <!--android:textColor="#ffffff"-->
-                    <!--android:textSize="14sp"-->
-                    <!--android:visibility="visible" />-->
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:visibility="visible"
+                    app:srcCompat="@mipmap/monster_blue" />
+
+                <Button
+                    android:id="@+id/product_department_in_button"
+                    android:layout_width="100dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="left"
+                    android:background="@drawable/squarebutton"
+                    android:text="部门领料"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    android:visibility="visible" />
             </TableRow>
             <TableRow
                 android:layout_width="match_parent"

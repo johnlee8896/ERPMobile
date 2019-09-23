@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.PartsEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
@@ -29,7 +30,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.List;
 
-public class StockQueryPartItemActivity extends AppCompatActivity {
+public class StockQueryPartItemActivity extends BaseActivity {
 
     private UserInfoEntity userInfoEntity;
     private RecyclerView recyclerView;

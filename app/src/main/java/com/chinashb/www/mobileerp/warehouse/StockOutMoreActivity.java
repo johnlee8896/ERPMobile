@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
@@ -39,7 +40,7 @@ import java.util.List;
  * 继续投料页面
  */
 
-public class StockOutMoreActivity extends AppCompatActivity {
+public class StockOutMoreActivity extends BaseActivity {
 
     private MpiWcBean themw;
     private List<PlanInnerDetailEntity> issuedItemList;
@@ -451,9 +452,7 @@ public class StockOutMoreActivity extends AppCompatActivity {
             ;
             while (count < newissuesize && boxItemEntityList.size() > 0) {
                 BoxItemEntity bi = boxItemEntityList.get(0);
-
                 ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(themw.getMPIWC_ID(), bi);
-
                 if (ws_result.getResult() ) {
                     boxItemEntityList.remove(bi);
                     UpdateNeedQty(bi);

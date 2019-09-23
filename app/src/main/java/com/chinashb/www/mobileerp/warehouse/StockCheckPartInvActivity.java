@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
@@ -40,8 +41,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class StockCheckPartInvActivity extends AppCompatActivity {
-
+public class StockCheckPartInvActivity extends BaseActivity {
     Button btnSelectCheckFile;
     Button btnScanIst;
     Button btnScanItem;
@@ -53,11 +53,8 @@ public class StockCheckPartInvActivity extends AppCompatActivity {
     String ScanFor;
     private IstPlaceEntity thePlace;
     private BoxItemEntity scanitem;
-
     private List<BoxItemEntity> saveditems;
-
     private TextView tvIst;
-
     private TextView tvERPIst;
     private TextView tvItemCode;
     private TextView tvManuLotno;
@@ -84,17 +81,12 @@ public class StockCheckPartInvActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stock_check_part_inv);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         setHomeButton();
-
         bindView();
         setButtonClick();
-
         getExtras();
-
         userInfo = UserSingleton.get().getUserInfo();
         saveditems = new ArrayList<>();
-
         resumestate(savedInstanceState);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -103,8 +95,6 @@ public class StockCheckPartInvActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-
-
             }
         });
     }
@@ -136,7 +126,6 @@ public class StockCheckPartInvActivity extends AppCompatActivity {
         etRemark = (EditText) findViewById(R.id.et_check_stock_box_remark);
         inputEditText = findViewById(R.id.content_stock_check_part_input_EditeText);
 
-
     }
 
     private void resumestate(Bundle savedInstanceState) {
@@ -153,7 +142,6 @@ public class StockCheckPartInvActivity extends AppCompatActivity {
 
     void setButtonClick() {
         btnSelectCheckFile.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
 //                Intent intent = new Intent(StockCheckPartInvActivity.this, SelectItemActivity.class);

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
@@ -35,7 +36,7 @@ import java.util.List;
 /***
  * 移动库位页面
  */
-public class StockMoveActivity extends AppCompatActivity {
+public class StockMoveActivity extends BaseActivity {
     private Button btnAddTray;
     private Button btnScanArea;
     private Button btnWarehouseMove;

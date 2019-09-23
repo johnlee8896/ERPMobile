@@ -44,18 +44,18 @@ import static com.chinashb.www.mobileerp.funs.CommonUtil.isNothing2String;
 //这里的T只是为了getcommonbean方法使用
 public class WebServiceUtil {
 
-    public static final Class<BUItemBean> bu = BUItemBean.class;
+    //    public static final Class<BUItemBean> bu = BUItemBean.class;
     public static String Current_Net_Link = "Intranet";
 
     private static String NAMESPACE = "http://tempuri.org/";
-    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-//    private static String URL = "http://116.236.97.186:8001/Service.svc";
+//    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+        private static String URL = "http://116.236.97.186:8001/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
-    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-//    private static String URL_Intranet = "http://116.236.97.186:8001/Service.svc";
+//    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+        private static String URL_Intranet = "http://116.236.97.186:8001/Service.svc";
     //    private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
-    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
-//    private static String URL_Internet = "http://116.236.97.186:8001/Service.svc";
+//    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
+        private static String URL_Internet = "http://116.236.97.186:8001/Service.svc";
     private static String SOAP_ACTION = "http://tempuri.org/IService/";
 
     private static String key = "Money_For_GodMoneyForGod";
@@ -72,7 +72,6 @@ public class WebServiceUtil {
         Current_Net_Link = "Internet";
     }
 
-
     private static SoapSerializationEnvelope invokeSupplierWS(ArrayList<PropertyInfo> propertyInfoList, String webMethName) {
         SoapSerializationEnvelope envelope = null;
         // Create request
@@ -82,8 +81,7 @@ public class WebServiceUtil {
         }
 
         // Create envelope
-        envelope = new SoapSerializationEnvelope(
-                SoapEnvelope.VER11);
+        envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
         envelope.dotNet = true;
         envelope.bodyOut = request;
 
@@ -94,7 +92,6 @@ public class WebServiceUtil {
         // Create HTTP call object
         HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
         androidHttpTransport.debug = true;
-
         try {
             // Invole web service
             androidHttpTransport.call(SOAP_ACTION + webMethName, envelope);
@@ -104,7 +101,6 @@ public class WebServiceUtil {
             e.printStackTrace();
 //			resTxt = "Error occured";
         }
-
         return envelope;
     }
 
@@ -365,7 +361,7 @@ public class WebServiceUtil {
 
     //todo几点疑问  只有get，没有post,delete吗？
 
-
+    //扫描入库，扫描物料码，来料码
     public static BoxItemEntity op_Check_Commit_DS_Item_Income_Barcode(String X) {
         String webMethodName = "op_Check_Commit_DS_Item_Income_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -373,23 +369,17 @@ public class WebServiceUtil {
         propertyInfo.setName("X");
         propertyInfo.setValue(X);
         propertyInfo.setType(String.class);
-
         propertyInfos.add(propertyInfo);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
-
         BoxItemEntity box_item = new BoxItemEntity();
-
         if (obj != null) {
             int count = obj.getPropertyCount();
             SoapObject obj2;
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
-
-
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-
                 if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
@@ -423,6 +413,7 @@ public class WebServiceUtil {
         return box_item;
     }
 
+    //解析获取库位
     //VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
     public static IstPlaceEntity op_Check_Commit_IST_Barcode(String scanContent) {
         String webMethodName = "op_Check_Commit_IST_Barcode";
@@ -457,7 +448,8 @@ public class WebServiceUtil {
         return istPlace;
     }
 
-    public static WsResult op_Commit_DS_Item(BoxItemEntity box_item) {
+    //将物料入相应的库
+    public static WsResult op_Commit_DS_Item_Income_To_Warehouse(BoxItemEntity box_item) {
         String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
@@ -496,7 +488,7 @@ public class WebServiceUtil {
 
     }
 
-
+    //将string解析为mpiwc
     public static MpiWcBean op_Check_Commit_MW_Barcode(String X) {
         String webMethodName = "op_Check_Commit_MW_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -541,7 +533,7 @@ public class WebServiceUtil {
     }
 
 
-    //获取已经投料的内容
+    //获取已经投料的内容，根据计划id?
     public static List<PlanInnerDetailEntity> opGetMWIssedItems(Long mw_id) {
         String webMethodName = "op_Get_MW_Issued_Items";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -713,6 +705,7 @@ public class WebServiceUtil {
         return box_item;
     }
 
+    //部门领料中解析物料
     public static BoxItemEntity op_Check_Commit_Inv_Out_Item_Barcode(int Bu_ID, String X) {
 
         System.out.println("************************** x = " + X);
@@ -749,7 +742,7 @@ public class WebServiceUtil {
 
     //todo
 
-    public static void fill_box_item(BoxItemEntity box_item, SoapObject obj) {
+    private static void fill_box_item(BoxItemEntity box_item, SoapObject obj) {
         box_item.setDIII_ID(Long.parseLong(obj.getProperty("DIII_ID").toString()));
         box_item.setSMT_ID(Long.parseLong(obj.getProperty("SMT_ID").toString()));
         box_item.setSMM_ID(Long.parseLong(obj.getProperty("SMM_ID").toString()));
@@ -778,36 +771,28 @@ public class WebServiceUtil {
         box_item.setManuLotNo(isNothing2String(obj.getProperty("ManuLotNo"), ""));
     }
 
+    //解析返工出库 转成包装
     public static BoxItemEntity op_Check_Commit_WC_Return_Item_Barcode(String X) {
         String webMethodName = "op_Check_Commit_WC_Return_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
-
         AddPrpertyInfo(propertyInfos, "X", X);
-
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
         BoxItemEntity box_item = new BoxItemEntity();
-
         if (obj != null) {
             int count = obj.getPropertyCount();
             SoapObject obj2;
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
-
-
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-
                 if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
                     fill_box_item(box_item, obj2);
                 }
-
             }
-
         }
-
         return box_item;
     }
 
@@ -927,6 +912,7 @@ public class WebServiceUtil {
 //        return ws_result;
 //    }
 
+    //部门领料的出库？
     public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, DepartmentBean departmentBean, ResearchItemBean researchItemBean, BoxItemEntity boxItemEntity, String remark) {
         String sqty = String.valueOf(boxItemEntity.getQty());
         String webMethodName = "op_Commit_Dep_Out_Item";
@@ -1018,6 +1004,7 @@ public class WebServiceUtil {
         return result;
     }
 
+    //移动库位
     public static BoxItemEntity op_Check_Commit_Move_Item_Barcode(String X) {
         String webMethodName = "op_Check_Commit_Inv_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -1081,7 +1068,6 @@ public class WebServiceUtil {
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
-
         BoxItemEntity box_item = new BoxItemEntity();
 
         if (obj != null) {
@@ -1089,34 +1075,23 @@ public class WebServiceUtil {
             SoapObject obj2;
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
-
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-
                 if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
-
                     fill_box_item(box_item, obj2);
-
-
                 }
-
             }
-
         }
-
         return box_item;
     }
 
     public static BoxItemEntity op_Check_Stock_Item_Barcode_V2(String X) {
         String webMethodName = "op_Commit_Check_Stock_Barcode_V2";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
-
         AddPrpertyInfo(propertyInfos, "X", X);
-
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
-
         BoxItemEntity box_item = new BoxItemEntity();
 
         if (obj != null) {
@@ -1124,22 +1099,14 @@ public class WebServiceUtil {
             SoapObject obj2;
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
-
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-
                 if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
-
                     fill_box_item(box_item, obj2);
-
-
                 }
-
             }
-
         }
-
         return box_item;
     }
 
@@ -1245,10 +1212,8 @@ public class WebServiceUtil {
         AddPrpertyInfo(propertyInfos, "DQ", DQ);
 
         AddPrpertyInfo(propertyInfos, "Remark", remark);
-
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
-
         return getWS_Result(obj);
 
     }
@@ -1257,7 +1222,6 @@ public class WebServiceUtil {
         String webMethodName = "op_Check_Commit_Inv_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         AddPrpertyInfo(propertyInfos, "X", X);
-
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
@@ -1380,17 +1344,14 @@ public class WebServiceUtil {
                 if (obj2.getProperty("ErrorInfo") != null) {
                     result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 }
-
             }
-
         }
-
         return result;
     }
 
-
     public static WsResult getDataTable(String sql) {
         int maxCount = 1000;
+        //方便打印完整log
         if (sql.length() > maxCount) {
             for (int i = 0; i < sql.length(); i += maxCount) {
                 if (i + maxCount < sql.length()) {
@@ -1406,43 +1367,29 @@ public class WebServiceUtil {
             Log.i("resCounter", sql);
         }
 //        System.out.println(String.format("********* %s", sql));
-
         WsResult result = null;
         String webMethodName = "GetAndroidData";
         ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
-
         String crpSql = "";
         try {
             crpSql = DefaultEncryptor.encryptToBase64(sql, key);
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
 
         AddPrpertyInfo(propertyInfoList, "CryptSQL", crpSql);
-
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
-
         SoapObject obj = (SoapObject) envelope.bodyIn;
-
-        result =
-
-                getWS_Result(obj);
-
-
+        result = getWS_Result(obj);
         return result;
     }
 
-
     public static JsonObject getDataRow(String sql) {
-
         JsonObject jsonObject = null;
-
         String result = null;
         String webMethodName = "GetAndroidData";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
-
         String crpSql = "";
         try {
             crpSql = DefaultEncryptor.encryptToBase64(sql, key);
@@ -1452,12 +1399,8 @@ public class WebServiceUtil {
         }
 
         AddPrpertyInfo(propertyInfos, "CryptSQL", crpSql);
-
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-
         SoapPrimitive response = null;
-
-
         try {
             response = (SoapPrimitive) envelope.getResponse();
         } catch (SoapFault soapFault) {
@@ -1465,20 +1408,14 @@ public class WebServiceUtil {
         }
         if (response != null) {
             result = response.toString();
-
             try {
-
-
                 JsonArray jsonArray = (JsonArray) new JsonParser().parse(result);
-
                 jsonObject = jsonArray.get(0).getAsJsonObject();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
-
         }
-
         return jsonObject;
     }
 
@@ -1691,23 +1628,14 @@ public class WebServiceUtil {
     }
 
     public static Bitmap getHRPhoto(int HR_ID) {
-
-
         byte[] result = null;
-        Bitmap bm = null;
-
+        Bitmap bitmap = null;
         String webMethodName = "op_Get_HR_Photo100";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
-
-
         AddPrpertyInfo(propertyInfos, "HR_ID", HR_ID);
-
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-
-
         SoapPrimitive response = null;
         try {
-
             response = (SoapPrimitive) envelope.getResponse();
         } catch (SoapFault soapFault) {
             soapFault.printStackTrace();
@@ -1715,23 +1643,18 @@ public class WebServiceUtil {
         if (response != null) {
             byte[] bytes = Base64.decode(response.toString(), Base64.NO_WRAP);
             result = bytes;
-
             try {
                 BitmapFactory.Options options = new BitmapFactory.Options();
-                bm = ImageDispose.getPicFromBytes(result, options);
+                bitmap = ImageDispose.getPicFromBytes(result, options);
             } catch (Exception ex) {
             }
         }
-
-
-        return bm;
+        return bitmap;
     }
 
     public static WsResult getTryLogin(String name, String pw) {
-
         String webMethodName = "op_Try_Login";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
-
         String crpName = "";
         String crpPw = "";
         try {
@@ -1741,20 +1664,14 @@ public class WebServiceUtil {
             e.printStackTrace();
             return null;
         }
-
         AddPrpertyInfo(propertyInfos, "HR_Name", crpName);
         AddPrpertyInfo(propertyInfos, "PW", crpPw);
-
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-
         SoapObject obj = (SoapObject) envelope.bodyIn;
-
         WsResult result = new WsResult();
-
         if (obj != null) {
             int count = obj.getPropertyCount();
             SoapObject obj2;
-
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
                 result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
@@ -1769,7 +1686,6 @@ public class WebServiceUtil {
             result.setResult(false);
             result.setErrorInfo("无法访问服务器，请检查网络连接是否正常");
         }
-
         return result;
     }
 
@@ -1881,30 +1797,7 @@ public class WebServiceUtil {
         return "";
     }
 
-//    public static String invokeRemoteAddr(String wsdl, String method,
-//                                          Object[] objects) throws Exception {
-//        Provider.Service service = new Service();
-//        Call call;
-//        try {
-//            call = (Call) service.createCall();
-//            call.setSOAPActionURI("http://tempuri.org/receiveDataTask");
-//            call.setTargetEndpointAddress(wsdl);
-//            call.setOperationName(method);// WSDL里面描述的接口名称
-//            call.addParameter("orig",
-//                    org.apache.axis.encoding.XMLType.XSD_STRING,
-//                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
-//            call.addParameter("sign",
-//                    org.apache.axis.encoding.XMLType.XSD_STRING,
-//                    javax.xml.rpc.ParameterMode.IN);// 接口的参数
-//            call.setReturnType(org.apache.axis.encoding.XMLType.AXIS_VOID);// 设置返回类型
-//            call.invoke(objects);
-//            return "end";
-//        } catch (ServiceException e) {
-//            throw new Exception(e);
-//        }
-//
-//
-//    }
+
 }
 
 

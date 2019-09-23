@@ -7,9 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 
-public class WarehousePartMainActivity extends AppCompatActivity {
+public class WarehousePartMainActivity extends BaseActivity {
 
     private TextView mTextMessage;
 

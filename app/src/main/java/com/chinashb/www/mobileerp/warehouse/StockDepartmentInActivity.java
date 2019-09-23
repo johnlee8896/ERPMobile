@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -21,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.OnQRScanListenerImpl;
 import com.chinashb.www.mobileerp.QRCodeScanActivity;
 import com.chinashb.www.mobileerp.R;
@@ -56,7 +56,7 @@ import java.util.List;
  * 部门领料
  */
 
-public class StockDepartmentInActivity extends AppCompatActivity {
+public class StockDepartmentInActivity extends BaseActivity {
     private Context mContext;
     //private StatedButton mSbtn_back;
     private LinearLayout mLl_parent;
@@ -458,12 +458,12 @@ public class StockDepartmentInActivity extends AppCompatActivity {
     }
 
     private class AsyncGetIssueMoreExtraBox extends AsyncTask<String, Void, Void> {
-        private BoxItemEntity scanresult;
+        private BoxItemEntity boxItemEntity;
 
         @Override
         protected Void doInBackground(String... params) {
             BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_Inv_Out_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(), scanstring);
-            scanresult = boxItemEntity;
+            this.boxItemEntity = boxItemEntity;
             if (boxItemEntity.getResult()) {
                 if (!is_box_existed(boxItemEntity)) {
                     boxItemEntity.setSelect(true);
@@ -503,13 +503,13 @@ public class StockDepartmentInActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-            if (scanresult != null) {
-                if (!scanresult.getResult()) {
-                    Toast.makeText(StockDepartmentInActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
+            if (boxItemEntity != null) {
+                if (!boxItemEntity.getResult()) {
+                    Toast.makeText(StockDepartmentInActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
             issueMoreItemAdapter.notifyDataSetChanged();
-            recyclerView.setAdapter(issueMoreItemAdapter);
+//            recyclerView.setAdapter(issueMoreItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -532,6 +532,7 @@ public class StockDepartmentInActivity extends AppCompatActivity {
             int count = 0;
             int boxItemSize = boxItemEntityList.size();
             while (count < boxItemSize && boxItemEntityList.size() > 0) {
+                //// TODO: 2019/9/18 大概可能是修改数量后仍是原来的数量导致 ，其他 的那种修改应该也有这个问题
                 BoxItemEntity boxItemEntity = boxItemEntityList.get(0);
                 //// TODO: 2019/7/15 确认，这是用途备注
 //                boxItemEntity.setLotDescription(useTextView.getText().toString());

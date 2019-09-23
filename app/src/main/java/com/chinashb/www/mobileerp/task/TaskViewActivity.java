@@ -13,9 +13,10 @@ import android.view.MenuItem;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 
-public class TaskViewActivity extends AppCompatActivity {
+public class TaskViewActivity extends BaseActivity {
 
     private TextView mTextMessage;
 

@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
  * @description 零部件查询后中间过渡页面
  */
 
-public class PartItemMiddleActivity extends AppCompatActivity {
+public class PartItemMiddleActivity extends BaseActivity {
 
     @BindView(R.id.part_middle_item_layout) LinearLayout itemLayout;
 

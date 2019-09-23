@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
@@ -25,7 +26,7 @@ import com.google.gson.JsonObject;
 import java.util.HashMap;
 import java.util.List;
 
-public class StockPartMainActivity extends AppCompatActivity implements View.OnClickListener {
+public class StockPartMainActivity extends BaseActivity implements View.OnClickListener {
     RecyclerView mRecyclerView;
     private TextView tvTitle;
     private TextView tvusername;

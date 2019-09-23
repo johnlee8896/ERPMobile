@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
@@ -29,7 +30,7 @@ import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockFreezeActivity extends AppCompatActivity {
+public class StockFreezeActivity extends BaseActivity {
 
 
     private Button btnAddTray;

@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
@@ -33,7 +34,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StockOutMoreExtraActivity extends AppCompatActivity {
+public class StockOutMoreExtraActivity extends BaseActivity {
 
     private MpiWcBean themw;
 

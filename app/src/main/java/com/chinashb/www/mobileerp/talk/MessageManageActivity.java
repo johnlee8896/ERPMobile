@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.JsonListAdapter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
@@ -29,7 +30,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class MessageManageActivity extends AppCompatActivity {
+public class MessageManageActivity extends BaseActivity {
 
     public List<Integer> ColWidth;
     public List<String> ColCaption;
