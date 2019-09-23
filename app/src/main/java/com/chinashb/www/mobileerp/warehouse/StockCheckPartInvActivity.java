@@ -41,6 +41,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * 零部件库存盘点
+ */
 public class StockCheckPartInvActivity extends BaseActivity {
     Button btnSelectCheckFile;
     Button btnScanIst;
@@ -78,6 +81,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //todo  这个页面还没有统一
         setContentView(R.layout.activity_stock_check_part_inv);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

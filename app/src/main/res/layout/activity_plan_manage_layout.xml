@@ -1,48 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/plan_title_layoutManager"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="计划管理" />
+
     <TextView
         android:id="@+id/plan_part_product_switch_textView"
-        android:background="@drawable/shape_conner_blue_button_bg"
         android:layout_width="@dimen/dimen_size_100"
-        android:layout_gravity="right"
         android:layout_height="40dp"
-        android:gravity="center"
-        android:textSize="@dimen/text_size_18"
+        android:layout_gravity="right"
         android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginRight="@dimen/dimen_size_20"
         android:layout_marginTop="@dimen/dimen_size_15"
-        android:text="切换为成品" />
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="切换为成品"
+        android:textSize="@dimen/text_size_18" />
 
     <View
-        android:layout_marginTop="@dimen/dimen_size_5"
         android:layout_width="match_parent"
-        android:background="@color/color_999999"
-        android:layout_height="0.8dp"/>
+        android:layout_height="0.8dp"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:background="@color/color_999999" />
 
     <!--<com.chinashb.www.mobileerp.widget.CustomRecyclerView-->
-        <!--android:id="@+id/plan_main_recyclerView"-->
-        <!--android:layout_marginLeft="@dimen/dimen_size_10"-->
-        <!--android:layout_marginRight="@dimen/dimen_size_10"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--app:app_layout_style="list_vertical"-->
-        <!--app:app_item_decoration_type="ITEM_SPACE"-->
-        <!--android:scrollbars="vertical"-->
-        <!--tools:itemCount="10"-->
-        <!--tools:listitem= "@layout/item_common_search_layout"-->
-        <!--/>-->
+    <!--android:id="@+id/plan_main_recyclerView"-->
+    <!--android:layout_marginLeft="@dimen/dimen_size_10"-->
+    <!--android:layout_marginRight="@dimen/dimen_size_10"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--app:app_layout_style="list_vertical"-->
+    <!--app:app_item_decoration_type="ITEM_SPACE"-->
+    <!--android:scrollbars="vertical"-->
+    <!--tools:itemCount="10"-->
+    <!--tools:listitem= "@layout/item_common_search_layout"-->
+    <!--/>-->
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/plan_main_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_10"
         android:scrollbars="vertical"
         tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp"/>
+        tools:layout_editor_absoluteY="8dp" />
 
 </LinearLayout>

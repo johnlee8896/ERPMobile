@@ -30,16 +30,16 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     RecyclerView mRecyclerView;
     private TextView tvTitle;
     private TextView tvusername;
-    private Button scanToStockButton;
-    private Button moveStockAreaButton;
-    private Button freezeStockButton;
+    private Button scanToStockButton;//扫描入库
+    private Button moveStockAreaButton;//移动库位
+    private Button freezeStockButton;//冻结库存
     private Button productSupplyButton;//生产投料
-    private Button returnWCButton;
+    private Button returnWCButton;//返工出库
     private Button departMentInButton;//部门领料
     private Button partStockCheckButton;//零部件盘点
     private Button makingProductButton;//在制品盘存
     private Button selfProductButton;//自制车间成品盘点
-    private Button completeProductButton;
+    private Button completeProductButton;//成品库存
     private Button partStockInButton;//零部件库存
     private Button lookQRButton;
 

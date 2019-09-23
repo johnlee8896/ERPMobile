@@ -85,7 +85,6 @@ public class LoginActivity extends BaseActivity {
         internetRadioButton = (RadioButton) findViewById(R.id.main_internet_radioButton);
 
 
-
         CommonUtil.initNetWorkLink(this);
         if (WebServiceUtil.Current_Net_Link.equals("Internet")) {
             internetRadioButton.setChecked(true);
@@ -107,16 +106,25 @@ public class LoginActivity extends BaseActivity {
         scanHRButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (versionOk) {
-                    startScanHR();
-                } else {
-                    if (!isNetReady) {
-                        CommonUtil.ShowToast(LoginActivity.this, "无法连接服务器", R.mipmap.warning, Toast.LENGTH_SHORT);
-                    } else {
-                        CommonUtil.ShowToast(LoginActivity.this, "请升级App", R.mipmap.warning, Toast.LENGTH_SHORT);
-                    }
+//                if (versionOk) {
+//                    startScanHR();
+//                } else {
+//                    if (!isNetReady) {
+//                        CommonUtil.ShowToast(LoginActivity.this, "无法连接服务器", R.mipmap.warning, Toast.LENGTH_SHORT);
+//                    } else {
+//                        CommonUtil.ShowToast(LoginActivity.this, "请升级App", R.mipmap.warning, Toast.LENGTH_SHORT);
+//                    }
+//
+//                }
 
+
+                if (!isNetReady) {
+                    CommonUtil.ShowToast(LoginActivity.this, "无法连接服务器", R.mipmap.warning, Toast.LENGTH_SHORT);
+                } else {
+                    startScanHR();
                 }
+
+
 //                ToastUtil.showToastLong(" " + GetApkInfo(LoginActivity.this,"http://www.chinashb.com/Download/ShbERP.apk"));
 //                new Thread(){
 //                    @Override public void run() {
@@ -234,9 +242,9 @@ public class LoginActivity extends BaseActivity {
         QRCodeScanActivity.startQRCodeScanner(this, new OnQRScanListenerImpl() {
             @Override
             public void onScanQRCodeSuccess(String result) {
-                if (result.startsWith("http")) {
-//                    WebViewActivity.gotoWebViewActivity(LoginActivity.this, result);
-                } else {
+//                if (result.startsWith("http")) {
+////                    WebViewActivity.gotoWebViewActivity(LoginActivity.this, result);
+//                } else {
 //                    CommAlertDialog.with(LoginActivity.this).setTitle("扫描结果展示")
 //                            .setMessage(result)
 //                            .setMiddleText("确定")
@@ -244,25 +252,25 @@ public class LoginActivity extends BaseActivity {
 //                            .setClickButtonDismiss(true)
 //                            .create().show();
 
-                    String[] qrContent;
-                    UserInfoEntity userInfo = new UserInfoEntity();
-                    if (result.contains("/")) {
-                        qrContent = result.split("/");
-                        if (qrContent.length >= 4) {
-                            userInfo.setHR_ID(Integer.parseInt(qrContent[2]));
-                            userInfo.setHrNum(qrContent[4]);
-                            GetHrNameAsyncTask task = new GetHrNameAsyncTask();
-                            task.execute(qrContent[2]);
+                String[] qrContent;
+                UserInfoEntity userInfo = new UserInfoEntity();
+                if (result.contains("/")) {
+                    qrContent = result.split("/");
+                    if (qrContent.length >= 4) {
+                        userInfo.setHR_ID(Integer.parseInt(qrContent[2]));
+                        userInfo.setHrNum(qrContent[4]);
+                        GetHrNameAsyncTask task = new GetHrNameAsyncTask();
+                        task.execute(qrContent[2]);
 //                SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
 //                            Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
 //                            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
 //                            startActivity(intent);
 //                            finish();
-                        }
-
                     }
+
                 }
             }
+//            }
         });
     }
 
@@ -313,7 +321,7 @@ public class LoginActivity extends BaseActivity {
 //                        CommonUtil.ShowToast(LoginActivity.this, newVerWarning, R.mipmap.warning, Toast.LENGTH_SHORT);
 //                    }
 
-                    if (getVersionCode(LoginActivity.this) < Integer.parseInt(Version)){
+                    if (getVersionCode(LoginActivity.this) < Integer.parseInt(Version)) {
                         APPUpgradeManager.with(LoginActivity.this)
                                 .setNeedShowToast(true)
 //                                .setAPIService(APIDefine.SERVICE_BASE)
@@ -367,6 +375,7 @@ public class LoginActivity extends BaseActivity {
     private class CheckNameAndPasswordAsyncTask extends AsyncTask<String, Void, Void> {
         private WsResult wsResult = null;
         private CommProgressDialog progressDialog;
+
         @Override
         protected Void doInBackground(String... params) {
 //            String Name = nameEditText.getText().toString();
@@ -403,7 +412,7 @@ public class LoginActivity extends BaseActivity {
                 MobclickAgent.onEvent(LoginActivity.this, StringConstantUtil.Umeng_event_login);
 
                 Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
-                intent.putExtra(IntentConstant.Intent_Extra_from_name_pwd,true);
+                intent.putExtra(IntentConstant.Intent_Extra_from_name_pwd, true);
                 intent.putExtra(IntentConstant.Intent_Extra_hr_id, wsResult.getID().intValue());
                 startActivity(intent);
                 finish();
@@ -456,7 +465,7 @@ public class LoginActivity extends BaseActivity {
 //            }
 
 //            scanProgressBar.setVisibility(View.GONE);
-            MobclickAgent.onEvent(LoginActivity.this,StringConstantUtil.Umeng_event_scan_hr_login);
+            MobclickAgent.onEvent(LoginActivity.this, StringConstantUtil.Umeng_event_scan_hr_login);
             if (UserSingleton.get().getUserInfo() != null) {
                 Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
 //            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));

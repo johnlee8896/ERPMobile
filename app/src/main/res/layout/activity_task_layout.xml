@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
 
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/task_title_layoutManager"
         android:layout_width="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,11 +44,13 @@
         android:id="@+id/linear_layout_task_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_10"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/navigation_task"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/task_title_layoutManager">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_task_list"

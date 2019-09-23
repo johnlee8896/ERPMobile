@@ -30,20 +30,19 @@ import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 冻结库存页面
+ */
 public class StockFreezeActivity extends BaseActivity {
-
-
     private Button btnAddTray;
     private Button btnFreezeBox;
     private Button btnFreezeNot;
     private EditText inputEditText;
-
     private RecyclerView mRecyclerView;
 
     private AdapterFreezeBoxItem boxitemAdapter;
     private List<BoxItemEntity> boxitemList;
     private String scanstring;
-
     private ProgressBar pbScan;
 
     @Override

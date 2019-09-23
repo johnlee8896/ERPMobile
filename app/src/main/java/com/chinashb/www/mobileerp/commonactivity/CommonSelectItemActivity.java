@@ -117,7 +117,11 @@ public class CommonSelectItemActivity extends BaseActivity {
             searchTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    doSearchAction(searchEditText.getText().toString());
+                    if (searchTextView.getText().equals("取消")) {
+                        finish();
+                    } else {
+                        doSearchAction(searchEditText.getText().toString());
+                    }
                 }
             });
         }
@@ -279,7 +283,7 @@ public class CommonSelectItemActivity extends BaseActivity {
 
                 for (int i = 0; i < originalBUDataList.size(); i++) {
                     if (bean instanceof BUItemBean) {
-                       List tempList = new ArrayList<BUItemBean>();
+                        List tempList = new ArrayList<BUItemBean>();
                         BUItemBean buItemBean = (BUItemBean) originalBUDataList.get(i);
                         if (buItemBean.getCompanyChineseName().contains(keyWord) || buItemBean.getBUName().contains(keyWord)) {
                             tempList.add(buItemBean);
@@ -288,7 +292,7 @@ public class CommonSelectItemActivity extends BaseActivity {
                     } else if (bean instanceof DepartmentBean) {
                         List tempList = new ArrayList<BUItemBean>();
                         DepartmentBean departmentBean = (DepartmentBean) originalBUDataList.get(i);
-                        if (departmentBean.getDepartmentName().contains(keyWord) || departmentBean.getPDN().contains(keyWord)){
+                        if (departmentBean.getDepartmentName().contains(keyWord) || departmentBean.getPDN().contains(keyWord)) {
                             tempList.add(departmentBean);
                         }
                         return tempList;
@@ -457,7 +461,7 @@ public class CommonSelectItemActivity extends BaseActivity {
 //                        return commonItemBeanList;
 //                    }
                     List<ResearchItemBean> researchItemBeanList = WebServiceUtil.getResearchItemBeanList(SQL);
-                    if (researchItemBeanList != null && researchItemBeanList.size() > 0){
+                    if (researchItemBeanList != null && researchItemBeanList.size() > 0) {
                         return researchItemBeanList;
                     }
                     break;

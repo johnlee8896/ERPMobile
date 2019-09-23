@@ -46,6 +46,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private ImageView avatarImageView;
 
     private NetWorkReceiver netWorkReceiver;
+    private boolean isFromNamePwdCheck = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +57,16 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 
         setViewListeners();
         int HRID = getIntent().getIntExtra(IntentConstant.Intent_Extra_hr_id, -1);
-        if (HRID > 0 && getIntent().getBooleanExtra(IntentConstant.Intent_Extra_from_name_pwd, false)) {
-            GetHrNameAsyncTask task = new GetHrNameAsyncTask();
-            task.execute(String.valueOf(HRID));
+        isFromNamePwdCheck = getIntent().getBooleanExtra(IntentConstant.Intent_Extra_from_name_pwd, false);
+        if (isFromNamePwdCheck) {
+            if (HRID > 0) {
+                GetHrNameAsyncTask task = new GetHrNameAsyncTask();
+                task.execute(String.valueOf(HRID));
+            }
+        } else {
+            userNameTextView.setText((UserSingleton.get().getUserInfo() != null ? UserSingleton.get().getUserInfo().getBu_Name() : ""
+            ) + ":" + UserSingleton.get().getHRName());
         }
-
-        userNameTextView.setText(UserSingleton.get().getUserInfo() != null ? UserSingleton.get().getUserInfo().getBu_Name() : ""
-                + ":" + UserSingleton.get().getHRName());
 
     }
 
@@ -210,8 +214,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             Intent intent = new Intent(MobileMainActivity.this, StockPartMainActivity.class);
             startActivity(intent);
             MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_part_management);
-        }
-        else if (view == warehouseProductTextView) {
+        } else if (view == warehouseProductTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
                 return;
@@ -219,7 +222,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             Intent intent = new Intent(MobileMainActivity.this, StockProductMainActivity.class);
             startActivity(intent);
             MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_product_management);
-        }else if (view == switchBUTextView) {
+        } else if (view == switchBUTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
                 return;
