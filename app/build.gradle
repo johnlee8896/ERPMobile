@@ -145,4 +145,5 @@ dependencies {
 //    implementation project(':libbase')
     implementation project(':zxing')
     implementation project(':qrcodecore')
+    implementation 'org.jetbrains:annotations:15.0'
 }

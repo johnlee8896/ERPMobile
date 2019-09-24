@@ -206,6 +206,44 @@ public class WebServiceUtil {
         return userInfoEntity;
     }
 
+    public static WsResult commitFoodOrderForSmallCanteen(int id, Date foodDate, int commitType) {
+//        boolean result = false ;
+        String webMethodName = "op_Commit_Food_Order_For_Small_Canteen";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("HR_ID");
+        propertyInfo.setValue(id);
+        propertyInfo.setType(Integer.class);
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("foodDate");
+        propertyInfo1.setValue(foodDate);
+        propertyInfo1.setType(Date.class);
+
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("commitType");
+        propertyInfo2.setValue(commitType);
+        propertyInfo2.setType(PropertyInfo.INTEGER_CLASS);
+
+        propertyInfos.add(propertyInfo);
+        propertyInfos.add(propertyInfo1);
+        propertyInfos.add(propertyInfo2);
+
+        SoapSerializationEnvelope envelope =  invokeSupplierWS(propertyInfos,webMethodName);
+        SoapObject obj = (SoapObject)envelope.bodyIn;
+        WsResult result = new WsResult();
+        if(obj != null){
+            int count = obj.getPropertyCount();
+            SoapObject obj2 = (SoapObject) obj.getProperty(0);
+            result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+            result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+
+        }
+
+        return result;
+    }
+
     public static boolean getFoodOrder(int id, Date date, int whichFood) {
         boolean result = false;
         String webMethodName = "op_Get_Food_Order";

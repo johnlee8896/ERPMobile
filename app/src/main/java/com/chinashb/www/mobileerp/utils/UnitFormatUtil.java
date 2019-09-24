@@ -33,11 +33,20 @@ public final class UnitFormatUtil {
     public final static String UNIT_YUAN_EVERY_TON = "元/吨";
     public final static String UNIT_TEN_THOUSANDS = "万";
 
-    public static final SimpleDateFormat sdf_YMDHMS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public static final SimpleDateFormat sdf_YMDHM = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    public static final SimpleDateFormat sdf_YMD = new SimpleDateFormat("yyyy-MM-dd");
-    public static final SimpleDateFormat sdf_MDH = new SimpleDateFormat("MM月dd日 HH点");
-    public static final SimpleDateFormat sdf_YMDH = new SimpleDateFormat("yyyy年MM月dd日 HH点");
+    public  static  SimpleDateFormat sdf_YMDHMS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static  SimpleDateFormat sdf_YMDHM = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    public static  SimpleDateFormat sdf_YMD = new SimpleDateFormat("yyyy-MM-dd");
+    public static  SimpleDateFormat sdf_MDH = new SimpleDateFormat("MM月dd日 HH点");
+    public static  SimpleDateFormat sdf_YMDH = new SimpleDateFormat("yyyy年MM月dd日 HH点");
+    public static SimpleDateFormat sdf_HMS = new SimpleDateFormat("HH:mm:ss");
+
+    private static class UtilHelper {
+//        private static SimpleDateFormat sdf_YMDHM = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//        private static SimpleDateFormat sdf_YMDHMS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        private static SimpleDateFormat sdf_YMD = new SimpleDateFormat("yyyy-MM-dd");
+
+//        private static SimpleDateFormat sdf_HMS = new SimpleDateFormat("HH:mm:ss");
+    }
 
     /***故意私有构造和final声明，目的为了禁止继承和实例化*/
     private UnitFormatUtil() {
@@ -137,6 +146,11 @@ public final class UnitFormatUtil {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         return sdf_MDH.format(calendar.getTime());
+    }
+
+    public static String formatLongToHMS(long date){
+//        return UtilHelper.sdf_HMS.format(date);
+        return sdf_HMS.format(date);
     }
 
     public static String formatKG2TonWeight(long weight, String unit) {
@@ -257,4 +271,6 @@ public final class UnitFormatUtil {
             return String.format("%02d:%02d", minutes, seconds);
         }
     }
+
+
 }

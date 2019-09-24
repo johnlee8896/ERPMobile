@@ -39,6 +39,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private TextView warehousePartTextView;
     private TextView warehouseProductTextView;
     private TextView conversationTextView;
+    private TextView foodOrderTextView;
     private TextView taskTextView;
     private TextView planTextView;
     private TextView switchBUTextView;
@@ -80,6 +81,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         conversationTextView = (TextView) findViewById(R.id.main_message_button);
         taskTextView = (TextView) findViewById(R.id.main_task_manage_button);
         planTextView = findViewById(R.id.main_plan_button);
+        foodOrderTextView = findViewById(R.id.main_food_order_button);
     }
 
     protected void setViewListeners() {
@@ -90,6 +92,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         warehouseProductTextView.setOnClickListener(this);
         conversationTextView.setOnClickListener(this);
         taskTextView.setOnClickListener(this);
+        foodOrderTextView.setOnClickListener(this);
     }
 
     private String getSqlBu() {
@@ -253,6 +256,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             Intent intent = new Intent(this, PlanManagerActivity.class);
             startActivity(intent);
             MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_plan);
+        } else if (view == foodOrderTextView){
+            Intent intent = new Intent(this,FoodOrderActivity.class);
+            startActivity(intent);
         }
     }
 
