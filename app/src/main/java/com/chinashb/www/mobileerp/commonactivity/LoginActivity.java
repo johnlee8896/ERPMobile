@@ -84,7 +84,6 @@ public class LoginActivity extends BaseActivity {
         intranetRadioButton = (RadioButton) findViewById(R.id.main_intranet_radioButton);
         internetRadioButton = (RadioButton) findViewById(R.id.main_internet_radioButton);
 
-
         CommonUtil.initNetWorkLink(this);
         if (WebServiceUtil.Current_Net_Link.equals("Internet")) {
             internetRadioButton.setChecked(true);

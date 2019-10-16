@@ -5,6 +5,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="小食堂订餐" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="欢迎，李伟锋！"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:paddingLeft="@dimen/dimen_size_20"
+        android:textColor="@color/pickerview_timebtn_nor"
+        android:textSize="22sp" />
     <com.chinashb.www.mobileerp.widget.ClockPanelLayout
         android:id="@+id/food_clock_panel_Layout"
         android:layout_width="245dp"

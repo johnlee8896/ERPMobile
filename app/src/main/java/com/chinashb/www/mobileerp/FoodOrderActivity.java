@@ -9,16 +9,20 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.utils.WeakHandler;
 import com.chinashb.www.mobileerp.widget.ClockPanelLayout;
+import com.google.gson.JsonObject;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,21 +41,32 @@ public class FoodOrderActivity extends BaseActivity {
     @BindView(R.id.food_attendance_Layout) LinearLayout foodLayout;
     @BindView(R.id.food_clock_panel_Layout) ClockPanelLayout clockPanelLayout;
 
-    private static final int TAG_UPDATE_CURRENT_TIME = 100;
+    private static final int TAG_UPDATE_CURRENT_TIME = 0X100;
+    private static final int TAG_UPDATE_ORDER_SUCCESS = 0X101;
+    //    private static final int TAG_UPDATE_CANCEL_ORDER_SUCCESS = 0X102;
     private static final long ONE_DAY_TIME_MILLIS = 86400000;
+    private boolean order = true;
 
     private WeakHandler<FoodOrderActivity> handler = new WeakHandler<FoodOrderActivity>(this) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == TAG_UPDATE_CURRENT_TIME) {
-                currentTimeTextView.setText(UnitFormatUtil.formatLongToHMS(System.currentTimeMillis()));
-                currentTimeTextView.setVisibility(View.VISIBLE);
-                handler.sendEmptyMessageDelayed(TAG_UPDATE_CURRENT_TIME, 1000);
+            switch (msg.what) {
+                case TAG_UPDATE_CURRENT_TIME:
+                    currentTimeTextView.setText(UnitFormatUtil.formatLongToHMS(System.currentTimeMillis()));
+                    currentTimeTextView.setVisibility(View.VISIBLE);
+                    handler.sendEmptyMessageDelayed(TAG_UPDATE_CURRENT_TIME, 1000);
+                    break;
+                case TAG_UPDATE_ORDER_SUCCESS:
+                    updateFoodOrderInfo();
+                    break;
+
             }
         }
     };
     private int commitType = 1;
+    private boolean canOrder = true;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,38 +76,52 @@ public class FoodOrderActivity extends BaseActivity {
 //        drawProgressWithAnimation();
         initClockPanel();
         startUpdateTime();
-        getFoodOrderInfo();
+        updateFoodOrderInfo();
         foodLayout.setOnClickListener(v -> {
-
-
-            commitType = 1;
-            CommitFoodAsyncTask task = new CommitFoodAsyncTask();
-            task.execute();
+            if (canOrder) {
+                commitType = order ? 1 : 2;
+                CommitFoodAsyncTask task = new CommitFoodAsyncTask();
+                task.execute();
+            }
         });
     }
 
-    private void getFoodOrderInfo() {
-                Calendar cal = Calendar.getInstance();
-//        cal.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
-//        cal.clear(Calendar.MINUTE);
-//        cal.clear(Calendar.SECOND);
-//        cal.clear(Calendar.MILLISECOND);
-        return cal.getTime();
-
+    private void updateFoodOrderInfo() {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hour >= 13 ){
-            long tempTime = calendar.getTimeInMillis() + ONE_DAY_TIME_MILLIS;
-            Date date = new Date(tempTime);
-            return date;
-        }else if (hour < 10){
-            return calendar.getTime();
-        }else{
+        if (hour >= 10 && hour < 13) {
             currentTimeTextView.setTextColor(Color.DKGRAY);
             currentTimeTextView.setEnabled(false);
             infoTextView.setText("已过时间，不可点击");
+            canOrder = false;
+            return;
         }
-
+        String foodDate = null;
+        String sql;
+        if (hour >= 13) {
+            long tempTime = calendar.getTimeInMillis() + ONE_DAY_TIME_MILLIS;
+            foodDate = UnitFormatUtil.formatTimeToDay(tempTime);
+        } else if (hour < 10) {
+            foodDate = UnitFormatUtil.formatTimeToDay(calendar.getTimeInMillis());
+        }
+        canOrder = true;
+        sql = String.format("select * from Food_Order where HR_ID = %s and FO_Date = '%s' and Which_Food = 5", UserSingleton.get().getHRID(), foodDate);
+        QueryAsyncTask queryAsyncTask = new QueryAsyncTask();
+        queryAsyncTask.execute(sql);
+        queryAsyncTask.setLoadDataCompleteListener(new OnLoadDataListener() {
+            @Override public void loadComplete(List<JsonObject> result) {
+                if (result == null || result.size() == 0) {
+                    //没有订过
+                    infoTextView.setText("点击订餐");
+                    order = true;
+                } else {
+                    //已经订过
+                    infoTextView.setText("点击取消订餐");
+                    currentTimeTextView.setTextColor(Color.GREEN);
+                    order = false;
+                }
+            }
+        });
     }
 
     private void initClockPanel() {
@@ -147,6 +176,7 @@ public class FoodOrderActivity extends BaseActivity {
             } else {
                 ToastUtil.showToastLong("操作失败！" + result.getErrorInfo());
             }
+            handler.sendEmptyMessage(TAG_UPDATE_ORDER_SUCCESS);
         }
 
         @Override
@@ -163,11 +193,11 @@ public class FoodOrderActivity extends BaseActivity {
         //假定订餐时间为 下午1点至第二天10天
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        if (hour >= 13 ){
+        if (hour >= 13) {
             long tempTime = calendar.getTimeInMillis() + ONE_DAY_TIME_MILLIS;
             Date date = new Date(tempTime);
             return date;
-        }else if (hour < 10){
+        } else if (hour < 10) {
             return calendar.getTime();
         }
         return null;
