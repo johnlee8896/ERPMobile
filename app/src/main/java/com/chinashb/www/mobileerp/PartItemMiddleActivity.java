@@ -38,7 +38,6 @@ import butterknife.ButterKnife;
  */
 
 public class PartItemMiddleActivity extends BaseActivity {
-
     @BindView(R.id.part_middle_item_layout) LinearLayout itemLayout;
 
     private PartsEntity selected_item;
@@ -47,15 +46,12 @@ public class PartItemMiddleActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_part_item_middle_layout);
         ButterKnife.bind(this);
-
         selected_item = (PartsEntity) getIntent().getSerializableExtra("selected_item");
         QueryPartInvItemAsyncTask task = new QueryPartInvItemAsyncTask();
         task.execute(selected_item.getItem_ID());
-
     }
 
     private class QueryPartInvItemAsyncTask extends AsyncTask<Integer, Void, List<Item_Lot_Inv>> {
-
         @Override
         protected List<Item_Lot_Inv> doInBackground(Integer... params) {
             int itemId = params[0];
@@ -128,7 +124,7 @@ public class PartItemMiddleActivity extends BaseActivity {
                         for (Item_Lot_Inv entity : map.get(mapKey)) {
                             count += entity.getInvQty();
                         }
-                        textView.setText(String.format("%s库库存为%s", mapKey, CommonUtil.DecimalFormat(count)));
+                        textView.setText(String.format("%s库，库存为%s,批次：%s", mapKey, CommonUtil.DecimalFormat(count),map.get(mapKey).get(0).getLotNo()));
 //                        textView.setGravity(Gravity.CENTER);
 //                        textView.setTextSize(30);
                         textView.setOnClickListener(v -> {

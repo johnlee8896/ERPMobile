@@ -21,13 +21,13 @@ import java.util.List;
  */
 
 
-public class AdapterPartInv extends RecyclerView.Adapter<AdapterPartInv.ProInvViewHolder> {
+public class PartInvQueryAdapter extends RecyclerView.Adapter<PartInvQueryAdapter.ProInvViewHolder> {
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
     private List<PartsEntity> dataSoure;
     private OnItemClickListener mClickListener;
 
-    public AdapterPartInv(Context context, List<PartsEntity> Part_InvList) {
+    public PartInvQueryAdapter(Context context, List<PartsEntity> Part_InvList) {
         dataSoure = Part_InvList;
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
@@ -39,8 +39,7 @@ public class AdapterPartInv extends RecyclerView.Adapter<AdapterPartInv.ProInvVi
 
     @Override
     public ProInvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater
-                .inflate(R.layout.listview_part_inv, parent, false);
+        View v = mLayoutInflater.inflate(R.layout.listview_part_inv, parent, false);
         ProInvViewHolder vh = new ProInvViewHolder(v, mClickListener);
         return vh;
 
@@ -69,23 +68,18 @@ public class AdapterPartInv extends RecyclerView.Adapter<AdapterPartInv.ProInvVi
     }
 
     public static class ProInvViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
         TextView tvItemID;
         TextView tvItem;
-
         TextView tvName;
         TextView tvSpec;
         TextView tvQty;
         TextView tvUnit;
 
         private OnItemClickListener mListener;
-
         public ProInvViewHolder(View view, OnItemClickListener listener) {
             super(view);
-
             mListener = listener;
             view.setOnClickListener((View.OnClickListener) this);
-
             tvItemID = (TextView) view.findViewById(R.id.tv_part_inv_item_ID);
             tvItem = (TextView) view.findViewById(R.id.tv_part_inv_item);
             tvName = (TextView) view.findViewById(R.id.tv_part_inv_name);
@@ -95,13 +89,10 @@ public class AdapterPartInv extends RecyclerView.Adapter<AdapterPartInv.ProInvVi
 
             tvQty.setTextColor(Color.GREEN);
             tvQty.setBackgroundColor(Color.BLACK);
-
-
         }
 
         ProInvViewHolder(View view) {
             super(view);
-
             tvItemID = (TextView) view.findViewById(R.id.tv_part_inv_item_ID);
             tvItem = (TextView) view.findViewById(R.id.tv_part_inv_item);
             tvName = (TextView) view.findViewById(R.id.tv_part_inv_name);

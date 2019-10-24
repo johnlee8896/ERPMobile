@@ -4,43 +4,51 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.PartItemMiddleActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.adapter.AdapterPartInv;
-import com.chinashb.www.mobileerp.basicobject.Item_Lot_Inv;
+import com.chinashb.www.mobileerp.adapter.PartInvQueryAdapter;
 import com.chinashb.www.mobileerp.basicobject.PartsEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
-import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.AppUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class StockQueryPartActivity extends BaseActivity {
 
-    private UserInfoEntity user;
+    @BindView(R.id.tv_stock_query_part) TextView tvStockQueryPart;
+    @BindView(R.id.et_stock_query_filter) EditText etFilter;
+    @BindView(R.id.btn_stock_query) Button btnQuery;
+    @BindView(R.id.btn_stock_query_prepage) Button btnQueryPrePage;
+    @BindView(R.id.btn_stock_query_nextpage) Button btnQueryNextPage;
+    @BindView(R.id.tv_part_inv_item_id_col) TextView tvPartInvItemIdCol;
+    @BindView(R.id.tv_part_inv_item_col) TextView tvPartInvItemCol;
+    @BindView(R.id.tv_part_inv_name_col) TextView tvPartInvNameCol;
+    @BindView(R.id.tv_part_inv_spec_col) TextView tvPartInvSpecCol;
+    @BindView(R.id.tv_part_inv_inv_qty_col) TextView tvPartInvInvQtyCol;
+    @BindView(R.id.tv_part_inv_unit_col) TextView tvPartInvUnitCol;
+    @BindView(R.id.rv_query_product_inv) RecyclerView mRecyclerView;
 
-    private EditText etFilter;
-    private Button btnQuery;
-    private Button btnQueryNextPage;
-    private Button btnQueryPrePage;
-    private RecyclerView mRecyclerView;
-    private AdapterPartInv partsAdapter;
+    private UserInfoEntity user;
+    private PartInvQueryAdapter partsAdapter;
     private List<PartsEntity> partsEntityList;//零部件
 
     private PartsEntity selected_item;
@@ -50,6 +58,7 @@ public class StockQueryPartActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_query_part);
+        ButterKnife.bind(this);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_query_product_inv);
         etFilter = (EditText) findViewById(R.id.et_stock_query_filter);
@@ -59,7 +68,7 @@ public class StockQueryPartActivity extends BaseActivity {
 
         user = UserSingleton.get().getUserInfo();
         partsEntityList = new ArrayList<>();
-        partsAdapter = new AdapterPartInv(StockQueryPartActivity.this, partsEntityList);
+        partsAdapter = new PartInvQueryAdapter(StockQueryPartActivity.this, partsEntityList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(partsAdapter);
 
@@ -92,7 +101,7 @@ public class StockQueryPartActivity extends BaseActivity {
             public void onClick(View view) {
                 if (currentPage > 1) {
                     currentPage--;
-                    StockQueryPartActivity.AsyncQueryProductInv t = new StockQueryPartActivity.AsyncQueryProductInv();
+                    AsyncQueryProductInv t = new AsyncQueryProductInv();
                     t.execute();
                 }
             }
@@ -110,7 +119,7 @@ public class StockQueryPartActivity extends BaseActivity {
     }
 
     protected void setHomeButton() {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -132,12 +141,11 @@ public class StockQueryPartActivity extends BaseActivity {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");b
-            partsAdapter = new AdapterPartInv(StockQueryPartActivity.this, partsEntityList);
+            partsAdapter = new PartInvQueryAdapter(StockQueryPartActivity.this, partsEntityList);
             mRecyclerView.setAdapter(partsAdapter);
             partsAdapter.setOnItemClickListener((view, position) -> {
                         if (partsEntityList != null) {
                             selected_item = partsEntityList.get(position);
-
 //                            QueryPartInvItemAsyncTask task = new QueryPartInvItemAsyncTask();
 //                            task.execute(selected_item.getItem_ID());
 
@@ -145,10 +153,10 @@ public class StockQueryPartActivity extends BaseActivity {
                             intent.putExtra("selected_item", (Serializable) selected_item);
                             startActivityForResult(intent, 100);
 
-
                         }
                     }
             );
+            AppUtil.forceHideInputMethod(StockQueryPartActivity.this);
             //pbScan.setVisibility(View.INVISIBLE);
         }
 

@@ -88,6 +88,7 @@ public class StockDepartmentInActivity extends BaseActivity {
     private String operatorName;
     private String description;
     private boolean hasScanHrCode;
+    private float originalScanQty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -463,6 +464,7 @@ public class StockDepartmentInActivity extends BaseActivity {
         @Override
         protected Void doInBackground(String... params) {
             BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_Inv_Out_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(), scanstring);
+            originalScanQty = boxItemEntity.getQty();
             this.boxItemEntity = boxItemEntity;
             if (boxItemEntity.getResult()) {
                 if (!is_box_existed(boxItemEntity)) {
@@ -538,9 +540,14 @@ public class StockDepartmentInActivity extends BaseActivity {
 //                boxItemEntity.setLotDescription(useTextView.getText().toString());
 //                boxItemEntity.setLotDescription(description);
 //                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), SelectDep, SelectReaseach, bi);
+
                 ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity, description);
                 if (ws_result.getResult()) {
                     boxItemEntityList.remove(boxItemEntity);
+                    //如果实际出库数量小于扫描出的要再处理
+//                    if (originalScanQty > boxItemEntity.getQty()){
+//                        ws_result = WebServiceUtil.op_Commit_Dep_Out_Item_handle_left(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity, description);
+//                    }
                 } else {
                     return null;
                 }
