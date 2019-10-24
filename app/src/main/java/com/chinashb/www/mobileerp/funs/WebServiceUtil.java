@@ -47,15 +47,18 @@ public class WebServiceUtil {
     //    public static final Class<BUItemBean> bu = BUItemBean.class;
     public static String Current_Net_Link = "Intranet";
 
+    public static final String IP = "http://116.236.16.218";
+
     private static String NAMESPACE = "http://tempuri.org/";
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-        private static String URL = "http://116.236.97.186:8001/Service.svc";
+//        private static String URL = "http://116.236.97.186:8001/Service.svc";
+        private static String URL = IP + ":8001/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-        private static String URL_Intranet = "http://116.236.97.186:8001/Service.svc";
+        private static String URL_Intranet = IP + ":8001/Service.svc";
     //    private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
-        private static String URL_Internet = "http://116.236.97.186:8001/Service.svc";
+        private static String URL_Internet = IP + ":8001/Service.svc";
     private static String SOAP_ACTION = "http://tempuri.org/IService/";
 
     private static String key = "Money_For_GodMoneyForGod";
