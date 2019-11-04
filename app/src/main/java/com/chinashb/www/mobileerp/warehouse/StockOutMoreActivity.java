@@ -29,6 +29,7 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.widget.TitleLayoutManagerView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -56,6 +57,7 @@ public class StockOutMoreActivity extends BaseActivity {
     private ProgressBar pbScan;
     private EditText inputEditText;
     private boolean isDirect;
+    private TitleLayoutManagerView titleLayoutManagerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class StockOutMoreActivity extends BaseActivity {
         btnAddTray = (Button) findViewById(R.id.btn_issue_more_add);
         //btnScanWC = (Button) findViewById(R.id.btn_issue_more_wc);
         btnWarehouseOut = (Button) findViewById(R.id.btn_exe_warehouse_out);
+        titleLayoutManagerView = findViewById(R.id.supply_product_put_titleLayout);
 
         pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         inputEditText = findViewById(R.id.stock_out_more_input_EditeText);
@@ -84,6 +87,8 @@ public class StockOutMoreActivity extends BaseActivity {
 
         Intent intent = getIntent();
         themw = (MpiWcBean) intent.getSerializableExtra("mw");
+        String title = intent.getStringExtra(IntentConstant.Intent_supplier_input_title);
+        titleLayoutManagerView.setTitle(title);
         if (themw != null) {
             themw.setMwNameTextView(txtMw_Title);
         }

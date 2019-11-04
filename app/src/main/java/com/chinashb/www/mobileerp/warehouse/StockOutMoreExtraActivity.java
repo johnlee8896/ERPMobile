@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -46,6 +47,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
 
     private RecyclerView mRecyclerView;
     private EditText inputEditText;
+    private EditText remarkEditText;
 
     private IssueMoreItemAdapter issueMoreItemAdapter;
     private List<BoxItemEntity> newissuelist;
@@ -63,6 +65,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
         txtMw_Title = (TextView) findViewById(R.id.tv_issue_more_mw_title);
         btnAddTray = (Button) findViewById(R.id.btn_issue_more_add_extra);
         inputEditText = findViewById(R.id.stock_out_more_extra_input_EditeText);
+        remarkEditText = findViewById(R.id.stock_out_more_remark_EditText);
         btnWarehouseOut = (Button) findViewById(R.id.btn_exe_warehouse_out);
 
 
@@ -100,9 +103,13 @@ public class StockOutMoreExtraActivity extends BaseActivity {
         btnWarehouseOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (TextUtils.isEmpty(remarkEditText.getText().toString())){
+                    ToastUtil.showToastShort("请为本操作添加备注");
+                    return;
+                }
 
                 if (newissuelist.size() > 0) {
-                    StockOutMoreExtraActivity.AsyncExeWarehouseOut task = new StockOutMoreExtraActivity.AsyncExeWarehouseOut();
+                    AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
                     task.execute();
 
                 }

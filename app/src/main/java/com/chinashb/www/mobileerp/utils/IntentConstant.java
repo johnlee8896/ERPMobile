@@ -23,4 +23,5 @@ public class IntentConstant {
 
     public static String Intent_Part_middle_map= "Part_middle_map";
     public static String Intent_Part_middle_map_list= "Part_middle_map_list";
+    public static String Intent_supplier_input_title= "supplier_input_title";
 }

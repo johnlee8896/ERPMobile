@@ -53,8 +53,10 @@ public class WebServiceUtil {
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
 //        private static String URL = "http://116.236.97.186:8001/Service.svc";
         private static String URL = IP + ":8001/Service.svc";
+//    private static String URL = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//    private static String URL_Intranet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
         private static String URL_Intranet = IP + ":8001/Service.svc";
     //    private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";

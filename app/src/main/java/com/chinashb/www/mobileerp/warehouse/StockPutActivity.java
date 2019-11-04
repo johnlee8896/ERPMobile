@@ -116,13 +116,13 @@ public class StockPutActivity extends BaseActivity {
         continuePutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleContinuePut(false);
+                handleContinuePut(false,"继续投料");
 
             }
 
         });
         continueDirectPutButton.setOnClickListener(v ->{
-            handleContinuePut(true);
+            handleContinuePut(true,"直接投料");
         });
 
         extraPutButton.setOnClickListener(new View.OnClickListener() {
@@ -141,12 +141,13 @@ public class StockPutActivity extends BaseActivity {
 
     }
 
-    private void handleContinuePut(boolean isDirect) {
+    private void handleContinuePut(boolean isDirect,String title) {
         if (mpiWcBean != null) {
             Intent intent = new Intent(StockPutActivity.this, StockOutMoreActivity.class);
             intent.putExtra("mw", mpiWcBean);
             intent.putExtra("IssuedItemList", (Serializable) IssuedItemList);
             intent.putExtra(IntentConstant.Intent_continue_put_directly, isDirect);
+            intent.putExtra(IntentConstant.Intent_supplier_input_title,title);
             startActivityForResult(intent, 300);
         }
     }
