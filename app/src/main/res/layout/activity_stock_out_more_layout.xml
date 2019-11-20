@@ -18,6 +18,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_size_20"
             android:orientation="vertical">
 
             <TextView
@@ -78,31 +79,20 @@
             android:background="@color/transparent"
             android:gravity="center_vertical"
             android:hint="接收扫描结果"
-            android:paddingLeft="@dimen/dimen_size_10"
+            android:paddingLeft="@dimen/dimen_size_20"
             android:paddingRight="@dimen/dimen_size_10"
             android:textColor="@color/black"
             android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
             android:textSize="@dimen/text_size_14" />
 
-        <EditText
-            android:id="@+id/stock_out_more_remark_EditText"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_size_45"
-            android:background="@color/transparent"
-            android:gravity="center_vertical"
-            android:hint="请添加备注信息"
-            android:textColorHint="@color/black"
-            android:paddingLeft="@dimen/dimen_size_10"
-            android:paddingRight="@dimen/dimen_size_10"
-            android:textColor="@color/black"
-            android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
-            android:textSize="@dimen/text_size_14" />
+
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="fill"
+            android:paddingLeft="@dimen/dimen_size_20"
             android:visibility="invisible"
             tools:visibility="visible">
 
@@ -133,6 +123,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:paddingLeft="@dimen/dimen_size_20"
             android:orientation="vertical">
 
             <android.support.v7.widget.RecyclerView

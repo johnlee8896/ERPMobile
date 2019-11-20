@@ -25,6 +25,7 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
+import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
@@ -74,6 +75,13 @@ public class StockCheckPartInvActivity extends BaseActivity {
 
     private Integer Ac_Type = 1;
     private UserInfoEntity userInfo;
+
+    private String qty;
+    private String remark ;
+
+    private String N ;
+    private String PN ;
+    private String DQ ;
 
     public StockCheckPartInvActivity() {
     }
@@ -148,8 +156,8 @@ public class StockCheckPartInvActivity extends BaseActivity {
         btnSelectCheckFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(StockCheckPartInvActivity.this, SelectItemActivity.class);
-                Intent intent = new Intent(StockCheckPartInvActivity.this, CommonSelectItemActivity.class);
+                Intent intent = new Intent(StockCheckPartInvActivity.this, SelectItemActivity.class);
+//                Intent intent = new Intent(StockCheckPartInvActivity.this, CommonSelectItemActivity.class);
 
                 Integer Bu_ID = UserSingleton.get().getUserInfo().getBu_ID();
 
@@ -165,6 +173,12 @@ public class StockCheckPartInvActivity extends BaseActivity {
                         "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type +
                         " And " +
                         "Datediff(day, Insert_Time, Getdate())<30 ";
+
+//                String sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20)," +
+//                        "Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory " +
+//                        "Inner Join (" +
+//                        W + ") As W On W.Warehouse_ID=CheckInventory.Warehouse_ID " +
+//                        "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type ;
 
                 List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(80, 120, 120, 120));
                 List<String> ColCaption = new ArrayList<String>(Arrays.asList("CI_ID", "盘存名称", "盘存者", "盘存日期"));
@@ -295,7 +309,50 @@ public class StockCheckPartInvActivity extends BaseActivity {
         });
 
 
+
+
+        etQty.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                qty = editable.toString();
+            }
+        });
+        etRemark.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                remark = editable.toString();
+            }
+        });
+        etN.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                PN = editable.toString();
+            }
+        });
+        etPN.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                qty = editable.toString();
+            }
+        });
+        etDQ.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                DQ = editable.toString();
+            }
+        });
+
+
     }
+
+//    private void setEditTextListener(EditText editText , String text){
+//        editText.addTextChangedListener(new TextWatcherImpl(){
+//            @Override public void afterTextChanged(Editable editable) {
+//                super.afterTextChanged(editable);
+//                text = editable.toString();
+//            }
+//        });
+//    }
 
     protected void Commit_Result() {
         CommitStockResultAsyncTask task = new CommitStockResultAsyncTask();
@@ -594,12 +651,14 @@ public class StockCheckPartInvActivity extends BaseActivity {
         protected Void doInBackground(String... params) {
 
             BoxItemEntity bi = scanitem;
-            String qty = etQty.getText().toString();
-            String remark = etRemark.getText().toString();
+            //解决编译通过但报错的问题
+//            String qty = etQty.getText().toString();
+//            String remark = etRemark.getText().toString();
+//
+//            String N = etN.getText().toString();
+//            String PN = etPN.getText().toString();
+//            String DQ = etDQ.getText().toString();
 
-            String N = etN.getText().toString();
-            String PN = etPN.getText().toString();
-            String DQ = etDQ.getText().toString();
 
             if (Ac_Type == 1 && userInfo.getBu_ID() == 1) {
                 ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(userInfo.getHR_Name(),

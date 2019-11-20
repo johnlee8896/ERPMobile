@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -18,18 +17,20 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
-import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
-import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
-import com.chinashb.www.mobileerp.utils.ToastUtil;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
+import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
-import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.DialogSelectAddRemarkDialog;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,17 +43,31 @@ public class StockOutMoreExtraActivity extends BaseActivity {
     private TextView txtMw_Title;
 
     private Button btnAddTray;
-
+    private Button btnRemark;
     private Button btnWarehouseOut;
 
     private RecyclerView mRecyclerView;
     private EditText inputEditText;
-    private EditText remarkEditText;
+    private TextView remarkTextView;
 
     private IssueMoreItemAdapter issueMoreItemAdapter;
     private List<BoxItemEntity> newissuelist;
     private IstPlaceEntity thePlace;
     private String scanstring;
+    private String remark = "";
+    private DialogSelectAddRemarkDialog remarkDialog;
+
+    private OnViewClickListener onViewClickListener = new OnViewClickListener() {
+        @Override public <T> void onClickAction(View v, String tag, T t) {
+            if (t != null){
+                remark = (String) t;
+                remarkTextView.setText((CharSequence) t);
+            }
+            if (remarkDialog != null && remarkDialog.isShowing()){
+                remarkDialog.dismiss();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +80,9 @@ public class StockOutMoreExtraActivity extends BaseActivity {
         txtMw_Title = (TextView) findViewById(R.id.tv_issue_more_mw_title);
         btnAddTray = (Button) findViewById(R.id.btn_issue_more_add_extra);
         inputEditText = findViewById(R.id.stock_out_more_extra_input_EditeText);
-        remarkEditText = findViewById(R.id.stock_out_more_remark_EditText);
+        remarkTextView = findViewById(R.id.stock_out_more_remark_EditText);
         btnWarehouseOut = (Button) findViewById(R.id.btn_exe_warehouse_out);
+        btnRemark = findViewById(R.id.btn_remark);
 
 
         newissuelist = new ArrayList<>();
@@ -99,12 +115,21 @@ public class StockOutMoreExtraActivity extends BaseActivity {
 
         });
 
+        btnRemark.setOnClickListener(v ->{
+            if (remarkDialog == null){
+                remarkDialog = new DialogSelectAddRemarkDialog(StockOutMoreExtraActivity.this);
+            }
+            remarkDialog.show();
+            remarkDialog.setOnViewClickListener(onViewClickListener);
+        });
+
 
         btnWarehouseOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TextUtils.isEmpty(remarkEditText.getText().toString())){
+                if (TextUtils.isEmpty(remarkTextView.getText().toString())){
                     ToastUtil.showToastShort("请为本操作添加备注");
+//                    remarkTextView.requestFocus();
                     return;
                 }
 
@@ -129,11 +154,18 @@ public class StockOutMoreExtraActivity extends BaseActivity {
             }
         });
 
+//        remarkTextView.addTextChangedListener(new TextWatcherImpl(){
+//            @Override public void afterTextChanged(Editable editable) {
+//                super.afterTextChanged(editable);
+//                remark = editable.toString();
+//            }
+//        });
+
 
     }
 
     private void parseScanResult(String result) {
-        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
         if (result.contains("/")) {
             String[] qrContent;
@@ -275,7 +307,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
             int newissuesize = newissuelist.size();
             while (count < newissuesize && newissuelist.size() > 0) {
                 BoxItemEntity bi = newissuelist.get(0);
-                ws_result = WebServiceUtil.op_Commit_MW_Issue_Extra_Item(themw.getMPIWC_ID(), bi);
+                ws_result = WebServiceUtil.op_Commit_MW_Issue_Extra_Item(themw.getMPIWC_ID(), bi,remark);
 
                 if (ws_result.getResult() ) {
                     newissuelist.remove(bi);
@@ -294,7 +326,8 @@ public class StockOutMoreExtraActivity extends BaseActivity {
             issueMoreItemAdapter.notifyDataSetChanged();
             mRecyclerView.setAdapter(issueMoreItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
-
+            remarkTextView.setText("");
+            remark = "";
             if (ws_result != null) {
                 if (!ws_result.getResult() ) {
                     CommonUtil.ShowToast(StockOutMoreExtraActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);

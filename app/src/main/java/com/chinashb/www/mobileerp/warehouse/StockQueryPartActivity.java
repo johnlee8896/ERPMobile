@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.BaseActivity;
@@ -22,6 +23,7 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.AppUtil;
+import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -46,6 +48,8 @@ public class StockQueryPartActivity extends BaseActivity {
     @BindView(R.id.tv_part_inv_inv_qty_col) TextView tvPartInvInvQtyCol;
     @BindView(R.id.tv_part_inv_unit_col) TextView tvPartInvUnitCol;
     @BindView(R.id.rv_query_product_inv) RecyclerView mRecyclerView;
+    @BindView(R.id.part_query_emptyManagerView) EmptyLayoutManageView emptyManagerView;
+    @BindView(R.id.part_query_data_layout) LinearLayout dataLayout;
 
     private UserInfoEntity user;
     private PartInvQueryAdapter partsAdapter;
@@ -57,14 +61,14 @@ public class StockQueryPartActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stock_query_part);
+        setContentView(R.layout.activity_stock_query_part_layout);
         ButterKnife.bind(this);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_query_product_inv);
-        etFilter = (EditText) findViewById(R.id.et_stock_query_filter);
-        btnQuery = (Button) findViewById(R.id.btn_stock_query);
-        btnQueryNextPage = (Button) findViewById(R.id.btn_stock_query_nextpage);
-        btnQueryPrePage = (Button) findViewById(R.id.btn_stock_query_prepage);
+//        mRecyclerView = (RecyclerView) findViewById(R.id.rv_query_product_inv);
+//        etFilter = (EditText) findViewById(R.id.et_stock_query_filter);
+//        btnQuery = (Button) findViewById(R.id.btn_stock_query);
+//        btnQueryNextPage = (Button) findViewById(R.id.btn_stock_query_nextpage);
+//        btnQueryPrePage = (Button) findViewById(R.id.btn_stock_query_prepage);
 
         user = UserSingleton.get().getUserInfo();
         partsEntityList = new ArrayList<>();
@@ -141,21 +145,26 @@ public class StockQueryPartActivity extends BaseActivity {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");b
-            partsAdapter = new PartInvQueryAdapter(StockQueryPartActivity.this, partsEntityList);
-            mRecyclerView.setAdapter(partsAdapter);
-            partsAdapter.setOnItemClickListener((view, position) -> {
-                        if (partsEntityList != null) {
-                            selected_item = partsEntityList.get(position);
+            if (partsEntityList == null || partsEntityList.size() == 0) {
+                dataLayout.setVisibility(View.GONE);
+                emptyManagerView.setVisibility(View.VISIBLE);
+            }else{
+                partsAdapter = new PartInvQueryAdapter(StockQueryPartActivity.this, partsEntityList);
+                mRecyclerView.setAdapter(partsAdapter);
+                partsAdapter.setOnItemClickListener((view, position) -> {
+                            if (partsEntityList != null) {
+                                selected_item = partsEntityList.get(position);
 //                            QueryPartInvItemAsyncTask task = new QueryPartInvItemAsyncTask();
 //                            task.execute(selected_item.getItem_ID());
-
-                            Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
-                            intent.putExtra("selected_item", (Serializable) selected_item);
-                            startActivityForResult(intent, 100);
-
+                                Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
+                                intent.putExtra("selected_item", (Serializable) selected_item);
+                                startActivityForResult(intent, 100);
+                            }
                         }
-                    }
-            );
+                );
+                dataLayout.setVisibility(View.VISIBLE);
+                emptyManagerView.setVisibility(View.GONE);
+            }
             AppUtil.forceHideInputMethod(StockQueryPartActivity.this);
             //pbScan.setVisibility(View.INVISIBLE);
         }

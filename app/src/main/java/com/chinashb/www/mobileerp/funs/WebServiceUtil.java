@@ -52,15 +52,28 @@ public class WebServiceUtil {
     private static String NAMESPACE = "http://tempuri.org/";
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
 //        private static String URL = "http://116.236.97.186:8001/Service.svc";
+
+
+
         private static String URL = IP + ":8001/Service.svc";
 //    private static String URL = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
-        private static String URL_Intranet = IP + ":8001/Service.svc";
-    //    private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
+
+//        private static String URL_Intranet = IP + ":8001/Service.svc";
+        private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
         private static String URL_Internet = IP + ":8001/Service.svc";
+
+
+
+
+
+//    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
+
     private static String SOAP_ACTION = "http://tempuri.org/IService/";
 
     private static String key = "Money_For_GodMoneyForGod";
@@ -886,14 +899,14 @@ public class WebServiceUtil {
         return ws_result;
     }
 
-    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, BoxItemEntity bi) {
+    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, BoxItemEntity bi,String remark) {
         String sqty = String.valueOf(bi.getQty());
 //        WsResult Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
-        WsResult Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
+        WsResult Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty,remark);
         return Result;
     }
 
-    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty) {
+    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty,String remark) {
         String webMethodName = "op_Commit_MW_New_Issue_Extra_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -909,6 +922,7 @@ public class WebServiceUtil {
         AddPrpertyInfo(propertyInfos, "SMM_ID", SMM_ID);
         AddPrpertyInfo(propertyInfos, "SMT_ID", SMT_ID);
         AddPrpertyInfo(propertyInfos, "Qty", Qty);
+        AddPrpertyInfo(propertyInfos, "Remark", remark);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;

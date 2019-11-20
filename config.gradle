@@ -7,8 +7,8 @@ ext {
             compileSdkVersion: 27,
             minSdkVersion    : 15,
             targetSdkVersion : 27,
-            versionCode      : 7,
-            versionName      : "1.4.3",//upgrade
+            versionCode      : 8,
+            versionName      : "1.4.4",//upgrade
 
             supportVersion     : "27.1.0",
     ]

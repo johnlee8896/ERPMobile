@@ -9,4 +9,14 @@
         <item>调试机器</item>
         <item>其他</item>
     </string-array>
+
+    <!--生产投料中额外领料中常用备注-->
+    <string-array name="select_remark_array">
+        <item>辅助材料</item>
+        <item>包装材料</item>
+        <item>工程更改，优先使用</item>
+        <item>拆解件</item>
+        <item>前一批物料暂停使用</item>
+        <item>项目专用物料</item>
+    </string-array>
 </resources>

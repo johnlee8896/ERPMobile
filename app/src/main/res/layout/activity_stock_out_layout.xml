@@ -19,6 +19,7 @@
             android:id="@+id/tv_stock_out_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_size_20"
             android:layout_weight="1"
             android:text="投料出库"
              />
@@ -28,6 +29,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:paddingLeft="@dimen/dimen_size_20"
             android:gravity="bottom"
             android:orientation="vertical">
 
@@ -174,7 +176,7 @@
             android:id="@+id/rv_issed_items"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:paddingLeft="@dimen/dimen_size_20"
             android:clickable="true"
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp">
