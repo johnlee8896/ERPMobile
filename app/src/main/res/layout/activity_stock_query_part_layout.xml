@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:app_title_text="仓库库存查询" />
+
     <LinearLayout
-        android:id="@+id/part_query_data_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dimen_size_20"
         android:layout_marginRight="@dimen/dimen_size_20"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,8 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="零部件仓库库存查询"
-                />
+                android:text="零部件仓库库存查询" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -83,87 +84,91 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/part_query_data_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="fill">
+            android:orientation="vertical"
+           >
 
-            <TextView
-                android:id="@+id/tv_part_inv_item_id_col"
-                android:layout_width="20dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Item_ID"
-                />
+                android:gravity="fill">
 
-            <TextView
-                android:id="@+id/tv_part_inv_item_col"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="物料编码"
-                />
+                <TextView
+                    android:id="@+id/tv_part_inv_item_id_col"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Item_ID" />
 
-            <TextView
-                android:id="@+id/tv_part_inv_name_col"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="名称"
-                />
+                <TextView
+                    android:id="@+id/tv_part_inv_item_col"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="物料编码" />
 
-            <TextView
-                android:id="@+id/tv_part_inv_spec_col"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="规格"
-                />
+                <TextView
+                    android:id="@+id/tv_part_inv_name_col"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="名称" />
+
+                <TextView
+                    android:id="@+id/tv_part_inv_spec_col"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="规格" />
 
 
-            <TextView
-                android:id="@+id/tv_part_inv_inv_qty_col"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="库存"
-                />
+                <TextView
+                    android:id="@+id/tv_part_inv_inv_qty_col"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="库存" />
 
-            <TextView
-                android:id="@+id/tv_part_inv_unit_col"
-                android:layout_width="20dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="单位"
-                />
+                <TextView
+                    android:id="@+id/tv_part_inv_unit_col"
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="单位" />
 
-        </LinearLayout>
+            </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_query_product_inv"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:orientation="horizontal">
 
-                android:clickable="true"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="8dp">
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_query_product_inv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
 
-            </android.support.v7.widget.RecyclerView>
+                    android:clickable="true"
+                    tools:layout_editor_absoluteX="8dp"
+                    tools:layout_editor_absoluteY="8dp">
 
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
         </LinearLayout>
+
         <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
             android:id="@+id/part_query_emptyManagerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
             app:app_empty_image_src="@mipmap/ic_empty_no_message"
-            app:app_empty_text="没有消息" />
+            app:app_empty_text="没有消息"
+            tools:visibility="visible" />
     </LinearLayout>
 
 

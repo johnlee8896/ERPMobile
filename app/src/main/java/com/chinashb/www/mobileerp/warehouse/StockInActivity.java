@@ -29,6 +29,7 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.ScanInputDialog;
@@ -54,7 +55,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     private EditText inputEditText;
 
     private InBoxItemAdapter boxItemAdapter;
-    private List<BoxItemEntity> boxitemList = new ArrayList<>();
+    private List<BoxItemEntity> boxItemEntityList = new ArrayList<>();
     private IstPlaceEntity thePlace;
     private String scanContent;
 
@@ -81,10 +82,10 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         setHomeButton();
 
         if (savedInstanceState != null) {
-            boxitemList = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
+            boxItemEntityList = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
         }
 
-        boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxitemList);
+        boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxItemEntityList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(boxItemAdapter);
         setViewsListener();
@@ -252,10 +253,10 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         } else if (view == addTrayPhotoButton) {
             new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
         } else if (view == scanAreaButton) {
-            if (boxitemList.size() > 0) {
+            if (boxItemEntityList.size() > 0) {
                 int selectedcount = 0;
-                for (int i = 0; i < boxitemList.size(); i++) {
-                    if (boxitemList.get(i).getSelect()) {
+                for (int i = 0; i < boxItemEntityList.size(); i++) {
+                    if (boxItemEntityList.get(i).getSelect()) {
                         selectedcount++;
                     }
                 }
@@ -277,11 +278,11 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void handleIntoWareHouse() {
-        if (boxitemList.size() > 0) {
+        if (boxItemEntityList.size() > 0) {
             int selectedcount = 0;
-            for (int i = 0; i < boxitemList.size(); i++) {
-                if (boxitemList.get(i).getSelect()) {
-                    if (boxitemList.get(i).getIst_ID() == 0) {
+            for (int i = 0; i < boxItemEntityList.size(); i++) {
+                if (boxItemEntityList.get(i).getSelect()) {
+                    if (boxItemEntityList.get(i).getIst_ID() == 0) {
 //                            CommonUtil.ShowToast(StockInActivity.this, "还没有扫描库位", R.mipmap.warning, Toast.LENGTH_SHORT);
                         ToastUtil.showToastLong("还没有扫描库位");
                         return;
@@ -302,21 +303,22 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     }
 
     private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
-        BoxItemEntity scanresult;
+        BoxItemEntity scanBoxItemEntity;
+
         @Override
         protected Void doInBackground(String... params) {
-            BoxItemEntity bi = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanContent);
-            scanresult = bi;
-            if (bi.getResult()) {
-                if (!is_box_existed(bi)) {
-                    if (isOpenSuggestStock){
-                        ToastUtil.showToastLong("建议仓库存放:" + bi.getIstName());
+            BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanContent);
+            scanBoxItemEntity = boxItemEntity;
+            if (boxItemEntity.getResult()) {
+                if (!is_box_existed(boxItemEntity)) {
+                    if (isOpenSuggestStock) {
+                        ToastUtil.showToastLong("建议仓库存放:" + boxItemEntity.getIstName());
                     }
-                    bi.setSelect(true);
-                    boxitemList.add(bi);
+                    boxItemEntity.setSelect(true);
+                    boxItemEntityList.add(boxItemEntity);
                 } else {
-                    bi.setResult(false);
-                    bi.setErrorInfo("该包装已经在装载列表中");
+                    boxItemEntity.setResult(false);
+                    boxItemEntity.setErrorInfo("该包装已经在装载列表中");
                 }
 
             } else {
@@ -328,9 +330,9 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
         protected Boolean is_box_existed(BoxItemEntity box_item) {
             Boolean result = false;
-            if (boxitemList != null) {
-                for (int i = 0; i < boxitemList.size(); i++) {
-                    if (boxitemList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
+            if (boxItemEntityList != null) {
+                for (int i = 0; i < boxItemEntityList.size(); i++) {
+                    if (boxItemEntityList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
                         return true;
                     }
                 }
@@ -343,13 +345,13 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-            if (scanresult != null) {
-                if (!scanresult.getResult()) {
-                    Toast.makeText(StockInActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
+            if (scanBoxItemEntity != null) {
+                if (!scanBoxItemEntity.getResult()) {
+                    Toast.makeText(StockInActivity.this, scanBoxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
 
-            boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxitemList);
+            boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxItemEntityList);
             mRecyclerView.setAdapter(boxItemAdapter);
             inputEditText.setText("");
             inputEditText.setHint("请继续使用扫描枪");
@@ -374,21 +376,21 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
-            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanContent);
-            if (bi.getResult()) {
-                thePlace = bi;
-                if (bi.getResult()) {
-                    for (int i = 0; i < boxitemList.size(); i++) {
-                        if (boxitemList.get(i).getSelect()) {
-                            boxitemList.get(i).setIstName(bi.getIstName());
-                            boxitemList.get(i).setIst_ID(bi.getIst_ID());
-                            boxitemList.get(i).setSub_Ist_ID(bi.getSub_Ist_ID());
+            IstPlaceEntity istPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanContent);
+            if (istPlaceEntity.getResult()) {
+                thePlace = istPlaceEntity;
+                if (istPlaceEntity.getResult()) {
+                    for (int i = 0; i < boxItemEntityList.size(); i++) {
+                        if (boxItemEntityList.get(i).getSelect()) {
+                            boxItemEntityList.get(i).setIstName(istPlaceEntity.getIstName());
+                            boxItemEntityList.get(i).setIst_ID(istPlaceEntity.getIst_ID());
+                            boxItemEntityList.get(i).setSub_Ist_ID(istPlaceEntity.getSub_Ist_ID());
                         }
                     }
                 }
             } else {
 //                Toast.makeText(StockInActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
-                ToastUtil.showToastLong(bi.getErrorInfo());
+                ToastUtil.showToastLong(istPlaceEntity.getErrorInfo());
             }
             return null;
         }
@@ -426,19 +428,25 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
             List<BoxItemEntity> SelectList;
             SelectList = new ArrayList<>();
 
-            for (int i = 0; i < boxitemList.size(); i++) {
-                if (boxitemList.get(i).getSelect()) {
-                    SelectList.add(boxitemList.get(i));
+            for (int i = 0; i < boxItemEntityList.size(); i++) {
+                if (boxItemEntityList.get(i).getSelect()) {
+                    SelectList.add(boxItemEntityList.get(i));
                 }
             }
 
             int count = 0;
             int selectedCount = SelectList.size();
             while (count < selectedCount && SelectList.size() > 0) {
+                //todo  这里取的是0，验证多个是否成功
                 BoxItemEntity boxItemEntity = SelectList.get(0);
-                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity);
+                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",
+                        boxItemEntity.getIst_ID() ,boxItemEntity.getSub_Ist_ID(),boxItemEntity.getItem_ID(),boxItemEntity.getIV_ID(),boxItemEntity.getLotID(),
+                        UserSingleton.get().getUserInfo().getCompany_ID(),UserSingleton.get().getUserInfo().getBu_ID(),boxItemEntity.getManuLotNo());
+                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
                 if (ws_result.getResult()) {
-                    boxitemList.remove(boxItemEntity);
+                    //添加库位与manuLot的关联
+//                    addIstSubIstManuLotRelation(boxItemEntity);
+                    boxItemEntityList.remove(boxItemEntity);
                     SelectList.remove(boxItemEntity);
                 }
 
@@ -447,6 +455,16 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
             return null;
         }
+
+//        private void addIstSubIstManuLotRelation(BoxItemEntity boxItemEntity) {
+//            if (boxItemEntity != null) {
+//                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",
+//                        boxItemEntity.getIst_ID() ,boxItemEntity.getSub_Ist_ID(),boxItemEntity.getItem_ID(),boxItemEntity.getIV_ID(),boxItemEntity.getLotID(),
+//                        UserSingleton.get().getUserAllInfoEntity().getCompanyID(),UserSingleton.get().getUserInfo().getBu_ID(),boxItemEntity.getManuLotNo());
+//
+//
+//            }
+//        }
 
         @Override
         protected void onPostExecute(Void result) {
@@ -464,7 +482,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
             }
 
-            boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxitemList);
+            boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxItemEntityList);
             mRecyclerView.setAdapter(boxItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
         }
@@ -495,7 +513,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putSerializable("BoxItemList", (Serializable) boxitemList);
+        outState.putSerializable("BoxItemList", (Serializable) boxItemEntityList);
 
     }
 

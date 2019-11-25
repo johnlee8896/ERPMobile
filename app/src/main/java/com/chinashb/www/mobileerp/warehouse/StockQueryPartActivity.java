@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.AppUtil;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -37,7 +39,7 @@ import butterknife.ButterKnife;
 public class StockQueryPartActivity extends BaseActivity {
 
     @BindView(R.id.tv_stock_query_part) TextView tvStockQueryPart;
-    @BindView(R.id.et_stock_query_filter) EditText etFilter;
+    @BindView(R.id.et_stock_query_filter) EditText filterEditText;
     @BindView(R.id.btn_stock_query) Button btnQuery;
     @BindView(R.id.btn_stock_query_prepage) Button btnQueryPrePage;
     @BindView(R.id.btn_stock_query_nextpage) Button btnQueryNextPage;
@@ -57,6 +59,7 @@ public class StockQueryPartActivity extends BaseActivity {
 
     private PartsEntity selected_item;
     private int currentPage = 1;
+    private String keyWord = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,7 @@ public class StockQueryPartActivity extends BaseActivity {
         ButterKnife.bind(this);
 
 //        mRecyclerView = (RecyclerView) findViewById(R.id.rv_query_product_inv);
-//        etFilter = (EditText) findViewById(R.id.et_stock_query_filter);
+//        filterEditText = (EditText) findViewById(R.id.et_stock_query_filter);
 //        btnQuery = (Button) findViewById(R.id.btn_stock_query);
 //        btnQueryNextPage = (Button) findViewById(R.id.btn_stock_query_nextpage);
 //        btnQueryPrePage = (Button) findViewById(R.id.btn_stock_query_prepage);
@@ -110,6 +113,13 @@ public class StockQueryPartActivity extends BaseActivity {
                 }
             }
         });
+
+        filterEditText.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                keyWord = editable.toString();
+            }
+        });
     }
 
     @Override
@@ -134,7 +144,7 @@ public class StockQueryPartActivity extends BaseActivity {
         //ArrayList<PartsEntity> us = new ArrayList<PartsEntity>();
         @Override
         protected Void doInBackground(String... params) {
-            String keyWord = etFilter.getText().toString();
+//            String keyWord = filterEditText.getText().toString();
             String js = WebServiceUtil.getQueryInv(user.getBu_ID(), 1, keyWord, currentPage, 20);
             Gson gson = new Gson();
             partsEntityList = gson.fromJson(js, new TypeToken<List<PartsEntity>>() {

@@ -505,7 +505,7 @@ public class WebServiceUtil {
     }
 
     //将物料入相应的库
-    public static WsResult op_Commit_DS_Item_Income_To_Warehouse(BoxItemEntity box_item) {
+    public static WsResult op_Commit_DS_Item_Income_To_Warehouse(BoxItemEntity box_item,String sql) {
         String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
@@ -532,6 +532,13 @@ public class WebServiceUtil {
         propertyInfo4.setValue(box_item.getSub_Ist_ID());
         propertyInfo4.setType(Long.class);
         propertyInfos.add(propertyInfo4);
+
+        //todo
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo4.setName("SQL");
+        propertyInfo4.setValue(sql );
+        propertyInfo4.setType(String.class);
+        propertyInfos.add(propertyInfo5);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
 
