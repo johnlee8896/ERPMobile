@@ -446,6 +446,7 @@ public class WebServiceUtil {
                     box_item.setEntityID(Long.parseLong(obj2.getProperty("EntityID").toString()));
                     box_item.setEntityName(obj2.getProperty("EntityName").toString());
                     box_item.setLotID(Long.parseLong(obj2.getProperty("LotID").toString()));
+                    //// TODO: 2019/11/27 这里的lotNo 取的是DII里面的manulotNo
                     box_item.setLotNo(obj2.getProperty("LotNo").toString());
                     box_item.setItem_ID(Long.parseLong(obj2.getProperty("Item_ID").toString()));
                     box_item.setIV_ID(Long.parseLong(obj2.getProperty("IV_ID").toString()));
@@ -859,11 +860,11 @@ public class WebServiceUtil {
         return box_item;
     }
 
-    private static PropertyInfo getNewPrpertyInfo(String Name, Object Value) {
+    private static PropertyInfo getNewPrpertyInfo(String Name, Object value) {
         PropertyInfo propertyInfo = new PropertyInfo();
         propertyInfo.setName(Name);
-        propertyInfo.setValue(Value);
-        propertyInfo.setType(Value.getClass());
+        propertyInfo.setValue(value);
+        propertyInfo.setType(value.getClass());
         return propertyInfo;
     }
 
@@ -1786,6 +1787,7 @@ public class WebServiceUtil {
         ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
         AddPrpertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
         AddPrpertyInfo(propertyInfoList, "Item_ID", Item_ID);
+
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
         SoapPrimitive response = null;
         try {

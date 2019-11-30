@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.view.MenuItem;
@@ -23,7 +22,6 @@ import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
-import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
@@ -76,12 +74,12 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private Integer Ac_Type = 1;
     private UserInfoEntity userInfo;
 
-    private String qty;
-    private String remark ;
+    private String qty = "";
+    private String remark = "";
 
-    private String N ;
-    private String PN ;
-    private String DQ ;
+    private String N = "";
+    private String PN = "";
+    private String DQ = "";
 
     public StockCheckPartInvActivity() {
     }
@@ -308,9 +306,6 @@ public class StockCheckPartInvActivity extends BaseActivity {
             }
         });
 
-
-
-
         etQty.addTextChangedListener(new TextWatcherImpl(){
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
@@ -326,13 +321,13 @@ public class StockCheckPartInvActivity extends BaseActivity {
         etN.addTextChangedListener(new TextWatcherImpl(){
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                PN = editable.toString();
+                N = editable.toString();
             }
         });
         etPN.addTextChangedListener(new TextWatcherImpl(){
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                qty = editable.toString();
+                PN = editable.toString();
             }
         });
         etDQ.addTextChangedListener(new TextWatcherImpl(){

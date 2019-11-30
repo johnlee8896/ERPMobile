@@ -4,9 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -18,7 +16,6 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
-import com.chinashb.www.mobileerp.warehouse.StockQueryPartActivity;
 import com.chinashb.www.mobileerp.warehouse.StockQueryPartItemActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -124,7 +121,9 @@ public class PartItemMiddleActivity extends BaseActivity {
                         for (Item_Lot_Inv entity : map.get(mapKey)) {
                             count += entity.getInvQty();
                         }
-                        textView.setText(String.format("%s库，库存为%s,批次：%s", mapKey, CommonUtil.DecimalFormat(count),map.get(mapKey).get(0).getLotNo()));
+                        textView.setText(String.format("%s库，库存为%s,批次：%s", mapKey, CommonUtil.DecimalFormat(count)
+//                                ,map.get(mapKey).get(0).getLotNo()));
+                                ,map.get(mapKey).get(0).getManuLotNo()));
 //                        textView.setGravity(Gravity.CENTER);
 //                        textView.setTextSize(30);
                         textView.setOnClickListener(v -> {

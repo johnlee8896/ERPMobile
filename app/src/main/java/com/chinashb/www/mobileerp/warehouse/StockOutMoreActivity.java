@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -43,10 +42,10 @@ import java.util.List;
 
 public class StockOutMoreActivity extends BaseActivity {
 
-    private MpiWcBean themw;
-    private List<PlanInnerDetailEntity> issuedItemList;
-    private TextView txtMw_Title;
-    private Button btnAddTray;
+    private MpiWcBean mpiWcBean;
+    private List<PlanInnerDetailEntity> planInnerDetailEntityList;
+    private TextView txtMwTitleTextView;
+    private Button addTrayButton;
     private Button btnScanWC;
     private Button btnWarehouseOut;
     private RecyclerView recyclerView;
@@ -65,8 +64,8 @@ public class StockOutMoreActivity extends BaseActivity {
         setContentView(R.layout.activity_stock_out_more_layout);
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_issue_more);
-        txtMw_Title = (TextView) findViewById(R.id.tv_issue_more_mw_title);
-        btnAddTray = (Button) findViewById(R.id.btn_issue_more_add);
+        txtMwTitleTextView = (TextView) findViewById(R.id.tv_issue_more_mw_title);
+        addTrayButton = (Button) findViewById(R.id.btn_issue_more_add);
         //btnScanWC = (Button) findViewById(R.id.btn_issue_more_wc);
         btnWarehouseOut = (Button) findViewById(R.id.btn_exe_warehouse_out);
         titleLayoutManagerView = findViewById(R.id.supply_product_put_titleLayout);
@@ -86,17 +85,17 @@ public class StockOutMoreActivity extends BaseActivity {
         recyclerView.setAdapter(issueMoreItemAdapter);
 
         Intent intent = getIntent();
-        themw = (MpiWcBean) intent.getSerializableExtra("mw");
+        mpiWcBean = (MpiWcBean) intent.getSerializableExtra("mw");
         String title = intent.getStringExtra(IntentConstant.Intent_supplier_input_title);
         titleLayoutManagerView.setTitle(title);
-        if (themw != null) {
-            themw.setMwNameTextView(txtMw_Title);
+        if (mpiWcBean != null) {
+            mpiWcBean.setMwNameTextView(txtMwTitleTextView);
         }
-        issuedItemList = (List<PlanInnerDetailEntity>) intent.getSerializableExtra("IssuedItemList");
+        planInnerDetailEntityList = (List<PlanInnerDetailEntity>) intent.getSerializableExtra("IssuedItemList");
         isDirect = intent.getBooleanExtra(IntentConstant.Intent_continue_put_directly, false);
         setHomeButton();
 
-        btnAddTray.setOnClickListener(new View.OnClickListener() {
+        addTrayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new IntentIntegrator(StockOutMoreActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
@@ -211,7 +210,7 @@ public class StockOutMoreActivity extends BaseActivity {
 
         @Override
         protected Void doInBackground(String... params) {
-            Long MW_ID = themw.getMPIWC_ID();
+            Long MW_ID = mpiWcBean.getMPIWC_ID();
             BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_MW_Issue_Item_Barcode(MW_ID, scanedItem);
             this.boxItemEntity = boxItemEntity;
             if (boxItemEntity.getResult()) {
@@ -247,9 +246,9 @@ public class StockOutMoreActivity extends BaseActivity {
 
         //获取还需求数
         protected void setNeedQty(BoxItemEntity box_item) {
-            if (box_item != null && issuedItemList != null) {
-                for (int i = 0; i < issuedItemList.size(); i++) {
-                    PlanInnerDetailEntity issued_item = issuedItemList.get(i);
+            if (box_item != null && planInnerDetailEntityList != null) {
+                for (int i = 0; i < planInnerDetailEntityList.size(); i++) {
+                    PlanInnerDetailEntity issued_item = planInnerDetailEntityList.get(i);
                     if (issued_item.getItem_ID() == box_item.getItem_ID()) {
                         box_item.setNeedMoreQty(issued_item.getMoreQty());
                     }
@@ -434,13 +433,13 @@ public class StockOutMoreActivity extends BaseActivity {
     private class AsyncExeWarehouseOut extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
 
-        protected void UpdateNeedQty(BoxItemEntity box_item) {
-            if (box_item != null && issuedItemList != null) {
-                for (int i = 0; i < issuedItemList.size(); i++) {
-                    PlanInnerDetailEntity issued_item = issuedItemList.get(i);
-                    if (issued_item.getItem_ID() == box_item.getItem_ID()) {
+        protected void updateNeedQty(BoxItemEntity boxItemEntity) {
+            if (boxItemEntity != null && planInnerDetailEntityList != null) {
+                for (int i = 0; i < planInnerDetailEntityList.size(); i++) {
+                    PlanInnerDetailEntity issued_item = planInnerDetailEntityList.get(i);
+                    if (issued_item.getItem_ID() == boxItemEntity.getItem_ID()) {
                         float oldmoreqty = issued_item.getMoreQty();
-                        float newmoreqty = oldmoreqty - box_item.getQty();
+                        float newmoreqty = oldmoreqty - boxItemEntity.getQty();
                         issued_item.setMoreQty(newmoreqty);
 
                     }
@@ -452,15 +451,13 @@ public class StockOutMoreActivity extends BaseActivity {
         protected Void doInBackground(String... params) {
 
             int count = 0;
-
-            int newissuesize = boxItemEntityList.size();
-            ;
-            while (count < newissuesize && boxItemEntityList.size() > 0) {
+            int size = boxItemEntityList.size();
+            while (count < size && boxItemEntityList.size() > 0) {
                 BoxItemEntity bi = boxItemEntityList.get(0);
-                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(themw.getMPIWC_ID(), bi);
+                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiWcBean.getMPIWC_ID(), bi);
                 if (ws_result.getResult() ) {
                     boxItemEntityList.remove(bi);
-                    UpdateNeedQty(bi);
+                    updateNeedQty(bi);
                 } else {
                     //遇到错误，停止
                     return null;

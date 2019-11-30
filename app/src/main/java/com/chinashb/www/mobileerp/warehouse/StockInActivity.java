@@ -439,9 +439,14 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
             while (count < selectedCount && SelectList.size() > 0) {
                 //todo  这里取的是0，验证多个是否成功
                 BoxItemEntity boxItemEntity = SelectList.get(0);
+//                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo，SendToWarehouseTime) values (%d,%d,%d,%d,%d,%d,%d,%s,%s)",
                 String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",
                         boxItemEntity.getIst_ID() ,boxItemEntity.getSub_Ist_ID(),boxItemEntity.getItem_ID(),boxItemEntity.getIV_ID(),boxItemEntity.getLotID(),
-                        UserSingleton.get().getUserInfo().getCompany_ID(),UserSingleton.get().getUserInfo().getBu_ID(),boxItemEntity.getManuLotNo());
+                        UserSingleton.get().getUserInfo().getCompany_ID(),UserSingleton.get().getUserInfo().getBu_ID(),
+//                        !TextUtils.isEmpty(boxItemEntity.getManuLotNo()) ? boxItemEntity.getManuLotNo() : boxItemEntity.getLotNo());
+//                        boxItemEntity.getLotNo(),UnitFormatUtil.formatTimeToSecond(System.currentTimeMillis()));
+                        boxItemEntity.getLotNo());
+
                 ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
                 if (ws_result.getResult()) {
                     //添加库位与manuLot的关联
