@@ -49,6 +49,7 @@ public class WebServiceUtil {
 
     public static final String IP = "http://116.236.16.218";
 
+
     private static String NAMESPACE = "http://tempuri.org/";
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
 //        private static String URL = "http://116.236.97.186:8001/Service.svc";
@@ -62,7 +63,14 @@ public class WebServiceUtil {
 //    private static String URL_Intranet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
 
 //        private static String URL_Intranet = IP + ":8001/Service.svc";
-        private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
+//        private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
+    //// TODO: 2019/12/2 切换到迦勒那边时要 加上 test_wss
+        private static String URL_Intranet = "http://172.16.1.43:8001/Service.svc";//测试内网连接
+
+
+
+
+
 //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
         private static String URL_Internet = IP + ":8001/Service.svc";
 
@@ -496,6 +504,7 @@ public class WebServiceUtil {
                 } else {
                     istPlace.setIst_ID(Long.parseLong(obj2.getProperty("Ist_ID").toString()));
                     istPlace.setSub_Ist_ID(Long.parseLong(obj2.getProperty("Sub_Ist_ID").toString()));
+                    //// TODO: 2019/12/3 IST_Name 是大库对应的数据库字段名，Ist_Name对应的是小区域的？
                     istPlace.setIstName(obj2.getProperty("IstName").toString());
                     istPlace.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
                     istPlace.setBuName(obj2.getProperty("BuName").toString());
@@ -506,7 +515,7 @@ public class WebServiceUtil {
     }
 
     //将物料入相应的库
-    public static WsResult op_Commit_DS_Item_Income_To_Warehouse(BoxItemEntity box_item,String sql) {
+    public static WsResult op_Commit_DS_Item_Income_To_Warehouse(BoxItemEntity box_item) {
         String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
@@ -535,11 +544,11 @@ public class WebServiceUtil {
         propertyInfos.add(propertyInfo4);
 
         //todo
-        PropertyInfo propertyInfo5 = new PropertyInfo();
-        propertyInfo4.setName("SQL");
-        propertyInfo4.setValue(sql );
-        propertyInfo4.setType(String.class);
-        propertyInfos.add(propertyInfo5);
+//        PropertyInfo propertyInfo5 = new PropertyInfo();
+//        propertyInfo4.setName("SQL");
+//        propertyInfo4.setValue(sql );
+//        propertyInfo4.setType(String.class);
+//        propertyInfos.add(propertyInfo5);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
 

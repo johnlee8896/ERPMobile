@@ -447,7 +447,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 //                        boxItemEntity.getLotNo(),UnitFormatUtil.formatTimeToSecond(System.currentTimeMillis()));
                         boxItemEntity.getLotNo());
 
-                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
+//                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
+                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity);
                 if (ws_result.getResult()) {
                     //添加库位与manuLot的关联
 //                    addIstSubIstManuLotRelation(boxItemEntity);

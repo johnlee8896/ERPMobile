@@ -137,6 +137,7 @@ public class StockMoveActivity extends BaseActivity {
     }
 
     private void parseScanResult(String result) {
+        System.out.println("===== result = " + result);
 //        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
         if (result.contains("/")) {

@@ -1,3 +1,9 @@
+2019-12-2
+Version1.4.4.1  versionCode = 9 更新日志
+登录不了，服务器可能有问题，紧急修复
+
+
+
 2019-11-20
 Version1.4.4  versionCode = 8 更新日志
 

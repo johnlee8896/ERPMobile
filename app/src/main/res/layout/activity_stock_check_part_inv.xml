@@ -1,36 +1,392 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<!--<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--tools:context=".warehouse.StockCheckPartInvActivity">-->
+
+    <!--<android.support.design.widget.AppBarLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:theme="@style/AppTheme.AppBarOverlay">-->
+
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="?attr/actionBarSize"-->
+            <!--android:background="?attr/colorPrimary"-->
+            <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
+
+    <!--</android.support.design.widget.AppBarLayout>-->
+
+    <!--<include-->
+        <!--layout="@layout/content_stock_check_part_inv"-->
+        <!--android:visibility="visible" />-->
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--android:layout_margin="@dimen/fab_margin"-->
+        <!--android:visibility="invisible"-->
+        <!--app:srcCompat="@android:drawable/ic_dialog_email" />-->
+
+<!--</android.support.design.widget.CoordinatorLayout>-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".warehouse.StockCheckPartInvActivity">
-
-    <android.support.design.widget.AppBarLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <!--<include-->
+    <!--layout="@layout/content_stock_check_part_inv"-->
+    <!--android:visibility="visible" />-->
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        android:layout_height="match_parent">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
 
-    </android.support.design.widget.AppBarLayout>
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal">-->
 
-    <include
-        layout="@layout/content_stock_check_part_inv"
-        android:visibility="visible" />
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_checkinventory_file"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:text="选择盘点文件"-->
+                     <!--/>-->
+            <!--</LinearLayout>-->
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:visibility="invisible"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+            <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+                android:id="@+id/stock_check_part_titleLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:app_title_text="选择盘点文件" />
 
-</android.support.design.widget.CoordinatorLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_select_check_inv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="选择盘点表" />
+
+                    <Button
+                        android:id="@+id/btn_select_check_inv_scan_ist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="扫描位置码" />
+
+                    <Button
+                        android:id="@+id/btn_select_check_inv_add_item"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="扫描物料" />
+
+                </LinearLayout>
+            </LinearLayout>
+            <EditText
+                android:id="@+id/content_stock_check_part_input_EditeText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_size_45"
+                android:background="@color/transparent"
+                android:gravity="center_vertical"
+                android:hint="接收扫描结果"
+                android:paddingLeft="@dimen/dimen_size_10"
+                android:paddingRight="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+                android:textSize="@dimen/text_size_14"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/kuWeiDanYuanTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="库位单元" />
+
+                        <TextView
+                            android:id="@+id/tv_check_stock_ist"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="......"
+                             />
+                    </TableRow>
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView17"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="物料条码" />
+
+                        <TextView
+                            android:id="@+id/tv_check_stock_item_code"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="......"
+                             />
+                    </TableRow>
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView16"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ERP位置" />
+
+                        <TextView
+                            android:id="@+id/tv_check_stock_ist_erp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="......"
+                            />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="物料" />
+
+                        <TextView
+                            android:id="@+id/tv_check_stock_item_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="......"
+                             />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView20"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="生产批次" />
+
+                        <TextView
+                            android:id="@+id/tv_check_stock_manulotno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="......"
+                             />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView8"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="托盘" />
+
+                        <TextView
+                            android:id="@+id/tv_check_stock_box"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="......"
+                             />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView9"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ERP库存" />
+
+                        <TextView
+                            android:id="@+id/tv_check_stock_box_left_qty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="......"
+                             />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView21"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="完整件数" />
+
+                        <EditText
+                            android:id="@+id/et_check_stock_box_n"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="14"
+                            android:inputType="number|numberSigned"
+                            android:text="1" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView22"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="每件数量" />
+
+                        <EditText
+                            android:id="@+id/et_check_stock_box_pn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="14"
+                            android:inputType="number|numberSigned|numberDecimal" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView23"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="散件数" />
+
+                        <EditText
+                            android:id="@+id/et_check_stock_box_dq"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="14"
+                            android:inputType="number|numberSigned|numberDecimal"
+                            android:text="" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+
+                        <TextView
+                            android:id="@+id/textView24"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="小计" />
+
+                        <Button
+                            android:id="@+id/btn_check_inv_cal_qty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="小计" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="实际盘点" />
+
+                        <TextView
+                            android:id="@+id/et_check_stock_box_real_qty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:inputType="number|numberSigned|numberDecimal" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:id="@+id/textView18"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="备注" />
+
+                        <EditText
+                            android:id="@+id/et_check_stock_box_remark"
+                            style="@style/Widget.AppCompat.EditText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ems="14"
+                            android:inputType="text" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/dimen_size_60">
+
+
+                        <TextView
+                            android:id="@+id/textView11"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="确认" />
+
+                        <Button
+                            android:id="@+id/btn_affirm_qty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="提交" />
+                    </TableRow>
+
+
+                </TableLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>
