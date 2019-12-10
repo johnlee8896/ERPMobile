@@ -109,6 +109,7 @@
                 android:id="@+id/content_stock_check_part_input_EditeText"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_size_45"
+                android:layout_marginTop="@dimen/dimen_size_15"
                 android:background="@color/transparent"
                 android:gravity="center_vertical"
                 android:hint="接收扫描结果"
@@ -136,6 +137,8 @@
                         android:layout_height="match_parent" >
 
                         <TextView
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:id="@+id/kuWeiDanYuanTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -145,6 +148,8 @@
                             android:id="@+id/tv_check_stock_ist"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                             android:text="......"
                              />
                     </TableRow>
@@ -158,12 +163,16 @@
                             android:id="@+id/textView17"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="物料条码" />
 
                         <TextView
                             android:id="@+id/tv_check_stock_item_code"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                             android:text="......"
                              />
                     </TableRow>
@@ -177,12 +186,16 @@
                             android:id="@+id/textView16"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="ERP位置" />
 
                         <TextView
                             android:id="@+id/tv_check_stock_ist_erp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                             android:text="......"
                             />
                     </TableRow>
@@ -195,6 +208,8 @@
                             android:id="@+id/textView6"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="物料" />
 
                         <TextView
@@ -202,6 +217,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="......"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                              />
                     </TableRow>
 
@@ -213,12 +230,16 @@
                             android:id="@+id/textView20"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="生产批次" />
 
                         <TextView
                             android:id="@+id/tv_check_stock_manulotno"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                             android:text="......"
                              />
                     </TableRow>
@@ -230,6 +251,8 @@
                             android:id="@+id/textView8"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="托盘" />
 
                         <TextView
@@ -237,6 +260,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="......"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                              />
                     </TableRow>
 
@@ -248,6 +273,8 @@
                             android:id="@+id/textView9"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="ERP库存" />
 
                         <TextView
@@ -255,6 +282,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="......"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                              />
                     </TableRow>
 
@@ -266,6 +295,8 @@
                             android:id="@+id/textView21"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="完整件数" />
 
                         <EditText
@@ -273,6 +304,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ems="14"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                             android:inputType="number|numberSigned"
                             android:text="1" />
                     </TableRow>
@@ -284,6 +317,8 @@
                             android:id="@+id/textView22"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="每件数量" />
 
                         <EditText
@@ -291,6 +326,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ems="14"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                             android:inputType="number|numberSigned|numberDecimal" />
                     </TableRow>
                     <TableRow
@@ -301,6 +338,8 @@
                             android:id="@+id/textView23"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="散件数" />
 
                         <EditText
@@ -308,6 +347,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ems="14"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                             android:inputType="number|numberSigned|numberDecimal"
                             android:text="" />
                     </TableRow>
@@ -320,6 +361,8 @@
                             android:id="@+id/textView24"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="小计" />
 
                         <Button
@@ -336,12 +379,16 @@
                             android:id="@+id/textView10"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="实际盘点" />
 
                         <TextView
                             android:id="@+id/et_check_stock_box_real_qty"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                             android:inputType="number|numberSigned|numberDecimal" />
                     </TableRow>
 
@@ -353,6 +400,8 @@
                             android:id="@+id/textView18"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="备注" />
 
                         <EditText
@@ -361,19 +410,23 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:ems="14"
+                            android:textColor="@color/black"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
                             android:inputType="text" />
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginBottom="@dimen/dimen_size_60">
+                        android:layout_marginBottom="@dimen/dimen_size_80">
 
 
                         <TextView
                             android:id="@+id/textView11"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="确认" />
 
                         <Button
