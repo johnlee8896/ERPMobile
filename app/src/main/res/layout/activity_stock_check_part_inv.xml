@@ -108,8 +108,8 @@
             <EditText
                 android:id="@+id/content_stock_check_part_input_EditeText"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_size_45"
-                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_height="@dimen/dimen_size_60"
+                android:paddingTop="@dimen/dimen_size_15"
                 android:background="@color/transparent"
                 android:gravity="center_vertical"
                 android:hint="接收扫描结果"
@@ -173,6 +173,7 @@
                             android:layout_height="wrap_content"
                             android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:paddingRight="@dimen/dimen_size_5"
                             android:text="......"
                              />
                     </TableRow>
@@ -369,6 +370,7 @@
                             android:id="@+id/btn_check_inv_cal_qty"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/dimen_size_20"
                             android:text="小计" />
                     </TableRow>
                     <TableRow
@@ -433,6 +435,7 @@
                             android:id="@+id/btn_affirm_qty"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/dimen_size_20"
                             android:text="提交" />
                     </TableRow>
 

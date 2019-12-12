@@ -126,6 +126,22 @@
         android:textSize="@dimen/text_size_14"
          />
 
+    <!--<Button-->
+        <!--android:id="@+id/btn_scan_area_green"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
+        <!--android:layout_gravity="left"-->
+        <!--android:text="跳过先进先出" />-->
+
+    <!--<Button-->
+        <!--android:id="@+id/btn_remark_select"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
+        <!--android:layout_gravity="left"-->
+        <!--android:text="备注（选择或添加）" />-->
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

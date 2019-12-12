@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -47,7 +48,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
     Button btnScanItem;
     Button btnCommit;
 
-//    TextView tvCI;
+    //    TextView tvCI;
     private TitleLayoutManagerView titleLayoutManagerView;
     Integer CI_ID;
     Boolean ShowERPInv = false;
@@ -70,7 +71,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private EditText etRemark;
     private EditText inputEditText;
 
-    private Integer Ac_Type = 1;
+    private int Ac_Type = 1;
     private UserInfoEntity userInfo;
 
     private String qty = "";
@@ -110,7 +111,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //        });
     }
 
-    void getExtras() {
+    private void getExtras() {
         Intent who = getIntent();
         Ac_Type = (Integer) who.getIntExtra("Ac_Type", 1);
     }
@@ -200,6 +201,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
             public void onClick(View v) {
                 if (SelectCI == null) {
                     Toast.makeText(StockCheckPartInvActivity.this, "请先选择盘点表", Toast.LENGTH_LONG).show();
+                    inputEditText.setText("");
                     return;
                 }
                 ScanFor = "Ist";
@@ -216,6 +218,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
                 if (thePlace == null) {
 //                    Toast.makeText(StockCheckPartInvActivity.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
                     ToastUtil.showToastLong("请先扫描托盘所在的仓库单元位置条码");
+                    inputEditText.setText("");
                     return;
                 }
                 ScanFor = "Item";
@@ -288,58 +291,65 @@ public class StockCheckPartInvActivity extends BaseActivity {
             }
         });
 
-        inputEditText.addTextChangedListener(new TextWatcherImpl(){
+        inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                if (!inventoryFileSelect){
+                if (TextUtils.isEmpty(editable.toString())) {
+                    return;
+                }
+                if (!inventoryFileSelect) {
                     ToastUtil.showToastShort("请先选择盘点表！");
                     inputEditText.setText("");
                     return;
                 }
-               //todo 奇怪的这个endwith \n 居然不执行
+                //todo 奇怪的这个endwith \n 居然不执行
 //                if (editable.toString().endsWith("\n")){
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
-                    System.out.println("========================扫描结果:" + editable.toString());
-                    //// TODO: 2019/12/10 scanfor之类的可能无用
+                System.out.println("========================扫描结果:" + editable.toString());
+                //// TODO: 2019/12/10 scanfor之类的可能无用
 //                    if (ScanFor.endsWith("Ist")) {
 //                        ActivityResultScanIst(inputEditText.getText().toString());
 //                    } else {
 //                        ActivityResultScanItem(inputEditText.getText().toString());
 //                    }
-                    parseScanData(editable.toString());
+                parseScanData(editable.toString());
 //                }
             }
         });
 
-        realQtyTextView.addTextChangedListener(new TextWatcherImpl(){
+        realQtyTextView.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 qty = editable.toString();
             }
         });
 
-        etRemark.addTextChangedListener(new TextWatcherImpl(){
+        etRemark.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 remark = editable.toString();
+//                parseScanData(editable.toString());
             }
         });
-        etN.addTextChangedListener(new TextWatcherImpl(){
+        etN.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 N = editable.toString();
+//                parseScanData(editable.toString());
             }
         });
-        etPN.addTextChangedListener(new TextWatcherImpl(){
+        etPN.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 PN = editable.toString();
+//                parseScanData(editable.toString());
             }
         });
-        etDQ.addTextChangedListener(new TextWatcherImpl(){
+        etDQ.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 DQ = editable.toString();
+//                parseScanData(editable.toString());
             }
         });
 
@@ -369,9 +379,9 @@ public class StockCheckPartInvActivity extends BaseActivity {
                 if (saveditems.get(i).getSMT_ID() == box_item.getSMT_ID()
                         && saveditems.get(i).getSMM_ID() == box_item.getSMM_ID()
                         && saveditems.get(i).getSMLI_ID() == box_item.getSMLI_ID() &&
-                    // TODO: 2019/12/3 扫描入库的判断是   if (boxItemEntityList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
-                    //                        return true;
-                    //                    }
+                        // TODO: 2019/12/3 扫描入库的判断是   if (boxItemEntityList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
+                        //                        return true;
+                        //                    }
 //                        saveditems.get(i).getLotID() == box_item.getLotID() ) {
                         saveditems.get(i).getLotID() == box_item.getLotID() && saveditems.get(i).getDIII_ID() == box_item.getDIII_ID()) {
                     return true;
@@ -452,10 +462,15 @@ public class StockCheckPartInvActivity extends BaseActivity {
     }
 
 
-    private void parseScanData(String result){
+    private void parseScanData(String result) {
         //// TODO: 2019/12/10 这块逻辑可优化
-        System.out.println("result = " + result);
         if (result.contains("/")) {
+            System.out.println("result = " + result);
+            if (!inventoryFileSelect) {
+                ToastUtil.showToastShort("请先选择盘点表！");
+                inputEditText.setText("");
+                return;
+            }
             String[] qrContent;
             qrContent = result.split("/");
             if (qrContent.length >= 2) {
@@ -463,12 +478,12 @@ public class StockCheckPartInvActivity extends BaseActivity {
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
-                        if (!istHasSelect){
+                        if (!istHasSelect) {
                             ToastUtil.showToastShort("请先扫描库位码！");
                             inputEditText.setText("");
                             return;
                         }
-
+                        scanstring = result;
                         AsyncGetInvBox task = new AsyncGetInvBox();
                         task.execute();
                     }
@@ -483,7 +498,8 @@ public class StockCheckPartInvActivity extends BaseActivity {
             }
         }
     }
-//    protected void ActivityResultScanIst(String result) {
+
+    //    protected void ActivityResultScanIst(String result) {
 ////        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 ////        String X = result.getContents();
 ////        String X = result;
@@ -548,7 +564,14 @@ public class StockCheckPartInvActivity extends BaseActivity {
         protected Void doInBackground(String... params) {
 
             BoxItemEntity bi = null;
-            if (Ac_Type == 1 && userInfo.getBu_ID() == 1) {
+            //// TODO: 2019/12/12 actype = 1 是零部件，2是成品 ，以下是原来代码注释掉
+//            if (Ac_Type == 1 && userInfo.getBu_ID() == 1) {
+//                bi = WebServiceUtil.op_Check_Stock_Item_Barcode(userInfo.getBu_ID(), scanstring);
+//            } else {
+//                bi = WebServiceUtil.op_Check_Stock_Item_Barcode_V2(scanstring);
+//            }
+
+            if (Ac_Type == 1 ) {
                 bi = WebServiceUtil.op_Check_Stock_Item_Barcode(userInfo.getBu_ID(), scanstring);
             } else {
                 bi = WebServiceUtil.op_Check_Stock_Item_Barcode_V2(scanstring);
@@ -568,14 +591,14 @@ public class StockCheckPartInvActivity extends BaseActivity {
 
             tvItemCode.setText(scanstring);
             if (scanresult != null) {
-                if (!scanresult.getResult() ) {
+                if (!scanresult.getResult()) {
                     Toast.makeText(StockCheckPartInvActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                     inputEditText.setText("");
                     return;
                 }
 
                 BoxItemEntity bi = scanresult;
-                if (bi.getResult() ) {
+                if (bi.getResult()) {
                     if (is_box_existed(bi)) {
                         CommonUtil.ShowToast(StockCheckPartInvActivity.this,
                                 "前面已经扫描过", R.mipmap.warning, Toast.LENGTH_SHORT);
@@ -630,13 +653,13 @@ public class StockCheckPartInvActivity extends BaseActivity {
         @Override
         protected Void doInBackground(String... params) {
             IstPlaceEntity istPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
-            if (istPlaceEntity.getResult() ) {
+            if (istPlaceEntity.getResult()) {
                 thePlace = istPlaceEntity;
                 //清空
                 scanitem = null;
             } else {
                 Toast.makeText(StockCheckPartInvActivity.this, istPlaceEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
-                inputEditText.setText("");
+
             }
 
             return null;
@@ -650,6 +673,8 @@ public class StockCheckPartInvActivity extends BaseActivity {
                 inputEditText.setText("");
                 inputEditText.setHint("请继续扫描");
                 istHasSelect = true;
+            } else {
+                inputEditText.setText("");
             }
 
             //pbScan.setVisibility(View.INVISIBLE);
@@ -701,7 +726,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            if (ws_result.getResult() ) {
+            if (ws_result.getResult()) {
                 CommonUtil.ShowToast(StockCheckPartInvActivity.this,
                         "提交成功", R.mipmap.smiley, Toast.LENGTH_SHORT);
 
