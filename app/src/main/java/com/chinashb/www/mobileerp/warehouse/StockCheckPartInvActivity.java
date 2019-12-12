@@ -18,7 +18,6 @@ import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
-import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
@@ -72,7 +71,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private EditText inputEditText;
 
     private int Ac_Type = 1;
-    private UserInfoEntity userInfo;
+//    private UserInfoEntity userInfo;
 
     private String qty = "";
     private String remark = "";
@@ -97,7 +96,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
         bindView();
         setButtonClick();
         getExtras();
-        userInfo = UserSingleton.get().getUserInfo();
+//        userInfo = UserSingleton.get().getUserInfo();
         saveditems = new ArrayList<>();
         resumestate(savedInstanceState);
 
@@ -572,7 +571,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //            }
 
             if (Ac_Type == 1 ) {
-                bi = WebServiceUtil.op_Check_Stock_Item_Barcode(userInfo.getBu_ID(), scanstring);
+                bi = WebServiceUtil.op_Check_Stock_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(), scanstring);
             } else {
                 bi = WebServiceUtil.op_Check_Stock_Item_Barcode_V2(scanstring);
             }
@@ -709,13 +708,14 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //            String DQ = etDQ.getText().toString();
 
 
-            if (Ac_Type == 1 && userInfo.getBu_ID() == 1) {
-                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(userInfo.getHR_Name(),
-                        CI_ID, userInfo.getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+            if (Ac_Type == 1 ) {
+                //todo  && userInfo.getBu_ID() == 1
+                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+                        CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
                         bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
 
             } else {
-                ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(userInfo.getHR_Name(),
+                ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
                         CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
                         bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
             }
