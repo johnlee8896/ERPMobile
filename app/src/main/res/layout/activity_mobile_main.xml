@@ -8,8 +8,8 @@
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:app_hide_back_image="true"
         app:app_title_text="SHB ERP 首页" />
+        <!--app:app_hide_back_image="true"-->
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
