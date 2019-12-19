@@ -4,23 +4,16 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chinashb.www.mobileerp.adapter.ProductWCListAdapter;
-import com.chinashb.www.mobileerp.adapter.WCListAdapter;
-import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
-import com.chinashb.www.mobileerp.basicobject.s_WCList;
 import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
-import com.chinashb.www.mobileerp.funs.OnItemClickListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
-import com.chinashb.www.mobileerp.utils.StaticVariableUtils;
-import com.chinashb.www.mobileerp.warehouse.SelectMPIWCStepOneActivity;
+import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -37,7 +30,8 @@ import butterknife.ButterKnife;
  */
 
 public class SelectProductWCListActivity extends BaseActivity {
-    @BindView(R.id.product_wc_recyclerView) RecyclerView recyclerView;
+    @BindView(R.id.product_wc_recyclerView) CustomRecyclerView recyclerView;
+
     private ProductWCListAdapter adapter;
     private ArrayList<WcIdNameEntity> wcIdNameEntityList;
 
@@ -48,6 +42,7 @@ public class SelectProductWCListActivity extends BaseActivity {
                     Intent intent = new Intent(SelectProductWCListActivity.this,ProductInNonTrayActivity.class);
                     intent.putExtra(IntentConstant.Intent_product_wc_id_name_entity,(WcIdNameEntity)t);
                     setResult(200,intent );
+                    finish();
                 }
             }
         }
@@ -59,6 +54,9 @@ public class SelectProductWCListActivity extends BaseActivity {
         ButterKnife.bind(this);
         adapter = new ProductWCListAdapter( onViewClickListener);
         recyclerView.setAdapter(adapter);
+
+        GetWCListsAsyncTask task = new GetWCListsAsyncTask();
+        task.execute();
     }
 
     private class GetWCListsAsyncTask extends AsyncTask<String, Void, Void> {
@@ -75,7 +73,7 @@ public class SelectProductWCListActivity extends BaseActivity {
                 us = gson.fromJson(jsonData, new TypeToken<List<WcIdNameEntity>>() {
                 }.getType());
                 wcIdNameEntityList = us;
-                adapter.setData(wcIdNameEntityList);
+//                adapter.setData(wcIdNameEntityList);
 
             }
 
@@ -85,6 +83,7 @@ public class SelectProductWCListActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Void result) {
+            adapter.setData(wcIdNameEntityList);
         }
 
         @Override

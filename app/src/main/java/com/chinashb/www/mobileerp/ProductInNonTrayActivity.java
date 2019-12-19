@@ -50,8 +50,10 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 200) {
-            wcIdNameEntity = data.getParcelableExtra(IntentConstant.Intent_product_wc_id_name_entity);
-            wcNameTextView.setText(wcIdNameEntity.getWcName());
+            if (data != null){
+                wcIdNameEntity = data.getParcelableExtra(IntentConstant.Intent_product_wc_id_name_entity);
+                wcNameTextView.setText(wcIdNameEntity.getWcName());
+            }
         }
     }
 
