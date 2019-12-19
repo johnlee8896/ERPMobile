@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50"
+        app:app_title_text="选择生产线"/>
+
+    <TextView
+        android:id="@+id/tv_wc_list_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="成品生产线" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/product_wc_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp"/>
+
+    <!--</LinearLayout>-->
+
+</LinearLayout>

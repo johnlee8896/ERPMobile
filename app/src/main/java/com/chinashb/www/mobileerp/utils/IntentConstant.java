@@ -1,5 +1,7 @@
 package com.chinashb.www.mobileerp.utils;
 
+import java.security.spec.PSSParameterSpec;
+
 /***
  * @date 创建时间 2019/6/19 9:50 AM
  * @author 作者: liweifeng
@@ -24,4 +26,7 @@ public class IntentConstant {
     public static String Intent_Part_middle_map= "Part_middle_map";
     public static String Intent_Part_middle_map_list= "Part_middle_map_list";
     public static String Intent_supplier_input_title= "supplier_input_title";
+
+
+    public static final String Intent_product_wc_id_name_entity = "product_wc_id_name_entity";
 }

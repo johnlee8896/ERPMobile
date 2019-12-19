@@ -32,7 +32,6 @@ public class CommonItemSearchAdapter<TY> extends BaseRecycleAdapter<TY, CommonIt
 
     @Override public void onBindViewHolder(CommonItemViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-        super.onBindViewHolder(holder, position);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
