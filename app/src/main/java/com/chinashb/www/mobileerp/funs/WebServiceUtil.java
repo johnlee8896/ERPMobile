@@ -478,6 +478,59 @@ public class WebServiceUtil {
         return box_item;
     }
 
+    //扫描入库，扫描物料码，来料码
+    public static BoxItemEntity op_Check_Commit_Product_Income_Barcode(String X) {
+        String webMethodName = "op_Check_Commit_Product_Income_Barcode";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("X");
+        propertyInfo.setValue(X);
+        propertyInfo.setType(String.class);
+        propertyInfos.add(propertyInfo);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        BoxItemEntity box_item = new BoxItemEntity();
+        if (obj != null) {
+            int count = obj.getPropertyCount();
+            SoapObject obj2;
+            for (int i = 0; i < count; i++) {
+                obj2 = (SoapObject) obj.getProperty(i);
+                box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                if (!box_item.getResult()) {
+                    box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                } else {
+                    box_item.setDIII_ID(Long.parseLong(obj2.getProperty("DIII_ID").toString()));
+                    box_item.setSMT_ID(Long.parseLong(obj2.getProperty("SMT_ID").toString()));
+                    box_item.setSMM_ID(Long.parseLong(obj2.getProperty("SMM_ID").toString()));
+                    box_item.setSMLI_ID(Long.parseLong(obj2.getProperty("SMLI_ID").toString()));
+                    box_item.setEntityID(Long.parseLong(obj2.getProperty("EntityID").toString()));
+                    box_item.setEntityName(obj2.getProperty("EntityName").toString());
+                    box_item.setLotID(Long.parseLong(obj2.getProperty("LotID").toString()));
+                    //// TODO: 2019/11/27 这里的lotNo 取的是DII里面的manulotNo
+                    box_item.setLotNo(obj2.getProperty("LotNo").toString());
+                    box_item.setItem_ID(Long.parseLong(obj2.getProperty("Item_ID").toString()));
+                    box_item.setIV_ID(Long.parseLong(obj2.getProperty("IV_ID").toString()));
+                    box_item.setItemName(obj2.getProperty("ItemName").toString());
+                    box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
+                    box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
+                    box_item.setBuName(obj2.getProperty("BuName").toString());
+                    box_item.setBoxName(obj2.getProperty("BoxName").toString());
+                    box_item.setBoxNo(obj2.getProperty("BoxNo").toString());
+
+                }
+
+                //int DataMemberCount = obj2.getPropertyCount();
+                //for (int j=0; j<DataMemberCount;j++){
+                //result.add(Boolean.parseBoolean(obj2.getProperty(j).toString()));
+                //}
+            }
+
+        }
+
+        return box_item;
+    }
+
     //解析获取库位
     //VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
     public static IstPlaceEntity op_Check_Commit_IST_Barcode(String scanContent) {

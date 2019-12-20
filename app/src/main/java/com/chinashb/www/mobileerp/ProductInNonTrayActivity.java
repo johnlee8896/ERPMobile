@@ -1,18 +1,39 @@
 package com.chinashb.www.mobileerp;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.adapter.InBoxItemAdapter;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.ProductNonTrayItemBean;
+import com.chinashb.www.mobileerp.bean.entity.WCSubProductEntity;
+import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
+import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.warehouse.StockInActivity;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,17 +55,30 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
 //    @BindView(R.id.product_non_tray_tv_qty_col) TextView TvQtyCol;
 //    @BindView(R.id.product_non_tray_tv_ist_name_col) TextView TvIstNameCol;
 //    @BindView(R.id.product_non_tray_tv_inv_in_selected) TextView TvInvInSelected;
-    @BindView(R.id.product_non_tray_recyclerView) RecyclerView recyclerView;
+    @BindView(R.id.product_non_tray_recyclerView) RecyclerView mRecyclerView;
     @BindView(R.id.product_non_tray_select_wc_button) Button selectWcButton;
     @BindView(R.id.product_non_tray_wc_name_textView) TextView wcNameTextView;
 
     private WcIdNameEntity wcIdNameEntity;
+    private String scanContent;
+    private List<WCSubProductEntity> subProductEntityList;
+    private List<WCSubProductItemEntity> subProductItemEntityList;
+    private WCSubProductEntity certainWCSubProductEntity;
+    private ItemProductNonTrayAdapter boxItemAdapter;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_in_no_tray_layout);
         ButterKnife.bind(this);
         setViewsListener();
+        initView();
+    }
+
+    private void initView() {
+        subProductItemEntityList = new ArrayList<>();
+        boxItemAdapter = new ItemProductNonTrayAdapter(this, subProductItemEntityList);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        mRecyclerView.setAdapter(boxItemAdapter);
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -53,8 +87,26 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
             if (data != null){
                 wcIdNameEntity = data.getParcelableExtra(IntentConstant.Intent_product_wc_id_name_entity);
                 wcNameTextView.setText(wcIdNameEntity.getWcName());
+                getProductItemList();
+
+            }
+        }else{
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (!TextUtils.isEmpty(result.getContents())) {
+                    parseContent(result.getContents());
+                }
+            } else {
+                // This is important, otherwise the result will not be passed to the fragment
+                super.onActivityResult(requestCode, resultCode, data);
             }
         }
+
+    }
+
+    private void getProductItemList() {
+        GetWCProductItemListsAsyncTask task = new GetWCProductItemListsAsyncTask();
+        task.execute();
     }
 
     private void setViewsListener() {
@@ -71,14 +123,90 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
     }
 
     private void parseContent(String content) {
+        certainWCSubProductEntity = null;
+            if (TextUtils.isEmpty(content)) {
+                return;
+            }
+            System.out.println("============ scan content = " + content);
+            // V5/B/54/PS/10475/L/191217/LQ/0/Qty/120
+            if (content.contains("/") ) {
+                String[] qrContent;
+                qrContent = content.split("/");
+                if (qrContent.length >= 2) {
+//                    String qrTitle = qrContent[0];
+//                    if (!qrTitle.equals("")) {
+//                        if (qrTitle.equals("V5")) {
+//                            //成品 物料码
+//                            scanContent = content;
+////                            GetProductItemQRCodeAsyncTask task = new GetProductItemQRCodeAsyncTask;
+////                            task.execute();
+//                            if (qrContent[1].startsWith("B")){
+//                                String BContent = qrContent[1].split("/")
+//                            }
+//                        }
+//                    }
+                    if (content.startsWith("V5")){
+                        int buId = Integer.parseInt(getParsedString(content,"/B/","/PS/"));
+                        if (buId == UserSingleton.get().getUserInfo().getBu_ID()){
+                           int psId =  Integer.parseInt(getParsedString(content,"/PS/","/L/"));
+                           String lotNo = getParsedString(content,"/L/","/LQ/");
+                           int qty = Integer.parseInt(getParsedString(content,"/Qty/",""));
+                           boolean hasThisItem = false;
+                           for (WCSubProductEntity entity : subProductEntityList){
+                               if (entity.getPsId() == psId){
+                                   hasThisItem = true;
+                                   certainWCSubProductEntity = entity;
+                                   WCSubProductItemEntity itemEntity = new WCSubProductItemEntity();
+                                   itemEntity.setWcSubProductEntity(entity);
+                                   itemEntity.setSelect(true);
+                                   itemEntity.setLotNo(lotNo);
+                                   itemEntity.setQty(qty);
+                                   itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
 
+                                   subProductItemEntityList.add(itemEntity);
+                                   boxItemAdapter = new ItemProductNonTrayAdapter(ProductInNonTrayActivity.this, subProductItemEntityList);
+                                   mRecyclerView.setAdapter(boxItemAdapter);
+                                   inputEditText.setText("");
+                                   //// TODO: 2019/12/20 去掉扫描枪几个字
+                                   inputEditText.setHint("请继续扫描");
+                                   break;
+                               }
+                           }
+                           if (!hasThisItem){
+                               ToastUtil.showToastShort("该产品不属于此产线！");
+                           }
+                        }else{
+                            ToastUtil.showToastShort("该物料码不属于本车间！");
+                            return;
+                        }
+                    }
+
+                    if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")  ) {
+                        //仓库位置码
+                        scanContent = content;
+//                        StockInActivity.GetIstAsyncTask task = new StockInActivity.GetIstAsyncTask();
+//                        task.execute();
+                    }
+                }
+            }
+    }
+
+    private String getParsedString(String code,String part,String nextPart){
+        if (!TextUtils.isEmpty(nextPart)){
+            int p = code.indexOf(part) + part.length();
+            int q = code.indexOf(nextPart);
+            return code.substring(p,q - p);
+        }else{
+            int p = code.indexOf(part) + part.length();
+            return code.substring(p,code.length() - p);
+        }
     }
 
     @Override public void onClick(View view) {
         if (view == selectWcButton) {
             getWCList();
         } else if (view == scanButton) {
-
+            new IntentIntegrator(this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
         } else if (view == scanAreaButton) {
 
         } else if (view == warehouseInButton) {
@@ -92,6 +220,46 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
     private void getWCList() {
         Intent intent = new Intent(this, SelectProductWCListActivity.class);
         startActivityForResult(intent, 200);
+    }
+
+
+    private class GetWCProductItemListsAsyncTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            //// TODO: 2019/12/20  注意这里的第二个参数%s有所修改
+            String sql = String.format("Select distinct Product.Item_ID As Item_ID,Ps_Version.IV_ID,Product.Product_ID,PS_Version.PS_ID," +
+                    "Product.Product_Chinese_Name As Product_Name," +
+                    "Product.Abb As Product_Common_Name,Ps_Version.PS_Version As Version,  Product.Product_Version As Newest_Version, " +
+                    " Case When Product.Audit=1 Then '' Else '未审' End As Approval_detail  " +
+                    "From Item Inner Join Product On Product.Item_ID=Item.Item_ID  Inner Join PS_Version On Product.Product_ID=Ps_Version.Product_ID " +
+                    "And PS_Version.Active=1  Left Join [P_PWC]  With (NoLock)  On [Item].[Item_ID]=[P_PWC].[Item_ID] " +
+                    " Where (Product.Bu_ID=%s Or Product.Bu_ID=%s)  And P_PWC.WC_ID=%s", UserSingleton.get().getUserInfo().getBu_ID(),UserSingleton.get().getUserInfo().getBu_ID()
+            ,wcIdNameEntity.getWcId());
+            WsResult result = WebServiceUtil.getDataTable(sql);
+            if (result != null && result.getResult()) {
+                String jsonData = result.getErrorInfo();
+                Gson gson = new Gson();
+                subProductEntityList = gson.fromJson(jsonData, new TypeToken<List<WCSubProductEntity>>() {
+                }.getType());
+            }
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
     }
 
 
