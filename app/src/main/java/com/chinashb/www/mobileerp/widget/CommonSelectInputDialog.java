@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.APP;
 import com.chinashb.www.mobileerp.R;
@@ -25,15 +26,16 @@ import butterknife.ButterKnife;
  * @description 选择或添加备注
  */
 
-public class DialogSelectAddRemarkDialog extends BaseDialog {
+public class CommonSelectInputDialog extends BaseDialog {
     @BindView(R.id.stock_out_more_remark_EditText) EditText remarkEditText;
     @BindView(R.id.dialog_select_remark_recyclerView) CustomRecyclerView recyclerView;
     @BindView(R.id.dialog_remark_confirm_Button) Button confirmButton;
     @BindView(R.id.dialog_remark_cancel_Button) Button cancelButton;
+    @BindView(R.id.dialog_remark_title_textView) TextView titleTextView;
     private OnViewClickListener onViewClickListener;
     private SelectUseAdapter adapter;
 
-    public DialogSelectAddRemarkDialog(@NonNull Context context) {
+    public CommonSelectInputDialog(@NonNull Context context) {
         super(context);
     }
 
@@ -54,13 +56,13 @@ public class DialogSelectAddRemarkDialog extends BaseDialog {
         }
         adapter.setData(useList);
 
-        cancelButton.setOnClickListener(v ->{
+        cancelButton.setOnClickListener(v -> {
             dismiss();
         });
 
-        confirmButton.setOnClickListener(v ->{
-            if (onViewClickListener != null){
-                onViewClickListener.onClickAction(v,null,remarkEditText.getText().toString());
+        confirmButton.setOnClickListener(v -> {
+            if (onViewClickListener != null) {
+                onViewClickListener.onClickAction(v, null, remarkEditText.getText().toString());
             }
 //            dismiss();
         });
@@ -83,6 +85,10 @@ public class DialogSelectAddRemarkDialog extends BaseDialog {
         getWindow().setLayout((int) (ScreenUtil.getScreenWidth() * 0.75),
                 WindowManager.LayoutParams.WRAP_CONTENT);
 
+    }
+
+    public void setTitle(String  title) {
+        titleTextView.setText(title);
     }
 
     public void setOnViewClickListener(OnViewClickListener onViewClickListener) {

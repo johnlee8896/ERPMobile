@@ -116,7 +116,7 @@ public class StockOutMoreActivity extends BaseActivity {
                 super.afterTextChanged(editable);
                 if (editable.toString().endsWith("\n")) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
-                    System.out.println("========================扫描结果:" + editable.toString());
+
 //                    parseScanResult(editable.toString());
                     AfterGetItemBarcode(editable.toString());
                 }
@@ -187,6 +187,7 @@ public class StockOutMoreActivity extends BaseActivity {
     }
 
     void AfterGetItemBarcode(String content) {
+        System.out.println("========================扫描结果:" + content);
         //简单分析判别错误条码
         if (content.contains("/")) {
             String[] qrContent;

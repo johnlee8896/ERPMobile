@@ -28,7 +28,7 @@ import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
-import com.chinashb.www.mobileerp.widget.DialogSelectAddRemarkDialog;
+import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -55,7 +55,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
     private IstPlaceEntity thePlace;
     private String scanstring;
     private String remark = "";
-    private DialogSelectAddRemarkDialog remarkDialog;
+    private CommonSelectInputDialog remarkDialog;
 
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override public <T> void onClickAction(View v, String tag, T t) {
@@ -117,7 +117,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
 
         btnRemark.setOnClickListener(v ->{
             if (remarkDialog == null){
-                remarkDialog = new DialogSelectAddRemarkDialog(StockOutMoreExtraActivity.this);
+                remarkDialog = new CommonSelectInputDialog(StockOutMoreExtraActivity.this);
             }
             remarkDialog.show();
             remarkDialog.setOnViewClickListener(onViewClickListener);

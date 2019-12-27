@@ -79,7 +79,24 @@
                 android:layout_marginLeft="20dp"
                 android:textColor="@color/color_blue_00AAEE" />
         </LinearLayout>
-
+        <Button
+            android:id="@+id/product_non_tray_select_NO_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:text="选择或输入入库单据" />
+        <TextView
+            android:id="@+id/product_non_tray_NO_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:layout_marginLeft="20dp"
+            tools:text="C-20191226-01"
+            android:textColor="@color/color_blue_00AAEE" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
