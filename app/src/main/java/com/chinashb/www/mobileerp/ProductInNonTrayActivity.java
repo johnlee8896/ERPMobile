@@ -26,7 +26,6 @@ import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
-import com.chinashb.www.mobileerp.warehouse.StockInActivity;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -211,14 +210,25 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
         }
     }
 
-    private String getParsedString(String code, String part, String nextPart) {
-        if (!TextUtils.isEmpty(nextPart)) {
+//    private String getParsedString(String code,String part,String nextPart){
+//        if (!TextUtils.isEmpty(nextPart)){
+//            int p = code.indexOf(part) + part.length();
+//            int q = code.indexOf(nextPart);
+//            return code.substring(p,q - p);
+//        }else{
+//            int p = code.indexOf(part) + part.length();
+//            return code.substring(p,code.length() - p);
+//        }
+//    }
+
+    private  String getParsedString(String code,String part,String nextPart){
+        if (!nextPart.isEmpty()){
             int p = code.indexOf(part) + part.length();
             int q = code.indexOf(nextPart);
-            return code.substring(p, q - p);
-        } else {
+            return code.substring(p,q );
+        }else{
             int p = code.indexOf(part) + part.length();
-            return code.substring(p, code.length() - p);
+            return code.substring(p);
         }
     }
 
