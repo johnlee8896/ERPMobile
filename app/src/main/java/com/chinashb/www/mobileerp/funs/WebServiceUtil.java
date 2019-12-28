@@ -15,6 +15,7 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
+import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.google.gson.Gson;
@@ -567,7 +568,7 @@ public class WebServiceUtil {
         return istPlace;
     }
 
-    //将物料入相应的库
+    //将物料入相应的库,零部件账
     public static WsResult op_Commit_DS_Item_Income_To_Warehouse(BoxItemEntity box_item) {
         String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -604,12 +605,45 @@ public class WebServiceUtil {
 //        propertyInfos.add(propertyInfo5);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-
         SoapObject obj = (SoapObject) envelope.bodyIn;
-
         WsResult ws_result = Get_WS_Result(obj);
+        return ws_result;
 
+    }
 
+    //将物料入相应的库,成品账
+    public static WsResult op_Commit_DS_Item_Income_To_Product_Warehouse(WCSubProductItemEntity box_item,long DIII_ID,long Ist_ID,long Sub_Ist_ID) {
+        String webMethodName = "op_Commit_DS_Item_Income_To_Product_Warehouse";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("SenderID");
+//        propertyInfo.setValue(UserInfoEntity.ID);
+        propertyInfo.setValue(UserSingleton.get().getHRID());
+        propertyInfo.setType(Integer.class);
+        propertyInfos.add(propertyInfo);
+
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("DIII_ID");
+//        propertyInfo2.setValue(box_item.getDIII_ID());
+        propertyInfo2.setValue(DIII_ID);
+        propertyInfo2.setType(Long.class);
+        propertyInfos.add(propertyInfo2);
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("Ist_ID");
+        propertyInfo3.setValue(Ist_ID);
+        propertyInfo3.setType(Long.class);
+        propertyInfos.add(propertyInfo3);
+
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("Sub_Ist_ID");
+        propertyInfo4.setValue(Sub_Ist_ID);
+        propertyInfo4.setType(Long.class);
+        propertyInfos.add(propertyInfo4);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult ws_result = Get_WS_Result(obj);
         return ws_result;
 
     }

@@ -13,12 +13,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.adapter.InBoxItemAdapter;
+import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductEntity;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
@@ -26,6 +29,7 @@ import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
+import com.chinashb.www.mobileerp.warehouse.StockInActivity;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -367,10 +371,124 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
             mRecyclerView.setAdapter(boxItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
             inputEditText.setText("");
-            ToastUtil.showToastShort("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
+            System.out.println("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + "id" + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
+//            ToastUtil.showToastShort("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
             //todo 直接执行入库登帐
-//            handleIntoWareHouse();
+            handleIntoWareHouse();
 
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+    private void handleIntoWareHouse() {
+        if (subProductItemEntityList.size() > 0) {
+            int selectedcount = 0;
+            for (int i = 0; i < subProductItemEntityList.size(); i++) {
+                if (subProductItemEntityList.get(i).isSelect()) {
+                    //// TODO: 2019/12/27
+//                    if (subProductItemEntityList.get(i).getIst_ID() == 0) {
+                    if (thePlace.getIst_ID() == 0) {
+//                            CommonUtil.ShowToast(StockInActivity.this, "还没有扫描库位", R.mipmap.warning, Toast.LENGTH_SHORT);
+                        ToastUtil.showToastLong("还没有扫描库位");
+                        return;
+                    }
+                    selectedcount++;
+                }
+
+            }
+            if (selectedcount > 0) {
+                ExeWarehouseProductInAsyncTask task = new ExeWarehouseProductInAsyncTask();
+                task.execute();
+            }
+
+        } else {
+            //// TODO: 2019/7/10  这里应控件按钮的可用性
+            ToastUtil.showToastShort("没有物品条码或仓库位置码没有成功，请重新扫描！");
+        }
+    }
+
+    private class ExeWarehouseProductInAsyncTask extends AsyncTask<String, Void, Void> {
+        WsResult ws_result;
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            List<WCSubProductItemEntity> SelectList;
+            SelectList = new ArrayList<>();
+
+            for (int i = 0; i < subProductItemEntityList.size(); i++) {
+                if (subProductItemEntityList.get(i).isSelect()) {
+                    SelectList.add(subProductItemEntityList.get(i));
+                }
+            }
+
+            int count = 0;
+            int selectedCount = SelectList.size();
+            while (count < selectedCount && SelectList.size() > 0) {
+                //todo  这里取的是0，验证多个是否成功
+                WCSubProductItemEntity boxItemEntity = SelectList.get(0);
+//                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo，SendToWarehouseTime) values (%d,%d,%d,%d,%d,%d,%d,%s,%s)",
+//                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",
+//                        boxItemEntity.getIst_ID() ,boxItemEntity.getSub_Ist_ID(),boxItemEntity.getItem_ID(),boxItemEntity.getIV_ID(),boxItemEntity.getLotID(),
+//                        UserSingleton.get().getUserInfo().getCompany_ID(),UserSingleton.get().getUserInfo().getBu_ID(),
+////                        !TextUtils.isEmpty(boxItemEntity.getManuLotNo()) ? boxItemEntity.getManuLotNo() : boxItemEntity.getLotNo());
+////                        boxItemEntity.getLotNo(),UnitFormatUtil.formatTimeToSecond(System.currentTimeMillis()));
+//                        boxItemEntity.getLotNo());
+
+//                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
+
+                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Product_Warehouse(boxItemEntity,0,thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
+                if (ws_result.getResult()) {
+                    //添加库位与manuLot的关联
+//                    addIstSubIstManuLotRelation(boxItemEntity);
+                    subProductItemEntityList.remove(boxItemEntity);
+                    SelectList.remove(boxItemEntity);
+                }
+
+                count++;
+            }
+
+            return null;
+        }
+
+//        private void addIstSubIstManuLotRelation(BoxItemEntity boxItemEntity) {
+//            if (boxItemEntity != null) {
+//                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",
+//                        boxItemEntity.getIst_ID() ,boxItemEntity.getSub_Ist_ID(),boxItemEntity.getItem_ID(),boxItemEntity.getIV_ID(),boxItemEntity.getLotID(),
+//                        UserSingleton.get().getUserAllInfoEntity().getCompanyID(),UserSingleton.get().getUserInfo().getBu_ID(),boxItemEntity.getManuLotNo());
+//
+//
+//            }
+//        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //tv.setText(fahren + "∞ F");
+
+            if (ws_result != null) {
+                if (!ws_result.getResult()) {
+                    //Toast.makeText(StockInActivity.this,ws_result.getErrorInfo(),Toast.LENGTH_LONG).show();
+                    CommonUtil.ShowToast(ProductInNonTrayActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
+
+                } else {
+                    //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
+                    CommonUtil.ShowToast(ProductInNonTrayActivity.this, "入库完成", R.mipmap.smiley);
+                }
+
+            }
+
+            boxItemAdapter = new ItemProductNonTrayAdapter(ProductInNonTrayActivity.this, subProductItemEntityList);
+            mRecyclerView.setAdapter(boxItemAdapter);
+            //pbScan.setVisibility(View.INVISIBLE);
         }
 
         @Override
