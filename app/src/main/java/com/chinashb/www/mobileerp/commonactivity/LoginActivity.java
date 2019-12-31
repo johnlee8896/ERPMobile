@@ -25,7 +25,7 @@ import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
-import com.chinashb.www.mobileerp.bean.entity.MESDataEntity;
+import com.chinashb.www.mobileerp.bean.entity.MESInnerDataEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
@@ -34,7 +34,6 @@ import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.upgrade.APPUpgradeManager;
 import com.chinashb.www.mobileerp.utils.FileUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
-import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.SPDefine;
 import com.chinashb.www.mobileerp.utils.StringConstantUtil;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -50,6 +49,7 @@ import static com.chinashb.www.mobileerp.funs.CommonUtil.userPictureMap;
 
 public class LoginActivity extends BaseActivity {
 
+    public static final Class<MESInnerDataEntity> CLASS_OF_T = MESInnerDataEntity.class;
     private EditText nameEditText;
     private EditText passwordEditText;
     private Button loginButton;
@@ -92,9 +92,8 @@ public class LoginActivity extends BaseActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                checkNamePwd();
-               GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
-               asyncTask.execute();
+                checkNamePwd();
+
             }
         });
 
@@ -369,28 +368,7 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private class GetMesDataAsyncTask extends AsyncTask<String, Void, String> {
 
-        @Override protected String doInBackground(String... strings) {
-            WsResult result =
-//            MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
-            WebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
-            return result.getErrorInfo();
-        }
-
-        @Override protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            System.out.println("=============================== result = " + result);
-            MESDataEntity mesDataEntity = JsonUtil.parseJsonToObject(result, MESDataEntity.class);
-
-            if (mesDataEntity.getCode() == 0){//表示成功
-                System.out.println(mesDataEntity.getCode());
-                System.out.println(mesDataEntity.getMessage().getItemID() + " " +mesDataEntity.getMessage().getItemUnit());
-            }else{
-                ToastUtil.showToastLong("接口请求数据错误！");
-            }
-        }
-    }
 
     private class CheckNameAndPasswordAsyncTask extends AsyncTask<String, Void, Void> {
         private WsResult wsResult = null;

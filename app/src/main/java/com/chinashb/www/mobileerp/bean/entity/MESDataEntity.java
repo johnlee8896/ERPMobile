@@ -16,8 +16,8 @@ public class MESDataEntity {
      */
 
     @SerializedName("Code") private int Code;
-//    @SerializedName("Message") private String Message;
-@SerializedName("Message") private MESInnerDataEntity Message;
+    @SerializedName("Message") private String Message;
+//@SerializedName("Message") private MESInnerDataEntity Message;
 
     public int getCode() {
         return Code;
@@ -27,19 +27,19 @@ public class MESDataEntity {
         this.Code = Code;
     }
 
-//    public String getMessage() {
-//        return Message;
-//    }
-//
-//    public void setMessage(String Message) {
-//        this.Message = Message;
-//    }
-
-    public MESInnerDataEntity getMessage() {
+    public String getMessage() {
         return Message;
     }
 
-    public void setMessage(MESInnerDataEntity message) {
-        Message = message;
+    public void setMessage(String Message) {
+        this.Message = Message;
     }
+//
+//    public MESInnerDataEntity getMessage() {
+//        return Message;
+//    }
+//
+//    public void setMessage(MESInnerDataEntity message) {
+//        Message = message;
+//    }
 }

@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.entity.MESDataEntity;
+import com.chinashb.www.mobileerp.bean.entity.MESInnerDataEntity;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductEntity;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
@@ -23,6 +25,7 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -236,6 +239,11 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
             int p = code.indexOf(part) + part.length();
             return code.substring(p);
         }
+    }
+
+    private void getMESData(){
+        GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
+        asyncTask.execute();
     }
 
     @Override public void onClick(View view) {
@@ -510,6 +518,33 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
         }
 
     }
+
+    private class GetMesDataAsyncTask extends AsyncTask<String, Void, String> {
+
+        @Override protected String doInBackground(String... strings) {
+            WsResult result =
+//            MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
+                    WebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
+            return result.getErrorInfo();
+        }
+
+        @Override protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            System.out.println("=============================== result = " + result);
+            MESDataEntity mesDataEntity = JsonUtil.parseJsonToObject(result, MESDataEntity.class);
+
+            if (mesDataEntity.getCode() == 0){//表示成功
+                System.out.println(mesDataEntity.getCode());
+                String tempJson = mesDataEntity.getMessage().replace("[","").replace("]","");
+                MESInnerDataEntity mesInnerDataEntity = JsonUtil.parseJsonToObject(tempJson, MESInnerDataEntity.class);
+                System.out.println("=============================== " + mesInnerDataEntity.getItemID() + " " +mesInnerDataEntity.getItemUnit());
+            }else{
+                ToastUtil.showToastLong("接口请求数据错误！");
+            }
+        }
+    }
+
+
 
 
 }
