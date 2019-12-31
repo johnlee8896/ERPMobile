@@ -13,8 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.chinashb.www.mobileerp.adapter.InBoxItemAdapter;
-import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductEntity;
@@ -29,7 +27,6 @@ import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
-import com.chinashb.www.mobileerp.warehouse.StockInActivity;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -127,7 +124,7 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
     }
 
     private void getProductItemList() {
-        GetWCProductItemListsAsyncTask task = new GetWCProductItemListsAsyncTask();
+        GetWCProductWorkListsAsyncTask task = new GetWCProductWorkListsAsyncTask();
         task.execute();
     }
 
@@ -168,7 +165,12 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
 //                            }
 //                        }
 //                    }
-                if (content.startsWith("V5")) {
+                if (content.startsWith("XH")){
+                    if (content.contains(",")){
+                        String cartNO = content.split(",")[0];
+
+                    }
+                }else if (content.startsWith("V5")) {
                     int buId = Integer.parseInt(getParsedString(content, "/B/", "/PS/"));
                     if (buId == UserSingleton.get().getUserInfo().getBu_ID()) {
                         int psId = Integer.parseInt(getParsedString(content, "/PS/", "/L/"));
@@ -302,7 +304,7 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
     }
 
 
-    private class GetWCProductItemListsAsyncTask extends AsyncTask<String, Void, Void> {
+    private class GetWCProductWorkListsAsyncTask extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String... params) {
@@ -339,6 +341,13 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
         protected void onProgressUpdate(Void... values) {
         }
 
+    }
+
+    private class ParseProductCartonAsyncTask extends AsyncTask<String, Void, Void> {
+
+        @Override protected Void doInBackground(String... strings) {
+            return null;
+        }
     }
 
     private class GetProductIstAsyncTask extends AsyncTask<String, Void, Void> {
