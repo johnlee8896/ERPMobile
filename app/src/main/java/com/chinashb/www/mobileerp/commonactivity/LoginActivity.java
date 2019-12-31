@@ -25,6 +25,7 @@ import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.entity.MESDataEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
@@ -33,6 +34,7 @@ import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.upgrade.APPUpgradeManager;
 import com.chinashb.www.mobileerp.utils.FileUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.SPDefine;
 import com.chinashb.www.mobileerp.utils.StringConstantUtil;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -379,7 +381,14 @@ public class LoginActivity extends BaseActivity {
         @Override protected void onPostExecute(String result) {
             super.onPostExecute(result);
             System.out.println("=============================== result = " + result);
-//            ToastUtil.showToastLong(result);
+            MESDataEntity mesDataEntity = JsonUtil.parseJsonToObject(result, MESDataEntity.class);
+
+            if (mesDataEntity.getCode() == 0){//表示成功
+                System.out.println(mesDataEntity.getCode());
+                System.out.println(mesDataEntity.getMessage().getItemID() + " " +mesDataEntity.getMessage().getItemUnit());
+            }else{
+                ToastUtil.showToastLong("接口请求数据错误！");
+            }
         }
     }
 
