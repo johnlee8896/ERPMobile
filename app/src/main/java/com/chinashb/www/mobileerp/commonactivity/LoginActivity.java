@@ -26,7 +26,6 @@ import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
-import com.chinashb.www.mobileerp.funs.MESWebServiceUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.SPSingleton;
@@ -371,7 +370,10 @@ public class LoginActivity extends BaseActivity {
     private class GetMesDataAsyncTask extends AsyncTask<String, Void, String> {
 
         @Override protected String doInBackground(String... strings) {
-           return MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
+            WsResult result =
+//            MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
+            WebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
+            return result.getErrorInfo();
         }
 
         @Override protected void onPostExecute(String result) {

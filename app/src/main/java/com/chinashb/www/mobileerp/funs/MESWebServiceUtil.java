@@ -3,6 +3,7 @@ package com.chinashb.www.mobileerp.funs;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 
 import org.ksoap2.SoapEnvelope;
+import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.MarshalDate;
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
@@ -18,38 +19,60 @@ import java.util.ArrayList;
  */
 
 public class MESWebServiceUtil {
-    public static final String IP = "http://223.244.235.164";
+    //    public static final String IP = "http://223.244.235.164";
+    public static final String IP = "http://116.236.16.218";
     private static String NAMESPACE = "http://tempuri.org/";
-    private static String SOAP_ACTION = "http://tempuri.org/WebService/";
-//    private static String URL = IP + ":8001/Service.svc";
-    private static String URL = IP + ":8001/WebService.svc";
+    //    private static String SOAP_ACTION = "http://tempuri.org/MES_Service/";
+//    private static String SOAP_ACTION = "http://tempuri.org/WebService/";
+    private static String SOAP_ACTION = "http://tempuri.org/IService/";
+    //    private static String SOAP_ACTION = "http://tempuri.org/WebService?wsdl";
+//    private static String SOAP_ACTION = "http://tempuri.org/";
+//    private static String SOAP_ACTION = "http://tempuri.org/GetSaveFinishedProductCodeDataByMes";
+    private static String URL = IP + ":8001/Service.svc";
+//    private static String URL = IP + ":8001/WebService.asmx";
 
-    public static String GetSaveFinishedProductCodeDataByMes(String carton) {
+    public static WsResult GetSaveFinishedProductCodeDataByMes(String carton) {
         String webMethodName = "GetSaveFinishedProductCodeDataByMes";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
-        AddPrpertyInfo(propertyInfos, "cartonNo", carton);
+//        AddPrpertyInfo(propertyInfos, "cartonNo", carton);
+        AddPrpertyInfo(propertyInfos, "productCode", carton);
+//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+//        String result = null;
+//        SoapObject obj = (SoapObject) envelope.bodyIn;
+//        if (envelope.bodyIn != null){
+//            if (envelope.bodyIn instanceof SoapFault){
+//                result = ((SoapFault)envelope.bodyIn).faultstring;
+//            }else if (envelope.bodyIn instanceof SoapObject) {
+//                SoapObject obj = (SoapObject) envelope.bodyIn;
+//            }
+//        }
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-        SoapObject obj = (SoapObject) envelope.bodyIn;
-        String result = null;
-        result = obj.toString();
+        WsResult result = new WsResult();
+        String resultString ;
+        if (envelope.bodyIn != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                resultString = ((SoapFault) envelope.bodyIn).faultstring;
+                result.setResult(true);
+                result.setErrorInfo(resultString);
+            } else if (envelope.bodyIn instanceof SoapObject) {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                int count = obj.getPropertyCount();
+                SoapObject obj2 = (SoapObject) obj.getProperty(0);
+                result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+            }
+        }
+//        SoapObject obj = (SoapObject) envelope.bodyIn;
 //        if (obj != null) {
 //            int count = obj.getPropertyCount();
-//            SoapObject obj2;
-//            for (int i = 0; i < count; i++) {
-//                obj2 = (SoapObject) obj.getProperty(i);
-//                result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-//                if (!result.getResult()) {
-//                    result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
-//                } else {
-//                    result.setID(Long.parseLong(obj2.getProperty("ID").toString()));
-//                }
-//            }
+//            SoapObject obj2 = (SoapObject) obj.getProperty(0);
+//            result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+//            result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
 //
-//        } else {
-//            result.setResult(false);
-//            result.setErrorInfo("无法访问服务器，请检查网络连接是否正常");
 //        }
+
+//        return result;
         return result;
     }
 
@@ -97,5 +120,49 @@ public class MESWebServiceUtil {
         propertyInfo.setType(value.getClass());
         return propertyInfo;
     }
+
+//    public static String getService(String user) {
+//        java.net.URL url = null;
+//        try {
+//            url = new URL(
+//                    "http://192.168.0.100:8080/ca3/services/caSynrochnized");
+//        } catch (MalformedURLException mue) {
+//            return mue.getMessage();
+//        }
+//        // This is the main SOAP object
+//        Call soapCall = new Call();
+//        // Use SOAP encoding
+//        soapCall.setEncodingStyleURI(Constants.NS_URI_SOAP_ENC);
+//        // This is the remote object we're asking for the price
+//        soapCall.setTargetObjectURI("urn:xmethods-caSynrochnized");
+//        // This is the name of the method on the above object
+//        soapCall.setMethodName("getUser");
+//        // We need to send the ISBN number as an input parameter to the method
+//        Vector soapParams = new Vector();
+//
+//        // name, type, value, encoding style
+//        Parameter isbnParam = new Parameter("userName", String.class, user,
+//                null);
+//        soapParams.addElement(isbnParam);
+//        soapCall.setParams(soapParams);
+//        try {
+//            // Invoke the remote method on the object
+//            Response soapResponse = soapCall.invoke(url, "");
+//            // Check to see if there is an error, return "N/A"
+//            if (soapResponse.generatedFault()) {
+//                Fault fault = soapResponse.getFault();
+//                String f = fault.getFaultString();
+//                return f;
+//            } else {
+//                // read result
+//                Parameter soapResult = soapResponse.getReturnValue();
+//                // get a string from the result
+//                return soapResult.getValue().toString();
+//            }
+//        } catch (SOAPException se) {
+//            return se.getMessage();
+//        }
+//    }
+
 
 }
