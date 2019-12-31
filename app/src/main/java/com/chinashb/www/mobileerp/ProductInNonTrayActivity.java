@@ -37,6 +37,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -87,6 +88,7 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
         }
     };
     private String remark;
+    private String listNo;//单据号
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +143,13 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 parseContent(editable.toString());
+            }
+        });
+
+        NOTextView.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                listNo = editable.toString();
             }
         });
     }
@@ -254,11 +263,13 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
         } else if (view == scanAreaButton) {
             handleScanArea();
         } else if (view == warehouseInButton) {
+            handleIntoWareHouse();
             wcNameTextView.setText("");
 //            subProductItemEntityList = new ArrayList<>()
             if (subProductItemEntityList != null && subProductItemEntityList.size() > 0) {
                 subProductItemEntityList.clear();
             }
+
         } else if (view == selectNOButton) {
             handleSelectNO();
         }
@@ -463,7 +474,10 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
 
 //                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
 
-                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Product_Warehouse(boxItemEntity,0,thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
+                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
+                        listNo,new Date(),"李伟锋成品入库测试",
+                        13269,"lwf",
+                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
                 if (ws_result.getResult()) {
                     //添加库位与manuLot的关联
 //                    addIstSubIstManuLotRelation(boxItemEntity);
