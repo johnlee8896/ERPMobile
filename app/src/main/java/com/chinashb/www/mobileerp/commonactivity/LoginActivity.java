@@ -3,17 +3,11 @@ package com.chinashb.www.mobileerp.commonactivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +26,7 @@ import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.MESWebServiceUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.SPSingleton;
@@ -96,7 +91,9 @@ public class LoginActivity extends BaseActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checkNamePwd();
+//                checkNamePwd();
+               GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
+               asyncTask.execute();
             }
         });
 
@@ -368,6 +365,19 @@ public class LoginActivity extends BaseActivity {
 //            String password = passwordEditText.getText().toString();
             CheckNameAndPasswordAsyncTask task = new CheckNameAndPasswordAsyncTask();
             task.execute(nameEditText.getText().toString(), passwordEditText.getText().toString());
+        }
+    }
+
+    private class GetMesDataAsyncTask extends AsyncTask<String, Void, String> {
+
+        @Override protected String doInBackground(String... strings) {
+           return MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
+        }
+
+        @Override protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            System.out.println("=============================== result = " + result);
+//            ToastUtil.showToastLong(result);
         }
     }
 
