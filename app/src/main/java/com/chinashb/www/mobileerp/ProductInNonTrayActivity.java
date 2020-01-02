@@ -478,11 +478,14 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
                         listNo,new Date(),"李伟锋成品入库测试",
                         13269,"lwf",
                         thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
-                if (ws_result.getResult()) {
+                if (ws_result != null && ws_result.getResult()) {
                     //添加库位与manuLot的关联
 //                    addIstSubIstManuLotRelation(boxItemEntity);
                     subProductItemEntityList.remove(boxItemEntity);
                     SelectList.remove(boxItemEntity);
+                }else{
+//                    ToastUtil.showToastLong("入库失败！");
+                    System.out.println("==========================入库失败！");
                 }
 
                 count++;

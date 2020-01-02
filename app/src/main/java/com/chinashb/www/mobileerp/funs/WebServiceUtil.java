@@ -641,6 +641,7 @@ public class WebServiceUtil {
     public static WsResult op_Product_Manu_In_Not_Pallet(WcIdNameEntity wcIdNameEntity,WCSubProductItemEntity subProductItemEntity, Date InDate, String RecordNo,
                                                         Date ManuDate,String Remark,int Recorder,String RecorderName,
                                                         long Ist_ID, long Sub_Ist_ID) {
+System.out.println("================================" + UserSingleton.get().getHRID());
 
         String webMethodName = "op_Product_Manu_In_Not_Pallet";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -650,6 +651,7 @@ public class WebServiceUtil {
         propertyInfo1.setValue(UserSingleton.get().getHRID());
         propertyInfo1.setType(Integer.class);
         propertyInfos.add(propertyInfo1);
+        System.out.println("================================Bu_ID = " + UserSingleton.get().getHRID());
 
         //// TODO: 2019/12/31 indate
         PropertyInfo propertyInfo2 = new PropertyInfo();
@@ -657,6 +659,7 @@ public class WebServiceUtil {
         propertyInfo2.setValue(InDate);
         propertyInfo2.setType(Date.class);
         propertyInfos.add(propertyInfo2);
+        System.out.println("================================InDate = " + InDate.toString());
 
         PropertyInfo propertyInfo3 = new PropertyInfo();
         propertyInfo3.setName("RecordNo");
@@ -664,48 +667,57 @@ public class WebServiceUtil {
         propertyInfo3.setType(Integer.class);
         propertyInfos.add(propertyInfo3);
 
+        System.out.println("================================RecordNo = " + RecordNo);
+
         //// TODO: 2019/12/31 wc_id  ?
         PropertyInfo propertyInfo4 = new PropertyInfo();
         propertyInfo4.setName("WC_ID");
         propertyInfo4.setValue(wcIdNameEntity.getWcId());
         propertyInfo4.setType(Long.class);
         propertyInfos.add(propertyInfo4);
+        System.out.println("================================WC_ID = " + wcIdNameEntity.getWcId());
 
         PropertyInfo propertyInfo5 = new PropertyInfo();
         propertyInfo5.setName("WC_Name");
         propertyInfo5.setValue(wcIdNameEntity.getWcName());
         propertyInfo5.setType(String.class);
         propertyInfos.add(propertyInfo5);
+        System.out.println("================================WC_Name = " + wcIdNameEntity.getWcName());
 
         PropertyInfo propertyInfo6 = new PropertyInfo();
         propertyInfo6.setName("PS_ID");
         propertyInfo6.setValue(subProductItemEntity.getWcSubProductEntity().getPsId());
         propertyInfo6.setType(Long.class);
         propertyInfos.add(propertyInfo6);
+        System.out.println("================================PS_ID = " + subProductItemEntity.getWcSubProductEntity().getPsId());
 
         PropertyInfo propertyInfo7 = new PropertyInfo();
         propertyInfo7.setName("Product_ID");
         propertyInfo7.setValue(subProductItemEntity.getWcSubProductEntity().getProductId());
         propertyInfo7.setType(Long.class);
         propertyInfos.add(propertyInfo7);
+        System.out.println("================================Product_ID = " + subProductItemEntity.getWcSubProductEntity().getProductId());
 
         PropertyInfo propertyInfo8 = new PropertyInfo();
         propertyInfo8.setName("Item_ID");
         propertyInfo8.setValue(subProductItemEntity.getWcSubProductEntity().getItemId());
         propertyInfo8.setType(Long.class);
         propertyInfos.add(propertyInfo8);
+        System.out.println("================================Item_ID = " + subProductItemEntity.getWcSubProductEntity().getItemId());
 
         PropertyInfo propertyInfo9 = new PropertyInfo();
         propertyInfo9.setName("IV_ID");
         propertyInfo9.setValue(subProductItemEntity.getWcSubProductEntity().getIvId());
         propertyInfo9.setType(Long.class);
         propertyInfos.add(propertyInfo9);
+        System.out.println("================================IV_ID = " + subProductItemEntity.getWcSubProductEntity().getIvId());
 
         PropertyInfo propertyInfo10 = new PropertyInfo();
         propertyInfo10.setName("InQty");
         propertyInfo10.setValue(subProductItemEntity.getQty());
         propertyInfo10.setType(Double.class);
         propertyInfos.add(propertyInfo10);
+        System.out.println("================================InQty = " + subProductItemEntity.getQty());
 
 //        ManuLotNo As String, ManuDate As Date,
         // Ist_ID As Long, Remark As String, Recorder As Integer, RecorderName As String
@@ -714,6 +726,7 @@ public class WebServiceUtil {
         propertyInfo11.setValue(subProductItemEntity.getLotNo());
         propertyInfo11.setType(String.class);
         propertyInfos.add(propertyInfo11);
+        System.out.println("================================ManuLotNo = " + subProductItemEntity.getLotNo());
 
         //// TODO: 2019/12/31 manuDate
         PropertyInfo propertyInfo12 = new PropertyInfo();
@@ -721,32 +734,39 @@ public class WebServiceUtil {
         propertyInfo12.setValue(ManuDate);
         propertyInfo12.setType(Date.class);
         propertyInfos.add(propertyInfo12);
+        System.out.println("================================ManuDate = " + ManuDate);
 
         PropertyInfo propertyInfo13 = new PropertyInfo();
         propertyInfo13.setName("Ist_ID");
         propertyInfo13.setValue(Ist_ID);
         propertyInfo13.setType(Long.class);
         propertyInfos.add(propertyInfo13);
+        System.out.println("================================Ist_ID = " + Ist_ID);
 
         PropertyInfo propertyInfo14 = new PropertyInfo();
         propertyInfo14.setName("Remark");
         propertyInfo14.setValue(Remark);
         propertyInfo14.setType(String.class);
         propertyInfos.add(propertyInfo14);
+        System.out.println("================================Remark = " + Remark);
 
         PropertyInfo propertyInfo15 = new PropertyInfo();
         propertyInfo15.setName("Recorder");
         propertyInfo15.setValue(Recorder);
         propertyInfo15.setType(Integer.class);
         propertyInfos.add(propertyInfo15);
+        System.out.println("================================Recorder = " + Recorder);
 
         PropertyInfo propertyInfo16 = new PropertyInfo();
         propertyInfo16.setName("RecorderName");
         propertyInfo16.setValue(RecorderName);
         propertyInfo16.setType(String.class);
         propertyInfos.add(propertyInfo16);
+        System.out.println("================================RecorderName = " + RecorderName);
 
-        WsResult ws_result = null;
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult ws_result = Get_WS_Result(obj);
         return ws_result;
     }
 
