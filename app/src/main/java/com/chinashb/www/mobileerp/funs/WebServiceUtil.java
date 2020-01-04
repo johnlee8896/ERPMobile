@@ -1150,6 +1150,11 @@ System.out.println("================================" + UserSingleton.get().getH
         AddPrpertyInfo(propertyInfos, "Qty", Qty);
         AddPrpertyInfo(propertyInfos, "Remark", remark);
 
+        System.out.println("op_Commit_MW_New_Issue_Extra_Item MW_ID = " + MW_ID + " Exer=" + Sender + " item_id = " + Item_ID + " IV_ID=" + IV_ID);
+        System.out.println("op_Commit_MW_New_Issue_Extra_Item LotID = " + LotID  + " LotNo=" + LotNo + " Ist_ID=" + Ist_ID);
+        System.out.println("op_Commit_MW_New_Issue_Extra_Item Sub_Ist_ID = " + Sub_Ist_ID + " SMLI_ID = " + SMLI_ID + " SMM_ID=" + SMM_ID);
+        System.out.println("op_Commit_MW_New_Issue_Extra_Item SMT_ID = " + SMT_ID + " Qty = " + Qty + " Remark=" + remark);
+
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 

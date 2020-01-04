@@ -51,6 +51,14 @@
         <activity android:name=".warehouse.WarehouseStockQueryActivity" />
 
 
+        <!--发货指令页面-->
+        <activity android:name=".DeliveryOrderActivity"
+            android:screenOrientation="portrait"/>
+
+        <!--成品出库页面-->
+        <activity android:name=".ProductOutActivity"
+            android:screenOrientation="portrait"/>
+
         <!--成品产线选择页面-->
         <activity android:name=".SelectProductWCListActivity"
             android:screenOrientation="portrait"/>

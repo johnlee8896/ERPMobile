@@ -41,6 +41,8 @@ public final class UnitFormatUtil {
     public static  SimpleDateFormat sdf_YMDH = new SimpleDateFormat("yyyy年MM月dd日 HH点");
     public static SimpleDateFormat sdf_HMS = new SimpleDateFormat("HH:mm:ss");
 
+    public static final int ONE_DAY_TIME_IN_MILL_SECOND = 86400000;
+
     private static class UtilHelper {
 //        private static SimpleDateFormat sdf_YMDHM = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 //        private static SimpleDateFormat sdf_YMDHMS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

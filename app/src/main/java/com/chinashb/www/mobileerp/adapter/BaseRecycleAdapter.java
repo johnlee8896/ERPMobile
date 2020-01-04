@@ -49,6 +49,18 @@ public abstract class BaseRecycleAdapter<T, VH extends BaseViewHolder> extends R
         notifyDataSetChanged();
     }
 
+    //添加一条数据,并清掉原来的数据
+    public void setOneData(T t) {
+        if (dataList == null) {
+            dataList = new ArrayList<>();
+        }
+        if (dataList != null && dataList.size() > 0){
+            dataList.clear();
+        }
+        dataList.add(t);
+        notifyDataSetChanged();
+    }
+
     //设置数据源
     public void setData(List<T> list) {
         this.dataList = list;

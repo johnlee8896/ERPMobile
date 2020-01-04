@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="选择发货指令" />
+    <!--app:app_hide_back_image="true"-->
+
+    <!--<android.support.v4.widget.NestedScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_marginTop="@dimen/dimen_size_10">-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/dimen_size_10">
+
+
+        <TextView
+            android:id="@+id/delivery_order_week_ago_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_5"
+            android:layout_weight="1"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="前一周" />
+
+        <!--<TextView-->
+        <!--android:id="@+id/main_warehouse_manage_button"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!-- android:layout_marginLeft="@dimen/dimen_size_5"-->
+        <!--android:layout_marginTop="@dimen/dimen_size_15"-->
+        <!--  android:layout_marginRight="@dimen/dimen_size_5"-->
+        <!--android:background="@drawable/shape_conner_blue_button_bg"-->
+        <!--android:gravity="center"-->
+        <!--android:text="仓库管理" />-->
+
+
+        <TextView
+            android:id="@+id/delivery_order_before_yesterday_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_5"
+            android:layout_weight="1"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="前天" />
+
+        <TextView
+            android:id="@+id/delivery_order_yesterday_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_5"
+            android:layout_weight="1"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="昨天" />
+
+        <TextView
+            android:id="@+id/delivery_order_today_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_5"
+            android:layout_weight="1"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="今天" />
+
+        <TextView
+            android:id="@+id/delivery_order_tomorrow_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_5"
+            android:layout_weight="1"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="明天" />
+
+    </LinearLayout>
+
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/delivery_order_customRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_5"
+        android:layout_marginRight="@dimen/dimen_size_5"
+        android:scrollbars="vertical"
+        app:app_item_decoration_type="ITEM_SPACE"
+        app:app_layout_style="list_vertical"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_delivery_order_layout" />
+    <!--</android.support.v4.widget.NestedScrollView>-->
+
+
+</LinearLayout>

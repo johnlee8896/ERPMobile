@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_size_5"
+    android:padding="@dimen/dimen_size_10"
+    android:background="@drawable/shape_white_conner_bg"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/plan_list_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="跟踪号"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/item_order_track_NO_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:clickable="false"
+            android:padding="2dp"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            tools:text="GN20191213" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:gravity="center"
+            android:text="精确到时"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/item_order_is_time_accurate_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_15"
+            android:clickable="false"
+            android:padding="2dp"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            tools:text="否" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="出厂日期"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/item_order_delivery_time_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_15"
+            android:clickable="false"
+            android:padding="2dp"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            tools:text="2020-01-03 00:00:00.000" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="到达日期"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/item_order_arrive_time_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_15"
+            android:clickable="false"
+            android:padding="2dp"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            tools:text="2020-01-03 00:00:00.000" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="客户"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/item_order_customer_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_15"
+            android:clickable="false"
+            android:ellipsize="end"
+            android:padding="2dp"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            tools:text="重庆长安汽车股份有限公司北京长安汽车公司" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="接收信息"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/item_order_receive_message_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_15"
+            android:clickable="false"
+            android:ellipsize="end"
+            android:padding="2dp"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            tools:text="广州市番禺区化龙镇复苏村教口街20号 靳义庆 15814555799" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="特殊说明"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/item_order_special_remark_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_15"
+            android:clickable="false"
+            android:ellipsize="end"
+            android:padding="2dp"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            tools:text="哈哈" />
+
+    </LinearLayout>
+    <!--<TextView-->
+    <!--android:id="@+id/plan_list_plan_detail_textView"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="@dimen/dimen_size_10"-->
+    <!--android:textSize="17sp"-->
+    <!--tools:text="生产线分组生产线分组生产线分组生产线分组生产线分组" />-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/plan_list_remark_textView"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginTop="@dimen/dimen_size_10"-->
+    <!--android:clickable="false"-->
+    <!--android:padding="2dp"-->
+    <!--android:textSize="17sp"-->
+    <!--tools:text="备注" />-->
+</LinearLayout>
+

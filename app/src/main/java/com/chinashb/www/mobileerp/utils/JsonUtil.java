@@ -1,11 +1,14 @@
 package com.chinashb.www.mobileerp.utils;
 
 
+import com.chinashb.www.mobileerp.bean.DeliveryOrderBean;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 /***
  *@date 创建时间 2018/3/21 14:07
@@ -33,5 +36,6 @@ public class JsonUtil {
     public static <T> String objectToJson(T t) {
         return getGson().toJson(t);
     }
+
 
 }

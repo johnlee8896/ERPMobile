@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.warehouse.StockDepartmentInActivity;
 
@@ -29,6 +30,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.pb_scan_progressbar) ProgressBar pbScanProgressbar;
     @BindView(R.id.fab_test_tcp_net) FloatingActionButton fabTestTcpNet;
     @BindView(R.id.product_department_in_button) Button departmentInButton;
+    @BindView(R.id.product_main_out_textView) TextView outTextView;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,13 +47,14 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         sendGoodsTrayButton.setOnClickListener(this);
         sendGoodsNonTrayButton.setOnClickListener(this);
         departmentInButton.setOnClickListener(this);
+        outTextView.setOnClickListener(this);
     }
 
     @Override public void onClick(View v) {
         if (v == scanIntoTrayButton) {
 
         } else if (v == scanIntoNonTrayButton) {
-            Intent intent = new Intent(this,ProductInNonTrayActivity.class);
+            Intent intent = new Intent(this, ProductInNonTrayActivity.class);
             startActivity(intent);
         } else if (v == sendGoodsTrayButton) {
 
@@ -59,9 +62,12 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
 
         } else if (v == sendGoodsCommandButton) {
 
-        } else if (v == departmentInButton){
+        } else if (v == departmentInButton) {
             Intent intent = new Intent(this, StockDepartmentInActivity.class);
             //// TODO: 2019/9/6 区分是成品还是零件 
+            startActivity(intent);
+        }else if (v == outTextView){
+            Intent intent = new Intent(this,ProductOutActivity.class);
             startActivity(intent);
         }
     }
