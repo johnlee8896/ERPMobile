@@ -308,6 +308,16 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         @Override
         protected Void doInBackground(String... params) {
             BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanContent);
+            
+            //// TODO: 2020/1/9 这里先处理，为避免因供应商选错，而导致入错账的问题
+            if (boxItemEntity != null ){
+                //如果来料里设置的公司与该操作员的公司不符
+                if (boxItemEntity.getBu_ID() != UserSingleton.get().getUserInfo().getBu_ID()){
+                    ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
+                    return null;
+                }
+            }
+
             scanBoxItemEntity = boxItemEntity;
             if (boxItemEntity.getResult()) {
                 if (!is_box_existed(boxItemEntity)) {
