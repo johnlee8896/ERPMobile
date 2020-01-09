@@ -385,7 +385,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
                 //// TODO: 2020/1/9 这里先处理，为避免因供应商选错，而导致入错账的问题
 //                if (boxItemEntity != null) {
                 //如果来料里设置的公司与该操作员的公司不符
-                if (boxItemEntity.getBu_ID() != UserSingleton.get().getUserInfo().getBu_ID()) {
+                //再加一个判断 boxItemEntity.getBu_ID()==0 表示解析出错
+                if (boxItemEntity.getBu_ID() != 0 && boxItemEntity.getBu_ID() != UserSingleton.get().getUserInfo().getBu_ID()) {
 //                    ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
                     Message message = new Message();
                     message.what = 0;
