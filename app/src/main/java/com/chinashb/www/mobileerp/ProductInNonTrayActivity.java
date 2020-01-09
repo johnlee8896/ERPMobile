@@ -189,6 +189,9 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
                         String lotNo = getParsedString(content, "/L/", "/LQ/");
                         int qty = Integer.parseInt(getParsedString(content, "/Qty/", ""));
                         boolean hasThisItem = false;
+                        if (subProductItemEntityList == null ){
+                            return;
+                        }
                         for (WCSubProductEntity entity : subProductEntityList) {
                             if (entity.getPsId() == psId) {
                                 hasThisItem = true;
@@ -474,19 +477,25 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
 
 //                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
 
+//                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
+//                        listNo,"李伟锋成品入库测试",
+//                        13269,"lwf",
+//                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
+
                 ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
-                        listNo,new Date(),"李伟锋成品入库测试",
+                        listNo,new Date() ,"李伟锋成品入库测试",
                         13269,"lwf",
-                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
-                if (ws_result != null && ws_result.getResult()) {
+                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),boxItemEntity.getQty());
+                if (ws_result.getResult()) {
                     //添加库位与manuLot的关联
 //                    addIstSubIstManuLotRelation(boxItemEntity);
                     subProductItemEntityList.remove(boxItemEntity);
                     SelectList.remove(boxItemEntity);
-                }else{
-//                    ToastUtil.showToastLong("入库失败！");
-                    System.out.println("==========================入库失败！");
                 }
+//                else{
+////                    ToastUtil.showToastLong("入库失败！");
+//                    System.out.println("==========================入库失败！");
+//                }
 
                 count++;
             }
@@ -515,7 +524,7 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
 
                 } else {
                     //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(ProductInNonTrayActivity.this, "入库完成", R.mipmap.smiley);
+                    CommonUtil.ShowToast(ProductInNonTrayActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
                 }
 
             }

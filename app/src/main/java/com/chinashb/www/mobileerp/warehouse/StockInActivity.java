@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -44,25 +46,57 @@ import java.util.List;
  * 扫描入库
  */
 public class StockInActivity extends BaseActivity implements View.OnClickListener {
+    BroadcastReceiver mFoundReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            //找到设备
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                // 添加进一个设备列表，进行显示。
+                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+//                    Log.v(TAG, "find device:" + device.getName() + device.getAddress());
+                }
+            }
+            //搜索完成
+            else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+//                cancelDiscovery();
+            }
+        }
+    };
     private Button addTrayScannerButton;
     private Button addTrayPhotoButton;
     private Button scanAreaButton;
     //    private Button stockInButton;
 //    private Button btnStartMoving;
     private Button warehouseInButton;
-
     private RecyclerView mRecyclerView;
     private EditText inputEditText;
-
     private InBoxItemAdapter boxItemAdapter;
     private List<BoxItemEntity> boxItemEntityList = new ArrayList<>();
     private IstPlaceEntity thePlace;
     private String scanContent;
-
     private ScanInputDialog inputDialog;
     private RelativeLayout switchLayout;
     private Switch stockSwitch;
     private boolean isOpenSuggestStock = false;
+    //// TODO: 2020/1/9 以后要优化，暂时先解决Can't toast on a thread that has not called Looper.prepare() 的问题
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0) {
+                ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
+            } else if (msg.what == 1) {
+//                ToastUtil.showToastLong("建议仓库存放:" + boxItemEntity.getIstName());
+                Bundle bundle = msg.getData();
+                if (bundle != null) {
+                    ToastUtil.showToastLong("建议仓库存放:" + bundle.getString("suggest_ist"));
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,13 +126,24 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
     }
 
+    @Override
+    protected void onResume() {
+        //设置为竖屏
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+        super.onResume();
+    }
+
     private void setViewsListener() {
         addTrayScannerButton.setOnClickListener(this);
         addTrayPhotoButton.setOnClickListener(this);
         scanAreaButton.setOnClickListener(this);
         warehouseInButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
+            @Override
+            public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 if (editable.toString().length() > 7 && editable.toString().endsWith("\n")) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
@@ -122,7 +167,6 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
             }
         });
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -153,56 +197,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
             // This is important, otherwise the result will not be passed to the fragment
             super.onActivityResult(requestCode, resultCode, data);
         }
-    }
-
-    private void parseScanResult(String content) {
-        if (TextUtils.isEmpty(content)) {
-            return;
-        }
-//        content = content.trim();
-//        content = content.replace(" ",""); 不能随便去空格，因有些 D00 A5样式
-        System.out.println("============ scan content = " + content);
-        // VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
-        if (content.contains("\n")) {
-            content = content.replace("\n", "");
-        }
-        if (content.contains("/") || content.contains("／")) {
-            if (content.contains("／")) {
-                content = content.replace("／", "/");
-            }
-
-            String[] qrContent;
-            qrContent = content.split("/");
-            if (qrContent.length >= 2) {
-                String qrTitle = qrContent[0];
-                if (!qrTitle.equals("")) {
-                    if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
-                        //物品条码
-                        scanContent = content;
-                        GetBoxAsyncTask task = new GetBoxAsyncTask();
-                        task.execute();
-                    }
-                }
-
-                if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/") ||
-                        content.startsWith("/SUB——IST——ID/") || content.startsWith("/IST——ID/")) {
-                    if (content.startsWith("/SUB——IST——ID/")) {
-                        content = content.replace("/SUB——IST——ID/", "/SUB_IST_ID/");
-                    }
-
-                    if (content.startsWith("/IST——ID/")) {
-                        content = content.replace("/IST——ID/", "/IST_ID/");
-                    }
-                    //仓库位置码
-                    scanContent = content;
-                    GetIstAsyncTask task = new GetIstAsyncTask();
-                    task.execute();
-                }
-            }
-        }
-    }
-
-    @Override
+    }    @Override
     public void onClick(View view) {
         if (view == addTrayScannerButton) {
             //scanContent= "VG/404731";
@@ -277,6 +272,53 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
+    private void parseScanResult(String content) {
+        if (TextUtils.isEmpty(content)) {
+            return;
+        }
+//        content = content.trim();
+//        content = content.replace(" ",""); 不能随便去空格，因有些 D00 A5样式
+        System.out.println("============ scan content = " + content);
+        // VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
+        if (content.contains("\n")) {
+            content = content.replace("\n", "");
+        }
+        if (content.contains("/") || content.contains("／")) {
+            if (content.contains("／")) {
+                content = content.replace("／", "/");
+            }
+
+            String[] qrContent;
+            qrContent = content.split("/");
+            if (qrContent.length >= 2) {
+                String qrTitle = qrContent[0];
+                if (!qrTitle.equals("")) {
+                    if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
+                        //物品条码
+                        scanContent = content;
+                        GetBoxAsyncTask task = new GetBoxAsyncTask();
+                        task.execute();
+                    }
+                }
+
+                if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/") ||
+                        content.startsWith("/SUB——IST——ID/") || content.startsWith("/IST——ID/")) {
+                    if (content.startsWith("/SUB——IST——ID/")) {
+                        content = content.replace("/SUB——IST——ID/", "/SUB_IST_ID/");
+                    }
+
+                    if (content.startsWith("/IST——ID/")) {
+                        content = content.replace("/IST——ID/", "/IST_ID/");
+                    }
+                    //仓库位置码
+                    scanContent = content;
+                    GetIstAsyncTask task = new GetIstAsyncTask();
+                    task.execute();
+                }
+            }
+        }
+    }
+
     private void handleIntoWareHouse() {
         if (boxItemEntityList.size() > 0) {
             int selectedcount = 0;
@@ -302,27 +344,65 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.out.println("===========onDestroy");
+        if (inputDialog != null && inputDialog.isShowing()) {
+            inputDialog.dismiss();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable("BoxItemList", (Serializable) boxItemEntityList);
+
+    }
+
     private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity scanBoxItemEntity;
 
         @Override
         protected Void doInBackground(String... params) {
             BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanContent);
-            
-            //// TODO: 2020/1/9 这里先处理，为避免因供应商选错，而导致入错账的问题
-            if (boxItemEntity != null ){
-                //如果来料里设置的公司与该操作员的公司不符
-                if (boxItemEntity.getBu_ID() != UserSingleton.get().getUserInfo().getBu_ID()){
-                    ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
-                    return null;
-                }
-            }
+
+//            //// TODO: 2020/1/9 这里先处理，为避免因供应商选错，而导致入错账的问题
+//            if (boxItemEntity != null) {
+//                //如果来料里设置的公司与该操作员的公司不符
+//                if (boxItemEntity.getBu_ID() != UserSingleton.get().getUserInfo().getBu_ID()) {
+////                    ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
+//                    Message message = new Message();
+//                    message.what = 0;
+//                    handler.sendMessage(message);
+//                    return null;
+//                }
+//            }
 
             scanBoxItemEntity = boxItemEntity;
             if (boxItemEntity.getResult()) {
+                //// TODO: 2020/1/9 这里先处理，为避免因供应商选错，而导致入错账的问题
+//                if (boxItemEntity != null) {
+                //如果来料里设置的公司与该操作员的公司不符
+                if (boxItemEntity.getBu_ID() != UserSingleton.get().getUserInfo().getBu_ID()) {
+//                    ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
+                    Message message = new Message();
+                    message.what = 0;
+                    handler.sendMessage(message);
+                    return null;
+                }
+//                }
+
                 if (!is_box_existed(boxItemEntity)) {
                     if (isOpenSuggestStock) {
-                        ToastUtil.showToastLong("建议仓库存放:" + boxItemEntity.getIstName());
+//                        ToastUtil.showToastLong("建议仓库存放:" + boxItemEntity.getIstName());
+                        Message message = new Message();
+                        message.what = 1;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("suggest_ist", boxItemEntity.getIstName());
+                        message.setData(bundle);
+                        handler.sendMessage(message);
                     }
                     boxItemEntity.setSelect(true);
                     boxItemEntityList.add(boxItemEntity);
@@ -382,7 +462,6 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
@@ -428,7 +507,6 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-
     private class AsyncExeWarehouseIn extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
 
@@ -451,8 +529,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
                 BoxItemEntity boxItemEntity = SelectList.get(0);
 //                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo，SendToWarehouseTime) values (%d,%d,%d,%d,%d,%d,%d,%s,%s)",
                 String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",
-                        boxItemEntity.getIst_ID() ,boxItemEntity.getSub_Ist_ID(),boxItemEntity.getItem_ID(),boxItemEntity.getIV_ID(),boxItemEntity.getLotID(),
-                        UserSingleton.get().getUserInfo().getCompany_ID(),UserSingleton.get().getUserInfo().getBu_ID(),
+                        boxItemEntity.getIst_ID(), boxItemEntity.getSub_Ist_ID(), boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
+                        UserSingleton.get().getUserInfo().getCompany_ID(), UserSingleton.get().getUserInfo().getBu_ID(),
 //                        !TextUtils.isEmpty(boxItemEntity.getManuLotNo()) ? boxItemEntity.getManuLotNo() : boxItemEntity.getLotNo());
 //                        boxItemEntity.getLotNo(),UnitFormatUtil.formatTimeToSecond(System.currentTimeMillis()));
                         boxItemEntity.getLotNo());
@@ -515,51 +593,6 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-    @Override
-    protected void onResume() {
-        //设置为竖屏
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
 
-        super.onResume();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putSerializable("BoxItemList", (Serializable) boxItemEntityList);
-
-    }
-
-
-    BroadcastReceiver mFoundReceiver = new BroadcastReceiver() {
-
-        @Override public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            //找到设备
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // 添加进一个设备列表，进行显示。
-                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-//                    Log.v(TAG, "find device:" + device.getName() + device.getAddress());
-                }
-            }
-            //搜索完成
-            else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-//                cancelDiscovery();
-            }
-        }
-    };
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        System.out.println("===========onDestroy");
-        if (inputDialog != null && inputDialog.isShowing()) {
-            inputDialog.dismiss();
-        }
-    }
 
 }

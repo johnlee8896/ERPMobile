@@ -12,11 +12,11 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class WcIdNameEntity implements Parcelable {
-    @SerializedName("WC_Id") private int wcId;
+    @SerializedName("WC_Id") private long wcId;
     @SerializedName("WC_Name") private String wcName;
 
     protected WcIdNameEntity(Parcel in) {
-        wcId = in.readInt();
+        wcId = in.readLong();
         wcName = in.readString();
     }
 
@@ -32,11 +32,11 @@ public class WcIdNameEntity implements Parcelable {
         }
     };
 
-    public int getWcId() {
+    public long getWcId() {
         return wcId;
     }
 
-    public void setWcId(int wcId) {
+    public void setWcId(long wcId) {
         this.wcId = wcId;
     }
 
@@ -53,7 +53,7 @@ public class WcIdNameEntity implements Parcelable {
     }
 
     @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(wcId);
+        dest.writeLong(wcId);
         dest.writeString(wcName);
     }
 }

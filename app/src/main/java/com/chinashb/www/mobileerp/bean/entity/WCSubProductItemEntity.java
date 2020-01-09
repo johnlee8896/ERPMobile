@@ -8,7 +8,7 @@ package com.chinashb.www.mobileerp.bean.entity;
 
 public class WCSubProductItemEntity {
     private WCSubProductEntity wcSubProductEntity;
-    private float qty;
+    private int qty;
     private String buName;
     private String istName;
     private boolean select;
@@ -38,11 +38,11 @@ public class WCSubProductItemEntity {
         this.wcSubProductEntity = wcSubProductEntity;
     }
 
-    public float getQty() {
+    public int getQty() {
         return qty;
     }
 
-    public void setQty(float qty) {
+    public void setQty(int qty) {
         this.qty = qty;
     }
 

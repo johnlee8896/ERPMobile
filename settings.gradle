@@ -1,4 +1,4 @@
-include ':app'
+include ':app', ':javaProject'
 include ':zxing'
 include ':qrcodecore'
 //include ':libapi'

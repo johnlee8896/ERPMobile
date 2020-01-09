@@ -51,6 +51,10 @@
         <activity android:name=".warehouse.WarehouseStockQueryActivity" />
 
 
+        <!--生产线领料（零部件、辅助料、退料）页面-->
+        <activity android:name=".PartWorkLinePutActivity"
+            android:screenOrientation="portrait"/>
+
         <!--发货指令页面-->
         <activity android:name=".DeliveryOrderActivity"
             android:screenOrientation="portrait"/>

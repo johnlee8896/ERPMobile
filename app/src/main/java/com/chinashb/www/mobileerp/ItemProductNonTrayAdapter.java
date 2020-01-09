@@ -2,13 +2,18 @@ package com.chinashb.www.mobileerp;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
+
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -35,8 +40,8 @@ public class ItemProductNonTrayAdapter extends RecyclerView.Adapter<ItemProductN
 
     @Override
     public ItemProductNonTrayAdapter.BoxItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater
-                .inflate(R.layout.listview_box_items, parent, false);
+//        View v = mLayoutInflater.inflate(R.layout.listview_box_items, parent, false);
+        View v = mLayoutInflater.inflate(R.layout.item_product_scan_item, parent, false);
         ItemProductNonTrayAdapter.BoxItemViewHolder vh = new ItemProductNonTrayAdapter.BoxItemViewHolder(v);
         return vh;
 
@@ -59,7 +64,30 @@ public class ItemProductNonTrayAdapter extends RecyclerView.Adapter<ItemProductN
 //        holder.tvLotNo.setText(LotWithBox);
         holder.tvLotNo.setText(wcSubProductItemEntity.getLotNo());
 
-        //holder.tvIst.setText(WCSubProductItemEntity.get());
+        holder.tvQty.addTextChangedListener(new TextWatcherImpl(){
+            @Override
+            public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                try {
+                    String q = editable.toString();
+                    if (!q.isEmpty()) {
+//                        if (Float.parseFloat(q) > 0) {
+                        if (Integer.parseInt(q) > 0) {
+//                            wcSubProductItemEntity.setQty(Float.parseFloat(q));
+                            wcSubProductItemEntity.setQty(Integer.parseInt(q) );
+                        } else {
+                            wcSubProductItemEntity.setQty(0);
+                        }
+                    } else {
+                        wcSubProductItemEntity.setQty(0);
+                    }
+                } finally {
+
+                }
+            }
+        });
+
+//        holder.tvIst.setText(WCSubProductItemEntity.get());
         holder.cbSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -77,7 +105,8 @@ public class ItemProductNonTrayAdapter extends RecyclerView.Adapter<ItemProductN
 
     public static class BoxItemViewHolder extends RecyclerView.ViewHolder {
         TextView tvItem;
-        TextView tvQty;
+//        TextView tvQty;
+        EditText tvQty;
         TextView tvBu;
         TextView tvLotNo;
 
@@ -87,12 +116,14 @@ public class ItemProductNonTrayAdapter extends RecyclerView.Adapter<ItemProductN
         BoxItemViewHolder(View view) {
             super(view);
 
-            tvItem = (TextView) view.findViewById(R.id.tv_item_name);
-            tvQty = (TextView) view.findViewById(R.id.tv_qty);
-            tvBu = (TextView) view.findViewById(R.id.tv_bu_name);
-            tvLotNo = (TextView) view.findViewById(R.id.tv_inv_in_lotno);
+            tvItem = (TextView) view.findViewById(R.id.item_product_item_name_textView);
+            tvQty = (EditText) view.findViewById(R.id.item_product_item_qty_editText);
+            tvBu = (TextView) view.findViewById(R.id.item_product_item_bu_textView);
+            tvLotNo = (TextView) view.findViewById(R.id.item_product_item_lot_textView);
             tvIst = (TextView) view.findViewById(R.id.tv_ist_name);
             cbSelect = (CheckBox) view.findViewById(R.id.cb_select_ist);
+
+
 
 
         }

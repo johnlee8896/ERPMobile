@@ -12,24 +12,41 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class WCSubProductEntity implements Parcelable {
-    @SerializedName("Item_ID") private int itemId;
-    @SerializedName("IV_ID") private int ivId;
-    @SerializedName("Product_ID") private int productId;
-    @SerializedName("PS_ID") private int psId;
+    @SerializedName("Item_ID") private long itemId;
+    @SerializedName("IV_ID") private long ivId;
+    @SerializedName("Product_ID") private long productId;
+    @SerializedName("PS_ID") private long psId;
     @SerializedName("Product_Name") private String productName;
     @SerializedName("Product_Common_Name") private String productCommonName;
     @SerializedName("Newest_Version") private String newestVersion;
     @SerializedName("Approval_detail") private String approvalDetail;
 
     protected WCSubProductEntity(Parcel in) {
-        itemId = in.readInt();
-        ivId = in.readInt();
-        productId = in.readInt();
-        psId = in.readInt();
+        itemId = in.readLong();
+        ivId = in.readLong();
+        productId = in.readLong();
+        psId = in.readLong();
         productName = in.readString();
         productCommonName = in.readString();
         newestVersion = in.readString();
         approvalDetail = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(itemId);
+        dest.writeLong(ivId);
+        dest.writeLong(productId);
+        dest.writeLong(psId);
+        dest.writeString(productName);
+        dest.writeString(productCommonName);
+        dest.writeString(newestVersion);
+        dest.writeString(approvalDetail);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<WCSubProductEntity> CREATOR = new Creator<WCSubProductEntity>() {
@@ -44,82 +61,75 @@ public class WCSubProductEntity implements Parcelable {
         }
     };
 
-    public int getItemId() {
+    public long getItemId() {
         return itemId;
     }
 
-    public void setItemId(int itemId) {
+    public WCSubProductEntity setItemId(long itemId) {
         this.itemId = itemId;
+        return this;
     }
 
-    public int getIvId() {
+    public long getIvId() {
         return ivId;
     }
 
-    public void setIvId(int ivId) {
+    public WCSubProductEntity setIvId(long ivId) {
         this.ivId = ivId;
+        return this;
     }
 
-    public int getProductId() {
+    public long getProductId() {
         return productId;
     }
 
-    public void setProductId(int productId) {
+    public WCSubProductEntity setProductId(long productId) {
         this.productId = productId;
+        return this;
     }
 
-    public int getPsId() {
+    public long getPsId() {
         return psId;
     }
 
-    public void setPsId(int psId) {
+    public WCSubProductEntity setPsId(long psId) {
         this.psId = psId;
+        return this;
     }
 
     public String getProductName() {
         return productName;
     }
 
-    public void setProductName(String productName) {
+    public WCSubProductEntity setProductName(String productName) {
         this.productName = productName;
+        return this;
     }
 
     public String getProductCommonName() {
         return productCommonName;
     }
 
-    public void setProductCommonName(String productCommonName) {
+    public WCSubProductEntity setProductCommonName(String productCommonName) {
         this.productCommonName = productCommonName;
+        return this;
     }
 
     public String getNewestVersion() {
         return newestVersion;
     }
 
-    public void setNewestVersion(String newestVersion) {
+    public WCSubProductEntity setNewestVersion(String newestVersion) {
         this.newestVersion = newestVersion;
+        return this;
     }
 
     public String getApprovalDetail() {
         return approvalDetail;
     }
 
-    public void setApprovalDetail(String approvalDetail) {
+    public WCSubProductEntity setApprovalDetail(String approvalDetail) {
         this.approvalDetail = approvalDetail;
-    }
-
-    @Override public int describeContents() {
-        return 0;
-    }
-
-    @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(itemId);
-        dest.writeInt(ivId);
-        dest.writeInt(productId);
-        dest.writeInt(psId);
-        dest.writeString(productName);
-        dest.writeString(productCommonName);
-        dest.writeString(newestVersion);
-        dest.writeString(approvalDetail);
+        return this;
     }
 }
