@@ -55,12 +55,16 @@
         <activity android:name=".PartWorkLinePutActivity"
             android:screenOrientation="portrait"/>
 
+        <!--物流管理页面-->
+        <activity android:name=".LogisticsManageActivity"
+            android:screenOrientation="portrait"/>
+
         <!--发货指令页面-->
         <activity android:name=".DeliveryOrderActivity"
             android:screenOrientation="portrait"/>
 
         <!--成品出库页面-->
-        <activity android:name=".ProductOutActivity"
+        <activity android:name=".ProductSaleOutActivity"
             android:screenOrientation="portrait"/>
 
         <!--成品产线选择页面-->

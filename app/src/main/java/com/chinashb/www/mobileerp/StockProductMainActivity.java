@@ -23,14 +23,17 @@ import butterknife.ButterKnife;
 public class StockProductMainActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.stock_product_scan_into_tray_Button) Button scanIntoTrayButton;
-    @BindView(R.id.stock_product_scan_into_non_tray_Button) Button scanIntoNonTrayButton;
     @BindView(R.id.stock_product_send_goods_tray_Button) Button sendGoodsTrayButton;
     @BindView(R.id.stock_product_send_goods_non_tray_Button) Button sendGoodsNonTrayButton;
     @BindView(R.id.stock_product_send_goods_command_Button) Button sendGoodsCommandButton;
     @BindView(R.id.pb_scan_progressbar) ProgressBar pbScanProgressbar;
     @BindView(R.id.fab_test_tcp_net) FloatingActionButton fabTestTcpNet;
     @BindView(R.id.product_department_in_button) Button departmentInButton;
-    @BindView(R.id.product_main_out_textView) TextView outTextView;
+
+    @BindView(R.id.stock_product_scan_into_non_tray_Button) Button scanIntoNonTrayButton;
+    @BindView(R.id.product_main_other_in_textView) TextView otherInTextView;
+    @BindView(R.id.product_main_sale_out_textView) TextView saleOutTextView;
+    @BindView(R.id.product_main_other_out_textView) TextView otherOutTextView;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,12 +45,15 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
 
     private void setViewsListener() {
         scanIntoTrayButton.setOnClickListener(this);
-        scanIntoNonTrayButton.setOnClickListener(this);
         sendGoodsCommandButton.setOnClickListener(this);
         sendGoodsTrayButton.setOnClickListener(this);
         sendGoodsNonTrayButton.setOnClickListener(this);
         departmentInButton.setOnClickListener(this);
-        outTextView.setOnClickListener(this);
+
+        scanIntoNonTrayButton.setOnClickListener(this);
+        otherOutTextView.setOnClickListener(this);
+        otherInTextView.setOnClickListener(this);
+        saleOutTextView.setOnClickListener(this);
     }
 
     @Override public void onClick(View v) {
@@ -66,9 +72,13 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
             Intent intent = new Intent(this, StockDepartmentInActivity.class);
             //// TODO: 2019/9/6 区分是成品还是零件 
             startActivity(intent);
-        }else if (v == outTextView){
-            Intent intent = new Intent(this,ProductOutActivity.class);
+        } else if (v == saleOutTextView) {
+            Intent intent = new Intent(this, ProductSaleOutActivity.class);
             startActivity(intent);
+        }else if (v == otherInTextView){
+
+        }else if (v == otherOutTextView){
+
         }
     }
 }

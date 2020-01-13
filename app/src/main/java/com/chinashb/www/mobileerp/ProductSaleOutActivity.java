@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
  * @description 成品出库
  */
 
-public class ProductOutActivity extends BaseActivity implements View.OnClickListener {
+public class ProductSaleOutActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.product_out_select_plan_button) Button selectPlanButton;
     @BindView(R.id.product_out_order_textView) TextView productNonTrayWcNameTextView;
     //    @BindView(R.id.product_non_tray_scan_button) Button productNonTrayScanButton;
@@ -70,6 +70,9 @@ public class ProductOutActivity extends BaseActivity implements View.OnClickList
         if (v == selectPlanButton) {
             Intent intent = new Intent(this, DeliveryOrderActivity.class);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order);
+        }else if (v == logisticsButton){
+            Intent intent = new Intent(this,LogisticsManageActivity.class);
+            startActivityForResult(intent,IntentConstant.Intent_Request_Code_Product_To_Logistics);
         }
     }
 }

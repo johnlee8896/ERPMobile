@@ -31,6 +31,11 @@ public class IntentConstant {
     public static final String Intent_product_wc_id_name_entity = "product_wc_id_name_entity";
     public static final String Intent_product_delivery_order_bean = "product_delivery_order_bean";
 
+    public static final String Intent_Extra_work_line_from = "Extra_work_line_from";
+
 
     public static final int Intent_Request_Code_Product_Out_And_Delivery_Order = 0X100;
+    public static final int Intent_Extra_work_line_from_product = 0X200;
+    public static final int Intent_Extra_work_line_from_part = 0X201;
+    public static final int Intent_Request_Code_Product_To_Logistics = 0X202;
 }

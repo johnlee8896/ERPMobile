@@ -262,6 +262,10 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
         if (view == selectWcButton) {
             getWCList();
         } else if (view == scanItemButton) {
+            if (TextUtils.isEmpty(wcNameTextView.getText())){
+                ToastUtil.showToastShort("请先选择产线");
+                return;
+            }
             new IntentIntegrator(this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
         } else if (view == scanAreaButton) {
             handleScanArea();
@@ -322,6 +326,7 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
      */
     private void getWCList() {
         Intent intent = new Intent(this, SelectProductWCListActivity.class);
+        intent.putExtra(IntentConstant.Intent_Extra_work_line_from,IntentConstant.Intent_Extra_work_line_from_product);
         startActivityForResult(intent, 200);
     }
 

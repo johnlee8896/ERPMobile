@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
+import com.chinashb.www.mobileerp.PartWorkLinePutActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
@@ -41,6 +42,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button selfProductButton;//自制车间成品盘点
     private Button completeProductButton;//成品库存
     private Button partStockInButton;//零部件库存
+    private Button workLineInButton ;//生产线领料
     private Button lookQRButton;
 
     private FloatingActionButton floatButton;
@@ -67,6 +69,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         selfProductButton = (Button) findViewById(R.id.btn_check_pro_part_inv);
         completeProductButton = (Button) findViewById(R.id.btn_query_product_inv);
         partStockInButton = (Button) findViewById(R.id.btn_query_part_inv);
+        workLineInButton = findViewById(R.id.btn_check_part_workline_in);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -113,6 +116,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         partStockCheckButton.setOnClickListener(this);
         selfProductButton.setOnClickListener(this);
         makingProductButton.setOnClickListener(this);
+        workLineInButton.setOnClickListener(this);
         floatButton.setOnClickListener(this);
     }
 
@@ -192,7 +196,9 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             selfProduct();
         } else if (view == lookQRButton) {
 //            scanToStock();
-        } else if (view == floatButton) {
+        }else if (view == workLineInButton){
+            workLineIn();
+        }else if (view == floatButton) {
             Intent intent = new Intent(StockPartMainActivity.this, ShbTcpTest.class);
             startActivity(intent);
         }
@@ -205,6 +211,15 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             Intent intent = new Intent(StockPartMainActivity.this, StockCheckPartInvActivity.class);
             intent.putExtra("Ac_Type", 2);
 
+            startActivity(intent);
+        }
+    }
+
+    private void workLineIn() {
+        if (userInfo == null) {
+            Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
+        } else {
+            Intent intent = new Intent(StockPartMainActivity.this, PartWorkLinePutActivity.class);
             startActivity(intent);
         }
     }

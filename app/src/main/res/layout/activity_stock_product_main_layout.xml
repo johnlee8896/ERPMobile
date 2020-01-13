@@ -21,7 +21,7 @@
         />
 
     <TextView
-        android:id="@+id/product_main_out_textView"
+        android:id="@+id/product_main_other_in_textView"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginLeft="@dimen/dimen_size_20"
@@ -29,7 +29,29 @@
         android:layout_marginRight="@dimen/dimen_size_20"
         android:background="@drawable/shape_conner_blue_button_bg"
         android:gravity="center"
-        android:text="成品出库" />
+        android:text="成品入库(其他入库)" />
+
+    <TextView
+        android:id="@+id/product_main_sale_out_textView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="成品出库(销售)" />
+
+    <TextView
+        android:id="@+id/product_main_other_out_textView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="成品出库(非销售,其他出库)" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -47,7 +47,7 @@
         ></com.chinashb.www.mobileerp.widget.TitleLayoutManagerView>
 
     <TextView
-        android:id="@+id/tv_wc_list_title"
+        android:id="@+id/wc_list_title_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="生产线分组" />
