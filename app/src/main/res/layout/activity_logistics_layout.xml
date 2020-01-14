@@ -474,7 +474,7 @@
                         android:textColor="@color/black" />
 
                     <TextView
-                        android:id="@+id/logistics_transport_way_editText"
+                        android:id="@+id/logistics_transport_way_textView"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_gravity="center_vertical"
@@ -503,7 +503,7 @@
                         android:textColor="@color/black" />
 
                     <TextView
-                        android:id="@+id/logistics_logistics_company_editText"
+                        android:id="@+id/logistics_logistics_company_textView"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_gravity="center_vertical"

@@ -4,13 +4,16 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.APP;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.bean.CompanyBean;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.ScreenUtil;
 
@@ -32,13 +35,25 @@ public class CommonSelectInputDialog extends BaseDialog {
     @BindView(R.id.dialog_remark_confirm_Button) Button confirmButton;
     @BindView(R.id.dialog_remark_cancel_Button) Button cancelButton;
     @BindView(R.id.dialog_remark_title_textView) TextView titleTextView;
+    @BindView(R.id.dialog_remark_bottom_button_layout) LinearLayout buttonLayout;
     private OnViewClickListener onViewClickListener;
     private SelectUseAdapter adapter;
+
+    private String title;
+    private boolean selectOnly;
 
     public CommonSelectInputDialog(@NonNull Context context) {
         super(context);
     }
 
+    public CommonSelectInputDialog setSelectOnly(boolean selectOnly) {
+        this.selectOnly = selectOnly;
+        if (selectOnly) {
+            remarkEditText.setVisibility(View.GONE);
+            buttonLayout.setVisibility(View.GONE);
+        }
+        return this;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +64,7 @@ public class CommonSelectInputDialog extends BaseDialog {
         setCanceledOnTouchOutside(false);
         adapter = new SelectUseAdapter();
         recyclerView.setAdapter(adapter);
-        String[] useArray = APP.get().getResources().getStringArray(R.array.select_remark_array);
-        List<String> useList = new ArrayList<>();
-        for (int i = 0; i < useArray.length; i++) {
-            useList.add(useArray[i]);
-        }
-        adapter.setData(useList);
+        setContentList();
 
         cancelButton.setOnClickListener(v -> {
             dismiss();
@@ -67,6 +77,19 @@ public class CommonSelectInputDialog extends BaseDialog {
 //            dismiss();
         });
 
+    }
+
+    private void setContentList() {
+        String[] useArray = APP.get().getResources().getStringArray(R.array.select_remark_array);
+        List<String> useList = new ArrayList<>();
+        for (int i = 0; i < useArray.length; i++) {
+            useList.add(useArray[i]);
+        }
+        adapter.setData(useList);
+    }
+
+    public void refreshContentList(List<CompanyBean> list){
+        adapter.setData(list);
     }
 
     public void refreshContent(List<String> stringList) {
@@ -87,8 +110,9 @@ public class CommonSelectInputDialog extends BaseDialog {
 
     }
 
-    public void setTitle(String  title) {
+    public CommonSelectInputDialog setTitle(String title) {
         titleTextView.setText(title);
+        return this;
     }
 
     public void setOnViewClickListener(OnViewClickListener onViewClickListener) {

@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.BaseRecycleAdapter;
 import com.chinashb.www.mobileerp.adapter.BaseViewHolder;
+import com.chinashb.www.mobileerp.bean.CompanyBean;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 
 import butterknife.BindView;
@@ -17,7 +18,7 @@ import butterknife.ButterKnife;
  * @author 作者: liweifeng
  * @description 选择用途对应的adapter
  */
-public class SelectUseAdapter extends BaseRecycleAdapter<String, SelectUseAdapter.SelectUserViewHolder> {
+public class SelectUseAdapter<T> extends BaseRecycleAdapter<T, SelectUseAdapter.SelectUserViewHolder> {
 
     private OnViewClickListener onViewClickListener;
 
@@ -53,9 +54,14 @@ public class SelectUseAdapter extends BaseRecycleAdapter<String, SelectUseAdapte
 
         @Override
         public <T> void initUIData(T t) {
+            if (t instanceof String){
+
             String use = (String) t;
             if (use != null){
                 useTextView.setText(use);
+            }
+            }else if (t instanceof CompanyBean){
+                useTextView.setText(((CompanyBean)t).getCompanyChineseName());
             }
 
         }

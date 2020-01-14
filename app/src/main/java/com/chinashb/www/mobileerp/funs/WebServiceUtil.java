@@ -1134,8 +1134,13 @@ public class WebServiceUtil {
         AddPrpertyInfo(propertyInfos, "SMT_ID", SMT_ID);
         AddPrpertyInfo(propertyInfos, "Qty", Qty);
 
+         System.out.println("================ MW_ID = " + MW_ID + " exer = " + Sender + " item_id = " + Item_ID);
+         System.out.println("================ IV_ID = " + IV_ID + " LotID = " + LotID + " LotNo = " + LotNo);
+         System.out.println("================ Ist_ID = " + Ist_ID + " Sub_Ist_ID = " + Sub_Ist_ID + " SMLI_ID = " + SMLI_ID);
+         System.out.println("================ SMM_ID = " + SMM_ID + " SMT_ID = " + SMT_ID + " Qty = " + Qty);
 
-        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+
+       SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
         WsResult ws_result = Get_WS_Result(obj);

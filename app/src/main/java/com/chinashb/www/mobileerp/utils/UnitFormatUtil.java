@@ -36,8 +36,10 @@ public final class UnitFormatUtil {
     public  static  SimpleDateFormat sdf_YMDHMS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static  SimpleDateFormat sdf_YMDHM = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     public static  SimpleDateFormat sdf_YMD = new SimpleDateFormat("yyyy-MM-dd");
+    public static  SimpleDateFormat sdf_YMD_Chinese = new SimpleDateFormat("yyyy年MM月dd日 ");
     public static  SimpleDateFormat sdf_YMD_NO_Line = new SimpleDateFormat("yyyyMMdd");
     public static  SimpleDateFormat sdf_MDH = new SimpleDateFormat("MM月dd日 HH点");
+    public static  SimpleDateFormat sdf_MDHM = new SimpleDateFormat("MM月dd日 HH点MM分");
     public static  SimpleDateFormat sdf_YMDH = new SimpleDateFormat("yyyy年MM月dd日 HH点");
     public static SimpleDateFormat sdf_HMS = new SimpleDateFormat("HH:mm:ss");
 
@@ -122,6 +124,18 @@ public final class UnitFormatUtil {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         return sdf_YMD.format(calendar.getTime());
+    }
+
+    public static String formatTimeToDayChinese(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        return sdf_YMD_Chinese.format(calendar.getTime());
+    }
+
+    public static String formatTimeMDHM(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        return sdf_MDHM.format(calendar.getTime());
     }
 
     public static String formatTimeToDayWithoutLine(long time) {
