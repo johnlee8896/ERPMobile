@@ -11,7 +11,6 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.CompanyBean;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
-import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
@@ -54,6 +53,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
     @BindView(R.id.logistics_car_plate_editText) EditText carPlateEditText;
     @BindView(R.id.logistics_logistics_remark_editText) EditText logisticsRemarkEditText;
     private TimePickerManager timePickerManager;
+    private CommonSelectInputDialog commonSelectInputDialog;
     private String currentDate = "";
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,6 +89,9 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
     }
 
     private void showTimePickerDialog(String pickType) {
+        if (timePickerManager == null){
+            timePickerManager = new TimePickerManager(LogisticsManageActivity.this);
+        }
         timePickerManager
                 .setOnViewClickListener(LogisticsManageActivity.this)
                 .showDialog(pickType);
@@ -102,7 +105,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         if (view == outDateTextView){
             showTimePickerDialog(TimePickerManager.PICK_TYPE_START);
         }else if (view == loadCarTimeTextView){
-
+            showTimePickerDialog(TimePickerManager.PICK_TYPE_MINUTE);
         }else if (view == senderCompanyNameTextView){
             showSelectCompanyDialog();
         }else if (view == senderBuNameTextView){
@@ -138,9 +141,9 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         }
     }
 
-     private class GetCompanyListAsyncTask extends AsyncTask<String, Void, Void> {
+     private class GetCompanyListAsyncTask extends AsyncTask<String, Void, List<CompanyBean>> {
 
-         @Override protected Void doInBackground(String... strings) {
+         @Override protected List<CompanyBean> doInBackground(String... strings) {
              String sql = "select Company_ID,Company_Chinese_Name,Company_English_Name from company where Company_Enabled = 1";
              WsResult result = WebServiceUtil.getDataTable(sql);
              List<CompanyBean> companyList = null;
@@ -151,17 +154,25 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
                  }.getType());
              }
 
-             CommonSelectInputDialog commonSelectInputDialog = new CommonSelectInputDialog(LogisticsManageActivity.this);
+
+             return companyList;
+         }
+
+         @Override
+         protected void onPostExecute(List<CompanyBean> companyList) {
+             super.onPostExecute(companyList);
+             if (commonSelectInputDialog == null){
+                 commonSelectInputDialog = new CommonSelectInputDialog(LogisticsManageActivity.this);
+             }
              commonSelectInputDialog.show();
              commonSelectInputDialog.refreshContentList(companyList);
              commonSelectInputDialog.setTitle("请选择公司").setSelectOnly(true).setOnViewClickListener(new OnViewClickListener() {
                  @Override public <T> void onClickAction(View v, String tag, T t) {
-                    if (t != null && t instanceof CompanyBean){
-                        senderCompanyNameTextView.setText(((CompanyBean)t).getCompanyChineseName());
-                    }
+                     if (t != null && t instanceof CompanyBean){
+                         senderCompanyNameTextView.setText(((CompanyBean)t).getCompanyChineseName());
+                     }
                  }
              });
-             return null;
          }
      }
 }

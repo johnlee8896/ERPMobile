@@ -386,7 +386,7 @@
 
                     <TextView
                         android:id="@+id/logistics_domestic_foreign_textView"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:layout_gravity="center_vertical"
                         android:background="@color/transparent"
@@ -394,9 +394,37 @@
                         android:gravity="center_vertical"
                         android:paddingLeft="@dimen/dimen_size_20"
                         android:paddingRight="@dimen/dimen_size_10"
+                        android:visibility="gone"
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size_14"
                         tools:text=" 国内" />
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center_vertical"
+                        >
+
+                        <TextView
+                            android:id="@+id/logistics_select_domestic_TextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:background="@drawable/selector_text_color_truck_select_blue"
+                            android:gravity="center"
+                            android:text="国内"
+                            android:textColor="@drawable/selector_text_color_truck_select_blue" />
+
+                        <TextView
+                            android:id="@+id/logistics_select_foreign_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:background="@drawable/selector_text_color_truck_select_blue"
+                            android:gravity="center"
+                            android:text="国外"
+                            android:textColor="@drawable/selector_text_color_truck_select_blue" />
+
+                    </LinearLayout>
 
 
                 </LinearLayout>

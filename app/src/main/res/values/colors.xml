@@ -15,7 +15,6 @@
     <color name="qr_code_cover_color">#6000</color>
 
     <color name="login_title_color">#880000FF</color>
-    <color name="color_333333">#333333</color>
     <color name="color_666666">#666666</color>
     <color name="color_999999">#999999</color>
     <color name="color_C6C6C6">#C6C6C6</color>
@@ -56,4 +55,42 @@
     <color name="color_red_f4333c">#F4333C</color>
     <color name="color_F1F1F1">#F1F1F1</color>
     <color name="color_EEEEEE">#EEEEEE</color>
+
+
+
+    <color name="color_blue_3D94FF">#3D94FF</color>
+
+    <color name="color_999">#999999</color>
+    <color name="color_666">#666666</color>
+    <color name="color_333">#333333</color>
+    <color name="color_333333">#333333</color>
+    <color name="color_ccc">#ccc</color>
+    <color name="text_color_A5">#a5a5a5</color>
+    <color name="color_F5F5F5">#F5F5F5</color>
+    <color name="color_0BCD74">#0BCD74</color>
+    <color name="color_eef8fb">#eef8fb</color>
+    <color name="divide_line_color">#2000</color>
+    <color name="color_3000">#3000</color>
+
+    <color name="color_328dff">#328dff</color>
+    <color name="color_orange_F58B23">#F58B23</color>
+    <color name="color_orange_FD910C">#FD910C</color>
+    <color name="color_blue_2E7FEF">#2E7FEF</color>
+    <color name="color_blue_09C3FF">#09C3FF</color>
+    <color name="color_blue_008DEF">#008DEF</color>
+    <color name="color_red_E94156">#E94156</color>
+    <color name="color_F9F9F9">#f9f9f9</color>
+    <color name="color_blue_28B9D6">#28B9D6</color>
+
+    <color name="color_green_27D346">#27D346</color>
+
+    <color name="half_transparent_bg">#3000</color>
+
+    <color name="calendar_weekbar_text_color">#0072FF</color>
+
+    <!--自定义tabLayout的一些颜色属性-->
+    <color name="color_custom_tab_selected_text">#ffffff</color>
+    <color name="color_custom_tab_deselected_text">#ffffff</color>
+    <color name="color_custom_tab_indicator">#ffffff</color>
+    <color name="color_blue_0072FF">#0072FF</color>
 </resources>

@@ -56,4 +56,8 @@
     <dimen name="text_size_28">28sp</dimen>
     <dimen name="text_size_20">20sp</dimen>
     <dimen name="text_size_34">34sp</dimen>
+
+
+    <!--分割线高度-->
+    <dimen name="divide_line_size">0.7dp</dimen>
 </resources>
