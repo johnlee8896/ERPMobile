@@ -7,7 +7,9 @@ import android.widget.TextView;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.BaseRecycleAdapter;
 import com.chinashb.www.mobileerp.adapter.BaseViewHolder;
+import com.chinashb.www.mobileerp.bean.BuBean;
 import com.chinashb.www.mobileerp.bean.CompanyBean;
+import com.chinashb.www.mobileerp.bean.ReceiverCompanyBean;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 
 import butterknife.BindView;
@@ -62,7 +64,12 @@ public class SelectUseAdapter<T> extends BaseRecycleAdapter<T, SelectUseAdapter.
             }
             }else if (t instanceof CompanyBean){
                 useTextView.setText(((CompanyBean)t).getCompanyChineseName());
+            }else if (t instanceof BuBean){
+                useTextView.setText(((BuBean)t).getBuName());
+            }else if(t instanceof ReceiverCompanyBean){
+                useTextView.setText(((ReceiverCompanyBean)t).getCustomer());
             }
+
 
         }
     }

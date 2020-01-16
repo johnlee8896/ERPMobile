@@ -29,7 +29,7 @@ import butterknife.ButterKnife;
  * @description 选择或添加备注
  */
 
-public class CommonSelectInputDialog extends BaseDialog {
+public class CommonSelectInputDialog<T> extends BaseDialog {
     @BindView(R.id.stock_out_more_remark_EditText) EditText remarkEditText;
     @BindView(R.id.dialog_select_remark_recyclerView) CustomRecyclerView recyclerView;
     @BindView(R.id.dialog_remark_confirm_Button) Button confirmButton;
@@ -89,6 +89,10 @@ public class CommonSelectInputDialog extends BaseDialog {
     }
 
     public void refreshContentList(List<CompanyBean> list){
+        adapter.setData(list);
+    }
+
+    public void refreshCommonContentList(List<T> list){
         adapter.setData(list);
     }
 

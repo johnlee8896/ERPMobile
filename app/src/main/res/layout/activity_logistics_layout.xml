@@ -68,7 +68,7 @@
                         android:layout_gravity="center_vertical"
                         android:background="@color/transparent"
                         android:gravity="center_vertical"
-                        android:hint="请输入内部跟踪号#"
+                        android:hint="请输入内部跟踪号#建议格式: 公司代号(Y,F)+日期+序号"
                         android:paddingLeft="@dimen/dimen_size_20"
                         android:paddingRight="@dimen/dimen_size_10"
                         android:textColor="@color/black"
@@ -402,6 +402,7 @@
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/dimen_size_20"
                         android:layout_gravity="center_vertical"
                         >
 
@@ -418,7 +419,7 @@
                             android:id="@+id/logistics_select_foreign_textView"
                             android:layout_width="wrap_content"
                             android:layout_height="20dp"
-                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
                             android:background="@drawable/selector_text_color_truck_select_blue"
                             android:gravity="center"
                             android:text="国外"
@@ -454,8 +455,47 @@
                         android:paddingLeft="@dimen/dimen_size_20"
                         android:paddingRight="@dimen/dimen_size_10"
                         android:textColor="@color/black"
+                        android:visibility="gone"
                         android:textSize="@dimen/text_size_14"
                         tools:text=" 批量" />
+                    <LinearLayout
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/dimen_size_20"
+                        android:layout_gravity="center_vertical"
+                        >
+
+                        <TextView
+                            android:id="@+id/logistics_select_sample_TextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:background="@drawable/selector_text_color_truck_select_blue"
+                            android:gravity="center"
+                            android:text="样品"
+                            android:textColor="@drawable/selector_text_color_truck_select_blue" />
+
+                        <TextView
+                            android:id="@+id/logistics_select_lots_of_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:background="@drawable/selector_text_color_truck_select_blue"
+                            android:gravity="center"
+                            android:text="批量"
+                            android:textColor="@drawable/selector_text_color_truck_select_blue" />
+                        <TextView
+                            android:id="@+id/logistics_select_beipin_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:background="@drawable/selector_text_color_truck_select_blue"
+                            android:gravity="center"
+                            android:text="备品"
+                            android:textColor="@drawable/selector_text_color_truck_select_blue" />
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -481,10 +521,41 @@
                         android:gravity="center_vertical"
                         tools:text=" 正常发货"
                         android:textColor="@color/black"
+                        android:visibility="gone"
                         android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
                         android:paddingLeft="@dimen/dimen_size_20"
                         android:paddingRight="@dimen/dimen_size_10"
                         android:textSize="@dimen/text_size_14" />
+                    <LinearLayout
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginLeft="@dimen/dimen_size_20"
+                        android:layout_gravity="center_vertical"
+                        >
+
+                        <TextView
+                            android:id="@+id/logistics_select_send_or_replashment_send_TextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:background="@drawable/selector_text_color_truck_select_blue"
+                            android:gravity="center"
+                            android:text="正常发货"
+                            android:textColor="@drawable/selector_text_color_truck_select_blue" />
+
+                        <TextView
+                            android:id="@+id/logistics_select_send_or_replashment_replashment_TextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:background="@drawable/selector_text_color_truck_select_blue"
+                            android:gravity="center"
+                            android:text="退货补货"
+                            android:textColor="@drawable/selector_text_color_truck_select_blue" />
+
+                    </LinearLayout>
+
+
                 </LinearLayout>
 
                 <LinearLayout

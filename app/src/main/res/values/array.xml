@@ -19,4 +19,15 @@
         <item>前一批物料暂停使用</item>
         <item>项目专用物料</item>
     </string-array>
+
+    <!--物流常用方式-->
+    <string-array name="select_logistics_type_array">
+        <item>海运</item>
+        <item>汽车</item>
+        <item>空运</item>
+        <item>自提</item>
+        <item>其它</item>
+        <item>铁运</item>
+        <item>送货</item>
+    </string-array>
 </resources>
