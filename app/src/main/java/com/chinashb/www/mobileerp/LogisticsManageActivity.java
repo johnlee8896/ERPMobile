@@ -11,7 +11,6 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BuBean;
 import com.chinashb.www.mobileerp.bean.CompanyBean;
 import com.chinashb.www.mobileerp.bean.ReceiverCompanyBean;
-import com.chinashb.www.mobileerp.bean.entity.WCSubProductEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -198,13 +197,14 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
                 "CF_Chinese_Name As factory,CF_Address ,Country.CountryChinese As country From Customer  " +
                 "Inner Join Bu_Customer On Bu_Customer.Customer_ID=Customer.Customer_ID  Inner Join Customer_Facility On Customer.Customer_ID=Customer_Facility.Customer_ID " +
                 " Left Join Country On CF_Country=Country.ID  Where Bu_Customer.Bu_ID=%s And Isnull(CF_Enabled,1)=1  Order By Customer.Customer_ID ", buBean.getBuId());
-        GetCommonNameBeanListAsyncTask task = new GetCommonNameBeanListAsyncTask();
-        task.execute(sql);
+        GetCommonNameBeanListAsyncTask<ReceiverCompanyBean> task = new GetCommonNameBeanListAsyncTask();
+        task.execute(sql,"2");
     }
 
     private void getSelectBuDialog() {
-        GetCommonNameBeanListAsyncTask task = new GetCommonNameBeanListAsyncTask();
-        task.execute(String.format("Select Bu_ID,Bu_Name From Bu Where Company_ID= %s  And Enabled=1", companyBean.getCompanyId()));
+        GetCommonNameBeanListAsyncTask<BuBean> task = new GetCommonNameBeanListAsyncTask();
+        String sql = String.format("Select Bu_ID,Bu_Name From Bu Where Company_ID= %s  And Enabled=1", companyBean.getCompanyId());
+        task.execute(sql,"1");
     }
 
     private void showSelectCompanyDialog() {
@@ -264,13 +264,20 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         @Override protected List<T> doInBackground(String... strings) {
 //            String sql = "select Company_ID,Company_Chinese_Name,Company_English_Name from company where Company_Enabled = 1";
             String sql = strings[0];
+            int number = Integer.parseInt(strings[1]);
             WsResult result = WebServiceUtil.getDataTable(sql);
             List<T> companyList = null;
             if (result != null && result.getResult()) {
                 String jsonData = result.getErrorInfo();
                 Gson gson = new Gson();
-                companyList = gson.fromJson(jsonData, new TypeToken<List<T>>() {
-                }.getType());
+                if (number == 1){//bubean
+                    companyList = gson.fromJson(jsonData, new TypeToken<List<BuBean>>() {
+                    }.getType());
+                }else if (number == 2){//receiverCompanyBean
+
+                    companyList = gson.fromJson(jsonData, new TypeToken<List<ReceiverCompanyBean>>() {
+                    }.getType());
+                }
                 if (companyList != null && companyList.size() > 0){
                     if (companyList.get(0) instanceof ReceiverCompanyBean){
                         //去掉重复
