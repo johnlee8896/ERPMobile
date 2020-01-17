@@ -13,6 +13,7 @@
         android:layout_height="45dp"
         app:app_title_text="物流管理页面" >
         <TextView
+            android:id="@+id/logistics_title_confirm_button"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dimen_size_5"
@@ -308,18 +309,18 @@
                         android:text="客户地址"
                         android:textColor="@color/black" />
 
-                    <TextView
-                        android:id="@+id/logistics_receiver_address_textView"
+                    <EditText
+                        android:id="@+id/logistics_receiver_address_editText"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_gravity="center_vertical"
                         android:background="@color/transparent"
-                        android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
                         android:gravity="center_vertical"
                         android:paddingLeft="@dimen/dimen_size_20"
                         android:paddingRight="@dimen/dimen_size_10"
                         android:textColor="@color/black"
                         android:textSize="@dimen/text_size_14"
+                        android:hint="请输入客户地址"
                         tools:text=" 安徽雨刮" />
                 </LinearLayout>
 

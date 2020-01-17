@@ -9,6 +9,8 @@ import com.chinashb.www.mobileerp.adapter.BaseRecycleAdapter;
 import com.chinashb.www.mobileerp.adapter.BaseViewHolder;
 import com.chinashb.www.mobileerp.bean.BuBean;
 import com.chinashb.www.mobileerp.bean.CompanyBean;
+import com.chinashb.www.mobileerp.bean.DeliveryTypeBean;
+import com.chinashb.www.mobileerp.bean.LogisticsCompanyBean;
 import com.chinashb.www.mobileerp.bean.ReceiverCompanyBean;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 
@@ -68,6 +70,10 @@ public class SelectUseAdapter<T> extends BaseRecycleAdapter<T, SelectUseAdapter.
                 useTextView.setText(((BuBean)t).getBuName());
             }else if(t instanceof ReceiverCompanyBean){
                 useTextView.setText(((ReceiverCompanyBean)t).getCustomer());
+            }else if(t instanceof LogisticsCompanyBean){
+                useTextView.setText(((LogisticsCompanyBean)t).getLcName());
+            }else if(t instanceof DeliveryTypeBean){
+                useTextView.setText(((DeliveryTypeBean)t).getDelivery());
             }
 
 

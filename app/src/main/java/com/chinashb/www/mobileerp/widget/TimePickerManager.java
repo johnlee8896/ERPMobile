@@ -28,6 +28,10 @@ public class TimePickerManager {
     public final static String PICK_TYPE_START = "PICK_TYPE_START";
     public final static String PICK_TYPE_END = "PICK_TYPE_END";
 
+    public final static String PICK_TYPE_OUT_DATE = "PICK_TYPE_OUT_DATE";
+    public final static String PICK_TYPE_LOAD_TIME = "PICK_TYPE_LOAD_TIME";
+    public final static String PICK_TYPE_ARRIVE_DATE = "PICK_TYPE_ARRIVE_DATE";
+
     public final static String PICK_TYPE_YEAR = "year";
     public final static String PICK_TYPE_MONTH = "month";
     public final static String PICK_TYPE_DAY = "day";
@@ -55,7 +59,8 @@ public class TimePickerManager {
                 if (TextUtils.isEmpty(pickAction)) {
                     return;
                 }
-                onViewClickListener.onClickAction(v, pickAction.equals(PICK_TYPE_END) ? PICK_TYPE_END : PICK_TYPE_START, date);
+//                onViewClickListener.onClickAction(v, pickAction.equals(PICK_TYPE_END) ? PICK_TYPE_END : PICK_TYPE_START, date);
+                onViewClickListener.onClickAction(v, pickAction, date);
             }
         })
                 .setLayoutRes(R.layout.dialog_time_picker_layout, v -> {

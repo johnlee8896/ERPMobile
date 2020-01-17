@@ -1,8 +1,10 @@
 package com.chinashb.www.mobileerp;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,8 +12,12 @@ import android.widget.TextView;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BuBean;
 import com.chinashb.www.mobileerp.bean.CompanyBean;
+import com.chinashb.www.mobileerp.bean.DeliveryTypeBean;
+import com.chinashb.www.mobileerp.bean.LogisticsCompanyBean;
 import com.chinashb.www.mobileerp.bean.ReceiverCompanyBean;
+import com.chinashb.www.mobileerp.bean.entity.LogisticsDeliveryEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
@@ -41,7 +47,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
     @BindView(R.id.logistics_sender_bu_name_textView) TextView senderBuNameTextView;
     @BindView(R.id.logistics_sender_remark_editText) EditText senderRemarkEditText;
     @BindView(R.id.logistics_receiver_company_name_textView) TextView receiverCompanyNameTextView;
-    @BindView(R.id.logistics_receiver_address_textView) TextView receiverAddressTextView;
+    @BindView(R.id.logistics_receiver_address_editText) EditText receiverAddressEditText;
     @BindView(R.id.logistics_receiver_remark_editText) EditText receiverRemarkEditText;
     @BindView(R.id.logistics_domestic_foreign_textView) TextView domesticForeignTextView;
     @BindView(R.id.logistics_sample_lots_textView) TextView sampleLotsTextView;
@@ -62,12 +68,15 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
     @BindView(R.id.logistics_select_beipin_textView) TextView beipinTextView;
     @BindView(R.id.logistics_select_send_or_replashment_send_TextView) TextView sendOrReplashmentSendTextView;
     @BindView(R.id.logistics_select_send_or_replashment_replashment_TextView) TextView sendOrReplashmentReplashmentTextView;
+    @BindView(R.id.logistics_title_confirm_button) TextView confirmButton;
     private TimePickerManager timePickerManager;
     private CommonSelectInputDialog commonSelectInputDialog;
     private String currentDate = "";
     private CompanyBean companyBean;
     private BuBean buBean;
     private ReceiverCompanyBean receiverCompanyBean;
+    private LogisticsCompanyBean logisticsCompanyBean;
+    private DeliveryTypeBean deliveryTypeBean;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,27 +108,34 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         senderCompanyNameTextView.setOnClickListener(this);
         senderBuNameTextView.setOnClickListener(this);
         receiverCompanyNameTextView.setOnClickListener(this);
-        receiverAddressTextView.setOnClickListener(this);
+//        receiverAddressEditText.setOnClickListener(this);
 //        sampleLotsTextView.setOnClickListener(this);
         sampleTextView.setOnClickListener(this);
         lotsOfTextView.setOnClickListener(this);
         beipinTextView.setOnClickListener(this);
 //        sendOrReplashmentEditText.setOnClickListener(this);
         sendOrReplashmentSendTextView.setOnClickListener(this);
-        sendOrReplashmentSendTextView.setOnClickListener(this);
+        sendOrReplashmentReplashmentTextView.setOnClickListener(this);
 //        domesticForeignTextView.setOnClickListener(this);
         domesticTextView.setOnClickListener(this);
         foreignTextView.setOnClickListener(this);
         transportWayTextView.setOnClickListener(this);
         logisticsCompanyTextView.setOnClickListener(this);
         arriveDateTextView.setOnClickListener(this);
+        confirmButton.setOnClickListener(this);
 
 
     }
 
+
     private void showTimePickerDialog(String pickType) {
         if (timePickerManager == null) {
             timePickerManager = new TimePickerManager(LogisticsManageActivity.this);
+        }
+        if (pickType == TimePickerManager.PICK_TYPE_ARRIVE_DATE || pickType == TimePickerManager.PICK_TYPE_OUT_DATE) {
+            timePickerManager.setShowType(TimePickerManager.PICK_TYPE_YEAR, 3);
+        } else {
+            timePickerManager.setShowType(TimePickerManager.PICK_TYPE_YEAR, 5);
         }
         timePickerManager
                 .setOnViewClickListener(LogisticsManageActivity.this)
@@ -132,9 +148,10 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 
     @Override public void onClick(View view) {
         if (view == outDateTextView) {
-            showTimePickerDialog(TimePickerManager.PICK_TYPE_START);
+            showTimePickerDialog(TimePickerManager.PICK_TYPE_OUT_DATE);
         } else if (view == loadCarTimeTextView) {
-            showTimePickerDialog(TimePickerManager.PICK_TYPE_MINUTE);
+            //1表示到分
+            showTimePickerDialog(TimePickerManager.PICK_TYPE_LOAD_TIME);
         } else if (view == senderCompanyNameTextView) {
             showSelectCompanyDialog();
         } else if (view == senderBuNameTextView) {
@@ -149,9 +166,10 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
             } else {
                 ToastUtil.showToastShort("请先选择车间");
             }
-        } else if (view == receiverAddressTextView) {
-
         }
+//        else if (view == receiverAddressEditText) {
+//
+//        }
 //        else if (view == sampleLotsTextView) {
 //
 //        } else if (view == sendOrReplashmentEditText) {
@@ -160,11 +178,11 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 //
 //        }
         else if (view == transportWayTextView) {
-
+            getSelectLogisticsTypeDialog();
         } else if (view == logisticsCompanyTextView) {
-
+            getSelectLogisticsCompanyDialog();
         } else if (view == arriveDateTextView) {
-            showTimePickerDialog(TimePickerManager.PICK_TYPE_END);
+            showTimePickerDialog(TimePickerManager.PICK_TYPE_ARRIVE_DATE);
         } else if (view == domesticTextView) {
             domesticTextView.setSelected(true);
             foreignTextView.setSelected(false);
@@ -189,7 +207,73 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         } else if (view == sendOrReplashmentReplashmentTextView) {
             sendOrReplashmentSendTextView.setSelected(false);
             sendOrReplashmentReplashmentTextView.setSelected(true);
+        }else if (view == confirmButton){
+            //如果是新建，应该要保存的
+            if (judgeVerify()){
+                LogisticsDeliveryEntity entity = new LogisticsDeliveryEntity();
+                entity.setTrackNO(trackNOEditText.getText().toString());
+                entity.setTelephone(telephoneEditText.getText().toString());
+                entity.setLogisticsCompanyBean(logisticsCompanyBean);
+                entity.setReceiverCompanyBean(receiverCompanyBean);
+                entity.setSendCompanyBean(companyBean);
+                entity.setDeliveryTypeBean(deliveryTypeBean);
+
+                Intent intent = new Intent(this,ProductSaleOutActivity.class);
+                //// TODO: 2020/1/17 传递一堆参数
+                intent.putExtra(IntentConstant.Intent_Extra_logistics_entity,entity);
+                setResult(IntentConstant.Intent_Request_Code_Product_To_Logistics,intent);
+                finish();
+            }
         }
+    }
+
+    private boolean judgeVerify() {
+        if (TextUtils.isEmpty(trackNOEditText.getText())){
+            ToastUtil.showToastShort("请输入内部跟踪号！");
+            return false;
+        }
+        if (TextUtils.isEmpty(receiverCompanyNameTextView.getText())){
+            ToastUtil.showToastShort("请选择客户公司！");
+            return false;
+        }
+        if (TextUtils.isEmpty(receiverAddressEditText.getText())){
+            ToastUtil.showToastShort("请填写客户公司地址！");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(arriveDateTextView.getText())){
+            ToastUtil.showToastShort("请选择到货日期！");
+            return false;
+        }
+        if (TextUtils.isEmpty(dayNumberEditText.getText())){
+            ToastUtil.showToastShort("请输入运输天数！");
+            return false;
+        }
+        if (TextUtils.isEmpty(driverNameEditText.getText())){
+            ToastUtil.showToastShort("请输入司机或联系人姓名！");
+            return false;
+        }
+        if (TextUtils.isEmpty(telephoneEditText.getText())){
+            ToastUtil.showToastShort("请输入联系人电话！");
+            return false;
+        }
+        if (TextUtils.isEmpty(carPlateEditText.getText())){
+            ToastUtil.showToastShort("请输入车牌号！");
+            return false;
+        }
+        return true;
+    }
+
+    private void getSelectLogisticsTypeDialog() {
+        String sql = "Select * from dt ";
+        GetCommonNameBeanListAsyncTask<DeliveryTypeBean> task = new GetCommonNameBeanListAsyncTask();
+        task.execute(sql, "4");
+    }
+
+    private void getSelectLogisticsCompanyDialog() {
+        String sql = "Select * from LC ";
+        GetCommonNameBeanListAsyncTask<LogisticsCompanyBean> task = new GetCommonNameBeanListAsyncTask();
+        task.execute(sql, "3");
     }
 
     private void getSelectReceiverCompanyDialog() {
@@ -198,13 +282,13 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
                 "Inner Join Bu_Customer On Bu_Customer.Customer_ID=Customer.Customer_ID  Inner Join Customer_Facility On Customer.Customer_ID=Customer_Facility.Customer_ID " +
                 " Left Join Country On CF_Country=Country.ID  Where Bu_Customer.Bu_ID=%s And Isnull(CF_Enabled,1)=1  Order By Customer.Customer_ID ", buBean.getBuId());
         GetCommonNameBeanListAsyncTask<ReceiverCompanyBean> task = new GetCommonNameBeanListAsyncTask();
-        task.execute(sql,"2");
+        task.execute(sql, "2");
     }
 
     private void getSelectBuDialog() {
         GetCommonNameBeanListAsyncTask<BuBean> task = new GetCommonNameBeanListAsyncTask();
         String sql = String.format("Select Bu_ID,Bu_Name From Bu Where Company_ID= %s  And Enabled=1", companyBean.getCompanyId());
-        task.execute(sql,"1");
+        task.execute(sql, "1");
     }
 
     private void showSelectCompanyDialog() {
@@ -212,10 +296,12 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
     }
 
     @Override public <T> void onClickAction(View v, String tag, T date) {
-        if (tag.equals(TimePickerManager.PICK_TYPE_START)) {
-            getText((Date) date);
-        } else if (tag.equals(TimePickerManager.PICK_TYPE_END)) {
-            getText((Date) date);
+        if (tag.equals(TimePickerManager.PICK_TYPE_OUT_DATE)) {
+            outDateTextView.setText(getText((Date) date));
+        } else if (tag.equals(TimePickerManager.PICK_TYPE_LOAD_TIME)) {
+            loadCarTimeTextView.setText(UnitFormatUtil.sdf_MDHM.format((Date) date));
+        } else if (tag.equals(TimePickerManager.PICK_TYPE_ARRIVE_DATE)) {
+            arriveDateTextView.setText(getText((Date) date));
         }
     }
 
@@ -249,7 +335,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
                     if (t != null && t instanceof CompanyBean) {
                         companyBean = (CompanyBean) t;
                         senderCompanyNameTextView.setText(((CompanyBean) t).getCompanyChineseName());
-                        if (commonSelectInputDialog != null && commonSelectInputDialog.isShowing()){
+                        if (commonSelectInputDialog != null && commonSelectInputDialog.isShowing()) {
                             commonSelectInputDialog.dismiss();
                         }
 
@@ -266,47 +352,64 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
             String sql = strings[0];
             int number = Integer.parseInt(strings[1]);
             WsResult result = WebServiceUtil.getDataTable(sql);
-            List<T> companyList = null;
+            List<T> commonDataList = null;
+            //// TODO: 2020/1/17 未来如何优化架构
+//            commonDataList = new ArrayList<>();
+//            commonDataList.add(new T);
             if (result != null && result.getResult()) {
                 String jsonData = result.getErrorInfo();
                 Gson gson = new Gson();
-                if (number == 1){//bubean
-                    companyList = gson.fromJson(jsonData, new TypeToken<List<BuBean>>() {
+                if (number == 1) {//bubean
+                    commonDataList = gson.fromJson(jsonData, new TypeToken<List<BuBean>>() {
                     }.getType());
-                }else if (number == 2){//receiverCompanyBean
-
-                    companyList = gson.fromJson(jsonData, new TypeToken<List<ReceiverCompanyBean>>() {
+                } else if (number == 2) {//receiverCompanyBean
+                    commonDataList = gson.fromJson(jsonData, new TypeToken<List<ReceiverCompanyBean>>() {
+                    }.getType());
+                } else if (number == 3) {
+                    commonDataList = gson.fromJson(jsonData, new TypeToken<List<LogisticsCompanyBean>>() {
+                    }.getType());
+                } else if (number == 4) {
+                    commonDataList = gson.fromJson(jsonData, new TypeToken<List<DeliveryTypeBean>>() {
                     }.getType());
                 }
-                if (companyList != null && companyList.size() > 0){
-                    if (companyList.get(0) instanceof ReceiverCompanyBean){
+
+                if (commonDataList != null && commonDataList.size() > 0) {
+                    if (commonDataList.get(0) instanceof ReceiverCompanyBean) {
+                        commonDataList = gson.fromJson(jsonData, new TypeToken<List<ReceiverCompanyBean>>() {
+                        }.getType());
                         //去掉重复
                         List<ReceiverCompanyBean> tempList = new ArrayList<>();
                         List<String> nameList = new ArrayList<>();
-                        for (T bean : companyList){
-                            if (!nameList.contains(((ReceiverCompanyBean)bean).getCustomer())){
-                                nameList.add(((ReceiverCompanyBean)bean).getCustomer());
-                                tempList.add((ReceiverCompanyBean)bean);
+                        for (T bean : commonDataList) {
+                            if (!nameList.contains(((ReceiverCompanyBean) bean).getCustomer())) {
+                                nameList.add(((ReceiverCompanyBean) bean).getCustomer());
+                                tempList.add((ReceiverCompanyBean) bean);
                             }
                         }
                         return (List<T>) tempList;
                     }
+//                    else if (commonDataList.get(0) instanceof BuBean) {
+//                        commonDataList = gson.fromJson(jsonData, new TypeToken<List<BuBean>>() {
+//                        }.getType());
+//                    }else if (commonDataList.get(0) instanceof LogisticsCompanyBean) {
+//
+//                    }
                 }
             }
 
 
-            return companyList;
+            return commonDataList;
         }
 
-        @Override
-        protected void onPostExecute(List<T> companyList) {
+        @Override protected void onPostExecute(List<T> companyList) {
             super.onPostExecute(companyList);
             if (commonSelectInputDialog == null) {
                 commonSelectInputDialog = new CommonSelectInputDialog(LogisticsManageActivity.this);
             }
             commonSelectInputDialog.show();
             commonSelectInputDialog.refreshContentList(companyList);
-            commonSelectInputDialog.setTitle("请选择公司").setSelectOnly(true).setOnViewClickListener(new OnViewClickListener() {
+            //// TODO: 2020/1/17 这里可以通用
+            commonSelectInputDialog.setTitle("请选择").setSelectOnly(true).setOnViewClickListener(new OnViewClickListener() {
                 @Override public <T> void onClickAction(View v, String tag, T t) {
                     if (t != null) {
                         if (t instanceof CompanyBean) {
@@ -315,17 +418,26 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
                         } else if (t instanceof BuBean) {
                             buBean = (BuBean) t;
                             senderBuNameTextView.setText(buBean.getBuName());
-                        } else if(t instanceof ReceiverCompanyBean){
+                        } else if (t instanceof ReceiverCompanyBean) {
                             receiverCompanyBean = (ReceiverCompanyBean) t;
                             receiverCompanyNameTextView.setText(receiverCompanyBean.getCustomer());
+                        } else if (t instanceof LogisticsCompanyBean) {
+                            logisticsCompanyBean = (LogisticsCompanyBean) t;
+                            logisticsCompanyTextView.setText(logisticsCompanyBean.getLcName());
+                        } else if (t instanceof DeliveryTypeBean) {
+                            deliveryTypeBean = (DeliveryTypeBean) t;
+                            logisticsCompanyTextView.setText(deliveryTypeBean.getDelivery());
                         }
 
+
                     }
-                    if (commonSelectInputDialog != null && commonSelectInputDialog.isShowing()){
+                    if (commonSelectInputDialog != null && commonSelectInputDialog.isShowing()) {
                         commonSelectInputDialog.dismiss();
                     }
                 }
             });
         }
+
     }
+
 }
