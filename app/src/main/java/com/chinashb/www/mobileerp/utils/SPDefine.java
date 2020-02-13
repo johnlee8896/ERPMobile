@@ -7,4 +7,7 @@ package com.chinashb.www.mobileerp.utils;
  */
 public class SPDefine {
     public static final String SP_login_user_name = "login_user_name";
+
+    public static final String SP_logistics_company_bean_string = "logistics_company_bean_string";
+    public static final String SP_logistics_bu_bean_string = "logistics_bu_bean_string";
 }

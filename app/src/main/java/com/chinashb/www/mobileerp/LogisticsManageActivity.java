@@ -17,8 +17,11 @@ import com.chinashb.www.mobileerp.bean.LogisticsCompanyBean;
 import com.chinashb.www.mobileerp.bean.ReceiverCompanyBean;
 import com.chinashb.www.mobileerp.bean.entity.LogisticsDeliveryEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.SPSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.SPDefine;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
@@ -97,8 +100,25 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         lotsOfTextView.setSelected(true);
         sendOrReplashmentSendTextView.setSelected(true);
 
-        senderCompanyNameTextView.setText("安徽胜华波汽车电器有限公司 ");
-        senderBuNameTextView.setText("安徽雨刮");
+
+        String companyBeanString = SPSingleton.get().getString(SPDefine.SP_logistics_company_bean_string);
+        if (!TextUtils.isEmpty(companyBeanString)){
+            companyBean = JsonUtil.parseJsonToObject(companyBeanString,CompanyBean.class);
+            if (companyBean != null){
+                senderCompanyNameTextView.setText(companyBean.getCompanyChineseName());
+            }
+        }
+
+        String buBeanString = SPSingleton.get().getString(SPDefine.SP_logistics_bu_bean_string);
+        if (!TextUtils.isEmpty(buBeanString)){
+            buBean = JsonUtil.parseJsonToObject(buBeanString,BuBean.class);
+            if (buBean != null){
+                senderBuNameTextView.setText(buBean.getBuName());
+            }
+        }
+
+//        senderCompanyNameTextView.setText("安徽胜华波汽车电器有限公司 ");
+//        senderBuNameTextView.setText("安徽雨刮");
 
     }
 
@@ -210,6 +230,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         }else if (view == confirmButton){
             //如果是新建，应该要保存的
             if (judgeVerify()){
+                ToastUtil.showToastShort("物流信息填写成功！");
                 LogisticsDeliveryEntity entity = new LogisticsDeliveryEntity();
                 entity.setTrackNO(trackNOEditText.getText().toString());
                 entity.setTelephone(telephoneEditText.getText().toString());
@@ -218,11 +239,26 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
                 entity.setSendCompanyBean(companyBean);
                 entity.setDeliveryTypeBean(deliveryTypeBean);
 
+
+//                SharedPreferences preferences = getSharedPreferences("ERP", Context.MODE_PRIVATE);
+//
+//                preferences.edit().putString("companyBean",JsonUtil.objectToJson(companyBean));
+//                preferences.edit().putString("buBean",JsonUtil.objectToJson(buBean));
+//                preferences.edit().commit();
+
+                SPSingleton.get().putString(SPDefine.SP_logistics_company_bean_string,JsonUtil.objectToJson(companyBean));
+                SPSingleton.get().putString(SPDefine.SP_logistics_bu_bean_string,JsonUtil.objectToJson(buBean));
+
                 Intent intent = new Intent(this,ProductSaleOutActivity.class);
                 //// TODO: 2020/1/17 传递一堆参数
                 intent.putExtra(IntentConstant.Intent_Extra_logistics_entity,entity);
                 setResult(IntentConstant.Intent_Request_Code_Product_To_Logistics,intent);
                 finish();
+
+
+
+
+
             }
         }
     }
@@ -299,7 +335,9 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         if (tag.equals(TimePickerManager.PICK_TYPE_OUT_DATE)) {
             outDateTextView.setText(getText((Date) date));
         } else if (tag.equals(TimePickerManager.PICK_TYPE_LOAD_TIME)) {
-            loadCarTimeTextView.setText(UnitFormatUtil.sdf_MDHM.format((Date) date));
+//            UnitFormatUtil.sdf_YMD_Chinese.format(date);
+            String loadTime = UnitFormatUtil.sdf_MDHM.format((Date) date);
+            loadCarTimeTextView.setText(loadTime);
         } else if (tag.equals(TimePickerManager.PICK_TYPE_ARRIVE_DATE)) {
             arriveDateTextView.setText(getText((Date) date));
         }
@@ -426,7 +464,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
                             logisticsCompanyTextView.setText(logisticsCompanyBean.getLcName());
                         } else if (t instanceof DeliveryTypeBean) {
                             deliveryTypeBean = (DeliveryTypeBean) t;
-                            logisticsCompanyTextView.setText(deliveryTypeBean.getDelivery());
+                            transportWayTextView.setText(deliveryTypeBean.getDelivery());
                         }
 
 

@@ -111,5 +111,11 @@
         tools:listitem="@layout/item_delivery_order_layout" />
     <!--</android.support.v4.widget.NestedScrollView>-->
 
+    <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+        android:id="@+id/delivery_order_emptyLayoutView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.chinashb.www.mobileerp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
+import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,20 +41,23 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
     @BindView(R.id.delivery_order_today_button) TextView todayButton;
     @BindView(R.id.delivery_order_tomorrow_button) TextView tomorrowButton;
     @BindView(R.id.delivery_order_customRecyclerView) CustomRecyclerView recyclerView;
+    @BindView(R.id.delivery_order_emptyLayoutView) EmptyLayoutManageView emptyLayoutView;
 
     private DeliveryOrderAdapter adapter;
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
-        @Override public <T> void onClickAction(View v, String tag, T t) {
-            if (t != null && t instanceof DeliveryOrderBean){
+        @Override
+        public <T> void onClickAction(View v, String tag, T t) {
+            if (t != null && t instanceof DeliveryOrderBean) {
                 Intent intent = new Intent(DeliveryOrderActivity.this, ProductSaleOutActivity.class);
-                intent.putExtra(IntentConstant.Intent_product_delivery_order_bean,(DeliveryOrderBean)t);
-                setResult(IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order,intent);
+                intent.putExtra(IntentConstant.Intent_product_delivery_order_bean, (DeliveryOrderBean) t);
+                setResult(IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order, intent);
                 finish();
             }
         }
     };
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delivery_order_layout);
         ButterKnife.bind(this);
@@ -60,6 +65,12 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
         initView();
         setViewsListener();
 
+        long currentTime = System.currentTimeMillis();
+        String todayYMD = UnitFormatUtil.formatTimeToDay(currentTime);
+        GetDeliveryOrderAsyncTask task = new GetDeliveryOrderAsyncTask();
+        task.execute(todayYMD, todayYMD);
+        todayButton.setSelected(true);
+        todayButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
     }
 
     private void initView() {
@@ -76,40 +87,53 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
         tomorrowButton.setOnClickListener(this);
     }
 
-    @Override public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
         long currentTime = System.currentTimeMillis();
         String todayYMD = UnitFormatUtil.formatTimeToDay(currentTime);
         GetDeliveryOrderAsyncTask task = new GetDeliveryOrderAsyncTask();
+        weekAgoButton.setTextColor(Color.DKGRAY);
+        beforeYesterdayButton.setTextColor(Color.DKGRAY);
+        yesterdayButton.setTextColor(Color.DKGRAY);
+        todayButton.setTextColor(Color.DKGRAY);
+        tomorrowButton.setTextColor(Color.DKGRAY);
         //// TODO: 2020/1/3 有待检查和优化
         if (v == weekAgoButton) {
             long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 8;
             long endTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND;
 //            task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(endTime));
             task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(startTime));
+            weekAgoButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
         } else if (v == beforeYesterdayButton) {
             long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 3;
             long endTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 2;
 //            task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(endTime));
             task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(startTime));
+            beforeYesterdayButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
         } else if (v == yesterdayButton) {
             long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 2;
             long endTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND;
 //            task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(endTime));
             task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(startTime));
+            yesterdayButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
         } else if (v == todayButton) {
             task.execute(todayYMD, todayYMD);
+            todayButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
         } else if (v == tomorrowButton) {
 //            long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 8;
             long endTime = currentTime + UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND;
             task.execute(UnitFormatUtil.formatTimeToDay(endTime), UnitFormatUtil.formatTimeToDay(endTime));
+            tomorrowButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
         }
     }
+
     /**
      * 根据时间获取发货指令列表
      */
     private class GetDeliveryOrderAsyncTask extends AsyncTask<String, String, String> {
 
-        @Override protected String doInBackground(String... strings) {
+        @Override
+        protected String doInBackground(String... strings) {
             String startDate = strings[0];
             String endDate = strings[1];
             String sql = String.format("Select D.DO_ID,  D.TrackNo, D.SpecificTime , D.Delivery_Date , D.Arrive_Date, F.CF_Chinese_Name , Des_Info ,  Special , D.Done ,D.Part_Done A FROM DP_Order As D\n" +
@@ -121,7 +145,7 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
                 String jsonData = result.getErrorInfo();
                 if (!TextUtils.isEmpty(jsonData)) {
                     //// TODO: 2020/1/3 放这里会出错，刷新UI线程问题
-                   return  jsonData;
+                    return jsonData;
 
                 }
             }
@@ -129,7 +153,8 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
             return null;
         }
 
-        @Override protected void onPostExecute(String jsonData) {
+        @Override
+        protected void onPostExecute(String jsonData) {
             super.onPostExecute(jsonData);
             Gson gson = new Gson();
             List<DeliveryOrderBean> deliveryOrderBeanList = gson.fromJson(jsonData, new TypeToken<List<DeliveryOrderBean>>() {
@@ -137,6 +162,13 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
 //                    DeliveryOrderBean bean = JsonUtil.parseJsonToObject(jsonData,new TypeToken<List<DeliveryOrderBean>>(){});
             if (deliveryOrderBeanList != null && deliveryOrderBeanList.size() > 0) {
                 adapter.setData(deliveryOrderBeanList);
+                if (emptyLayoutView.getVisibility() == View.VISIBLE){
+                    emptyLayoutView.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                emptyLayoutView.setVisibility(View.VISIBLE);
             }
 
         }
@@ -147,19 +179,21 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
      */
     private class GetDeliveryOrderItemAsyncTask extends AsyncTask<String, String, String> {
 
-        @Override protected String doInBackground(String... doId) {
+        @Override
+        protected String doInBackground(String... doId) {
             String sql = String.format("Select D.* FROM DPI As D With (NoLock) Where D.Deleted=0 And D.Do_ID = %s", doId);
             WsResult result = WebServiceUtil.getDataTable(sql);
             if (result != null && result.getResult()) {
                 String jsonData = result.getErrorInfo();
                 if (!TextUtils.isEmpty(jsonData)) {
-                    return  jsonData;
+                    return jsonData;
                 }
             }
             return null;
         }
 
-        @Override protected void onPostExecute(String jsonData) {
+        @Override
+        protected void onPostExecute(String jsonData) {
             super.onPostExecute(jsonData);
             Gson gson = new Gson();
             List<DeliveryOrderBean> deliveryOrderBeanList = gson.fromJson(jsonData, new TypeToken<List<DeliveryOrderBean>>() {

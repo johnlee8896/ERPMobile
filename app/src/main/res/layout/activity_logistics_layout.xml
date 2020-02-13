@@ -400,7 +400,7 @@
                         android:textSize="@dimen/text_size_14"
                         tools:text=" 国内" />
                     <LinearLayout
-                        android:layout_width="100dp"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginLeft="@dimen/dimen_size_20"
@@ -410,7 +410,9 @@
                         <TextView
                             android:id="@+id/logistics_select_domestic_TextView"
                             android:layout_width="wrap_content"
-                            android:layout_height="20dp"
+                            android:paddingLeft="@dimen/dimen_size_5"
+                            android:paddingRight="@dimen/dimen_size_5"
+                            android:layout_height="25dp"
                             android:background="@drawable/selector_text_color_truck_select_blue"
                             android:gravity="center"
                             android:text="国内"
@@ -419,8 +421,10 @@
                         <TextView
                             android:id="@+id/logistics_select_foreign_textView"
                             android:layout_width="wrap_content"
-                            android:layout_height="20dp"
+                            android:layout_height="25dp"
                             android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:paddingLeft="@dimen/dimen_size_5"
+                            android:paddingRight="@dimen/dimen_size_5"
                             android:background="@drawable/selector_text_color_truck_select_blue"
                             android:gravity="center"
                             android:text="国外"
@@ -470,7 +474,9 @@
                         <TextView
                             android:id="@+id/logistics_select_sample_TextView"
                             android:layout_width="wrap_content"
-                            android:layout_height="20dp"
+                            android:layout_height="25dp"
+                            android:paddingLeft="@dimen/dimen_size_5"
+                            android:paddingRight="@dimen/dimen_size_5"
                             android:background="@drawable/selector_text_color_truck_select_blue"
                             android:gravity="center"
                             android:text="样品"
@@ -479,7 +485,9 @@
                         <TextView
                             android:id="@+id/logistics_select_lots_of_textView"
                             android:layout_width="wrap_content"
-                            android:layout_height="20dp"
+                            android:layout_height="25dp"
+                            android:paddingLeft="@dimen/dimen_size_5"
+                            android:paddingRight="@dimen/dimen_size_5"
                             android:layout_marginLeft="@dimen/dimen_size_10"
                             android:background="@drawable/selector_text_color_truck_select_blue"
                             android:gravity="center"
@@ -488,7 +496,9 @@
                         <TextView
                             android:id="@+id/logistics_select_beipin_textView"
                             android:layout_width="wrap_content"
-                            android:layout_height="20dp"
+                            android:layout_height="25dp"
+                            android:paddingLeft="@dimen/dimen_size_5"
+                            android:paddingRight="@dimen/dimen_size_5"
                             android:layout_marginLeft="@dimen/dimen_size_10"
                             android:background="@drawable/selector_text_color_truck_select_blue"
                             android:gravity="center"
@@ -538,7 +548,9 @@
                         <TextView
                             android:id="@+id/logistics_select_send_or_replashment_send_TextView"
                             android:layout_width="wrap_content"
-                            android:layout_height="20dp"
+                            android:layout_height="25dp"
+                            android:paddingLeft="@dimen/dimen_size_5"
+                            android:paddingRight="@dimen/dimen_size_5"
                             android:background="@drawable/selector_text_color_truck_select_blue"
                             android:gravity="center"
                             android:text="正常发货"
@@ -547,7 +559,9 @@
                         <TextView
                             android:id="@+id/logistics_select_send_or_replashment_replashment_TextView"
                             android:layout_width="wrap_content"
-                            android:layout_height="20dp"
+                            android:layout_height="25dp"
+                            android:paddingLeft="@dimen/dimen_size_5"
+                            android:paddingRight="@dimen/dimen_size_5"
                             android:layout_marginLeft="@dimen/dimen_size_10"
                             android:background="@drawable/selector_text_color_truck_select_blue"
                             android:gravity="center"
