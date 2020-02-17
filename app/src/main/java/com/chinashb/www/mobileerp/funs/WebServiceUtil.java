@@ -613,6 +613,8 @@ public class WebServiceUtil {
 
     }
 
+
+
     //将物料入相应的库,成品账
     //Bu_ID As Integer, InDate As Date, RecordNo As String, WC_ID As Long,
     // WC_Name As String, PS_ID As Long, Product_ID As Long, Item_ID As Long,
