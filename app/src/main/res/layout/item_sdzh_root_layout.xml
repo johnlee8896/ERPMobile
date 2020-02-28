@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/underline"
+    android:orientation="vertical"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:text="Program_ID" />
+
+            <TextView
+                android:id="@+id/item_sdzh_program_id_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="2445" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_15"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="项目名称" />
+
+            <TextView
+                android:id="@+id/item_sdzh_program_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="532后刮" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:text="Product_ID" />
+
+            <TextView
+                android:id="@+id/item_sdzh_product_id_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="18240" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_15"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="PS_ID" />
+
+            <TextView
+                android:id="@+id/item_sdzh_ps_id_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="21911" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:text="名称" />
+
+            <TextView
+                android:id="@+id/item_sdzh_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="电机" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_15"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="产品通称" />
+
+            <TextView
+                android:id="@+id/item_sdzh_product_common_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="DF-532h_7879-8GB" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:text="客户零件号" />
+
+            <TextView
+                android:id="@+id/item_sdzh_customer_part_number_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="28710 2GMNDB" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="版本" />
+
+            <TextView
+                android:id="@+id/item_sdzh_version_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_5"
+                android:textColor="@color/black"
+                tools:text="s1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="最新版本" />
+
+            <TextView
+                android:id="@+id/item_sdzh_newest_version_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_5"
+                android:textColor="@color/black"
+                tools:text="s1" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+
+
+
+</LinearLayout>

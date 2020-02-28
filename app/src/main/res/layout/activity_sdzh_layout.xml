@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="三点照合" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/sdzh_scan_order_number_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="扫描送货单号" />
+
+        <TextView
+            android:id="@+id/sdzh_scan_box_bar_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="扫描外箱条码" />
+
+        <TextView
+            android:id="@+id/sdzh_scan_single_part_bar_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="扫描单机条码" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/sdzh_remove_single_part_bar_button"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="移除单机条码" />
+
+    <LinearLayout
+        android:id="@+id/sdzh_order_No_data_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/sdzh_current_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:layout_marginBottom="@dimen/dimen_size_5"
+        android:padding="@dimen/dimen_size_5"
+        tools:text="当前发货单号  XD000 " />
+
+    <!--android:descendantFocusability="blocksDescendants"-->
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+
+            <LinearLayout
+                android:id="@+id/sdzh_root_data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <!--<LinearLayout-->
+                    <!--android:id="@+id/sdzh_order_No_data_layout"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:orientation="vertical"-->
+                    <!--android:visibility="gone" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/sdzh_current_info_textView"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="@dimen/dimen_size_5"-->
+                    <!--android:layout_marginBottom="@dimen/dimen_size_5"-->
+                    <!--android:padding="@dimen/dimen_size_5"-->
+                    <!--tools:text="当前发货单号  XD000 " />-->
+
+                <LinearLayout
+                    android:id="@+id/sdzh_data_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:background="@color/white"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/dimen_size_5"
+                            android:text="发货单号"
+                            android:textColor="@color/color_blue_00AAEE"
+                            android:textSize="@dimen/text_size_16" />
+
+                        <TextView
+                            android:id="@+id/sdzh_send_order_number_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:padding="@dimen/dimen_size_5"
+                            android:textColor="@color/color_blue_00AAEE"
+                            android:textSize="@dimen/text_size_16"
+                            tools:text="D088098098098098" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+                            android:id="@+id/sdzh_root_recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginRight="@dimen/dimen_size_10"
+                            android:nestedScrollingEnabled="false"
+                            android:scrollbars="vertical"
+                            app:app_item_decoration_type="ITEM_SPACE"
+                            app:app_layout_style="list_vertical"
+                            tools:itemCount="1"
+                            tools:listitem="@layout/item_sdzh_root_layout">
+
+                        </com.chinashb.www.mobileerp.widget.CustomRecyclerView>
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:id="@+id/sdzh_box_title_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_10"
+                        android:padding="@dimen/dimen_size_5"
+                        android:text="包装箱详情"
+                        android:textColor="@color/color_blue_00AAEE"
+                        android:textSize="@dimen/text_size_16"
+                        tools:visibility="visible" />
+
+                    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+                        android:id="@+id/sdzh_box_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_size_10"
+                        android:layout_marginRight="@dimen/dimen_size_10"
+                        android:nestedScrollingEnabled="false"
+                        android:scrollbars="vertical"
+                        android:visibility="gone"
+                        app:app_item_decoration_type="ITEM_SPACE"
+                        app:app_layout_style="list_vertical"
+                        tools:itemCount="1"
+                        tools:listitem="@layout/item_sdzh_box_detail_layout"
+                        tools:visibility="visible">
+
+                    </com.chinashb.www.mobileerp.widget.CustomRecyclerView>
+
+
+                    <TextView
+                        android:id="@+id/sdzh_single_part_title_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_10"
+                        android:padding="@dimen/dimen_size_5"
+                        android:text="箱内单机详情"
+                        android:textColor="@color/color_blue_00AAEE"
+                        android:textSize="@dimen/text_size_16"
+                        tools:visibility="visible" />
+
+                    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+                        android:id="@+id/sdzh_single_part_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_size_10"
+                        android:layout_marginRight="@dimen/dimen_size_10"
+                        android:nestedScrollingEnabled="false"
+                        android:scrollbars="vertical"
+                        android:visibility="gone"
+                        app:app_item_decoration_type="ITEM_SPACE"
+                        app:app_layout_style="list_vertical"
+                        tools:itemCount="1"
+                        tools:listitem="@layout/item_sdzh_single_part_layout"
+                        tools:visibility="visible">
+
+                    </com.chinashb.www.mobileerp.widget.CustomRecyclerView>
+
+                    <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+                        android:id="@+id/sdzh_inner_empty_layoutView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+                    android:id="@+id/sdzh_empty_layoutView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+                android:id="@+id/sdzh_root_empty_layoutView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

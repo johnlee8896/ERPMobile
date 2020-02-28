@@ -1,13 +1,15 @@
 package com.chinashb.www.mobileerp.funs;
 
+import android.util.Base64;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+
 //import org.apache.commons.codec.binary.Base64;
-import android.util.Base64;
 
 
-public class DefaultEncryptor {
+public class EncryptDecryptUtil {
 
     private static final String ALGORITHM = "DESede";
 

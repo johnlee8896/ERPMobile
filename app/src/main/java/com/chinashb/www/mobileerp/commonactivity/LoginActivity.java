@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,6 +66,13 @@ public class LoginActivity extends BaseActivity {
     private RadioGroup netRadioGroup;
     private RadioButton intranetRadioButton;
     private RadioButton internetRadioButton;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            ToastUtil.showToastShort(msg.getData().getString("message"));
+        }
+    };
 
 
     @Override
@@ -93,6 +102,19 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 checkNamePwd();
+//                new Thread() {
+//                    @Override
+//                    public void run() {
+//                        super.run();
+//                        WsResult result = MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
+////                        ToastUtil.showToastShort(result.getErrorInfo());
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("message",result.getErrorInfo());
+//                        Message message = new Message();
+//                        message.setData(bundle);
+//                        handler.sendMessageAtTime(message,0);
+//                    }
+//                }.start();
 
             }
         });
@@ -142,17 +164,13 @@ public class LoginActivity extends BaseActivity {
 
     }
 
-    private class NetOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedID) {
-            if (intranetRadioButton.getId() == checkedID) {
-                WebServiceUtil.set_net_link_to_intranet();
-            }
-            if (internetRadioButton.getId() == checkedID) {
-                WebServiceUtil.set_net_link_to_internet();
-            }
+    @Override
+    protected void onResume() {
+        //设置为竖屏幕
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-
+        super.onResume();
     }
 
 //    private int GetApkInfo(Context context, String apkPath) {
@@ -214,15 +232,6 @@ public class LoginActivity extends BaseActivity {
 //        }
     }
 
-    @Override
-    protected void onResume() {
-        //设置为竖屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-        super.onResume();
-    }
-
     private void startScanHR() {
 
 //        IntentIntegrator scan = new IntentIntegrator(LoginActivity.this);
@@ -269,21 +278,6 @@ public class LoginActivity extends BaseActivity {
 //            }
         });
     }
-
-//    protected void debugLogin() {
-//
-//        if (BuildConfig.DEBUG) {
-//            userInfo = new UserInfoEntity();
-//            userInfo.setHR_ID(249);
-//            userInfo.setBu_ID(1);
-//            userInfo.setBu_Name("座椅电机");
-//            userInfo.setCompany_ID(1);
-//            userInfo.setCompany_Name("上海胜华波汽车电器有限公司");
-//
-//            MobileMainActivity.AsyncGetHrName task = new MobileMainActivity.AsyncGetHrName();
-//            task.execute();
-//        }
-//    }
 
     //http://www.chinashb.com/Download/ShbERP.apk
     private void checkErpVersionOk() {
@@ -337,6 +331,21 @@ public class LoginActivity extends BaseActivity {
 
     }
 
+//    protected void debugLogin() {
+//
+//        if (BuildConfig.DEBUG) {
+//            userInfo = new UserInfoEntity();
+//            userInfo.setHR_ID(249);
+//            userInfo.setBu_ID(1);
+//            userInfo.setBu_Name("座椅电机");
+//            userInfo.setCompany_ID(1);
+//            userInfo.setCompany_Name("上海胜华波汽车电器有限公司");
+//
+//            MobileMainActivity.AsyncGetHrName task = new MobileMainActivity.AsyncGetHrName();
+//            task.execute();
+//        }
+//    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -368,7 +377,18 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    private class NetOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedID) {
+            if (intranetRadioButton.getId() == checkedID) {
+                WebServiceUtil.set_net_link_to_intranet();
+            }
+            if (internetRadioButton.getId() == checkedID) {
+                WebServiceUtil.set_net_link_to_internet();
+            }
+        }
 
+    }
 
     private class CheckNameAndPasswordAsyncTask extends AsyncTask<String, Void, Void> {
         private WsResult wsResult = null;

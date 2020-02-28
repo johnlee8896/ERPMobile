@@ -70,6 +70,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
         if (v == selectPlanButton) {
             Intent intent = new Intent(this, DeliveryOrderActivity.class);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order);
+            startActivity(intent);
         }else if (v == logisticsButton){
             Intent intent = new Intent(this,LogisticsManageActivity.class);
             startActivityForResult(intent,IntentConstant.Intent_Request_Code_Product_To_Logistics);

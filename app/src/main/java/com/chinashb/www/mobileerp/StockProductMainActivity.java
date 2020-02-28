@@ -60,7 +60,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         if (v == scanIntoTrayButton) {
 
         } else if (v == scanIntoNonTrayButton) {
-            Intent intent = new Intent(this, ProductInNonTrayActivity.class);
+            Intent intent = new Intent(this, ProductInNonTrayScanActivity.class);
             startActivity(intent);
         } else if (v == sendGoodsTrayButton) {
 

@@ -9,7 +9,22 @@
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:app_title_text="选择发货指令" />
+        app:app_title_text="选择发货指令" >
+        <TextView
+            android:id="@+id/delivery_order_sdzh_button"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:padding="@dimen/dimen_size_5"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_marginRight="@dimen/dimen_size_5"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:text="三点照合" />
+
+    </com.chinashb.www.mobileerp.widget.TitleLayoutManagerView>
     <!--app:app_hide_back_image="true"-->
 
     <!--<android.support.v4.widget.NestedScrollView-->

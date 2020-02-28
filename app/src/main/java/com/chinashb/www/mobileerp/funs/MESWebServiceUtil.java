@@ -7,6 +7,7 @@ import org.ksoap2.SoapFault;
 import org.ksoap2.serialization.MarshalDate;
 import org.ksoap2.serialization.PropertyInfo;
 import org.ksoap2.serialization.SoapObject;
+import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.HttpTransportSE;
 
@@ -19,23 +20,25 @@ import java.util.ArrayList;
  */
 
 public class MESWebServiceUtil {
-    //    public static final String IP = "http://223.244.235.164";
-    public static final String IP = "http://116.236.16.218";
-    private static String NAMESPACE = "http://tempuri.org/";
+    public static final String IP = "http://223.244.235.164";
+    //    public static final String IP = "http://116.236.16.218";
+//    private static String NAMESPACE = "http://tempuri.org/";
+    private static String NAMESPACE = "http://microsoft.com/webservices/";
     //    private static String SOAP_ACTION = "http://tempuri.org/MES_Service/";
 //    private static String SOAP_ACTION = "http://tempuri.org/WebService/";
-    private static String SOAP_ACTION = "http://tempuri.org/IService/";
+//    private static String SOAP_ACTION = "http://tempuri.org/IService/";
+    private static String SOAP_ACTION = "http://microsoft.com/webservices/";
     //    private static String SOAP_ACTION = "http://tempuri.org/WebService?wsdl";
 //    private static String SOAP_ACTION = "http://tempuri.org/";
 //    private static String SOAP_ACTION = "http://tempuri.org/GetSaveFinishedProductCodeDataByMes";
-    private static String URL = IP + ":8001/Service.svc";
-//    private static String URL = IP + ":8001/WebService.asmx";
+//    private static String URL = IP + ":8001/Service.svc";
+    private static String URL = IP + ":8001/WebService.asmx";
 
     public static WsResult GetSaveFinishedProductCodeDataByMes(String carton) {
         String webMethodName = "GetSaveFinishedProductCodeDataByMes";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
-//        AddPrpertyInfo(propertyInfos, "cartonNo", carton);
+//        AddPropertyInfo(propertyInfos, "cartonNo", carton);
         AddPrpertyInfo(propertyInfos, "productCode", carton);
 //        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
 //        String result = null;
@@ -49,7 +52,7 @@ public class MESWebServiceUtil {
 //        }
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         WsResult result = new WsResult();
-        String resultString ;
+        String resultString;
         if (envelope.bodyIn != null) {
             if (envelope.bodyIn instanceof SoapFault) {
                 resultString = ((SoapFault) envelope.bodyIn).faultstring;
@@ -58,9 +61,17 @@ public class MESWebServiceUtil {
             } else if (envelope.bodyIn instanceof SoapObject) {
                 SoapObject obj = (SoapObject) envelope.bodyIn;
                 int count = obj.getPropertyCount();
-                SoapObject obj2 = (SoapObject) obj.getProperty(0);
-                result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-                result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                if (obj.getProperty(0) instanceof SoapObject) {
+                    SoapObject obj2 = (SoapObject) obj.getProperty(0);
+
+                    result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                    result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                }else if (obj.getProperty(0) instanceof SoapPrimitive){
+                    SoapPrimitive soapPrimitive = (SoapPrimitive) obj.getProperty(0);
+//                    result.setResult(soapPrimitive.getAttribute("Result"));
+                    result.setResult(true);
+                    result.setErrorInfo(soapPrimitive.getValue().toString());
+                }
             }
         }
 //        SoapObject obj = (SoapObject) envelope.bodyIn;

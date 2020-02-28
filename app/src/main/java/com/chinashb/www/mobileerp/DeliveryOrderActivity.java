@@ -42,16 +42,22 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
     @BindView(R.id.delivery_order_tomorrow_button) TextView tomorrowButton;
     @BindView(R.id.delivery_order_customRecyclerView) CustomRecyclerView recyclerView;
     @BindView(R.id.delivery_order_emptyLayoutView) EmptyLayoutManageView emptyLayoutView;
+    @BindView(R.id.delivery_order_sdzh_button) TextView sdzhButton;
 
     private DeliveryOrderAdapter adapter;
+    private DeliveryOrderBean deliveryOrderBean;
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override
         public <T> void onClickAction(View v, String tag, T t) {
             if (t != null && t instanceof DeliveryOrderBean) {
-                Intent intent = new Intent(DeliveryOrderActivity.this, ProductSaleOutActivity.class);
-                intent.putExtra(IntentConstant.Intent_product_delivery_order_bean, (DeliveryOrderBean) t);
-                setResult(IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order, intent);
-                finish();
+//                Intent intent = new Intent(DeliveryOrderActivity.this, ProductSaleOutActivity.class);
+//                intent.putExtra(IntentConstant.Intent_product_delivery_order_bean, (DeliveryOrderBean) t);
+//                setResult(IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order, intent);
+//                finish();
+
+                //// TODO: 2020/2/26
+                deliveryOrderBean = (DeliveryOrderBean) t;
+
             }
         }
     };
@@ -85,6 +91,7 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
         yesterdayButton.setOnClickListener(this);
         todayButton.setOnClickListener(this);
         tomorrowButton.setOnClickListener(this);
+        sdzhButton.setOnClickListener(this);
     }
 
     @Override
@@ -124,6 +131,12 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
             long endTime = currentTime + UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND;
             task.execute(UnitFormatUtil.formatTimeToDay(endTime), UnitFormatUtil.formatTimeToDay(endTime));
             tomorrowButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
+        } else if (v == sdzhButton) {
+            if (deliveryOrderBean != null && deliveryOrderBean.getDOID() != 0) {
+                Intent intent = new Intent(this, SDZHHActivity.class);
+                intent.putExtra(IntentConstant.Intent_Extra_do_id, deliveryOrderBean.getDOID() + "");
+                startActivity(intent);
+            }
         }
     }
 
@@ -161,8 +174,13 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
             }.getType());
 //                    DeliveryOrderBean bean = JsonUtil.parseJsonToObject(jsonData,new TypeToken<List<DeliveryOrderBean>>(){});
             if (deliveryOrderBeanList != null && deliveryOrderBeanList.size() > 0) {
+                //// TODO: 2020/2/26
+                deliveryOrderBean = deliveryOrderBeanList.get(0);
+
+
+
                 adapter.setData(deliveryOrderBeanList);
-                if (emptyLayoutView.getVisibility() == View.VISIBLE){
+                if (emptyLayoutView.getVisibility() == View.VISIBLE) {
                     emptyLayoutView.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                 }
