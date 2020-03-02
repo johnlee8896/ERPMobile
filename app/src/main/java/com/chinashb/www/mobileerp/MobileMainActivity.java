@@ -1,5 +1,6 @@
 package com.chinashb.www.mobileerp;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -24,6 +25,8 @@ import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.StringConstantUtil;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.warehouse.StockPartMainActivity;
+import com.chinashb.www.mobileerp.widget.CommAlertDialog;
+import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.umeng.analytics.MobclickAgent;
@@ -260,6 +263,32 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             Intent intent = new Intent(this,FoodOrderActivity.class);
             startActivity(intent);
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(MobileMainActivity.this)
+                .setTitle("").setMessage("确定要退出吗？")
+                .setLeftText("确定").setRightText("取消");
+
+
+        builder.setOnViewClickListener(new OnDialogViewClickListener() {
+            @Override
+            public void onViewClick(Dialog dialog, View v, int tag) {
+                switch (tag) {
+                    case CommAlertDialog.TAG_CLICK_LEFT:
+                        MobileMainActivity.this.onBackPressed();
+                        dialog.dismiss();
+                        break;
+                    case CommAlertDialog.TAG_CLICK_RIGHT:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        });
+        builder.create().show();
+
     }
 
     private class GetHrNameAsyncTask extends AsyncTask<String, Void, Void> {

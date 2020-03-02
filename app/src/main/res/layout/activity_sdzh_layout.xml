@@ -14,16 +14,17 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dimen_size_5"
+        android:paddingRight="@dimen/dimen_size_5"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/sdzh_scan_order_number_button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginLeft="@dimen/dimen_size_20"
             android:layout_marginTop="@dimen/dimen_size_15"
-            android:layout_marginRight="@dimen/dimen_size_20"
             android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen_size_5"
             android:background="@drawable/shape_conner_blue_button_bg"
             android:gravity="center"
             android:text="扫描送货单号" />
@@ -32,10 +33,9 @@
             android:id="@+id/sdzh_scan_box_bar_button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginLeft="@dimen/dimen_size_20"
             android:layout_marginTop="@dimen/dimen_size_15"
-            android:layout_marginRight="@dimen/dimen_size_20"
             android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen_size_5"
             android:background="@drawable/shape_conner_blue_button_bg"
             android:gravity="center"
             android:text="扫描外箱条码" />
@@ -44,26 +44,50 @@
             android:id="@+id/sdzh_scan_single_part_bar_button"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginLeft="@dimen/dimen_size_20"
             android:layout_marginTop="@dimen/dimen_size_15"
-            android:layout_marginRight="@dimen/dimen_size_20"
             android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen_size_5"
             android:background="@drawable/shape_conner_blue_button_bg"
             android:gravity="center"
             android:text="扫描单机条码" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/sdzh_remove_single_part_bar_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen_size_5"
 
-    <TextView
-        android:id="@+id/sdzh_remove_single_part_bar_button"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:layout_marginRight="@dimen/dimen_size_20"
-        android:background="@drawable/shape_conner_blue_button_bg"
-        android:gravity="center"
-        android:text="移除单机条码" />
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="移除单机条码" />
+
+    </LinearLayout>
+    <EditText
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:id="@+id/sdzh_input_EditeText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_35"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="接收扫描结果"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14"
+        />
+    <!--<TextView-->
+        <!--android:id="@+id/sdzh_remove_single_part_bar_button"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
+        <!--android:layout_marginTop="@dimen/dimen_size_15"-->
+        <!--android:layout_marginRight="@dimen/dimen_size_20"-->
+        <!--android:background="@drawable/shape_conner_blue_button_bg"-->
+        <!--android:gravity="center"-->
+        <!--android:text="移除单机条码" />-->
 
     <LinearLayout
         android:id="@+id/sdzh_order_No_data_layout"
@@ -90,8 +114,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-
 
             <LinearLayout
                 android:id="@+id/sdzh_root_data_layout"
@@ -120,7 +142,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_5"
-                    android:background="@color/white"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -163,10 +184,15 @@
                             app:app_item_decoration_type="ITEM_SPACE"
                             app:app_layout_style="list_vertical"
                             tools:itemCount="1"
-                            tools:listitem="@layout/item_sdzh_root_layout">
+                            tools:listitem="@layout/item_sdzh_order_number_layout">
 
                         </com.chinashb.www.mobileerp.widget.CustomRecyclerView>
                     </LinearLayout>
+
+                    <View
+                        android:layout_height="0.8dp"
+                        android:layout_width="match_parent"
+                        android:background="@drawable/shape_divide_line_horizontal"/>
 
 
                     <TextView
@@ -176,7 +202,7 @@
                         android:layout_marginTop="@dimen/dimen_size_10"
                         android:padding="@dimen/dimen_size_5"
                         android:text="包装箱详情"
-                        android:textColor="@color/color_blue_00AAEE"
+                        android:textColor="@color/color_orange_F58B23"
                         android:textSize="@dimen/text_size_16"
                         tools:visibility="visible" />
 
@@ -192,6 +218,7 @@
                         app:app_item_decoration_type="ITEM_SPACE"
                         app:app_layout_style="list_vertical"
                         tools:itemCount="1"
+                        app:app_item_margin="@dimen/dimen_size_5"
                         tools:listitem="@layout/item_sdzh_box_detail_layout"
                         tools:visibility="visible">
 
@@ -205,7 +232,7 @@
                         android:layout_marginTop="@dimen/dimen_size_10"
                         android:padding="@dimen/dimen_size_5"
                         android:text="箱内单机详情"
-                        android:textColor="@color/color_blue_00AAEE"
+                        android:textColor="@color/color_red_E94156"
                         android:textSize="@dimen/text_size_16"
                         tools:visibility="visible" />
 
@@ -221,6 +248,7 @@
                         app:app_item_decoration_type="ITEM_SPACE"
                         app:app_layout_style="list_vertical"
                         tools:itemCount="1"
+                        app:app_item_margin="@dimen/dimen_size_5"
                         tools:listitem="@layout/item_sdzh_single_part_layout"
                         tools:visibility="visible">
 

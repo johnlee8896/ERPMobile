@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.bean.SDZHBoxDetailBean;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,6 +18,12 @@ import butterknife.ButterKnife;
  */
 public class SDZHOrderBoxDetailAdapter extends BaseRecycleAdapter<SDZHBoxDetailBean, SDZHOrderBoxDetailAdapter.SDZHBoxDetailViewHolder> {
 
+    private OnViewClickListener onViewClickListener;
+
+    public SDZHOrderBoxDetailAdapter setOnViewClickListener(OnViewClickListener onViewClickListener) {
+        this.onViewClickListener = onViewClickListener;
+        return this;
+    }
 
     @NonNull
     @Override
@@ -27,7 +34,15 @@ public class SDZHOrderBoxDetailAdapter extends BaseRecycleAdapter<SDZHBoxDetailB
     @Override
     public void onBindViewHolder(SDZHBoxDetailViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-//        holder.itemView.setOnClickListener();
+
+
+        holder.itemView.setOnClickListener(v -> {
+            notifyDataSetChanged();
+            holder.itemView.setSelected(!holder.itemView.isSelected());
+            if (onViewClickListener != null) {
+                onViewClickListener.onClickAction(v, "", holder.itemView.isSelected() ? dataList.get(position) : null);
+            }
+        });
     }
 
     public static class SDZHBoxDetailViewHolder extends BaseViewHolder {
@@ -40,7 +55,7 @@ public class SDZHOrderBoxDetailAdapter extends BaseRecycleAdapter<SDZHBoxDetailB
 
         public SDZHBoxDetailViewHolder(ViewGroup viewGroup) {
             super(viewGroup, R.layout.item_sdzh_box_detail_layout);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         @Override

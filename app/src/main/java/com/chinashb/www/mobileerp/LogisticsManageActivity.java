@@ -255,6 +255,27 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
                 setResult(IntentConstant.Intent_Request_Code_Product_To_Logistics,intent);
                 finish();
 
+//                insert into Account_Delivery (Abroad,Mass ,CF_ID,Delivery_No,Delivery_Date,LC_ID,AWarehouse ,AW_ID,Ac_Title_ID,Arrive_Date,Shiping_Date,
+//
+//                        Company_ID,Bu_ID,Done,DT_ID,Ac_Book_ID,Arrive_Ac_Book_ID,Contract_No,Replenish,SID,Part_Done,TrackNo,LoadTime,CC_ID,DriverName,DriverTel,Editor,EditorName
+//
+//                        ,Insert_Time,Des_Address,IsReturn) values
+//
+//                        (1,1,48,'ceshi','2020-01-11 02:02:02',33,0,8,100,'2020-01-11 02:02:02','2020-01-11 02:02:02'
+//
+//                                ,1,1,0,1,100,100,'ceshi',0,100,0,'0000000','2020-01-11 02:02:02',0,'lwf','15200000000',26009,'lwf'
+//
+//                                ,'2020-02-11 00:00:00.000','shanghaishi898',0)
+
+                String sql = String.format(" insert into Account_Delivery (Abroad,Mass ,CF_ID,Delivery_No,Delivery_Date,LC_ID,AWarehouse ,AW_ID,Ac_Title_ID,Arrive_Date,Shiping_Date," +
+                        " Company_ID,Bu_ID,Done,DT_ID,Ac_Book_ID,Arrive_Ac_Book_ID,Contract_No,Replenish,SID,Part_Done,TrackNo,LoadTime,CC_ID,DriverName,DriverTel,Editor,EditorName " +
+                        " ,Insert_Time,Des_Address,IsReturn) values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'," +
+                        "'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'," +
+                        "'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
+                        1,1,48,"ceshi","2020-01-11 02:02:02",33,0,8,100,"2020-01-11 02:02:02","2020-01-11 02:02:02" ,
+                        "" ,1,1,0,1,100,100,"ceshi",0,100,0,"0000000","2020-01-11 02:02:02",0,"lwf","15200000000",26009,"lwf",
+                        "" ,"2020-02-11 00:00:00.000","shanghaishi898",0);
+
 
 
 

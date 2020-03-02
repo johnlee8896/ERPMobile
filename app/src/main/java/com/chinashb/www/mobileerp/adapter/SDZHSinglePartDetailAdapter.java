@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.bean.SDZHSinglePartBean;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,6 +18,12 @@ import butterknife.ButterKnife;
  */
 public class SDZHSinglePartDetailAdapter extends BaseRecycleAdapter<SDZHSinglePartBean, SDZHSinglePartDetailAdapter.SDZHSinglePartViewHolder> {
 
+    private OnViewClickListener onViewClickListener;
+
+    public SDZHSinglePartDetailAdapter setOnViewClickListener(OnViewClickListener onViewClickListener) {
+        this.onViewClickListener = onViewClickListener;
+        return this;
+    }
 
     @NonNull
     @Override
@@ -27,7 +34,20 @@ public class SDZHSinglePartDetailAdapter extends BaseRecycleAdapter<SDZHSinglePa
     @Override
     public void onBindViewHolder(SDZHSinglePartDetailAdapter.SDZHSinglePartViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-//        holder.itemView
+        holder.itemView.setOnClickListener(v -> {
+            notifyDataSetChanged();
+            holder.itemView.setSelected(!holder.itemView.isSelected());
+            if (onViewClickListener != null) {
+//                if (!holder.itemView.isSelected()) {
+//                    holder.itemView.setSelected(true);
+//                }else{
+//                    holder.itemView.setSelected(false);
+//                }
+                onViewClickListener.onClickAction(v, "", holder.itemView.isSelected() ? dataList.get(position) : null);
+            }
+        });
+
+        //// TODO: 2020/2/29 取消其他item的选择，想别的更好方法
     }
 
     public static class SDZHSinglePartViewHolder extends BaseViewHolder {

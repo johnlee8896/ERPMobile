@@ -73,7 +73,7 @@ public class SDZHOrderDetailAdapter extends BaseRecycleAdapter<SDZHDeliveryOrder
         @BindView(R.id.item_sdzh_newest_version_textView) TextView newestVersionTextView;
 
         public SDZHOrderDetailViewHolder(ViewGroup viewGroup) {
-            super(viewGroup, R.layout.item_sdzh_root_layout);
+            super(viewGroup, R.layout.item_sdzh_order_number_layout);
             ButterKnife.bind(this, itemView);
         }
 

@@ -1,12 +1,15 @@
 package com.chinashb.www.mobileerp;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,10 +24,14 @@ import com.chinashb.www.mobileerp.bean.SDZHSinglePartBean;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
+import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -62,6 +69,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     @BindView(R.id.sdzh_single_part_title_textView) TextView singlePartTitleTextView;
     @BindView(R.id.sdzh_single_part_recyclerView) CustomRecyclerView singlePartRecyclerView;
     @BindView(R.id.sdzh_order_No_data_layout) LinearLayout orderNoDataLayout;
+    @BindView(R.id.sdzh_input_EditeText) EditText inputEditText;
     private String do_ID;
     private SDZHOrderDetailAdapter sdzhOrderDetailAdapter;
     private SDZHOrderBoxDetailAdapter boxDetailAdapter;
@@ -71,6 +79,39 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     private String selectBoxNo;
     private SDZHBoxDetailBean boxDetailBean;
     private String selectOrderNO;
+    private boolean hasSingPartSaved = false;
+    private boolean isSinglePartScanning = false;
+
+    private SDZHDeliveryOrderNumberDetailBean sdzhDeliveryOrderNumberDetailBean;
+    private SDZHBoxDetailBean sdzhBoxDetailBean;
+    private SDZHSinglePartBean sdzhSinglePartBean;
+
+    private boolean hasClickSelect = false;
+    private int selectRemovePosition = 0;
+
+    private OnViewClickListener onViewClickListener = new OnViewClickListener() {
+        @Override
+        public <T> void onClickAction(View v, String tag, T t) {
+            if (!TextUtils.isEmpty(tag)) {
+                selectRemovePosition = Integer.parseInt(tag);
+            } else {
+                selectRemovePosition = 0;
+            }
+            if (t != null) {
+                hasClickSelect = true;
+                if (t instanceof SDZHDeliveryOrderNumberDetailBean) {
+                    sdzhDeliveryOrderNumberDetailBean = (SDZHDeliveryOrderNumberDetailBean) t;
+                } else if (t instanceof SDZHBoxDetailBean) {
+                    sdzhBoxDetailBean = (SDZHBoxDetailBean) t;
+                } else if (t instanceof SDZHSinglePartBean) {
+                    sdzhSinglePartBean = (SDZHSinglePartBean) t;
+                }
+            } else {
+                //说明 是取消选中
+                hasClickSelect = false;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,12 +129,15 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         //// TODO: 2020/2/26 放这里报错，还没加载？没有
         sdzhOrderDetailAdapter = new SDZHOrderDetailAdapter();
         rootRecyclerView.setAdapter(sdzhOrderDetailAdapter);
+        sdzhOrderDetailAdapter.setOnViewClickListener(onViewClickListener);
 
         boxDetailAdapter = new SDZHOrderBoxDetailAdapter();
         boxRecyclerView.setAdapter(boxDetailAdapter);
+        boxDetailAdapter.setOnViewClickListener(onViewClickListener);
 
         singlePartDetailAdapter = new SDZHSinglePartDetailAdapter();
         singlePartRecyclerView.setAdapter(singlePartDetailAdapter);
+        singlePartDetailAdapter.setOnViewClickListener(onViewClickListener);
 
         setButtonsNotEnable();
         setViewsListener();
@@ -186,7 +230,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                             stringBuilder.append(temp);
                             stringBuilder.append(",");
                         }
-                        String resultSql = stringBuilder.toString().substring(0,stringBuilder.toString().length() - 1);
+                        String resultSql = stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1);
                         SaveSinglePartAsyncTask saveSinglePartAsyncTask = new SaveSinglePartAsyncTask();
                         saveSinglePartAsyncTask.execute(resultSql);
                         return;
@@ -304,7 +348,6 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         orderNumberButton.setEnabled(false);
         boxBarButton.setEnabled(false);
         singlePartBarButton.setEnabled(false);
-        removeSinglePartBarButton.setEnabled(false);
     }
 
     private void setViewsListener() {
@@ -312,6 +355,30 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         boxBarButton.setOnClickListener(this);
         singlePartBarButton.setOnClickListener(this);
         removeSinglePartBarButton.setOnClickListener(this);
+
+        inputEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                if (editable.toString().length() > 3 && editable.toString().endsWith("\n")) {
+//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
+                    System.out.println("========================扫描结果:" + editable.toString());
+                    if (TextUtils.isEmpty(editable.toString())){
+                        switch (currentScanState) {
+                            case SCAN_ORDER_NUMBER:
+                                handleOrderNOScan(editable.toString());
+                                break;
+                            case SCAN_BOX_CODE:
+                                handleBoxScan(editable.toString());
+                                break;
+                            case SCAN_SINGLE_PART_CODE:
+                                handleSinglePartScan(editable.toString());
+                                break;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -326,8 +393,47 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             new IntentIntegrator(this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
             currentScanState = SCAN_SINGLE_PART_CODE;
         } else if (view == removeSinglePartBarButton) {
-
+            removeSinglePart();
         }
+    }
+
+    private void removeSinglePart() {
+        if (sdzhSinglePartBean != null) {
+            CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(SDZHHActivity.this)
+                    .setTitle("").setMessage("确定移除该单机条目吗？")
+                    .setLeftText("确定").setRightText("取消");
+
+
+            builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                @Override
+                public void onViewClick(Dialog dialog, View v, int tag) {
+                    switch (tag) {
+                        case CommAlertDialog.TAG_CLICK_LEFT:
+                            handleRemoveSinglePart();
+                            dialog.dismiss();
+                            break;
+                        case CommAlertDialog.TAG_CLICK_RIGHT:
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            });
+            builder.create().show();
+        } else {
+            ToastUtil.showToastShort("请选择要移除的单机条目");
+        }
+    }
+
+    private void handleRemoveSinglePart() {
+        //// TODO: 2020/2/29 本来是要用do_id来判断的，但实际扫描单机时没有时时保存，所以用boxcode和doi_no
+//        String sql = String.format("delete DeliveryOrder_Item where BoxCode = '%s' and DOI_NO = '%s'", sdzhSinglePartBean.getBoxCode(),
+//                sdzhSinglePartBean.getDOI_Code());
+
+        String sql = String.format("update DeliveryOrder_Item set IsDelete = 1 where BoxCode = '%s' and DOI_NO = '%s'", sdzhSinglePartBean.getBoxCode(),
+                sdzhSinglePartBean.getDOI_Code());
+        DeleteSinglePartAsyncTask task = new DeleteSinglePartAsyncTask();
+        task.execute(sql);
+//        singlePartDetailAdapter.notifyItemRemoved(selectRemovePosition);
     }
 
 
@@ -638,15 +744,15 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         @Override
         protected void onPostExecute(WsResult result) {
             super.onPostExecute(result);
-            if (result != null && result.getResult()){
+            if (result != null && result.getResult()) {
                 ToastUtil.showToastLong("保存成功！");
-            }else{
+            } else {
                 ToastUtil.showToastLong("保存失败，错误信息是 " + result.getErrorInfo());
             }
 
             progressDialog.dismiss();
             //isok = 0表示已经装满，不可再操作
-            String updateSql = String.format("UPDATE DeliveryOrder_Box SET IsOk = 0 where BoxCode = '%s'",selectBoxNo);
+            String updateSql = String.format("UPDATE DeliveryOrder_Box SET IsOk = 0 where BoxCode = '%s'", selectBoxNo);
             UpdateBoxAsyncTask updateBoxAsyncTask = new UpdateBoxAsyncTask();
             updateBoxAsyncTask.execute(updateSql);
 
@@ -678,14 +784,64 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         @Override
         protected void onPostExecute(WsResult result) {
             super.onPostExecute(result);
-            if (result != null && result.getResult()){
+            if (result != null && result.getResult()) {
                 ToastUtil.showToastLong("更新成功！");
-            }else{
+            } else {
                 ToastUtil.showToastLong("更新失败，错误信息是 " + result.getErrorInfo());
             }
 
             progressDialog.dismiss();
             singlePartBarButton.setEnabled(false);
+
+        }
+    }
+
+    /**
+     * 当一个包装箱中单机扫描完成时更新包装箱  //// TODO: 2020/2/28 未来可用接口代码合并
+     */
+    private class DeleteSinglePartAsyncTask extends AsyncTask<String, String, WsResult> {
+        private CommProgressDialog progressDialog;
+
+        @Override
+        protected WsResult doInBackground(String... strings) {
+
+            String sql = strings[0];
+            System.out.println("========== DeleteSinglePartAsyncTask sql = " + sql);
+            WsResult result = WebServiceUtil.getDataTable(sql);
+            return result;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            progressDialog = new CommProgressDialog.Builder(SDZHHActivity.this)
+                    .setTitle("正在更新单机条目及包装箱数据..").create();
+            progressDialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(WsResult result) {
+            super.onPostExecute(result);
+            if (result != null && result.getResult()) {
+                ToastUtil.showToastLong("更新成功！");
+
+                singlePartDetailAdapter.notifyItemRemoved(selectRemovePosition);
+                if (singlePartDetailAdapter != null) {
+                    if (singlePartDetailAdapter.getList() != null) {
+                        int currentNumber = singlePartDetailAdapter.getList().size();
+                        refreshCurrentInfo(selectOrderNO, selectBoxNo, boxDetailBean.getBoxQty(), currentNumber - 1, sdzhSinglePartBean.getWorkNo());
+                    }
+                }
+
+                //同时更新box,与扫描更新唯一不同是这里 isok = 1，表示还可操作
+                String updateSql = String.format("UPDATE DeliveryOrder_Box SET IsOk = 1 where BoxCode = '%s'", selectBoxNo);
+                UpdateBoxAsyncTask updateBoxAsyncTask = new UpdateBoxAsyncTask();
+                updateBoxAsyncTask.execute(updateSql);
+
+            } else {
+                ToastUtil.showToastLong("更新失败，错误信息是 " + result.getErrorInfo());
+            }
+
+            progressDialog.dismiss();
 
         }
     }

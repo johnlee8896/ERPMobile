@@ -3,9 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/underline"
+    android:paddingLeft="@dimen/dimen_size_10"
+    android:paddingRight="@dimen/dimen_size_10"
+    android:background="@drawable/selector_item_sdzh_box_click_corner_bg"
     android:orientation="vertical"
-    android:paddingTop="3dp"
     android:paddingBottom="3dp">
 
     <LinearLayout
