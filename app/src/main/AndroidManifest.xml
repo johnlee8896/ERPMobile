@@ -53,10 +53,17 @@
             android:screenOrientation="portrait" />
         <activity android:name=".warehouse.WarehouseStockQueryActivity" />
 
+        <!--三点照合 成品出库-->
         <activity
             android:name=".SDZHHActivity"
             android:screenOrientation="portrait" />
 
+        <!--成品入库 扫描箱号入库-->
+        <activity
+            android:name=".ProductScanBoxInActivity"
+            android:screenOrientation="portrait" />
+
+        <!--成品入库 操作同PC端-->
         <activity
             android:name=".ProductInNonTrayScanActivity"
             android:screenOrientation="portrait" />

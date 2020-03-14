@@ -34,6 +34,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.product_main_other_in_textView) TextView otherInTextView;
     @BindView(R.id.product_main_sale_out_textView) TextView saleOutTextView;
     @BindView(R.id.product_main_other_out_textView) TextView otherOutTextView;
+    @BindView(R.id.product_main_scan_box_textView) TextView scanBoxInTextView;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +55,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         otherOutTextView.setOnClickListener(this);
         otherInTextView.setOnClickListener(this);
         saleOutTextView.setOnClickListener(this);
+        scanBoxInTextView.setOnClickListener(this);
     }
 
     @Override public void onClick(View v) {
@@ -75,10 +77,13 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         } else if (v == saleOutTextView) {
             Intent intent = new Intent(this, ProductSaleOutActivity.class);
             startActivity(intent);
-        }else if (v == otherInTextView){
+        } else if (v == otherInTextView) {
 
-        }else if (v == otherOutTextView){
+        } else if (v == otherOutTextView) {
 
+        } else if (v == scanBoxInTextView){
+            Intent intent = new Intent(this,ProductScanBoxInActivity.class);
+            startActivity(intent);
         }
     }
 }

@@ -23,10 +23,12 @@ import com.chinashb.www.mobileerp.bean.SDZHDeliveryOrderNumberDetailBean;
 import com.chinashb.www.mobileerp.bean.SDZHSinglePartBean;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.AppUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.warehouse.StockQueryPartActivity;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
@@ -142,7 +144,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         setButtonsNotEnable();
         setViewsListener();
         refreshCurrentInfo("", "", 0, 0, "");
-
+        AppUtil.forceHideInputMethod(SDZHHActivity.this);
 
 //            new GetDeliveryOrderAsyncTask().execute("6777");
 //        new GetOrderDetailAsyncTask().execute("CLD0A252A12I1A");

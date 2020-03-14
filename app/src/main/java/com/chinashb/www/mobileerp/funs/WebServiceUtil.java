@@ -90,6 +90,358 @@ public class WebServiceUtil {
         Current_Net_Link = "Internet";
     }
 
+    //                op_Commit_Work_line_Item_Non_Plan(Bu_ID , Exer ,
+//                        Item_ID , IV_ID ,
+//                        LotID , LotNo ,
+//                        Ist_ID , Sub_Ist_ID ,
+//                        SMLI_ID , SMM_ID , SMT_ID ,
+//                        Qty As Double, txtEntity , txtRecord , Remark , WC_ID )
+
+    public static WsResult op_Commit_Work_line_Item_Non_Plan(
+                                                         long Item_ID, long IV_ID,
+                                                         long LotID, String LotNo,
+                                                         long Ist_ID, long Sub_Ist_ID,
+                                                         long SMLI_ID, long SMM_ID, long SMT_ID,
+                                                         String Qty, String txtEntity, String txtRecord, String Remark, long WC_ID) {
+
+        String webMethodName = "op_Commit_Work_line_Item_Non_Plan";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("Bu_ID");
+        propertyInfo1.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo1.setType(Integer.class);
+        propertyInfos.add(propertyInfo1);
+        System.out.println("================================Bu_ID = " + UserSingleton.get().getUserInfo().getBu_ID());
+
+        //// TODO: 2019/12/31 indate
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("Exer");
+        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo2.setType(Long.class);
+        propertyInfos.add(propertyInfo2);
+        System.out.println("================================Exer = " + UserSingleton.get().getHRID());
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("Item_ID");
+        propertyInfo3.setValue(Item_ID);
+        propertyInfo3.setType(Long.class);
+        propertyInfos.add(propertyInfo3);
+
+        System.out.println("================================Item_ID = " + Item_ID);
+
+        //// TODO: 2019/12/31 wc_id  ?
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("IV_ID");
+        propertyInfo4.setValue(IV_ID);
+        propertyInfo4.setType(Long.class);
+        propertyInfos.add(propertyInfo4);
+        System.out.println("================================IV_ID = " + IV_ID);
+
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo5.setName("LotID");
+        propertyInfo5.setValue(LotID);
+        propertyInfo5.setType(Long.class);
+        propertyInfos.add(propertyInfo5);
+        System.out.println("================================LotID = " + LotID);
+
+        PropertyInfo propertyInfo6 = new PropertyInfo();
+        propertyInfo6.setName("LotNo");
+        propertyInfo6.setValue(LotNo);
+        propertyInfo6.setType(String.class);
+        propertyInfos.add(propertyInfo6);
+        System.out.println("================================LotNo = " + LotNo);
+//
+        PropertyInfo propertyInfo7 = new PropertyInfo();
+        propertyInfo7.setName("Ist_ID");
+        propertyInfo7.setValue(Ist_ID);
+        propertyInfo7.setType(Long.class);
+        propertyInfos.add(propertyInfo7);
+        System.out.println("================================Ist_ID = " + Ist_ID);
+//
+        PropertyInfo propertyInfo8 = new PropertyInfo();
+        propertyInfo8.setName("Sub_Ist_ID");
+        propertyInfo8.setValue(Sub_Ist_ID);
+        propertyInfo8.setType(Long.class);
+        propertyInfos.add(propertyInfo8);
+        System.out.println("================================Sub_Ist_ID = " + Sub_Ist_ID);
+
+
+//        long LotID, String LotNo,
+//        long Ist_ID, long Sub_Ist_ID,
+//        long SMLI_ID, long SMM_ID, long SMT_ID,
+//        double Qty, String txtEntity, String txtRecord, String Remark, int WC_ID
+        PropertyInfo propertyInfo9 = new PropertyInfo();
+        propertyInfo9.setName("SMLI_ID");
+        propertyInfo9.setValue(SMLI_ID);
+        propertyInfo9.setType(Long.class);
+        propertyInfos.add(propertyInfo9);
+        System.out.println("================================SMLI_ID = " + SMLI_ID);
+//
+        PropertyInfo propertyInfo10 = new PropertyInfo();
+        propertyInfo10.setName("SMM_ID");
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setValue(Double.valueOf(subProductItemEntity.getQty()));
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setType(Double.class);
+//        propertyInfo10.setType(Float.class);
+        propertyInfo10.setValue(SMM_ID);
+        propertyInfo10.setType(Long.class);
+        propertyInfos.add(propertyInfo10);
+        System.out.println("================================SMM_ID = " + SMM_ID);
+
+//        ManuLotNo , ManuDate As Date,
+        // Ist_ID , Remark , Recorder , RecorderName
+        PropertyInfo propertyInfo11 = new PropertyInfo();
+        propertyInfo11.setName("SMT_ID");
+        propertyInfo11.setValue(SMT_ID);
+        propertyInfo11.setType(Long.class);
+        propertyInfos.add(propertyInfo11);
+        System.out.println("================================SMT_ID = " + SMT_ID);
+
+
+        PropertyInfo propertyInfo16 = new PropertyInfo();
+        propertyInfo16.setName("Qty");
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setValue(Double.valueOf(subProductItemEntity.getQty()));
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setType(Double.class);
+//        propertyInfo10.setType(Float.class);
+        propertyInfo16.setValue(Qty);
+//        propertyInfo16.setType(Integer.class);
+        propertyInfo16.setType(String.class);
+        propertyInfos.add(propertyInfo16);
+        System.out.println("================================InQty = " + Qty);
+
+//        //// TODO: 2019/12/31 manuDate
+        PropertyInfo propertyInfo12 = new PropertyInfo();
+        propertyInfo12.setName("txtEntity");
+        propertyInfo12.setValue(txtEntity);
+        propertyInfo12.setType(String.class);
+        propertyInfos.add(propertyInfo12);
+        System.out.println("================================txtEntity = " + txtEntity);
+
+        PropertyInfo propertyInfo13 = new PropertyInfo();
+        propertyInfo13.setName("txtRecord");
+        propertyInfo13.setValue(txtRecord);
+        propertyInfo13.setType(String.class);
+        propertyInfos.add(propertyInfo13);
+        System.out.println("================================txtRecord = " + txtRecord);
+
+        PropertyInfo propertyInfo14 = new PropertyInfo();
+        propertyInfo14.setName("Remark");
+        propertyInfo14.setValue(Remark);
+        propertyInfo14.setType(String.class);
+        propertyInfos.add(propertyInfo14);
+        System.out.println("================================Remark = " + Remark);
+
+        PropertyInfo propertyInfo15 = new PropertyInfo();
+        propertyInfo15.setName("WC_ID");
+        propertyInfo15.setValue(WC_ID);
+        propertyInfo15.setType(Long.class);
+        propertyInfos.add(propertyInfo15);
+        System.out.println("================================WC_ID = " + WC_ID);
+
+        PropertyInfo propertyInfo17 = new PropertyInfo();
+        propertyInfo17.setName("hrID");
+        propertyInfo17.setValue(UserSingleton.get().getHRID());
+        propertyInfo17.setType(Integer.class);
+        propertyInfos.add(propertyInfo17);
+        System.out.println("================================hrID = " + UserSingleton.get().getHRID());
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
+
+    }
+
+    public static WsResult  op_Check_Work_Line_Scan_Item_Barcode_Json(String scanResult) {
+
+        String webMethodName = "op_Check_Work_Line_Scan_Item_Barcode_Json";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+//        PropertyInfo propertyInfo = new PropertyInfo();
+//        propertyInfo.setName("Bu_ID");
+//        propertyInfo.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+//        propertyInfo.setType(Integer.class);
+//        propertyInfos.add(propertyInfo);
+//
+//        PropertyInfo propertyInfo2 = new PropertyInfo();
+//        propertyInfo2.setName("X");
+//        propertyInfo2.setValue(scanResult);
+//        propertyInfo2.setType(String.class);
+//        propertyInfos.add(propertyInfo2);
+
+        AddPropertyInfo(propertyInfos,"Bu_ID",UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos,"X",scanResult);
+
+
+//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+//        SoapObject obj = (SoapObject) envelope.bodyIn;
+//        WsResult ws_result = Get_WS_Result(obj);
+//        return ws_result;
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+     WsResult    result = getWS_Result(obj);
+//     return result ;
+
+//        System.out.println("***************************** obj = " + obj);
+//        BoxItemEntity box_item = new BoxItemEntity();
+//        if (obj != null) {
+//            int count = obj.getPropertyCount();
+//            SoapObject obj2;
+//            for (int i = 0; i < count; i++) {
+//                obj2 = (SoapObject) obj.getProperty(i);
+//                box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+//                if (!box_item.getResult()) {
+//                    box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+//                } else {
+//                    fill_box_item(box_item, obj2);
+//                }
+//            }
+//        }
+
+//
+//        BoxItemEntity box_item = new BoxItemEntity();
+//        if (obj != null) {
+//            int count = obj.getPropertyCount();
+//            SoapObject obj2;
+//            for (int i = 0; i < count; i++) {
+//                obj2 = (SoapObject) obj.getProperty(i);
+//                box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+//                if (!box_item.getResult()) {
+//                    box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+//                } else {
+//                    box_item.setDIII_ID(Long.parseLong(obj2.getProperty("DIII_ID").toString()));
+//                    box_item.setSMT_ID(Long.parseLong(obj2.getProperty("SMT_ID").toString()));
+//                    box_item.setSMM_ID(Long.parseLong(obj2.getProperty("SMM_ID").toString()));
+//                    box_item.setSMLI_ID(Long.parseLong(obj2.getProperty("SMLI_ID").toString()));
+//                    box_item.setEntityID(Long.parseLong(obj2.getProperty("EntityID").toString()));
+//                    box_item.setEntityName(obj2.getProperty("EntityName").toString());
+//                    box_item.setLotID(Long.parseLong(obj2.getProperty("LotID").toString()));
+//                    //// TODO: 2019/11/27 这里的lotNo 取的是DII里面的manulotNo
+//                    box_item.setLotNo(obj2.getProperty("LotNo").toString());
+//                    box_item.setItem_ID(Long.parseLong(obj2.getProperty("Item_ID").toString()));
+//                    box_item.setIV_ID(Long.parseLong(obj2.getProperty("IV_ID").toString()));
+//                    box_item.setItemName(obj2.getProperty("ItemName").toString());
+//                    box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
+//                    box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
+//                    box_item.setBuName(obj2.getProperty("BuName").toString());
+//                    box_item.setBoxName(obj2.getProperty("BoxName").toString());
+//                    box_item.setBoxNo(obj2.getProperty("BoxNo").toString());
+//
+//                }
+//
+//                //int DataMemberCount = obj2.getPropertyCount();
+//                //for (int j=0; j<DataMemberCount;j++){
+//                //result.add(Boolean.parseBoolean(obj2.getProperty(j).toString()));
+//                //}
+//            }
+//
+//        }
+//        return box_item;
+        return result  ;
+
+    }
+
+    public static BoxItemEntity op_Check_Work_Line_Scan_Item_Barcode(String scanResult) {
+        String webMethodName = "op_Check_Work_Line_Scan_Item_Barcode";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        PropertyInfo propertyInfo = new PropertyInfo();
+//        propertyInfo.setName("Bu_ID");
+//        propertyInfo.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+//        propertyInfo.setType(Integer.class);
+//        propertyInfos.add(propertyInfo);
+//
+//        PropertyInfo propertyInfo2 = new PropertyInfo();
+//        propertyInfo2.setName("X");
+//        propertyInfo2.setValue(scanResult);
+//        propertyInfo2.setType(String.class);
+//        propertyInfos.add(propertyInfo2);
+
+        AddPropertyInfo(propertyInfos,"Bu_ID",UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos,"X",scanResult);
+
+
+//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+//        SoapObject obj = (SoapObject) envelope.bodyIn;
+//        WsResult ws_result = Get_WS_Result(obj);
+//        return ws_result;
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        BoxItemEntity box_item = new BoxItemEntity();
+        if (obj != null) {
+            int count = obj.getPropertyCount();
+            SoapObject obj2;
+            for (int i = 0; i < count; i++) {
+                obj2 = (SoapObject) obj.getProperty(i);
+                box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                if (!box_item.getResult()) {
+                    box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                } else {
+                    fill_box_item(box_item, obj2);
+                }
+            }
+        }
+
+//
+//        BoxItemEntity box_item = new BoxItemEntity();
+//        if (obj != null) {
+//            int count = obj.getPropertyCount();
+//            SoapObject obj2;
+//            for (int i = 0; i < count; i++) {
+//                obj2 = (SoapObject) obj.getProperty(i);
+//                box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+//                if (!box_item.getResult()) {
+//                    box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+//                } else {
+//                    box_item.setDIII_ID(Long.parseLong(obj2.getProperty("DIII_ID").toString()));
+//                    box_item.setSMT_ID(Long.parseLong(obj2.getProperty("SMT_ID").toString()));
+//                    box_item.setSMM_ID(Long.parseLong(obj2.getProperty("SMM_ID").toString()));
+//                    box_item.setSMLI_ID(Long.parseLong(obj2.getProperty("SMLI_ID").toString()));
+//                    box_item.setEntityID(Long.parseLong(obj2.getProperty("EntityID").toString()));
+//                    box_item.setEntityName(obj2.getProperty("EntityName").toString());
+//                    box_item.setLotID(Long.parseLong(obj2.getProperty("LotID").toString()));
+//                    //// TODO: 2019/11/27 这里的lotNo 取的是DII里面的manulotNo
+//                    box_item.setLotNo(obj2.getProperty("LotNo").toString());
+//                    box_item.setItem_ID(Long.parseLong(obj2.getProperty("Item_ID").toString()));
+//                    box_item.setIV_ID(Long.parseLong(obj2.getProperty("IV_ID").toString()));
+//                    box_item.setItemName(obj2.getProperty("ItemName").toString());
+//                    box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
+//                    box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
+//                    box_item.setBuName(obj2.getProperty("BuName").toString());
+//                    box_item.setBoxName(obj2.getProperty("BoxName").toString());
+//                    box_item.setBoxNo(obj2.getProperty("BoxNo").toString());
+//
+//                }
+//
+//                //int DataMemberCount = obj2.getPropertyCount();
+//                //for (int j=0; j<DataMemberCount;j++){
+//                //result.add(Boolean.parseBoolean(obj2.getProperty(j).toString()));
+//                //}
+//            }
+//
+//        }
+        return box_item;
+
+    }
+
     private static SoapSerializationEnvelope invokeSupplierWS(ArrayList<PropertyInfo> propertyInfoList, String webMethodName) {
         SoapSerializationEnvelope envelope = null;
         // Create request
@@ -605,10 +957,10 @@ public class WebServiceUtil {
 
 
     //将物料入相应的库,成品账
-    //Bu_ID As Integer, InDate As Date, RecordNo As String, WC_ID As Long,
-    // WC_Name As String, PS_ID As Long, Product_ID As Long, Item_ID As Long,
-    // IV_ID As Long, InQty As Double, ManuLotNo As String, ManuDate As Date,
-    // Ist_ID As Long, Remark As String, Recorder As Integer, RecorderName As String
+    //Bu_ID , InDate As Date, RecordNo , WC_ID ,
+    // WC_Name , PS_ID , Product_ID , Item_ID ,
+    // IV_ID , InQty As Double, ManuLotNo , ManuDate As Date,
+    // Ist_ID , Remark , Recorder , RecorderName 
 //    public static WsResult op_Product_Manu_In_Not_Pallet(WCSubProductItemEntity box_item,long DIII_ID,long Ist_ID,long Sub_Ist_ID) {
 //        String webMethodName = "op_Product_Manu_In_Not_Pallet";
 //        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -626,10 +978,10 @@ public class WebServiceUtil {
 //
 //    }
 
-    //Bu_ID As Integer, InDate As Date, RecordNo As String, WC_ID As Long,
-    // WC_Name As String, PS_ID As Long, Product_ID As Long, Item_ID As Long,
-    // IV_ID As Long, InQty As Double, ManuLotNo As String, ManuDate As Date,
-    // Ist_ID As Long, Remark As String, Recorder As Integer, RecorderName As String
+    //Bu_ID , InDate As Date, RecordNo , WC_ID ,
+    // WC_Name , PS_ID , Product_ID , Item_ID ,
+    // IV_ID , InQty As Double, ManuLotNo , ManuDate As Date,
+    // Ist_ID , Remark , Recorder , RecorderName 
     public static WsResult op_Product_Manu_In_Not_Pallet(WcIdNameEntity wcIdNameEntity, WCSubProductItemEntity subProductItemEntity, Date InDate, String RecordNo,
                                                          Date ManuDate, String Remark, int Recorder, String RecorderName,
                                                          long Ist_ID, long Sub_Ist_ID, int qty) {
@@ -717,8 +1069,8 @@ public class WebServiceUtil {
         System.out.println("================================InQty = " + subProductItemEntity.getQty());
         System.out.println("================================InQty = " + Double.valueOf(subProductItemEntity.getQty()));
 
-//        ManuLotNo As String, ManuDate As Date,
-        // Ist_ID As Long, Remark As String, Recorder As Integer, RecorderName As String
+//        ManuLotNo , ManuDate As Date,
+        // Ist_ID , Remark , Recorder , RecorderName 
         PropertyInfo propertyInfo11 = new PropertyInfo();
         propertyInfo11.setName("ManuLotNo");
         propertyInfo11.setValue(subProductItemEntity.getLotNo());
@@ -870,8 +1222,8 @@ public class WebServiceUtil {
         propertyInfo10.setType(String.class);
         propertyInfos.add(propertyInfo10);
 
-//        ManuLotNo As String, ManuDate As Date,
-        // Ist_ID As Long, Remark As String, Recorder As Integer, RecorderName As String
+//        ManuLotNo , ManuDate As Date,
+        // Ist_ID , Remark , Recorder , RecorderName 
         PropertyInfo propertyInfo11 = new PropertyInfo();
         propertyInfo11.setName("Replenish");
         propertyInfo11.setValue(Replenish);
@@ -1105,20 +1457,15 @@ public class WebServiceUtil {
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
         BoxItemEntity box_item = new BoxItemEntity();
-
         if (obj != null) {
             int count = obj.getPropertyCount();
             SoapObject obj2;
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
-
-
                 box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-
                 if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
-
                     fill_box_item(box_item, obj2);
 
                     /*box_item.setDIII_ID(Long.parseLong(obj2.getProperty("DIII_ID").toString()));
@@ -1139,9 +1486,7 @@ public class WebServiceUtil {
                     box_item.setSub_Ist_ID(Long.parseLong(obj2.getProperty("Sub_Ist_ID").toString()));
                     */
                 }
-
             }
-
         }
 
         return box_item;

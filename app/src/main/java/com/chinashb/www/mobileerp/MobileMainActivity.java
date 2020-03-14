@@ -278,8 +278,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             public void onViewClick(Dialog dialog, View v, int tag) {
                 switch (tag) {
                     case CommAlertDialog.TAG_CLICK_LEFT:
-                        MobileMainActivity.this.onBackPressed();
+//                        MobileMainActivity.this.onBackPressed();
                         dialog.dismiss();
+                        finish();
                         break;
                     case CommAlertDialog.TAG_CLICK_RIGHT:
                         dialog.dismiss();

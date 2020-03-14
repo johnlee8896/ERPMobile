@@ -52,7 +52,7 @@ public class StockOutMoreActivity extends BaseActivity {
     private IssueMoreItemAdapter issueMoreItemAdapter;
     private List<BoxItemEntity> boxItemEntityList;
     private IstPlaceEntity thePlace;
-    private String scanedItem;
+    private String scanedString;
     private ProgressBar pbScan;
     private EditText inputEditText;
     private boolean isDirect;
@@ -197,7 +197,7 @@ public class StockOutMoreActivity extends BaseActivity {
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
-                        scanedItem = content;
+                        scanedString = content;
                         GetIssueMoreBoxAsyncTask task = new GetIssueMoreBoxAsyncTask();
                         task.execute();
                     }
@@ -212,7 +212,7 @@ public class StockOutMoreActivity extends BaseActivity {
         @Override
         protected Void doInBackground(String... params) {
             Long MW_ID = mpiWcBean.getMPIWC_ID();
-            BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_MW_Issue_Item_Barcode(MW_ID, scanedItem);
+            BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_MW_Issue_Item_Barcode(MW_ID, scanedString);
             this.boxItemEntity = boxItemEntity;
             if (boxItemEntity.getResult()) {
                 if (!isBoxExist(boxItemEntity)) {
@@ -374,7 +374,7 @@ public class StockOutMoreActivity extends BaseActivity {
         protected Void doInBackground(String... params) {
 
 
-            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanedItem);
+            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanedString);
 
             if (bi.getResult() ) {
                 thePlace = bi;

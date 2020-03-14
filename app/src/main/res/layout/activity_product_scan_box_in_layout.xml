@@ -8,20 +8,55 @@
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:app_title_text="生产线领料" />
+        app:app_title_text="成品（非托盘）扫描入库" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!--<TextView-->
+        <!--android:id="@+id/textView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:paddingLeft="20dp"-->
+        <!--android:text="托盘入库"-->
+        <!--android:textColor="@color/black" />-->
+
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/setting_open_suggest_stock_Layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:paddingLeft="20dp"-->
+        <!--android:paddingRight="20dp">-->
+
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:text="提示建议存放仓库"-->
+        <!--android:textColor="@color/color_333333"-->
+        <!--android:textSize="14sp" />-->
+
+        <!--<Switch-->
+        <!--android:id="@+id/setting_open_suggest_stock_Switch"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:checked="false"-->
+        <!--android:thumb="@drawable/selector_switch_thumb_style"-->
+        <!--android:track="@drawable/selector_switch_track_style" />-->
+
+        <!--</RelativeLayout>-->
         <Button
-            android:id="@+id/part_workline_in_select_wc_button"
+            android:id="@+id/product_non_tray_select_wc_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="@dimen/dimen_size_20"
             android:layout_weight="1"
+            android:visibility="gone"
             android:text="请选择线别" />
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,6 +64,7 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:paddingLeft="20dp"
+            android:visibility="gone"
             android:paddingRight="@dimen/dimen_size_20"
             android:gravity="bottom"
             android:orientation="horizontal">
@@ -39,14 +75,14 @@
                 android:text="您选择的产线是："
                 android:textColor="@color/black" />
             <TextView
-                android:id="@+id/part_workline_in_wc_name_textView"
+                android:id="@+id/product_non_tray_wc_name_textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:textColor="@color/color_blue_00AAEE" />
         </LinearLayout>
         <Button
-            android:id="@+id/part_workline_in_select_NO_button"
+            android:id="@+id/product_non_tray_select_NO_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
@@ -55,7 +91,7 @@
             android:layout_weight="1"
             android:text="选择或输入入库单据" />
         <TextView
-            android:id="@+id/part_workline_in_NO_textView"
+            android:id="@+id/product_non_tray_NO_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="20dp"
@@ -83,12 +119,12 @@
             <!--android:text="扫码枪扫描" />-->
 
             <Button
-                android:id="@+id/part_workline_in_scan_button"
+                android:id="@+id/product_non_tray_scan_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_weight="1"
-                android:text="相机扫描物料" />
+                android:text="请扫描箱号" />
 
         </LinearLayout>
 
@@ -105,20 +141,20 @@
             android:orientation="horizontal">
 
 
-            <!--<Button-->
-                <!--android:id="@+id/part_workline_in_scan_area_button"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="扫描库位" />-->
+            <Button
+                android:id="@+id/product_non_tray_scan_area_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="扫描库位" />
 
             <Button
-                android:id="@+id/part_workline_in_warehouse_in_button"
+                android:id="@+id/product_non_tray_warehouse_in_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="出库登账" />
+                android:text="入库登账" />
 
         </LinearLayout>
 
@@ -126,7 +162,7 @@
     </LinearLayout>
 
     <EditText
-        android:id="@+id/part_workline_in_input_EditText"
+        android:id="@+id/product_non_tray_input_EditText"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_45"
         android:background="@color/transparent"
@@ -168,7 +204,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/part_workline_in_tv_item_name_col"
+                android:id="@+id/product_non_tray_tv_item_name_col"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -176,7 +212,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/part_workline_in_tv_bu_name_col"
+                android:id="@+id/product_non_tray_tv_bu_name_col"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -195,7 +231,7 @@
 
 
             <TextView
-                android:id="@+id/part_workline_in_tv_inv_in_lotno"
+                android:id="@+id/product_non_tray_tv_inv_in_lotno"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -204,7 +240,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/part_workline_in_tv_qty_col"
+                android:id="@+id/product_non_tray_tv_qty_col"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -223,7 +259,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/part_workline_in_tv_ist_name_col"
+                android:id="@+id/product_non_tray_tv_ist_name_col"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -232,7 +268,7 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/part_workline_in_tv_inv_in_selected"
+                android:id="@+id/product_non_tray_tv_inv_in_selected"
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -254,7 +290,7 @@
         android:orientation="horizontal">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/part_workline_in_recyclerView"
+            android:id="@+id/product_non_tray_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
