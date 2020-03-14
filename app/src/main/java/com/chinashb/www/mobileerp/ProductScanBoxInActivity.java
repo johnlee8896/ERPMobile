@@ -50,21 +50,15 @@ import butterknife.ButterKnife;
  */
 
 public class ProductScanBoxInActivity extends BaseActivity implements View.OnClickListener {
-    @BindView(R.id.product_non_tray_scan_button) Button scanItemButton;
-    @BindView(R.id.product_non_tray_scan_area_button) Button scanAreaButton;
-    @BindView(R.id.product_non_tray_warehouse_in_button) Button warehouseInButton;
-    @BindView(R.id.product_non_tray_input_EditText) EditText inputEditText;
-    //    @BindView(R.id.product_non_tray_tv_item_name_col) TextView TvItemNameCol;
-//    @BindView(R.id.product_non_tray_tv_bu_name_col) TextView TvBuNameCol;
-//    @BindView(R.id.product_non_tray_tv_inv_in_lotno) TextView TvInvInLotno;
-//    @BindView(R.id.product_non_tray_tv_qty_col) TextView TvQtyCol;
-//    @BindView(R.id.product_non_tray_tv_ist_name_col) TextView TvIstNameCol;
-//    @BindView(R.id.product_non_tray_tv_inv_in_selected) TextView TvInvInSelected;
-    @BindView(R.id.product_non_tray_recyclerView) RecyclerView mRecyclerView;
-    @BindView(R.id.product_non_tray_select_wc_button) Button selectWcButton;
-    @BindView(R.id.product_non_tray_wc_name_textView) TextView wcNameTextView;
-    @BindView(R.id.product_non_tray_select_NO_button) Button selectNOButton;
-    @BindView(R.id.product_non_tray_NO_textView) TextView NOTextView;
+    @BindView(R.id.product_in_scan_box_scan_button) Button scanBoxButton;
+    @BindView(R.id.product_in_scan_box_scan_area_button) Button scanAreaButton;
+    @BindView(R.id.product_in_scan_box_warehouse_in_button) Button warehouseInButton;
+    @BindView(R.id.product_in_scan_box_input_EditText) EditText inputEditText;
+    @BindView(R.id.product_in_scan_box_recyclerView) RecyclerView mRecyclerView;
+    @BindView(R.id.product_in_scan_box_select_wc_button) Button selectWcButton;
+    @BindView(R.id.product_in_scan_box_wc_name_textView) TextView wcNameTextView;
+    @BindView(R.id.product_in_scan_box_select_NO_button) Button selectNOButton;
+    @BindView(R.id.product_in_scan_box_NO_textView) TextView NOTextView;
 
     private WcIdNameEntity wcIdNameEntity;
     private String scanContent;
@@ -135,7 +129,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
     private void setViewsListener() {
         selectWcButton.setOnClickListener(this);
-        scanItemButton.setOnClickListener(this);
+        scanBoxButton.setOnClickListener(this);
         scanAreaButton.setOnClickListener(this);
         warehouseInButton.setOnClickListener(this);
         selectNOButton.setOnClickListener(this);
@@ -261,11 +255,11 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
     @Override public void onClick(View view) {
         if (view == selectWcButton) {
             getWCList();
-        } else if (view == scanItemButton) {
-            if (TextUtils.isEmpty(wcNameTextView.getText())){
-                ToastUtil.showToastShort("请先选择产线");
-                return;
-            }
+        } else if (view == scanBoxButton) {
+//            if (TextUtils.isEmpty(wcNameTextView.getText())){
+//                ToastUtil.showToastShort("请先选择产线");
+//                return;
+//            }
             new IntentIntegrator(this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
         } else if (view == scanAreaButton) {
             handleScanArea();

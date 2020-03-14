@@ -56,7 +56,6 @@
             android:layout_marginRight="20dp"
             android:layout_marginLeft="@dimen/dimen_size_20"
             android:layout_weight="1"
-            android:visibility="gone"
             android:text="请选择线别" />
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,7 +63,6 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:paddingLeft="20dp"
-            android:visibility="gone"
             android:paddingRight="@dimen/dimen_size_20"
             android:gravity="bottom"
             android:orientation="horizontal">
@@ -118,13 +116,13 @@
             <!--android:visibility="gone"-->
             <!--android:text="扫码枪扫描" />-->
 
-            <Button
-                android:id="@+id/product_non_tray_scan_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:text="请扫描箱号" />
+            <!--<Button-->
+                <!--android:id="@+id/product_non_tray_scan_button"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="start"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="请扫描箱号" />-->
 
         </LinearLayout>
 

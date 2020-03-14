@@ -92,7 +92,8 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_in_no_tray_scan_layout);
+//        setContentView(R.layout.activity_product_in_no_tray_scan_layout);
+        setContentView(R.layout.activity_product_in_no_tray_layout);
         ButterKnife.bind(this);
         setViewsListener();
         initView();
@@ -261,13 +262,15 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
     @Override public void onClick(View view) {
         if (view == selectWcButton) {
             getWCList();
-        } else if (view == scanItemButton) {
+        }
+        else if (view == scanItemButton) {
             if (TextUtils.isEmpty(wcNameTextView.getText())){
                 ToastUtil.showToastShort("请先选择产线");
                 return;
             }
             new IntentIntegrator(this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-        } else if (view == scanAreaButton) {
+        }
+        else if (view == scanAreaButton) {
             handleScanArea();
         } else if (view == warehouseInButton) {
 //            handleIntoWareHouse();
@@ -490,9 +493,10 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
 //                        13269,"lwf",
 //                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
 
+                //// TODO: 2020/3/14 remark
                 ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
-                        listNo,new Date() ,"李伟锋成品入库测试",
-                        13269,"lwf",
+                        listNo,new Date() ,remar,
+                        UserSingleton.get().getHRID(),UserSingleton.get().getHRName(),
                         thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),boxItemEntity.getQty());
                 if (ws_result.getResult()) {
                     //添加库位与manuLot的关联
