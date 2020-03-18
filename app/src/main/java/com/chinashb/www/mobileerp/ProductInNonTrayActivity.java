@@ -49,6 +49,9 @@ import butterknife.ButterKnife;
  * @description 成品非托盘入库
  */
 
+/**
+ * @deprecated
+ */
 public class ProductInNonTrayActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.product_non_tray_scan_button) Button scanItemButton;
     @BindView(R.id.product_non_tray_scan_area_button) Button scanAreaButton;

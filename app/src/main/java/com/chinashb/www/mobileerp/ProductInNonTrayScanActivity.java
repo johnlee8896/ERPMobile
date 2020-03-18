@@ -495,7 +495,7 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
 
                 //// TODO: 2020/3/14 remark
                 ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
-                        listNo,new Date() ,remar,
+                        listNo,new Date() ,remark,
                         UserSingleton.get().getHRID(),UserSingleton.get().getHRName(),
                         thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),boxItemEntity.getQty());
                 if (ws_result.getResult()) {
