@@ -82,6 +82,7 @@
             <!--android:visibility="gone"-->
             <!--android:text="扫码枪扫描" />-->
 
+
             <Button
                 android:id="@+id/part_workline_in_scan_button"
                 android:layout_width="wrap_content"
@@ -90,7 +91,45 @@
                 android:layout_weight="1"
                 android:text="相机扫描物料" />
 
+
+
         </LinearLayout>
+
+        <EditText
+            android:id="@+id/input_EditeText"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_45"
+            android:background="@color/transparent"
+            android:gravity="center_vertical"
+            android:hint="接收扫描结果"
+            android:paddingLeft="@dimen/dimen_size_20"
+            android:paddingRight="@dimen/dimen_size_10"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+            android:textSize="@dimen/text_size_14"
+            />
+
+        <Button
+            android:id="@+id/part_workline_in_remark_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:text="添加选择备注" />
+
+        <TextView
+            android:id="@+id/part_workline_in_remark_TextView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_45"
+            android:background="@color/transparent"
+            android:gravity="center_vertical"
+            android:hint="备注信息"
+            android:textColorHint="@color/black"
+            android:paddingLeft="@dimen/dimen_size_20"
+            android:paddingRight="@dimen/dimen_size_10"
+            android:textColor="@color/black"
+            android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+            android:textSize="@dimen/text_size_14" />
 
 
         <LinearLayout
@@ -158,6 +197,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <LinearLayout
@@ -206,7 +246,7 @@
             <TextView
                 android:id="@+id/part_workline_in_tv_qty_col"
                 android:layout_width="40dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="数量"
@@ -253,17 +293,23 @@
         android:paddingLeft="20dp"
         android:orientation="horizontal">
 
-        <android.support.v7.widget.RecyclerView
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/part_workline_in_recyclerView"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+
+            <!--android:clickable="true"-->
+            <!--tools:layout_editor_absoluteX="8dp"-->
+            <!--tools:layout_editor_absoluteY="8dp">-->
+
+        <!--</android.support.v7.widget.RecyclerView>-->
+
+        <com.chinashb.www.mobileerp.widget.CustomRecyclerView
             android:id="@+id/part_workline_in_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-
-            android:clickable="true"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp">
-
-        </android.support.v7.widget.RecyclerView>
+            tools:listitem="@layout/item_scan_bar_code_layout"
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 

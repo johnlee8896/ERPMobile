@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:paddingLeft="@dimen/dimen_size_5"
+            android:paddingRight="@dimen/dimen_size_5"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginLeft="20dp"-->
+                <!--android:padding="@dimen/dimen_size_5"-->
+                <!--android:layout_weight="1"-->
+                <!--android:orientation="horizontal">-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="物品"
+                     />
+
+                <TextView
+                    android:id="@+id/item_common_in_tv_item_name_col"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_height="wrap_content"
+                    tools:text="物品"
+                    android:textSize="@dimen/text_size_17"
+                    android:textColor="@color/black" />
+            <!--</LinearLayout>-->
+
+
+
+
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="车间"
+                />
+
+            <TextView
+                android:id="@+id/item_common_in_tv_bu_name_col"
+                android:layout_width="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_height="wrap_content"
+                tools:text="上海座椅"
+                android:textSize="@dimen/text_size_17"
+                android:textColor="@color/black" />
+        </LinearLayout>
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="horizontal">-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/dimen_size_5"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="批次"
+                    />
+
+                <TextView
+                    android:id="@+id/item_common_in_tv_inv_in_lotno"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_height="wrap_content"
+                    tools:text="物品"
+                    android:textSize="@dimen/text_size_17"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingRight="@dimen/dimen_size_5"
+                android:paddingLeft="@dimen/dimen_size_5"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="数量"
+                    />
+
+                <EditText
+                    android:id="@+id/item_common_in_tv_qty_col"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_height="wrap_content"
+                    tools:text="8000"
+                    android:textSize="@dimen/text_size_17"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+
+        <!--</LinearLayout>-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:orientation="horizontal">-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:padding="@dimen/dimen_size_5"
+                android:visibility="gone"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="仓位"
+                    />
+
+                <TextView
+                    android:id="@+id/item_common_in_tv_ist_name_col"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_height="wrap_content"
+                    tools:text="物品"
+                    android:textSize="@dimen/text_size_17"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="@dimen/dimen_size_5"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="选择"
+                    />
+
+                <!--<TextView-->
+                    <!--android:id="@+id/item_common_in_tv_inv_in_selected"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--tools:text="上海座椅"-->
+                    <!--android:textSize="@dimen/text_size_17"-->
+                    <!--android:textColor="@color/black" />-->
+
+                <CheckBox
+                    android:id="@+id/item_common_cb_select_ist"
+                    android:layout_width="40dp"
+                    android:layout_marginLeft="@dimen/dimen_size_10"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="选择" />
+            </LinearLayout>
+
+
+        <!--</LinearLayout>-->
+    </LinearLayout>
+
+</LinearLayout>

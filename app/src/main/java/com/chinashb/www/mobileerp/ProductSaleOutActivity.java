@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.adapter.DeliveryOrderAdapter;
 import com.chinashb.www.mobileerp.bean.DeliveryOrderBean;
+import com.chinashb.www.mobileerp.bean.entity.LogisticsDeliveryEntity;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 
@@ -30,9 +31,12 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
     @BindView(R.id.product_out_input_EditText) EditText inputEditText;
     @BindView(R.id.product_out_delivery_order_customRecyclerView) CustomRecyclerView recyclerView;
     @BindView(R.id.product_out_select_logistics_button) Button logisticsButton;
+    @BindView(R.id.product_out_sdzh_out_button) Button sdzhOutButton;
 
     private DeliveryOrderBean deliveryOrderBean;
     private DeliveryOrderAdapter adapter;
+
+    private LogisticsDeliveryEntity logisticsDeliveryEntity;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +61,11 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
                     adapter.setOneData(deliveryOrderBean);
                 }
             }
+        }else if (requestCode == IntentConstant.Intent_Request_Code_Product_To_Logistics){
+            if (data != null){
+                logisticsDeliveryEntity = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_entity);
+
+            }
         }
     }
 
@@ -64,6 +73,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
         selectPlanButton.setOnClickListener(this);
         logisticsButton.setOnClickListener(this);
         outButton.setOnClickListener(this);
+        sdzhOutButton.setOnClickListener(this);
     }
 
     @Override public void onClick(View v) {
@@ -71,9 +81,14 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
             Intent intent = new Intent(this, DeliveryOrderActivity.class);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order);
             startActivity(intent);
-        }else if (v == logisticsButton){
-            Intent intent = new Intent(this,LogisticsManageActivity.class);
-            startActivityForResult(intent,IntentConstant.Intent_Request_Code_Product_To_Logistics);
+        } else if (v == logisticsButton) {
+            Intent intent = new Intent(this, LogisticsManageActivity.class);
+            startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_To_Logistics);
+        }else if (v == outButton){
+
+        }else if (v == sdzhOutButton){
+            Intent intent = new Intent(this,SDZHHActivity.class);
+            startActivity(intent);
         }
     }
 }

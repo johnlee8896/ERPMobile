@@ -4,42 +4,36 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.chinashb.www.mobileerp.adapter.InBoxItemAdapter;
+import com.chinashb.www.mobileerp.adapter.CommonItemBarCodeAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.PartWorkLineItemEntity;
 import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
-import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
-import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
+import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,7 +52,9 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
     @BindView(R.id.part_workline_in_scan_button) Button scanItemButton;
     @BindView(R.id.part_workline_in_warehouse_in_button) Button warehouseInButton;
     @BindView(R.id.part_workline_in_input_EditText) EditText inputEditText;
-    @BindView(R.id.part_workline_in_recyclerView) RecyclerView recyclerView;
+    @BindView(R.id.part_workline_in_recyclerView) CustomRecyclerView recyclerView;
+    @BindView(R.id.part_workline_in_remark_button) Button remarkButton;
+    @BindView(R.id.part_workline_in_remark_TextView) TextView remarkTextView;
 
     private WcIdNameEntity wcIdNameEntity;
     private String scanContent;
@@ -70,7 +66,7 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override public <T> void onClickAction(View v, String tag, T t) {
             if (t != null) {
-                remark = (String) t;
+//                remark = (String) t;
 //                Matcher matcher = pattern.matcher(remark);
 //                if (matcher.matches()) {
 //                    NOTextView.setText((CharSequence) t);
@@ -85,14 +81,29 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
             }
         }
     };
-    private String remark = "aaa";
+
+    private OnViewClickListener remarkOnViewClickListener = new OnViewClickListener() {
+        @Override public <T> void onClickAction(View v, String tag, T t) {
+            if (t != null) {
+                remark = (String) t;
+                remarkTextView.setText((CharSequence) t);
+            }
+            if (remarkDialog != null && remarkDialog.isShowing()) {
+                remarkDialog.dismiss();
+            }
+        }
+    };
+    private String remark = "";
     private String listNo;//单据号
     private List<PartWorkLineItemEntity> workLineItemEntityList;
     private List<BoxItemEntity> boxItemEntityArrayList = new ArrayList<>();
-    private InBoxItemAdapter boxItemAdapter;
+    //    private InBoxItemAdapter adapter;
+    private CommonItemBarCodeAdapter adapter;
+    private CommonSelectInputDialog remarkDialog;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_part_workline_layout);
         ButterKnife.bind(this);
         initView();
@@ -123,14 +134,17 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
     }
 
     private void initView() {
-        boxItemAdapter = new InBoxItemAdapter(PartWorkLinePutActivity.this, boxItemEntityArrayList);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
-        recyclerView.setAdapter(boxItemAdapter);
+        adapter = new CommonItemBarCodeAdapter();
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        recyclerView.setAdapter(adapter);
+
+        adapter.setData(boxItemEntityArrayList);
     }
 
     private void setViewsListener() {
         selectWcButton.setOnClickListener(this);
         scanItemButton.setOnClickListener(this);
+        remarkButton.setOnClickListener(this);
 //        scanAreaButton.setOnClickListener(this);
         warehouseInButton.setOnClickListener(this);
         selectNOButton.setOnClickListener(this);
@@ -147,6 +161,13 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
                 listNo = editable.toString();
             }
         });
+
+        remarkTextView.addTextChangedListener(new TextWatcherImpl(){
+            @Override public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                remark = editable.toString();
+            }
+        });
     }
 
     @Override public void onClick(View view) {
@@ -160,9 +181,6 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
                 return;
             }
             new IntentIntegrator(this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-
-//            GetItemQRCodeAsyncTask task = new GetItemQRCodeAsyncTask();
-//            task.execute();
         } else if (view == warehouseInButton) {
             handleIntoWareHouse();
             wcNameTextView.setText("");
@@ -173,6 +191,12 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
 
         } else if (view == selectNOButton) {
             handleSelectNO();
+        } else if (view == remarkButton) {
+            if (remarkDialog == null) {
+                remarkDialog = new CommonSelectInputDialog(PartWorkLinePutActivity.this);
+            }
+            remarkDialog.show();
+            remarkDialog.setOnViewClickListener(remarkOnViewClickListener);
         }
     }
 
@@ -300,7 +324,7 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
 //                    = WebServiceUtil.op_Check_Work_Line_Scan_Item_Barcode_Json( "VB/MT/691823/S/3508/IV/20591/P/ZDQRB11-6001 A0/D/20191206/L/19120601/N/101/Q/768");
 
 //            WsResult wsResult = WebServiceUtil.op_Check_Work_Line_Scan_Item_Barcode_Json( "VB/MT/722025/S/46/IV/920/P//D/20200226/L/20022401/N/4/Q/48");
-            boxItemEntity = WebServiceUtil.op_Check_Work_Line_Scan_Item_Barcode(scanContent );
+            boxItemEntity = WebServiceUtil.op_Check_Work_Line_Scan_Item_Barcode(scanContent);
 
 //            if (wsResult .getResult()){
 //                boxItemEntity = JsonUtil.parseJsonToObject(wsResult .getErrorInfo() ,BoxItemEntity .class );
@@ -318,7 +342,8 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
                     String nullType = "anyType{}";
                     if (TextUtils.isEmpty(boxItemEntity.getIstName()) || boxItemEntity.getIstName().contains(nullType)) {
                         //// TODO: 2020/3/9  
-                        boxItemEntity.setIstName(boxItemEntity.getIst_ID() + ":" + boxItemEntity.getSub_Ist_ID());
+//                        boxItemEntity.setIstName(boxItemEntity.getIst_ID() + ":" + boxItemEntity.getSub_Ist_ID());
+                        boxItemEntity.setIstName("");
                     }
 
                     //// TODO: 2020/3/9  
@@ -326,7 +351,39 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
                         boxItemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
                     }
 
+
+//                    boolean hasThisItem = false;
+//                    if (workLineItemEntityList == null || workLineItemEntityList.size() == 0){
+//                        return;
+//                    }
+//                    for (PartWorkLineItemEntity entity : workLineItemEntityList) {
+//                        if (entity.getItemId() == boxItemEntity.getItem_ID()) {
+//                            hasThisItem = true;
+////                            certainWCSubProductEntity = entity;
+////                            WCSubProductItemEntity itemEntity = new WCSubProductItemEntity();
+////                            itemEntity.setWcSubProductEntity(entity);
+////                            itemEntity.setSelect(true);
+////                            itemEntity.setLotNo(lotNo);
+////                            itemEntity.setQty(qty);
+////                            itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
+//
+////                            subProductItemEntityList.add(itemEntity);
+////                            adapter = new ItemProductNonTrayAdapter(ProductInNonTrayActivity.this, subProductItemEntityList);
+////                            mRecyclerView.setAdapter(adapter);
+////                            inputEditText.setText("");
+////                            //// TODO: 2019/12/20 去掉扫描枪几个字
+////                            inputEditText.setHint("请继续扫描");
+//                            break;
+//                        }
+//                    }
+//                    if (!hasThisItem) {
+//                        ToastUtil.showToastShort("该产品不属于此产线！");
+//                    }else{
+//                        boxItemEntityArrayList.add(boxItemEntity);
+//                    }
+
                     boxItemEntityArrayList.add(boxItemEntity);
+
                 } else {
                     boxItemEntity.setResult(false);
                     boxItemEntity.setErrorInfo("该包装已经在装载列表中");
@@ -339,7 +396,8 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
                 }
             }
 
-            recyclerView.setAdapter(boxItemAdapter);
+//            recyclerView.setAdapter(adapter);
+            adapter.setData(boxItemEntityArrayList);
             inputEditText.setText("");
             inputEditText.setHint("请继续扫描");
         }
@@ -394,9 +452,9 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
 //                        Ist_ID As Long, Sub_Ist_ID As Long,
 //                        SMLI_ID As Long, SMM_ID As Long, SMT_ID As Long,
 //                        Qty As Double, txtEntity As String, txtRecord As String, Remark As String, WC_ID As Integer)
-                ws_result = WebServiceUtil.op_Commit_Work_line_Item_Non_Plan( boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
+                ws_result = WebServiceUtil.op_Commit_Work_line_Item_Non_Plan(boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
                         boxItemEntity.getLotNo(), boxItemEntity.getIst_ID(), boxItemEntity.getSub_Ist_ID(), boxItemEntity.getSMLI_ID(), boxItemEntity.getSMM_ID(), boxItemEntity.getSMT_ID(),
-                        String.valueOf(boxItemEntity.getQty()), wcIdNameEntity.getWcName(), "hhh", remark, wcIdNameEntity.getWcId());
+                        String.valueOf(boxItemEntity.getQty()), wcIdNameEntity.getWcName(), listNo, remark, wcIdNameEntity.getWcId());
 
 //                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
 //                        listNo,new Date() ,"李伟锋成品入库测试",
@@ -417,8 +475,8 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
 
         @Override
         protected void onPostExecute(Void result) {
-//            boxItemAdapter.notifyDataSetChanged();
-//            recyclerView.setAdapter(boxItemAdapter);
+//            adapter.notifyDataSetChanged();
+//            recyclerView.setAdapter(adapter);
             //pbScan.setVisibility(View.INVISIBLE);
 //            remarkTextView.setText("");
             remark = "";
@@ -429,7 +487,7 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
                     ToastUtil.showToastShort("成功出库");
                     boxItemEntityArrayList.clear();
 //                    boxItemEntityArrayList.remove(boxItemen)
-                    boxItemAdapter.notifyDataSetChanged();
+                    adapter.notifyDataSetChanged();
                 }
             }
         }

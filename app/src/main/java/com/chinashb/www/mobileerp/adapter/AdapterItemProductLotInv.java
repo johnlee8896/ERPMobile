@@ -55,7 +55,7 @@ public class AdapterItemProductLotInv extends RecyclerView.Adapter<AdapterItemPr
 //        holder.tvIstName.setText(lot.getIstName());
         //todo
         holder.tvLotDate.setText(CommonUtil.DateYMD(productItemBean.get入库日期()));
-//        holder.tvLotNo.setText(productItemBean.getLotID());
+//        holder.lotTextView.setText(productItemBean.getLotID());
         holder.tvLotID.setText(String.valueOf(productItemBean.getLotID()));
         holder.tvManuLotNo.setText(productItemBean.get批次号());
         holder.tvStauts.setText(productItemBean.get状态());
@@ -105,7 +105,7 @@ public class AdapterItemProductLotInv extends RecyclerView.Adapter<AdapterItemPr
 //            tvVer = (TextView) view.findViewById(R.id.tv_product_inv_item_version);
 //            tvIstName = (TextView) view.findViewById(R.id.tv_product_inv_item_ist);
             tvLotDate = (TextView) view.findViewById(R.id.tv_product_inv_item_indate);
-//            tvLotNo = (TextView) view.findViewById(R.id.tv_product_inv_item_lotno);
+//            lotTextView = (TextView) view.findViewById(R.id.tv_product_inv_item_lotno);
             tvLotID = (TextView) view.findViewById(R.id.tv_product_inv_item_lotid);
             tvManuLotNo = (TextView) view.findViewById(R.id.tv_product_inv_item_manulot);
             tvStauts = (TextView) view.findViewById(R.id.tv_product_inv_item_status);

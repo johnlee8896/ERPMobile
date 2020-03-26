@@ -1133,15 +1133,12 @@ public class WebServiceUtil {
 
 
     //成品出库
-    public static WsResult op_Product_out_Pallet(int Abroad, int Mass, int Company_ID, int Bu_ID, int DT_ID,
-
+    public static WsResult op_Product_Logistics(int Abroad, int Mass, int Company_ID, int Bu_ID, int DT_ID,
                                                  String TrackNo, String DriverName, String DriverTel,
-
                                                  String CarPlateNO, String LogisticsRemark, int Replenish,
-
                                                  String Delivery_No,
-
-                                                 int LC_ID, Date Shiping_Date) {
+                                                 int LC_ID, Date Shiping_Date, long SID , String Contract_No , int CF_ID,
+                                               Date Arrive_Date , Date LoadTime ,String Des_Address ) {
 
         String webMethodName = "saveLogisticsInfoParams";
 //        String webMethodName = "op_Product_Manu_In_Not_Pallet_1";
@@ -1248,6 +1245,50 @@ public class WebServiceUtil {
         propertyInfo14.setValue(Shiping_Date);
         propertyInfo14.setType(Date.class);
         propertyInfos.add(propertyInfo14);
+
+
+
+//        long SID , String Contract_No , int CF_ID
+
+        PropertyInfo propertyInfo15 = new PropertyInfo();
+        propertyInfo15.setName("SID");
+        propertyInfo15.setValue(SID);
+        propertyInfo15.setType(Long.class);
+        propertyInfos.add(propertyInfo15);
+
+
+        PropertyInfo propertyInfo16 = new PropertyInfo();
+        propertyInfo16.setName("Contract_No");
+        propertyInfo16.setValue(Contract_No);
+        propertyInfo16.setType(String.class);
+        propertyInfos.add(propertyInfo16);
+
+
+        PropertyInfo propertyInfo17 = new PropertyInfo();
+        propertyInfo17.setName("CF_ID");
+        propertyInfo17.setValue(CF_ID);
+        propertyInfo17.setType(Integer.class);
+        propertyInfos.add(propertyInfo17);
+
+//        Date Arrive_Date , Date LoadTime?
+
+        PropertyInfo propertyInfo18 = new PropertyInfo();
+        propertyInfo18.setName("LoadTime");
+        propertyInfo18.setValue(LoadTime);
+        propertyInfo18.setType(Date.class);
+        propertyInfos.add(propertyInfo18);
+
+        PropertyInfo propertyInfo19 = new PropertyInfo();
+        propertyInfo19.setName("Arrive_Date");
+        propertyInfo19.setValue(Arrive_Date);
+        propertyInfo19.setType(Date.class);
+        propertyInfos.add(propertyInfo19);
+
+        PropertyInfo propertyInfo20 = new PropertyInfo();
+        propertyInfo20.setName("Des_Address");
+        propertyInfo20.setValue(Arrive_Date);
+        propertyInfo20.setType(Date.class);
+        propertyInfos.add(propertyInfo20);
 
 //        PropertyInfo propertyInfo15 = new PropertyInfo();
 //        propertyInfo15.setName("Recorder");

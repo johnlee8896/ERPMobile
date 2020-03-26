@@ -58,7 +58,7 @@ public class InBoxItemAdapter extends RecyclerView.Adapter<InBoxItemAdapter.BoxI
         LotWithBox = Box_Item.getLotNo() + "@" + Box_Item.getBoxName() + Box_Item.getBoxNo();
         holder.tvLotNo.setText(LotWithBox);
 
-        //holder.tvIst.setText(BoxItemEntity.get());
+        //holder.istTextView.setText(BoxItemEntity.get());
         holder.cbSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

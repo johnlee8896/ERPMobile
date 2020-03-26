@@ -55,7 +55,7 @@ public class AdapterMoveBoxItem extends RecyclerView.Adapter<AdapterMoveBoxItem.
 
         holder.cbSelect.setChecked(Box_Item.getSelect());
 
-        //holder.tvIst.setText(BoxItemEntity.get());
+        //holder.istTextView.setText(BoxItemEntity.get());
         holder.cbSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

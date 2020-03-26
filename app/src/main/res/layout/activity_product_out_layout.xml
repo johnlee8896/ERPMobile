@@ -304,6 +304,36 @@
         </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dimen_size_20"
+            android:layout_gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+
+            <!--<Button-->
+            <!--android:id="@+id/product_non_tray_scan_area_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="扫描库位" />-->
+
+            <Button
+                android:id="@+id/product_out_sdzh_out_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="三点照合出库" />
+
+        </LinearLayout>
+
+
     </LinearLayout>
 
     <EditText

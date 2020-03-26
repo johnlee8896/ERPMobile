@@ -71,7 +71,8 @@
         <!--生产线领料（零部件、辅助料、退料）页面-->
         <activity
             android:name=".PartWorkLinePutActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
 
         <!--物流管理页面-->
         <activity
@@ -115,7 +116,7 @@
         <activity
             android:name=".warehouse.StockInActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name=".permission.PermissionsUtil" />        <!--<activity-->
         <!--android:name=".commonactivity.LoginActivity"-->
         <!--android:screenOrientation="portrait" />-->

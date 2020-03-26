@@ -124,9 +124,9 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         do_ID = getIntent().getStringExtra(IntentConstant.Intent_Extra_do_id);
 
         do_ID = "6023";
-        if (!TextUtils.isEmpty(do_ID)) {
-            new GetDeliveryOrderAsyncTask().execute(do_ID);
-        }
+//        if (!TextUtils.isEmpty(do_ID)) {
+//            new GetDeliveryOrderAsyncTask().execute(do_ID);
+//        }
 
         //// TODO: 2020/2/26 放这里报错，还没加载？没有
         sdzhOrderDetailAdapter = new SDZHOrderDetailAdapter();

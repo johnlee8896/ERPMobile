@@ -132,11 +132,11 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
             task.execute(UnitFormatUtil.formatTimeToDay(endTime), UnitFormatUtil.formatTimeToDay(endTime));
             tomorrowButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
         } else if (v == sdzhButton) {
-            if (deliveryOrderBean != null && deliveryOrderBean.getDOID() != 0) {
-                Intent intent = new Intent(this, SDZHHActivity.class);
-                intent.putExtra(IntentConstant.Intent_Extra_do_id, deliveryOrderBean.getDOID() + "");
-                startActivity(intent);
-            }
+//            if (deliveryOrderBean != null && deliveryOrderBean.getDOID() != 0) {
+//                Intent intent = new Intent(this, SDZHHActivity.class);
+//                intent.putExtra(IntentConstant.Intent_Extra_do_id, deliveryOrderBean.getDOID() + "");
+//                startActivity(intent);
+//            }
         }
     }
 

@@ -58,7 +58,7 @@ public class AdapterProInv extends RecyclerView.Adapter<AdapterProInv.ProInvView
         holder.tvName.setText(Product_Inv.get名称());
         holder.tvVer.setText(Product_Inv.get版本());
         holder.tvQty.setText(String.valueOf(Product_Inv.get库存()));
-        //holder.tvIst.setText(ProductsEntity.get存储区域());
+        //holder.istTextView.setText(ProductsEntity.get存储区域());
 
     }
 
@@ -88,7 +88,7 @@ public class AdapterProInv extends RecyclerView.Adapter<AdapterProInv.ProInvView
             tvPartNo = (TextView) view.findViewById(R.id.tv_pro_inv_partno);
             tvName = (TextView) view.findViewById(R.id.tv_pro_inv_name);
             tvVer = (TextView) view.findViewById(R.id.tv_pro_inv_version);
-            //tvIst = (TextView)view.findViewById(R.id.tv_pro_inv_storage);
+            //istTextView = (TextView)view.findViewById(R.id.tv_pro_inv_storage);
             tvQty = (TextView) view.findViewById(R.id.tv_pro_inv_qty);
             view.setOnClickListener(this);
         }
