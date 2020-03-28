@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:checked="false"
+                android:checked="true"
                 android:thumb="@drawable/selector_switch_thumb_style"
                 android:track="@drawable/selector_switch_track_style" />
 

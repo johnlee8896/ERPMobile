@@ -369,7 +369,7 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
 //
 ////                            subProductItemEntityList.add(itemEntity);
 ////                            adapter = new ItemProductNonTrayAdapter(ProductInNonTrayActivity.this, subProductItemEntityList);
-////                            mRecyclerView.setAdapter(adapter);
+////                            recyclerView.setAdapter(adapter);
 ////                            inputEditText.setText("");
 ////                            //// TODO: 2019/12/20 去掉扫描枪几个字
 ////                            inputEditText.setHint("请继续扫描");

@@ -21,6 +21,10 @@ public class WCSubProductEntity implements Parcelable {
     @SerializedName("Newest_Version") private String newestVersion;
     @SerializedName("Approval_detail") private String approvalDetail;
 
+    public WCSubProductEntity(){
+
+    }
+
     protected WCSubProductEntity(Parcel in) {
         itemId = in.readLong();
         ivId = in.readLong();

@@ -288,18 +288,22 @@
         android:layout_weight="1"
         android:paddingLeft="20dp"
         android:orientation="horizontal">
-
-        <android.support.v7.widget.RecyclerView
+        <com.chinashb.www.mobileerp.widget.CustomRecyclerView
             android:id="@+id/product_in_scan_box_recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            tools:listitem="@layout/item_scan_bar_code_layout"
+            android:layout_height="match_parent"/>
+        <!--<android.support.v7.widget.RecyclerView-->
+            <!--android:id="@+id/"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
 
-            android:clickable="true"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="8dp">
+            <!--android:clickable="true"-->
+            <!--tools:layout_editor_absoluteX="8dp"-->
+            <!--tools:layout_editor_absoluteY="8dp">-->
 
-        </android.support.v7.widget.RecyclerView>
+        <!--</android.support.v7.widget.RecyclerView>-->
 
     </LinearLayout>
 

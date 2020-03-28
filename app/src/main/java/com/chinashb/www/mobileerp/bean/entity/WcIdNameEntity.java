@@ -15,6 +15,10 @@ public class WcIdNameEntity implements Parcelable {
     @SerializedName("WC_Id") private long wcId;
     @SerializedName("WC_Name") private String wcName;
 
+    public WcIdNameEntity(){
+
+    }
+
     protected WcIdNameEntity(Parcel in) {
         wcId = in.readLong();
         wcName = in.readString();

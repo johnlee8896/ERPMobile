@@ -53,6 +53,11 @@
             android:screenOrientation="portrait" />
         <activity android:name=".warehouse.WarehouseStockQueryActivity" />
 
+        <!--&lt;!&ndash;成品扫箱号入库&ndash;&gt;-->
+        <!--<activity-->
+            <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
+            <!--android:screenOrientation="portrait" />-->
+
         <!--三点照合 成品出库-->
         <activity
             android:name=".SDZHHActivity"
@@ -65,7 +70,7 @@
 
         <!--成品入库 操作同PC端-->
         <activity
-            android:name=".ProductInNonTrayScanActivity"
+            android:name=".ProductInNonTraySamePCActivity"
             android:screenOrientation="portrait" />
 
         <!--生产线领料（零部件、辅助料、退料）页面-->

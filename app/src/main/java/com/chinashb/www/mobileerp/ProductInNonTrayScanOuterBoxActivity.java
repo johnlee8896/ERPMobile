@@ -44,12 +44,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /***
- * @date 创建时间 2019/12/18 15:35
+ * @date 创建时间 2020/3/26 16:05
  * @author 作者: xxblwf
  * @description 成品非托盘入库,扫描箱号二维码
  */
 
-public class ProductInNonTrayScanActivity extends BaseActivity implements View.OnClickListener {
+public class ProductInNonTrayScanOuterBoxActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.product_non_tray_scan_button) Button scanItemButton;
     @BindView(R.id.product_non_tray_scan_area_button) Button scanAreaButton;
     @BindView(R.id.product_non_tray_warehouse_in_button) Button warehouseInButton;
@@ -205,7 +205,7 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
                                 itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
 
                                 subProductItemEntityList.add(itemEntity);
-                                boxItemAdapter = new ItemProductNonTrayAdapter(ProductInNonTrayScanActivity.this, subProductItemEntityList);
+                                boxItemAdapter = new ItemProductNonTrayAdapter(ProductInNonTrayScanOuterBoxActivity.this, subProductItemEntityList);
                                 mRecyclerView.setAdapter(boxItemAdapter);
                                 inputEditText.setText("");
                                 //// TODO: 2019/12/20 去掉扫描枪几个字
@@ -225,7 +225,7 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
                 if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
                     //仓库位置码
                     scanContent = content;
-                    GetProductIstAsyncTask task = new GetProductIstAsyncTask();
+                    ProductInNonTrayScanOuterBoxActivity.GetProductIstAsyncTask task = new ProductInNonTrayScanOuterBoxActivity.GetProductIstAsyncTask();
                     task.execute();
                 }
             }
@@ -255,7 +255,7 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
     }
 
     private void getMESData(){
-        GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
+        ProductInNonTrayScanOuterBoxActivity.GetMesDataAsyncTask asyncTask = new ProductInNonTrayScanOuterBoxActivity.GetMesDataAsyncTask();
         asyncTask.execute();
     }
 
@@ -290,7 +290,7 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
 
     private void handleSelectNO() {
         if (commonSelectInputDialog == null) {
-            commonSelectInputDialog = new CommonSelectInputDialog(ProductInNonTrayScanActivity.this);
+            commonSelectInputDialog = new CommonSelectInputDialog(ProductInNonTrayScanOuterBoxActivity.this);
         }
         commonSelectInputDialog.show();
         commonSelectInputDialog.setOnViewClickListener(onViewClickListener);
@@ -307,7 +307,7 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
                 }
             }
             if (selectedcount > 0) {
-                new IntentIntegrator(ProductInNonTrayScanActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                new IntentIntegrator(ProductInNonTrayScanOuterBoxActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
                 inputEditText.setText("");
             } else {
                 ToastUtil.showToastShort("请选择成品箱条目！");
@@ -448,7 +448,7 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
 
             }
             if (selectedcount > 0) {
-                ExeWarehouseProductInAsyncTask task = new ExeWarehouseProductInAsyncTask();
+                ProductInNonTrayScanOuterBoxActivity.ExeWarehouseProductInAsyncTask task = new ProductInNonTrayScanOuterBoxActivity.ExeWarehouseProductInAsyncTask();
                 task.execute();
             }
 
@@ -532,16 +532,16 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
             if (ws_result != null) {
                 if (!ws_result.getResult()) {
                     //Toast.makeText(StockInActivity.this,ws_result.getErrorInfo(),Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(ProductInNonTrayScanActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
+                    CommonUtil.ShowToast(ProductInNonTrayScanOuterBoxActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
 
                 } else {
                     //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(ProductInNonTrayScanActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
+                    CommonUtil.ShowToast(ProductInNonTrayScanOuterBoxActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
                 }
 
             }
 
-            boxItemAdapter = new ItemProductNonTrayAdapter(ProductInNonTrayScanActivity.this, subProductItemEntityList);
+            boxItemAdapter = new ItemProductNonTrayAdapter(ProductInNonTrayScanOuterBoxActivity.this, subProductItemEntityList);
             mRecyclerView.setAdapter(boxItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
         }
@@ -586,4 +586,5 @@ public class ProductInNonTrayScanActivity extends BaseActivity implements View.O
 
 
 }
+
 

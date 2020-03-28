@@ -50,13 +50,13 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
         @Override
         public <T> void onClickAction(View v, String tag, T t) {
             if (t != null && t instanceof DeliveryOrderBean) {
-//                Intent intent = new Intent(DeliveryOrderActivity.this, ProductSaleOutActivity.class);
-//                intent.putExtra(IntentConstant.Intent_product_delivery_order_bean, (DeliveryOrderBean) t);
-//                setResult(IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order, intent);
-//                finish();
+                Intent intent = new Intent(DeliveryOrderActivity.this, ProductSaleOutActivity.class);
+                intent.putExtra(IntentConstant.Intent_product_delivery_order_bean, (DeliveryOrderBean) t);
+                setResult(IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order, intent);
+                finish();
 
                 //// TODO: 2020/2/26
-                deliveryOrderBean = (DeliveryOrderBean) t;
+//                deliveryOrderBean = (DeliveryOrderBean) t;
 
             }
         }

@@ -809,6 +809,7 @@ public class WebServiceUtil {
                     box_item.setBuName(obj2.getProperty("BuName").toString());
                     box_item.setBoxName(obj2.getProperty("BoxName").toString());
                     box_item.setBoxNo(obj2.getProperty("BoxNo").toString());
+                    box_item.setIstName(obj2.getProperty("IstName").toString());
 
                 }
 
@@ -1131,8 +1132,97 @@ public class WebServiceUtil {
 
     }
 
+   /*
 
-    //成品出库
+    */
+
+   public static WsResult  op_Product_Manu_Out_Not_Pallet(Date Delivery_Date, long CF_ID ,
+                                                          String  CFName ,String SheetNo  ,
+                                  long Delivery_ID ,long DPI_ID ,long DO_ID ){
+       String webMethodName = "op_Product_Manu_Out_Not_Pallet";
+       ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+       PropertyInfo propertyInfo1 = new PropertyInfo();
+       propertyInfo1.setName("Bu_ID");
+       //// TODO: 2020/3/27 车间与操作员关系？
+       propertyInfo1.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+       propertyInfo1.setType(Integer.class);
+       propertyInfos.add(propertyInfo1);
+       System.out.println("================================Bu_ID = " + UserSingleton.get().getUserInfo().getBu_ID());
+
+       PropertyInfo propertyInfo2 = new PropertyInfo();
+       propertyInfo2.setName("Delivery_Date");
+       propertyInfo2.setValue(Delivery_Date);
+       propertyInfo2.setType(Date .class);
+       propertyInfos.add(propertyInfo2);
+       System.out.println("================================Delivery_Date = " + Delivery_Date);
+
+       PropertyInfo propertyInfo3 = new PropertyInfo();
+       propertyInfo3.setName("CF_ID");
+       propertyInfo3.setValue(CF_ID);
+       propertyInfo3.setType(Long.class);
+       propertyInfos.add(propertyInfo3);
+       System.out.println("================================CF_ID = " + CF_ID);
+
+       PropertyInfo propertyInfo4 = new PropertyInfo();
+       propertyInfo4.setName("CFName");
+       propertyInfo4.setValue(CFName);
+       propertyInfo4.setType(String.class);
+       propertyInfos.add(propertyInfo4);
+       System.out.println("================================CFName = " + CFName);
+
+       PropertyInfo propertyInfo5 = new PropertyInfo();
+       propertyInfo5.setName("SheetNo");
+       propertyInfo5.setValue(SheetNo);
+       propertyInfo5.setType(String.class);
+       propertyInfos.add(propertyInfo5);
+       System.out.println("================================SheetNo = " + SheetNo);
+
+       PropertyInfo propertyInfo6 = new PropertyInfo();
+       propertyInfo6.setName("Delivery_ID");
+       propertyInfo6.setValue(Delivery_ID);
+       propertyInfo6.setType(Long.class);
+       propertyInfos.add(propertyInfo6);
+       System.out.println("================================Delivery_ID = " + Delivery_ID);
+
+       PropertyInfo propertyInfo7 = new PropertyInfo();
+       propertyInfo7.setName("DPI_ID");
+       propertyInfo7.setValue(DPI_ID);
+       propertyInfo7.setType(Long.class);
+       propertyInfos.add(propertyInfo7);
+       System.out.println("================================DPI_ID = " + DPI_ID);
+
+       PropertyInfo propertyInfo8 = new PropertyInfo();
+       propertyInfo8.setName("DO_ID");
+       propertyInfo8.setValue(DO_ID);
+       propertyInfo8.setType(Long.class);
+       propertyInfos.add(propertyInfo8);
+       System.out.println("================================DO_ID = " + DO_ID);
+
+       PropertyInfo propertyInfo9 = new PropertyInfo();
+       propertyInfo9.setName("HR_ID");
+       propertyInfo9.setValue(UserSingleton.get().getHRID());
+       propertyInfo8.setType(Integer.class);
+       propertyInfos.add(propertyInfo9);
+       System.out.println("================================HR_ID = " + UserSingleton.get().getHRID());
+
+       SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+       if (envelope != null) {
+           if (envelope.bodyIn instanceof SoapFault) {
+               WsResult result = new WsResult();
+               result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+               result.setResult(false);
+               return result;
+           } else {
+               SoapObject obj = (SoapObject) envelope.bodyIn;
+               WsResult ws_result = Get_WS_Result(obj);
+               return ws_result;
+           }
+       }
+       return null;
+   }
+
+    //成品出库 物流信息
     public static WsResult op_Product_Logistics(int Abroad, int Mass, int Company_ID, int Bu_ID, int DT_ID,
                                                  String TrackNo, String DriverName, String DriverTel,
                                                  String CarPlateNO, String LogisticsRemark, int Replenish,

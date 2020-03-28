@@ -62,7 +62,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         if (v == scanIntoTrayButton) {
 
         } else if (v == scanIntoNonTrayButton) {
-            Intent intent = new Intent(this, ProductInNonTrayScanActivity.class);
+            Intent intent = new Intent(this, ProductInNonTraySamePCActivity.class);
             startActivity(intent);
         } else if (v == sendGoodsTrayButton) {
 
@@ -82,6 +82,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         } else if (v == otherOutTextView) {
 
         } else if (v == scanBoxInTextView){
+//            Intent intent = new Intent(this,ProductInNonTrayScanOuterBoxActivity.class);
             Intent intent = new Intent(this,ProductScanBoxInActivity.class);
             startActivity(intent);
         }

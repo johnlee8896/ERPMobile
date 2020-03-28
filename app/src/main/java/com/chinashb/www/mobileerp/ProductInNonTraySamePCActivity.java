@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
@@ -11,8 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.chinashb.www.mobileerp.adapter.CommonItemBarCodeAdapter;
-import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.entity.MESDataEntity;
@@ -31,7 +31,6 @@ import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
-import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -45,30 +44,34 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /***
- * @date 创建时间 2020/3/14 10:45
+ * @date 创建时间 2019/12/18 15:35
  * @author 作者: xxblwf
- * @description 成品非托盘入库，扫描箱号码
+ * @description 同PC端一致
  */
-//@Deprecated
-public class ProductScanBoxInActivity extends BaseActivity implements View.OnClickListener {
-    @BindView(R.id.product_in_scan_box_scan_button) Button scanBoxButton;
-    @BindView(R.id.product_in_scan_box_scan_area_button) Button scanAreaButton;
-    @BindView(R.id.product_in_scan_box_warehouse_in_button) Button warehouseInButton;
-    @BindView(R.id.product_in_scan_box_input_EditText) EditText inputEditText;
-    @BindView(R.id.product_in_scan_box_recyclerView) CustomRecyclerView recyclerView;
-    @BindView(R.id.product_in_scan_box_select_wc_button) Button selectWcButton;
-    @BindView(R.id.product_in_scan_box_wc_name_textView) TextView wcNameTextView;
-    @BindView(R.id.product_in_scan_box_select_NO_button) Button selectNOButton;
-    @BindView(R.id.product_in_scan_box_NO_textView) TextView NOTextView;
+
+public class ProductInNonTraySamePCActivity extends BaseActivity implements View.OnClickListener {
+    @BindView(R.id.product_non_tray_scan_button) Button scanItemButton;
+    @BindView(R.id.product_non_tray_scan_area_button) Button scanAreaButton;
+    @BindView(R.id.product_non_tray_warehouse_in_button) Button warehouseInButton;
+    @BindView(R.id.product_non_tray_input_EditText) EditText inputEditText;
+    //    @BindView(R.id.product_non_tray_tv_item_name_col) TextView TvItemNameCol;
+//    @BindView(R.id.product_non_tray_tv_bu_name_col) TextView TvBuNameCol;
+//    @BindView(R.id.product_non_tray_tv_inv_in_lotno) TextView TvInvInLotno;
+//    @BindView(R.id.product_non_tray_tv_qty_col) TextView TvQtyCol;
+//    @BindView(R.id.product_non_tray_tv_ist_name_col) TextView TvIstNameCol;
+//    @BindView(R.id.product_non_tray_tv_inv_in_selected) TextView TvInvInSelected;
+    @BindView(R.id.product_non_tray_recyclerView) RecyclerView mRecyclerView;
+    @BindView(R.id.product_non_tray_select_wc_button) Button selectWcButton;
+    @BindView(R.id.product_non_tray_wc_name_textView) TextView wcNameTextView;
+    @BindView(R.id.product_non_tray_select_NO_button) Button selectNOButton;
+    @BindView(R.id.product_non_tray_NO_textView) TextView NOTextView;
 
     private WcIdNameEntity wcIdNameEntity;
     private String scanContent;
     private List<WCSubProductEntity> subProductEntityList;
-//    private List<WCSubProductItemEntity> boxItemEntityList;
-    private List<BoxItemEntity> boxItemEntityList;
+    private List<WCSubProductItemEntity> subProductItemEntityList;
     private WCSubProductEntity certainWCSubProductEntity;
-//    private ItemProductNonTrayAdapter adapter;
-    private CommonItemBarCodeAdapter adapter;
+    private ItemProductNonTrayAdapter boxItemAdapter;
 
     private List<String> noList;
     private IstPlaceEntity thePlace;
@@ -89,18 +92,18 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_product_scan_box_in_layout);
+//        setContentView(R.layout.activity_product_in_no_tray_scan_layout);
+        setContentView(R.layout.activity_product_in_no_tray_layout);
         ButterKnife.bind(this);
         setViewsListener();
         initView();
     }
 
     private void initView() {
-        boxItemEntityList = new ArrayList<>();
-//        adapter = new ItemProductNonTrayAdapter(this, boxItemEntityList);
-        adapter = new CommonItemBarCodeAdapter();
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
-        recyclerView.setAdapter(adapter);
+        subProductItemEntityList = new ArrayList<>();
+        boxItemAdapter = new ItemProductNonTrayAdapter(this, subProductItemEntityList);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        mRecyclerView.setAdapter(boxItemAdapter);
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -133,7 +136,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
     private void setViewsListener() {
         selectWcButton.setOnClickListener(this);
-        scanBoxButton.setOnClickListener(this);
+        scanItemButton.setOnClickListener(this);
         scanAreaButton.setOnClickListener(this);
         warehouseInButton.setOnClickListener(this);
         selectNOButton.setOnClickListener(this);
@@ -159,64 +162,64 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
         }
         System.out.println("============ scan content = " + content);
         // V5/B/54/PS/10475/L/191217/LQ/0/Qty/120
-
-        if (content.contains(",")){
-            String[] qrContent = content.split(",");
-            if (qrContent != null && qrContent.length == 7){
-                String cartonNO = qrContent[0];
-                workLineId = Integer.parseInt(qrContent[5]);
-                GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
-                asyncTask.execute();
-            }else{
-                ToastUtil.showToastShort("箱码格式错误！");
-            }
-        }else if (content.contains("/")) {
+        if (content.contains("/")) {
             String[] qrContent;
             qrContent = content.split("/");
             if (qrContent.length >= 2) {
-
+//                    String qrTitle = qrContent[0];
+//                    if (!qrTitle.equals("")) {
+//                        if (qrTitle.equals("V5")) {
+//                            //成品 物料码
+//                            scanContent = content;
+////                            GetProductItemQRCodeAsyncTask task = new GetProductItemQRCodeAsyncTask;
+////                            task.execute();
+//                            if (qrContent[1].startsWith("B")){
+//                                String BContent = qrContent[1].split("/")
+//                            }
+//                        }
+//                    }
                 if (content.startsWith("XH")){
                     if (content.contains(",")){
                         String cartNO = content.split(",")[0];
 
                     }
                 }else if (content.startsWith("V5")) {
-//                    int buId = Integer.parseInt(getParsedString(content, "/B/", "/PS/"));
-//                    if (buId == UserSingleton.get().getUserInfo().getBu_ID()) {
-//                        int psId = Integer.parseInt(getParsedString(content, "/PS/", "/L/"));
-//                        String lotNo = getParsedString(content, "/L/", "/LQ/");
-//                        int qty = Integer.parseInt(getParsedString(content, "/Qty/", ""));
-//                        boolean hasThisItem = false;
-//                        if (boxItemEntityList == null ){
-//                            return;
-//                        }
-//                        for (WCSubProductEntity entity : subProductEntityList) {
-//                            if (entity.getPsId() == psId) {
-//                                hasThisItem = true;
-//                                certainWCSubProductEntity = entity;
-//                                WCSubProductItemEntity itemEntity = new WCSubProductItemEntity();
-//                                itemEntity.setWcSubProductEntity(entity);
-//                                itemEntity.setSelect(true);
-//                                itemEntity.setLotNo(lotNo);
-//                                itemEntity.setQty(qty);
-//                                itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
-//
-//                                boxItemEntityList.add(itemEntity);
-//                                adapter = new ItemProductNonTrayAdapter(ProductScanBoxInActivity.this, boxItemEntityList);
-//                                recyclerView.setAdapter(adapter);
-//                                inputEditText.setText("");
-//                                //// TODO: 2019/12/20 去掉扫描枪几个字
-//                                inputEditText.setHint("请继续扫描");
-//                                break;
-//                            }
-//                        }
-//                        if (!hasThisItem) {
-//                            ToastUtil.showToastShort("该产品不属于此产线！");
-//                        }
-//                    } else {
-//                        ToastUtil.showToastShort("该物料码不属于本车间！");
-//                        return;
-//                    }
+                    int buId = Integer.parseInt(getParsedString(content, "/B/", "/PS/"));
+                    if (buId == UserSingleton.get().getUserInfo().getBu_ID()) {
+                        int psId = Integer.parseInt(getParsedString(content, "/PS/", "/L/"));
+                        String lotNo = getParsedString(content, "/L/", "/LQ/");
+                        int qty = Integer.parseInt(getParsedString(content, "/Qty/", ""));
+                        boolean hasThisItem = false;
+                        if (subProductItemEntityList == null ){
+                            return;
+                        }
+                        for (WCSubProductEntity entity : subProductEntityList) {
+                            if (entity.getPsId() == psId) {
+                                hasThisItem = true;
+                                certainWCSubProductEntity = entity;
+                                WCSubProductItemEntity itemEntity = new WCSubProductItemEntity();
+                                itemEntity.setWcSubProductEntity(entity);
+                                itemEntity.setSelect(true);
+                                itemEntity.setLotNo(lotNo);
+                                itemEntity.setQty(qty);
+                                itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
+
+                                subProductItemEntityList.add(itemEntity);
+                                boxItemAdapter = new ItemProductNonTrayAdapter(ProductInNonTraySamePCActivity.this, subProductItemEntityList);
+                                mRecyclerView.setAdapter(boxItemAdapter);
+                                inputEditText.setText("");
+                                //// TODO: 2019/12/20 去掉扫描枪几个字
+                                inputEditText.setHint("请继续扫描");
+                                break;
+                            }
+                        }
+                        if (!hasThisItem) {
+                            ToastUtil.showToastShort("该产品不属于此产线！");
+                        }
+                    } else {
+                        ToastUtil.showToastShort("该物料码不属于本车间！");
+                        return;
+                    }
                 }
 
                 if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
@@ -259,20 +262,22 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
     @Override public void onClick(View view) {
         if (view == selectWcButton) {
             getWCList();
-        } else if (view == scanBoxButton) {
-//            if (TextUtils.isEmpty(wcNameTextView.getText())){
-//                ToastUtil.showToastShort("请先选择产线");
-//                return;
-//            }
+        }
+        else if (view == scanItemButton) {
+            if (TextUtils.isEmpty(wcNameTextView.getText())){
+                ToastUtil.showToastShort("请先选择产线");
+                return;
+            }
             new IntentIntegrator(this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-        } else if (view == scanAreaButton) {
+        }
+        else if (view == scanAreaButton) {
             handleScanArea();
         } else if (view == warehouseInButton) {
 //            handleIntoWareHouse();
 //            wcNameTextView.setText("");
-////            boxItemEntityList = new ArrayList<>()
-//            if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
-//                boxItemEntityList.clear();
+////            subProductItemEntityList = new ArrayList<>()
+//            if (subProductItemEntityList != null && subProductItemEntityList.size() > 0) {
+//                subProductItemEntityList.clear();
 //            }
 
 
@@ -285,7 +290,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
     private void handleSelectNO() {
         if (commonSelectInputDialog == null) {
-            commonSelectInputDialog = new CommonSelectInputDialog(ProductScanBoxInActivity.this);
+            commonSelectInputDialog = new CommonSelectInputDialog(ProductInNonTraySamePCActivity.this);
         }
         commonSelectInputDialog.show();
         commonSelectInputDialog.setOnViewClickListener(onViewClickListener);
@@ -294,15 +299,15 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
     }
 
     private void handleScanArea() {
-        if (boxItemEntityList.size() > 0) {
+        if (subProductItemEntityList.size() > 0) {
             int selectedcount = 0;
-            for (int i = 0; i < boxItemEntityList.size(); i++) {
-//                if (boxItemEntityList.get(i).isSelect()) {
-//                    selectedcount++;
-//                }
+            for (int i = 0; i < subProductItemEntityList.size(); i++) {
+                if (subProductItemEntityList.get(i).isSelect()) {
+                    selectedcount++;
+                }
             }
             if (selectedcount > 0) {
-                new IntentIntegrator(ProductScanBoxInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                new IntentIntegrator(ProductInNonTraySamePCActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
                 inputEditText.setText("");
             } else {
                 ToastUtil.showToastShort("请选择成品箱条目！");
@@ -393,11 +398,6 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 //                            boxItemEntityList.get(i).setSub_Ist_ID(istPlaceEntity.getSub_Ist_ID());
 //                        }
 //                    }
-                    if (boxItemEntityList != null && boxItemEntityList.size() > 0){
-                        boxItemEntityList.get(0).setIstName(istPlaceEntity.getIstName());
-                        boxItemEntityList.get(0).setIst_ID(istPlaceEntity.getIst_ID());
-                        boxItemEntityList.get(0).setSub_Ist_ID(istPlaceEntity.getSub_Ist_ID());
-                    }
                 }
             } else {
 //                Toast.makeText(StockInActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
@@ -410,7 +410,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            recyclerView.setAdapter(adapter);
+            mRecyclerView.setAdapter(boxItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
             inputEditText.setText("");
             System.out.println("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + "id" + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
@@ -432,12 +432,12 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
     }
 
     private void handleIntoWareHouse() {
-        if (boxItemEntityList.size() > 0) {
+        if (subProductItemEntityList.size() > 0) {
             int selectedcount = 0;
-            for (int i = 0; i < boxItemEntityList.size(); i++) {
-                if (boxItemEntityList.get(i) != null) {
+            for (int i = 0; i < subProductItemEntityList.size(); i++) {
+                if (subProductItemEntityList.get(i).isSelect()) {
                     //// TODO: 2019/12/27
-//                    if (boxItemEntityList.get(i).getIst_ID() == 0) {
+//                    if (subProductItemEntityList.get(i).getIst_ID() == 0) {
                     if (thePlace.getIst_ID() == 0) {
 //                            CommonUtil.ShowToast(StockInActivity.this, "还没有扫描库位", R.mipmap.warning, Toast.LENGTH_SHORT);
                         ToastUtil.showToastLong("还没有扫描库位");
@@ -458,46 +458,59 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
         }
     }
 
-    int workLineId = 0;
-
     private class ExeWarehouseProductInAsyncTask extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
-            BoxItemEntity entity = boxItemEntityList.get(0);
 
         @Override
         protected Void doInBackground(String... params) {
-            int count = 0;
-                //todo  这里取的是0，验证多个是否成功
-//                WCSubProductItemEntity boxItemEntity = SelectList.get(0);
-                WcIdNameEntity tempWcIdNameEntity = new WcIdNameEntity();
-                tempWcIdNameEntity.setWcId(0);
-                tempWcIdNameEntity.setWcName("");
 
-            WCSubProductItemEntity wcSubProductItemEntity = new WCSubProductItemEntity();
-//            wcSubProductItemEntity.set
-            WCSubProductEntity subProductEntity = new WCSubProductEntity();
-            if (mesInnerDataEntity != null){
-                subProductEntity.setPsId(mesInnerDataEntity.getPSID());
-                subProductEntity.setProductId(mesInnerDataEntity.getProductID());
-                subProductEntity.setItemId(mesInnerDataEntity.getItemID());
-                subProductEntity.setIvId(mesInnerDataEntity.getIVID());
+            List<WCSubProductItemEntity> SelectList;
+            SelectList = new ArrayList<>();
 
+            for (int i = 0; i < subProductItemEntityList.size(); i++) {
+                if (subProductItemEntityList.get(i).isSelect()) {
+                    SelectList.add(subProductItemEntityList.get(i));
+                }
             }
-            wcSubProductItemEntity.setWcSubProductEntity(subProductEntity);
 
+            int count = 0;
+            int selectedCount = SelectList.size();
+            while (count < selectedCount && SelectList.size() > 0) {
+                //todo  这里取的是0，验证多个是否成功
+                WCSubProductItemEntity boxItemEntity = SelectList.get(0);
+//                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo，SendToWarehouseTime) values (%d,%d,%d,%d,%d,%d,%d,%s,%s)",
+//                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",
+//                        boxItemEntity.getIst_ID() ,boxItemEntity.getSub_Ist_ID(),boxItemEntity.getItem_ID(),boxItemEntity.getIV_ID(),boxItemEntity.getLotID(),
+//                        UserSingleton.get().getUserInfo().getCompany_ID(),UserSingleton.get().getUserInfo().getBu_ID(),
+////                        !TextUtils.isEmpty(boxItemEntity.getManuLotNo()) ? boxItemEntity.getManuLotNo() : boxItemEntity.getLotNo());
+////                        boxItemEntity.getLotNo(),UnitFormatUtil.formatTimeToSecond(System.currentTimeMillis()));
+//                        boxItemEntity.getLotNo());
+
+//                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
+
+//                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
+//                        listNo,"李伟锋成品入库测试",
+//                        13269,"lwf",
+//                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
 
                 //// TODO: 2020/3/14 remark
-                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(tempWcIdNameEntity,wcSubProductItemEntity,new Date(),
+                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
                         listNo,new Date() ,remark,
                         UserSingleton.get().getHRID(),UserSingleton.get().getHRName(),
-                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),(int)entity.getQty());
-
+                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),boxItemEntity.getQty());
+                if (ws_result.getResult()) {
+                    //添加库位与manuLot的关联
+//                    addIstSubIstManuLotRelation(boxItemEntity);
+                    subProductItemEntityList.remove(boxItemEntity);
+                    SelectList.remove(boxItemEntity);
+                }
 //                else{
 ////                    ToastUtil.showToastLong("入库失败！");
 //                    System.out.println("==========================入库失败！");
 //                }
 
                 count++;
+            }
 
             return null;
         }
@@ -515,28 +528,21 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-            if (ws_result.getResult()) {
-                //添加库位与manuLot的关联
-//                    addIstSubIstManuLotRelation(boxItemEntity);
-//                boxItemEntityList.remove(entity);
-//                adapter.setData(boxItemEntityList);
-            }
+
             if (ws_result != null) {
                 if (!ws_result.getResult()) {
                     //Toast.makeText(StockInActivity.this,ws_result.getErrorInfo(),Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
+                    CommonUtil.ShowToast(ProductInNonTraySamePCActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
 
                 } else {
                     //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
-                    boxItemEntityList.remove(entity);
-                    adapter.setData(boxItemEntityList);
+                    CommonUtil.ShowToast(ProductInNonTraySamePCActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
                 }
 
             }
 
-//            boxItemAdapter = new ItemProductNonTrayAdapter(ProductScanBoxInActivity.this, subProductItemEntityList);
-//            mRecyclerView.setAdapter(boxItemAdapter);
+            boxItemAdapter = new ItemProductNonTrayAdapter(ProductInNonTraySamePCActivity.this, subProductItemEntityList);
+            mRecyclerView.setAdapter(boxItemAdapter);
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
@@ -550,15 +556,13 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
         }
 
     }
-   private MESInnerDataEntity mesInnerDataEntity;
+
     private class GetMesDataAsyncTask extends AsyncTask<String, Void, String> {
 
         @Override protected String doInBackground(String... strings) {
-            String cartonNO = strings[0];
             WsResult result =
 //            MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
-//                    WebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
-                    WebServiceUtil.GetSaveFinishedProductCodeDataByMes(cartonNO);
+                    WebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
             return result.getErrorInfo();
         }
 
@@ -570,33 +574,8 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
             if (mesDataEntity.getCode() == 0){//表示成功
                 System.out.println(mesDataEntity.getCode());
                 String tempJson = mesDataEntity.getMessage().replace("[","").replace("]","");
-               mesInnerDataEntity  = JsonUtil.parseJsonToObject(tempJson, MESInnerDataEntity.class);
+                MESInnerDataEntity mesInnerDataEntity = JsonUtil.parseJsonToObject(tempJson, MESInnerDataEntity.class);
                 System.out.println("=============================== " + mesInnerDataEntity.getItemID() + " " +mesInnerDataEntity.getItemUnit());
-
-
-
-
-                BoxItemEntity boxItemEntity = new BoxItemEntity();
-                boxItemEntity.setItemName(mesInnerDataEntity.getProductChineseName());
-                boxItemEntity.setQty(mesInnerDataEntity.getQty()) ;
-                boxItemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
-
-
-//                        WCSubProductItemEntity itemEntity = new WCSubProductItemEntity();
-//                        itemEntity.setWcSubProductEntity(entity);
-//                        itemEntity.setSelect(true);
-//                        itemEntity.setLotNo(lotNo);
-//                        itemEntity.setQty(qty);
-//                        itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
-
-                        boxItemEntityList.add(boxItemEntity);
-//                        adapter = new ItemProductNonTrayAdapter(ProductScanBoxInActivity.this, boxItemEntityList);
-                        adapter.setData(boxItemEntityList);
-                        inputEditText.setText("");
-                        //// TODO: 2019/12/20 去掉扫描枪几个字
-                        inputEditText.setHint("请继续扫描");
-
-
             }else{
                 ToastUtil.showToastLong("接口请求数据错误！");
             }
@@ -607,5 +586,4 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
 
 }
-
 

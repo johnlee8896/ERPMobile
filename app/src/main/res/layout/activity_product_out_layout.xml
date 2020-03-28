@@ -117,8 +117,10 @@
                 <!--android:text="相机扫描托盘物料或单机二维码" />-->
 
             <LinearLayout
+                android:id="@+id/product_out_logistics_data_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:orientation="vertical">
 
 
@@ -137,6 +139,7 @@
                         android:textSize="17sp" />
 
                     <TextView
+                        android:id="@+id/product_out_logistics_customer_company_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_size_15"
@@ -144,7 +147,7 @@
                         android:padding="2dp"
                         android:textColor="@color/black"
                         android:textSize="17sp"
-                        android:text="上汽大众汽车有限公司" />
+                        tools:text="上汽大众汽车有限公司" />
 
                 </LinearLayout>
 
@@ -162,6 +165,7 @@
                         android:textSize="17sp" />
 
                     <TextView
+                        android:id="@+id/product_out_logistics_logistics_company_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_size_15"
@@ -169,7 +173,7 @@
                         android:padding="2dp"
                         android:textColor="@color/black"
                         android:textSize="17sp"
-                        android:text="上海新起物流有限公司" />
+                        tools:text="上海新起物流有限公司" />
 
                 </LinearLayout>
 
@@ -187,6 +191,7 @@
                         android:textSize="17sp" />
 
                     <TextView
+                        android:id="@+id/product_out_logistics_transport_type_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_size_15"
@@ -196,7 +201,7 @@
                         android:singleLine="true"
                         android:textColor="@color/black"
                         android:textSize="17sp"
-                        android:text="汽车" />
+                        tools:text="汽车" />
 
                 </LinearLayout>
 
@@ -214,6 +219,7 @@
                         android:textSize="17sp" />
 
                     <TextView
+                        android:id="@+id/product_out_logistics_address_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_size_15"
@@ -222,7 +228,7 @@
                         android:padding="2dp"
                         android:textColor="@color/black"
                         android:textSize="17sp"
-                        android:text="上海浦东康桥工业区康安路669号" />
+                        tools:text="上海浦东康桥工业区康安路669号" />
 
                 </LinearLayout>
 
@@ -240,7 +246,7 @@
                         android:textSize="17sp" />
 
                     <TextView
-                        android:id="@+id/item_order_special_remark_textView"
+                        android:id="@+id/product_out_logistics_remark_textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dimen_size_15"
@@ -328,6 +334,7 @@
                 android:id="@+id/product_out_sdzh_out_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:layout_weight="1"
                 android:text="三点照合出库" />
 

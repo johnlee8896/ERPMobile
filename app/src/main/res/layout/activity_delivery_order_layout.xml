@@ -19,6 +19,7 @@
             android:layout_marginRight="@dimen/dimen_size_5"
             android:layout_centerVertical="true"
             android:layout_marginTop="@dimen/dimen_size_5"
+            android:visibility="gone"
             android:background="@drawable/shape_conner_blue_button_bg"
             android:gravity="center"
             android:layout_alignParentRight="true"

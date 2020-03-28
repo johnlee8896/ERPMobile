@@ -81,7 +81,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     private ScanInputDialog inputDialog;
     private RelativeLayout switchLayout;
     private Switch stockSwitch;
-    private boolean isOpenSuggestStock = false;
+    private boolean isOpenSuggestStock = true;
     //// TODO: 2020/1/9 以后要优化，暂时先解决Can't toast on a thread that has not called Looper.prepare() 的问题
     private Handler handler = new Handler() {
         @Override
