@@ -1376,9 +1376,19 @@ public class WebServiceUtil {
 
         PropertyInfo propertyInfo20 = new PropertyInfo();
         propertyInfo20.setName("Des_Address");
-        propertyInfo20.setValue(Arrive_Date);
-        propertyInfo20.setType(Date.class);
+        propertyInfo20.setValue(Des_Address);
+        propertyInfo20.setType(String.class);
         propertyInfos.add(propertyInfo20);
+
+
+        PropertyInfo propertyInfo21 = new PropertyInfo();
+        propertyInfo21.setName("HR_ID");
+        propertyInfo21.setValue(UserSingleton.get().getHRID());
+        propertyInfo21.setType(Integer.class);
+        propertyInfos.add(propertyInfo21);
+
+
+//        HR_ID
 
 //        PropertyInfo propertyInfo15 = new PropertyInfo();
 //        propertyInfo15.setName("Recorder");
@@ -2272,6 +2282,9 @@ public class WebServiceUtil {
 
                 if (obj2.getProperty("ErrorInfo") != null) {
                     result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                }
+                if (obj2.getProperty("ID") != null){
+                    result.setID(Long.parseLong(obj2.getProperty("ID").toString()));
                 }
             }
         }

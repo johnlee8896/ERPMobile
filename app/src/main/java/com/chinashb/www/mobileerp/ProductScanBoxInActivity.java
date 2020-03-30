@@ -166,7 +166,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
                 String cartonNO = qrContent[0];
                 workLineId = Integer.parseInt(qrContent[5]);
                 GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
-                asyncTask.execute();
+                asyncTask.execute(cartonNO);
             }else{
                 ToastUtil.showToastShort("箱码格式错误！");
             }
@@ -554,6 +554,9 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
     private class GetMesDataAsyncTask extends AsyncTask<String, Void, String> {
 
         @Override protected String doInBackground(String... strings) {
+            if (strings == null || strings.length == 0){
+                return null;
+            }
             String cartonNO = strings[0];
             WsResult result =
 //            MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");

@@ -15,6 +15,10 @@ public class DeliveryTypeBean implements Parcelable {
     @SerializedName("DT_ID") private int dtId;
     @SerializedName("Delivery") private String delivery;
 
+    public DeliveryTypeBean(){
+
+    }
+
     protected DeliveryTypeBean(Parcel in) {
         dtId = in.readInt();
         delivery = in.readString();

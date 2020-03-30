@@ -52,6 +52,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
     private long logisticsDeliveryId = 0;
 
     private LogisticsDeliveryEntity logisticsDeliveryEntity;
+    private long customerFacilityId = 0;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +81,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
             //                logisticsDeliveryEntity = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_entity);
             if (data != null) {
                 logisticsDeliveryId = (long) data.getLongExtra(IntentConstant.Intent_Extra_logistics_delivery_id, 0);
+                customerFacilityId = (long) data.getLongExtra(IntentConstant.Intent_Extra_logistics_cf_id, 0);
+
                 if (logisticsDeliveryId > 0) {
                     customerCompanyTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_customer_company_name));
                     logisticsCompanyTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_logistics_company));
@@ -103,29 +106,35 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
         if (v == selectPlanButton) {
             Intent intent = new Intent(this, DeliveryOrderActivity.class);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order);
-            startActivity(intent);
+//            startActivity(intent);
         } else if (v == logisticsButton) {
             Intent intent = new Intent(this, LogisticsManageActivity.class);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_To_Logistics);
         } else if (v == outButton) {
             handleProductOut();
         } else if (v == sdzhOutButton) {
-            Intent intent = new Intent(this, SDZHHActivity.class);
-            startActivity(intent);
+            if (deliveryOrderBean != null) {
+                Intent intent = new Intent(this, SDZHHActivity.class);
+                startActivity(intent);
+            } else {
+                ToastUtil.showToastShort("请先选择发货指令");
+            }
         }
     }
 
     private void handleProductOut() {
-
+        HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
+        outAsyncTask.execute();
     }
 
 
-    private class HandleProductOutAsyncTask extends AsyncTask<Void ,Void ,Void>{
+    private class HandleProductOutAsyncTask extends AsyncTask<Void, Void, Void> {
         private WsResult result;
+
         @Override protected Void doInBackground(Void... voids) {
-            long cfID = 0;
+//            long cfID = 0;
             long dpi_id = 0;
-            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(new Date() ,cfID,deliveryOrderBean.getCFChineseName(),deliveryOrderBean.getTrackNo(),logisticsDeliveryId,dpi_id,deliveryOrderBean.getDOID());
+            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(new Date(), customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID());
             return null;
         }
 
@@ -136,7 +145,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
                     logisticsDeliveryId = result.getID();
                     ToastUtil.showToastShort("出库成功！");
                 } else {
-                    ToastUtil.showToastShort("保存失败 : " + result.getErrorInfo());
+                    ToastUtil.showToastShort("出库失败 : " + result.getErrorInfo());
                 }
             }
         }

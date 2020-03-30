@@ -25,7 +25,24 @@
             android:text="确定"
             android:textSize="@dimen/text_size_16"
             android:textColor="@color/black" />
+
     </com.chinashb.www.mobileerp.widget.TitleLayoutManagerView>
+
+    <TextView
+        android:id="@+id/logistics_title_select_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_35"
+        android:layout_margin="@dimen/dimen_size_5"
+        android:padding="@dimen/dimen_size_5"
+        android:gravity="center"
+        android:minWidth="80dp"
+        android:background="@drawable/shape_white_bg_conner_4dp"
+        android:layout_toLeftOf="@+id/logistics_title_confirm_button"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:text="选择物流信息"
+        android:visibility="gone"
+        android:textSize="@dimen/text_size_16"
+        android:textColor="@color/black" />
 
 <!--android:layout_marginBottom="@dimen/dimen_size_20" 放scroll下才有用？-->
     <android.support.v4.widget.NestedScrollView

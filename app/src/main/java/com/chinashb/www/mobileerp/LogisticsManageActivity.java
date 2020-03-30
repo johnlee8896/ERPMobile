@@ -73,6 +73,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
     @BindView(R.id.logistics_select_send_or_replashment_send_TextView) TextView sendOrReplashmentSendTextView;
     @BindView(R.id.logistics_select_send_or_replashment_replashment_TextView) TextView sendOrReplashmentReplashmentTextView;
     @BindView(R.id.logistics_title_confirm_button) TextView confirmButton;
+    @BindView(R.id.logistics_title_select_button) TextView selectButton;
     private TimePickerManager timePickerManager;
     private CommonSelectInputDialog commonSelectInputDialog;
     private String currentDate = "";
@@ -124,6 +125,11 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
             }
         }
 
+        //默认值，否则不操作时报错
+        shippingDate = new Date();
+        arriveDate = new Date();
+        deliveryDate = new Date();
+
 //        senderCompanyNameTextView.setText("安徽胜华波汽车电器有限公司 ");
 //        senderBuNameTextView.setText("安徽雨刮");
 
@@ -150,6 +156,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         logisticsCompanyTextView.setOnClickListener(this);
         arriveDateTextView.setOnClickListener(this);
         confirmButton.setOnClickListener(this);
+        selectButton.setOnClickListener(this);
 
 
     }
@@ -285,20 +292,22 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 //
 //                                ,'2020-02-11 00:00:00.000','shanghaishi898',0)
 
-                String sql = String.format(" insert into Account_Delivery (Abroad,Mass ,CF_ID,Delivery_No,Delivery_Date,LC_ID,AWarehouse ,AW_ID,Ac_Title_ID,Arrive_Date,Shiping_Date," +
-                                " Company_ID,Bu_ID,Done,DT_ID,Ac_Book_ID,Arrive_Ac_Book_ID,Contract_No,Replenish,SID,Part_Done,TrackNo,LoadTime,CC_ID,DriverName,DriverTel,Editor,EditorName " +
-                                " ,Insert_Time,Des_Address,IsReturn) values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'," +
-                                "'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'," +
-                                "'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
-                        1, 1, 48, "ceshi", "2020-01-11 02:02:02", 33, 0, 8, 100, "2020-01-11 02:02:02", "2020-01-11 02:02:02",
-                        "", 1, 1, 0, 1, 100, 100, "ceshi", 0, 100, 0, "0000000", "2020-01-11 02:02:02", 0, "lwf", "15200000000", 26009, "lwf",
-                        "", "2020-02-11 00:00:00.000", "shanghaishi898", 0);
+//                String sql = String.format(" insert into Account_Delivery (Abroad,Mass ,CF_ID,Delivery_No,Delivery_Date,LC_ID,AWarehouse ,AW_ID,Ac_Title_ID,Arrive_Date,Shiping_Date," +
+//                                " Company_ID,Bu_ID,Done,DT_ID,Ac_Book_ID,Arrive_Ac_Book_ID,Contract_No,Replenish,SID,Part_Done,TrackNo,LoadTime,CC_ID,DriverName,DriverTel,Editor,EditorName " +
+//                                " ,Insert_Time,Des_Address,IsReturn) values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'," +
+//                                "'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'," +
+//                                "'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')",
+//                        1, 1, 48, "ceshi", "2020-01-11 02:02:02", 33, 0, 8, 100, "2020-01-11 02:02:02", "2020-01-11 02:02:02",
+//                        "", 1, 1, 0, 1, 100, 100, "ceshi", 0, 100, 0, "0000000", "2020-01-11 02:02:02", 0, "lwf", "15200000000", 26009, "lwf",
+//                        "", "2020-02-11 00:00:00.000", "shanghaishi898", 0);
 
                 SaveLogisticsInfoAsyncTask task = new SaveLogisticsInfoAsyncTask();
                 task.execute(entity);
 
 
             }
+        }else if (view == selectButton){
+
         }
     }
 
@@ -396,6 +405,10 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 //             result = WebServiceUtil.op_Product_Logistics(1,1,8,54,
 //                    100,"trackNo","lwf driver","18000000000","沪12345","remark",
 //                    1,"deliveryNo",1,new Date() ,1,"contract_No",1);
+            if (entity.getDeliveryTypeBean() == null){
+                entity.setDeliveryTypeBean(new DeliveryTypeBean());
+                entity.getDeliveryTypeBean().setDtId(1);
+            }
             result = WebServiceUtil.op_Product_Logistics(abroad, mass, UserSingleton.get().getUserInfo().getCompany_ID(), UserSingleton.get().getUserInfo().getBu_ID(), entity.getDeliveryTypeBean().getDtId(), entity.getTrackNO(),
                     entity.getDriver(), entity.getTelephone(), entity.getCarPlateNumber(), entity.getLogisticsRemark(), replenish,
                     "deliveryNo", entity.getLogisticsCompanyBean().getLcId(), shippingDate, 0, "contractNo", entity.getReceiverCompanyBean().getCfId(), arriveDate, deliveryDate
@@ -405,22 +418,23 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 
         @Override protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            System.out.println("======================================result op_Product_Logistics= " + result);
             if (result != null) {
                 if (result.getResult()) {
                     logisticsDeliveryId = result.getID();
-                    ToastUtil.showToastShort("物流信息保存成功！");
+//                    ToastUtil.showToastShort("物流信息保存成功！");
 
 
                     Intent intent = new Intent(LogisticsManageActivity.this, ProductSaleOutActivity.class);
                     //// TODO: 2020/1/17 传递一堆参数
 //                    intent.putExtra(IntentConstant.Intent_Extra_logistics_entity, entity);
 
-                    intent.putExtra(IntentConstant.Intent_Extra_logistics_customer_company_name,receiverCompanyNameTextView.getText());
-                    intent.putExtra(IntentConstant.Intent_Extra_logistics_logistics_company,logisticsCompanyTextView.getText());
+                    intent.putExtra(IntentConstant.Intent_Extra_logistics_customer_company_name, receiverCompanyNameTextView.getText());
+                    intent.putExtra(IntentConstant.Intent_Extra_logistics_logistics_company, logisticsCompanyTextView.getText());
                     intent.putExtra(IntentConstant.Intent_Extra_logistics_delivery_id, logisticsDeliveryId);
-                    intent.putExtra(IntentConstant.Intent_Extra_logistics_address,receiverAddressEditText.getText());
-                    intent.putExtra(IntentConstant.Intent_Extra_logistics_remark,logisticsRemarkEditText.getText());
-                    intent.putExtra(IntentConstant.Intent_Extra_logistics_transport_type,transportWayTextView.getText());
+                    intent.putExtra(IntentConstant.Intent_Extra_logistics_address, receiverAddressEditText.getText());
+                    intent.putExtra(IntentConstant.Intent_Extra_logistics_remark, logisticsRemarkEditText.getText());
+                    intent.putExtra(IntentConstant.Intent_Extra_logistics_transport_type, transportWayTextView.getText());
                     setResult(IntentConstant.Intent_Request_Code_Product_To_Logistics, intent);
                     finish();
 

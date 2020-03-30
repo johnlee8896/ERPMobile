@@ -334,7 +334,6 @@
                 android:id="@+id/product_out_sdzh_out_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_weight="1"
                 android:text="三点照合出库" />
 
@@ -352,6 +351,7 @@
         android:hint="接收扫描结果"
         android:paddingLeft="@dimen/dimen_size_20"
         android:paddingRight="@dimen/dimen_size_10"
+        android:visibility="gone"
         android:textColor="@color/black"
         android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
         android:textSize="@dimen/text_size_14"
