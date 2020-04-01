@@ -17,6 +17,7 @@ import com.chinashb.www.mobileerp.adapter.SDZHOrderBoxDetailAdapter;
 import com.chinashb.www.mobileerp.adapter.SDZHOrderDetailAdapter;
 import com.chinashb.www.mobileerp.adapter.SDZHSinglePartDetailAdapter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.DeliveryOrderBean;
 import com.chinashb.www.mobileerp.bean.SDZHBoxDetailBean;
 import com.chinashb.www.mobileerp.bean.SDZHDeliveryOrderNumberBean;
 import com.chinashb.www.mobileerp.bean.SDZHDeliveryOrderNumberDetailBean;
@@ -28,7 +29,6 @@ import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
-import com.chinashb.www.mobileerp.warehouse.StockQueryPartActivity;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
@@ -39,7 +39,10 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -72,6 +75,14 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     @BindView(R.id.sdzh_single_part_recyclerView) CustomRecyclerView singlePartRecyclerView;
     @BindView(R.id.sdzh_order_No_data_layout) LinearLayout orderNoDataLayout;
     @BindView(R.id.sdzh_input_EditeText) EditText inputEditText;
+    @BindView(R.id.sdzh_scan_order_out_button) TextView outButton;
+    @BindView(R.id.sdzh_scan_order_logistics_button) TextView logisticsButton;
+    @BindView(R.id.sdzh_logistics_customer_company_textView) TextView customerCompanyTextView;
+    @BindView(R.id.sdzh_logistics_logistics_company_textView) TextView logisticsCompanyTextView;
+    @BindView(R.id.sdzh_logistics_transport_type_textView) TextView transportTypeTextView;
+    @BindView(R.id.sdzh_logistics_address_textView) TextView addressTextView;
+    @BindView(R.id.sdzh_logistics_remark_textView) TextView remarkTextView;
+    @BindView(R.id.sdzh_logistics_data_layout) LinearLayout logisticsDataLayout;
     private String do_ID;
     private SDZHOrderDetailAdapter sdzhOrderDetailAdapter;
     private SDZHOrderBoxDetailAdapter boxDetailAdapter;
@@ -90,6 +101,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 
     private boolean hasClickSelect = false;
     private int selectRemovePosition = 0;
+    private DeliveryOrderBean deliveryOrderBean;
 
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override
@@ -114,6 +126,8 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             }
         }
     };
+    private long logisticsDeliveryId = 0;
+    private long customerFacilityId = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,12 +135,15 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         setContentView(R.layout.activity_sdzh_layout);
         ButterKnife.bind(this);
 
-        do_ID = getIntent().getStringExtra(IntentConstant.Intent_Extra_do_id);
+        deliveryOrderBean = getIntent().getParcelableExtra(IntentConstant.Intent_Extra_do_delivery_bean);
+//        do_ID = getIntent().getStringExtra(IntentConstant.Intent_Extra_do_id);
+        do_ID = deliveryOrderBean.getDOID() + "";
 
-        do_ID = "6023";
-//        if (!TextUtils.isEmpty(do_ID)) {
-//            new GetDeliveryOrderAsyncTask().execute(do_ID);
-//        }
+//        do_ID = "6023";
+        do_ID = "7321";
+        if (!TextUtils.isEmpty(do_ID)) {
+            new GetDeliveryOrderAsyncTask().execute(do_ID);
+        }
 
         //// TODO: 2020/2/26 放这里报错，还没加载？没有
         sdzhOrderDetailAdapter = new SDZHOrderDetailAdapter();
@@ -153,26 +170,46 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (!TextUtils.isEmpty(result.getContents())) {
-                switch (currentScanState) {
-                    case SCAN_ORDER_NUMBER:
-                        handleOrderNOScan(result.getContents());
-                        break;
-                    case SCAN_BOX_CODE:
-                        handleBoxScan(result.getContents());
-                        break;
-                    case SCAN_SINGLE_PART_CODE:
-                        handleSinglePartScan(result.getContents());
-                        break;
-                }
+        if (requestCode == IntentConstant.Intent_Request_Code_Product_To_Logistics) {
+            //                logisticsDeliveryEntity = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_entity);
+            if (data != null) {
+                logisticsDeliveryId = data.getLongExtra(IntentConstant.Intent_Extra_logistics_delivery_id, 0);
+                customerFacilityId = data.getLongExtra(IntentConstant.Intent_Extra_logistics_cf_id, 0);
 
-//                parseScanResult(result.getContents());
+                if (logisticsDeliveryId > 0) {
+                    customerCompanyTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_customer_company_name));
+                    logisticsCompanyTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_logistics_company));
+                    addressTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_address));
+                    remarkTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_remark));
+                    transportTypeTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_transport_type));
+
+//                    customerFacilityName = data.getStringExtra(IntentConstant.Intent_Extra_logistics_cf_name);
+                    logisticsDataLayout.setVisibility(View.VISIBLE);
+                }
             }
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
-            ToastUtil.showToastShort("扫描内容为空！");
+
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (!TextUtils.isEmpty(result.getContents())) {
+                    switch (currentScanState) {
+                        case SCAN_ORDER_NUMBER:
+                            handleOrderNOScan(result.getContents());
+                            break;
+                        case SCAN_BOX_CODE:
+                            handleBoxScan(result.getContents());
+                            break;
+                        case SCAN_SINGLE_PART_CODE:
+                            handleSinglePartScan(result.getContents());
+                            break;
+                    }
+
+//                parseScanResult(result.getContents());
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+                ToastUtil.showToastShort("扫描内容为空！");
+            }
         }
 
     }
@@ -247,47 +284,12 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 
                 } else {
                     ToastUtil.showToastShort("该单机条码已存在，请勿重复扫描！");
-
                 }
 
             } else {
                 ToastUtil.showToastShort("单机条码格式不正确！");
             }
         }
-
-
-//        boolean isHas = false;
-//        For index = 0 To dgv_Box.Rows.Count - 1
-//        If dgv_Box.Rows(index).Cells("Product_ID").Value.ToString() = model.ProductId Then
-//                isHas = True
-//        End If
-//        Next
-//        If isHas Then
-//        If sqlHelp.SelectIsHaveData(" COUNT(*) ", " DeliveryOrder_item ", " DOI_Code='" + model.DOI_Code + "' And IsDelete=0 ") Then
-//        MessageBox.Show("【单机条码：" + model.DOI_NO + "】已存在！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-//        Else
-//        If sqlHelp.InsertDeliveryOrder_Item(model) Then
-//        lbl_IsIn.Text = (CInt(lbl_IsIn.Text.Trim()) + 1).ToString()
-//        BindOrderItem()
-//        If lbl_Qty.Text.Trim() = lbl_IsIn.Text.Trim() Then
-//        If sqlHelp.UpdateDeliveryOrder_Box(" IsOk=0 ", " BoxCode='" + model.BoxCode + "'") Then
-//        BindOrderBox()
-//        MessageBox.Show("【包装箱：" + selectBoxNo + "】已满，请扫描下一箱子！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-//        Else
-//        MessageBox.Show("【包装箱：" + selectBoxNo + "】【已满】状态修改失败！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-//        End If
-//        End If
-//        Else
-//        MessageBox.Show("【单机条码：" + model.DOI_NO + "】保存失败！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Error)
-//        End If
-//        End If
-//        Else
-//        MessageBox.Show("该产品不在【预设发货单产品明细】中！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-//        End If
-//        Else
-//        MessageBox.Show("【产品条码】格式不正确！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-//        End If
-
 
     }
 
@@ -347,9 +349,10 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void setButtonsNotEnable() {
-        orderNumberButton.setEnabled(false);
+//        orderNumberButton.setEnabled(false);
         boxBarButton.setEnabled(false);
         singlePartBarButton.setEnabled(false);
+        removeSinglePartBarButton.setEnabled(false);
     }
 
     private void setViewsListener() {
@@ -357,6 +360,8 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         boxBarButton.setOnClickListener(this);
         singlePartBarButton.setOnClickListener(this);
         removeSinglePartBarButton.setOnClickListener(this);
+        outButton.setOnClickListener(this);
+        logisticsButton.setOnClickListener(this);
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
@@ -365,7 +370,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 if (editable.toString().length() > 3 && editable.toString().endsWith("\n")) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
-                    if (TextUtils.isEmpty(editable.toString())){
+                    if (TextUtils.isEmpty(editable.toString())) {
                         switch (currentScanState) {
                             case SCAN_ORDER_NUMBER:
                                 handleOrderNOScan(editable.toString());
@@ -396,6 +401,16 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             currentScanState = SCAN_SINGLE_PART_CODE;
         } else if (view == removeSinglePartBarButton) {
             removeSinglePart();
+        } else if (view == outButton) {
+            if (logisticsDeliveryId == 0){
+                ToastUtil.showToastShort("未选择物流信息！");
+                return;
+            }
+            HandleSDZHProductOutAsyncTask outAsyncTask = new HandleSDZHProductOutAsyncTask();
+            outAsyncTask.execute();
+        } else if (view == logisticsButton) {
+            Intent intent = new Intent(this, LogisticsManageActivity.class);
+            startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_To_Logistics);
         }
     }
 
@@ -845,6 +860,46 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 
             progressDialog.dismiss();
 
+        }
+    }
+
+    /**
+     * 三点照合成品出库
+     */
+    private class HandleSDZHProductOutAsyncTask extends AsyncTask<Void, Void, Void> {
+        private WsResult result;
+
+        @Override protected Void doInBackground(Void... voids) {
+//            long cfID = 0;
+            long dpi_id = 0;
+            Date deliveryDate = null;
+            try {
+                String deliveryDateString = deliveryOrderBean.getDeliveryDate();
+                if (deliveryDateString.contains("T")){
+                    deliveryDateString = deliveryDateString.replace("T"," ");
+                }
+                deliveryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(deliveryDateString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (deliveryDate == null) {
+                deliveryDate = new Date();
+            }
+            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID());
+//            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(new Date(), 68, "一汽奔腾轿车有限公司", "20200328", 102838, 0, 7426);
+            return null;
+        }
+
+        @Override protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (result != null) {
+                if (result.getResult()) {
+                    logisticsDeliveryId = result.getID();
+                    ToastUtil.showToastShort("出库成功！");
+                } else {
+                    ToastUtil.showToastShort("出库失败 : " + result.getErrorInfo());
+                }
+            }
         }
     }
 }

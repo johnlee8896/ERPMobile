@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -91,6 +92,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_logistics_layout);
         ButterKnife.bind(this);
 
@@ -435,6 +437,9 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
                     intent.putExtra(IntentConstant.Intent_Extra_logistics_address, receiverAddressEditText.getText());
                     intent.putExtra(IntentConstant.Intent_Extra_logistics_remark, logisticsRemarkEditText.getText());
                     intent.putExtra(IntentConstant.Intent_Extra_logistics_transport_type, transportWayTextView.getText());
+
+                    intent.putExtra(IntentConstant.Intent_Extra_logistics_cf_id,receiverCompanyBean.getCfId());
+                    intent.putExtra(IntentConstant.Intent_Extra_logistics_cf_name,receiverCompanyBean.getCustomer());
                     setResult(IntentConstant.Intent_Request_Code_Product_To_Logistics, intent);
                     finish();
 

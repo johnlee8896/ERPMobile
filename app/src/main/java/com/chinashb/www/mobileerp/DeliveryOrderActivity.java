@@ -195,34 +195,34 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
     /**
      * 获取发货指令详情
      */
-    private class GetDeliveryOrderItemAsyncTask extends AsyncTask<String, String, String> {
-
-        @Override
-        protected String doInBackground(String... doId) {
-            String sql = String.format("Select D.* FROM DPI As D With (NoLock) Where D.Deleted=0 And D.Do_ID = %s", doId);
-            WsResult result = WebServiceUtil.getDataTable(sql);
-            if (result != null && result.getResult()) {
-                String jsonData = result.getErrorInfo();
-                if (!TextUtils.isEmpty(jsonData)) {
-                    return jsonData;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String jsonData) {
-            super.onPostExecute(jsonData);
-            Gson gson = new Gson();
-            List<DeliveryOrderBean> deliveryOrderBeanList = gson.fromJson(jsonData, new TypeToken<List<DeliveryOrderBean>>() {
-            }.getType());
-//                    DeliveryOrderBean bean = JsonUtil.parseJsonToObject(jsonData,new TypeToken<List<DeliveryOrderBean>>(){});
-            if (deliveryOrderBeanList != null && deliveryOrderBeanList.size() > 0) {
-                adapter.setData(deliveryOrderBeanList);
-            }
-
-        }
-    }
+//    private class GetDeliveryOrderItemAsyncTask extends AsyncTask<String, String, String> {
+//
+//        @Override
+//        protected String doInBackground(String... doId) {
+//            String sql = String.format("Select D.* FROM DPI As D With (NoLock) Where D.Deleted=0 And D.Do_ID = %s", doId);
+//            WsResult result = WebServiceUtil.getDataTable(sql);
+//            if (result != null && result.getResult()) {
+//                String jsonData = result.getErrorInfo();
+//                if (!TextUtils.isEmpty(jsonData)) {
+//                    return jsonData;
+//                }
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String jsonData) {
+//            super.onPostExecute(jsonData);
+//            Gson gson = new Gson();
+//            List<DeliveryOrderBean> deliveryOrderBeanList = gson.fromJson(jsonData, new TypeToken<List<DeliveryOrderBean>>() {
+//            }.getType());
+////                    DeliveryOrderBean bean = JsonUtil.parseJsonToObject(jsonData,new TypeToken<List<DeliveryOrderBean>>(){});
+//            if (deliveryOrderBeanList != null && deliveryOrderBeanList.size() > 0) {
+//                adapter.setData(deliveryOrderBeanList);
+//            }
+//
+//        }
+//    }
 
 
 }

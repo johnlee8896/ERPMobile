@@ -57,13 +57,192 @@
             android:layout_height="50dp"
             android:layout_weight="1"
             android:layout_marginLeft="@dimen/dimen_size_5"
-
             android:layout_marginTop="@dimen/dimen_size_15"
             android:background="@drawable/shape_conner_blue_button_bg"
             android:gravity="center"
             android:text="移除单机条码" />
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/sdzh_scan_order_logistics_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_marginLeft="@dimen/dimen_size_5"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="选择出库物料信息" />
+
+    <LinearLayout
+        android:id="@+id/sdzh_logistics_data_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="vertical">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="物流客户"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/sdzh_logistics_customer_company_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="上汽大众汽车有限公司" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="物流公司"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/sdzh_logistics_logistics_company_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="上海新起物流有限公司" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="运输方式"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/sdzh_logistics_transport_type_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="汽车" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="客户地址"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/sdzh_logistics_address_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="上海浦东康桥工业区康安路669号" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="特殊说明"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/sdzh_logistics_remark_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="哈哈" />
+
+        </LinearLayout>
+        <!--<TextView-->
+        <!--android:id="@+id/plan_list_plan_detail_textView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="@dimen/dimen_size_10"-->
+        <!--android:textSize="17sp"-->
+        <!--tools:text="生产线分组生产线分组生产线分组生产线分组生产线分组" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/plan_list_remark_textView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="@dimen/dimen_size_10"-->
+        <!--android:clickable="false"-->
+        <!--android:padding="2dp"-->
+        <!--android:textSize="17sp"-->
+        <!--tools:text="备注" />-->
+    </LinearLayout>
+    <TextView
+        android:id="@+id/sdzh_scan_order_out_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_marginLeft="@dimen/dimen_size_5"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="出库" />
     <EditText
         android:layout_marginTop="@dimen/dimen_size_5"
         android:id="@+id/sdzh_input_EditeText"

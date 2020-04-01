@@ -17,7 +17,8 @@ public class SDZHSinglePartBean {
     @SerializedName("WorkNo") private String WorkNo;
     @SerializedName("ProductId") private String ProductId;
     @SerializedName("LineId") private int LineId;
-    @SerializedName("IsDelete") private int IsDelete;
+//    @SerializedName("IsDelete") private int IsDelete;
+    @SerializedName("IsDelete") private boolean IsDelete;
 
     public int getDOIId() {
         return DOIId;
@@ -91,11 +92,11 @@ public class SDZHSinglePartBean {
         return this;
     }
 
-    public int getIsDelete() {
+    public boolean getIsDelete() {
         return IsDelete;
     }
 
-    public SDZHSinglePartBean setIsDelete(int isDelete) {
+    public SDZHSinglePartBean setIsDelete(boolean isDelete) {
         IsDelete = isDelete;
         return this;
     }

@@ -23,7 +23,8 @@ public class SDZHDeliveryOrderNumberBean {
     @SerializedName("OrderNo") private String OrderNo;
     @SerializedName("PS_Id") private int PSId;
     @SerializedName("Product_Id") private int ProductId;
-    @SerializedName("IsDelete") private int IsDelete;
+//    @SerializedName("IsDelete") private int IsDelete;
+    @SerializedName("IsDelete") private boolean IsDelete;
 
     public int getDOPId() {
         return DOPId;
@@ -65,11 +66,11 @@ public class SDZHDeliveryOrderNumberBean {
         this.ProductId = ProductId;
     }
 
-    public int getIsDelete() {
+    public boolean getIsDelete() {
         return IsDelete;
     }
 
-    public void setIsDelete(int IsDelete) {
+    public void setIsDelete(boolean IsDelete) {
         this.IsDelete = IsDelete;
     }
 }

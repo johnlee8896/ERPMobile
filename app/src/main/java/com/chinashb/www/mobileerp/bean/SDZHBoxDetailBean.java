@@ -28,8 +28,10 @@ public class SDZHBoxDetailBean {
     @SerializedName("ProductNo") private String ProductNo;
     @SerializedName("BoxQty") private int BoxQty;
     @SerializedName("BoxCode") private String BoxCode;
-    @SerializedName("IsDelete") private int IsDelete;
-    @SerializedName("IsOK") private int IsOK;
+//    @SerializedName("IsDelete") private int IsDelete;
+    @SerializedName("IsDelete") private boolean IsDelete;
+//    @SerializedName("IsOK") private int IsOK;
+    @SerializedName("IsOK") private boolean IsOK;
 
     public int getDOBId() {
         return DOBId;
@@ -87,19 +89,19 @@ public class SDZHBoxDetailBean {
         this.BoxCode = BoxCode;
     }
 
-    public int getIsDelete() {
+    public boolean getIsDelete() {
         return IsDelete;
     }
 
-    public void setIsDelete(int IsDelete) {
+    public void setIsDelete(boolean IsDelete) {
         this.IsDelete = IsDelete;
     }
 
-    public int getIsOK() {
+    public boolean getIsOK() {
         return IsOK;
     }
 
-    public void setIsOK(int IsOK) {
+    public void setIsOK(boolean IsOK) {
         this.IsOK = IsOK;
     }
 }

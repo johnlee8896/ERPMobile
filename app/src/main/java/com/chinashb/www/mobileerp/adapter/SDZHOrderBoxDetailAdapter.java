@@ -66,7 +66,7 @@ public class SDZHOrderBoxDetailAdapter extends BaseRecycleAdapter<SDZHBoxDetailB
                 partNumberTextView.setText(entity.getProductNo());
                 capacityNumberTextView.setText(entity.getBoxQty() + "");
                 boxBarTextView.setText(entity.getBoxCode());
-                isFullTextView.setText(entity.getIsOK() == 1 ? "否" : "是");
+                isFullTextView.setText(entity.getIsOK()  ? "否" : "是");
             }
         }
     }

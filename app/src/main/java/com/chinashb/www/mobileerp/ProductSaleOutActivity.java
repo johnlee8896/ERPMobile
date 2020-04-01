@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +21,8 @@ import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 
 import java.security.PolicySpi;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -53,6 +56,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
 
     private LogisticsDeliveryEntity logisticsDeliveryEntity;
     private long customerFacilityId = 0;
+    private String customerFacilityName = "";
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,8 +84,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
         } else if (requestCode == IntentConstant.Intent_Request_Code_Product_To_Logistics) {
             //                logisticsDeliveryEntity = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_entity);
             if (data != null) {
-                logisticsDeliveryId = (long) data.getLongExtra(IntentConstant.Intent_Extra_logistics_delivery_id, 0);
-                customerFacilityId = (long) data.getLongExtra(IntentConstant.Intent_Extra_logistics_cf_id, 0);
+                logisticsDeliveryId = data.getLongExtra(IntentConstant.Intent_Extra_logistics_delivery_id, 0);
+                customerFacilityId = data.getLongExtra(IntentConstant.Intent_Extra_logistics_cf_id, 0);
 
                 if (logisticsDeliveryId > 0) {
                     customerCompanyTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_customer_company_name));
@@ -89,6 +93,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
                     addressTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_address));
                     remarkTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_remark));
                     transportTypeTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_transport_type));
+
+                    customerFacilityName = data.getStringExtra(IntentConstant.Intent_Extra_logistics_cf_name);
                     logisticsDataLayout.setVisibility(View.VISIBLE);
                 }
             }
@@ -115,6 +121,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
         } else if (v == sdzhOutButton) {
             if (deliveryOrderBean != null) {
                 Intent intent = new Intent(this, SDZHHActivity.class);
+                intent.putExtra(IntentConstant.Intent_Extra_do_delivery_bean,deliveryOrderBean);
                 startActivity(intent);
             } else {
                 ToastUtil.showToastShort("请先选择发货指令");
@@ -123,10 +130,13 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
     }
 
     private void handleProductOut() {
-        HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
-        outAsyncTask.execute();
+        if (TextUtils.equals(customerFacilityName, deliveryOrderBean.getCFChineseName())) {
+            HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
+            outAsyncTask.execute();
+        } else {
+            ToastUtil.showToastLong("发货指令中客户名称与物流信息中客户名称不一致，请检查！");
+        }
     }
-
 
     private class HandleProductOutAsyncTask extends AsyncTask<Void, Void, Void> {
         private WsResult result;
@@ -134,7 +144,19 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
         @Override protected Void doInBackground(Void... voids) {
 //            long cfID = 0;
             long dpi_id = 0;
-            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(new Date(), customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID());
+//            2020-01-03T00:00:00
+//            new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss").parse("2019-01-03 10:59:27")
+            Date deliveryDate = null;
+            try {
+                 deliveryDate = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss").parse(deliveryOrderBean.getDeliveryDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (deliveryDate == null){
+                deliveryDate = new Date();
+            }
+            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID());
+//            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(new Date(), 68, "一汽奔腾轿车有限公司", "20200328", 102838, 0, 7426);
             return null;
         }
 

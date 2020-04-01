@@ -46,7 +46,9 @@ public class IntentConstant {
     public static final String Intent_Extra_logistics_address = "Extra_logistics_address";
     public static final String Intent_Extra_logistics_remark = "Extra_logistics_remark";
     public static final String Intent_Extra_logistics_delivery_id = "Extra_logistics_delivery_id";
-    public static final String Intent_Extra_logistics_cf_id = "Extra_logistics_cf_id ";
+    public static final String Intent_Extra_logistics_cf_id = "Extra_logistics_cf_id";
+    public static final String Intent_Extra_logistics_cf_name = "Extra_logistics_cf_name";
+    public static final String Intent_Extra_do_delivery_bean = "Extra_do_delivery_bean";
 
 
     public static final int Intent_Request_Code_Product_Out_And_Delivery_Order = 0X100;
