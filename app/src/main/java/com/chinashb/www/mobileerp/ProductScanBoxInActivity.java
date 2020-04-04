@@ -64,10 +64,10 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
     private WcIdNameEntity wcIdNameEntity;
     private String scanContent;
     private List<WCSubProductEntity> subProductEntityList;
-//    private List<WCSubProductItemEntity> boxItemEntityList;
+    //    private List<WCSubProductItemEntity> boxItemEntityList;
     private List<BoxItemEntity> boxItemEntityList;
     private WCSubProductEntity certainWCSubProductEntity;
-//    private ItemProductNonTrayAdapter adapter;
+    //    private ItemProductNonTrayAdapter adapter;
     private CommonItemBarCodeAdapter adapter;
 
     private List<String> noList;
@@ -144,7 +144,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
             }
         });
 
-        NOTextView.addTextChangedListener(new TextWatcherImpl(){
+        NOTextView.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 listNo = editable.toString();
@@ -160,27 +160,30 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
         System.out.println("============ scan content = " + content);
         // V5/B/54/PS/10475/L/191217/LQ/0/Qty/120
 
-        if (content.contains(",")){
+        if (content.contains(",")) {
+//            MB3202004010002,GD2020033100031,C00082917,ITEM2019100918157,5,20200401
             String[] qrContent = content.split(",");
-            if (qrContent != null && qrContent.length == 7){
+//            if (qrContent != null && qrContent.length == 7){
+            if (qrContent != null && qrContent.length > 5) {
                 String cartonNO = qrContent[0];
                 workLineId = Integer.parseInt(qrContent[5]);
+//                lotNO =
                 GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
                 asyncTask.execute(cartonNO);
-            }else{
+            } else {
                 ToastUtil.showToastShort("箱码格式错误！");
             }
-        }else if (content.contains("/")) {
+        } else if (content.contains("/")) {
             String[] qrContent;
             qrContent = content.split("/");
             if (qrContent.length >= 2) {
 
-                if (content.startsWith("XH")){
-                    if (content.contains(",")){
+                if (content.startsWith("XH")) {
+                    if (content.contains(",")) {
                         String cartNO = content.split(",")[0];
 
                     }
-                }else if (content.startsWith("V5")) {
+                } else if (content.startsWith("V5")) {
 //                    int buId = Integer.parseInt(getParsedString(content, "/B/", "/PS/"));
 //                    if (buId == UserSingleton.get().getUserInfo().getBu_ID()) {
 //                        int psId = Integer.parseInt(getParsedString(content, "/PS/", "/L/"));
@@ -240,18 +243,18 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 //        }
 //    }
 
-    private  String getParsedString(String code,String part,String nextPart){
-        if (!nextPart.isEmpty()){
+    private String getParsedString(String code, String part, String nextPart) {
+        if (!nextPart.isEmpty()) {
             int p = code.indexOf(part) + part.length();
             int q = code.indexOf(nextPart);
-            return code.substring(p,q );
-        }else{
+            return code.substring(p, q);
+        } else {
             int p = code.indexOf(part) + part.length();
             return code.substring(p);
         }
     }
 
-    private void getMESData(){
+    private void getMESData() {
         GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
         asyncTask.execute();
     }
@@ -301,6 +304,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 //                    selectedcount++;
 //                }
             }
+            selectedcount = boxItemEntityList.size();
             if (selectedcount > 0) {
                 new IntentIntegrator(ProductScanBoxInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
                 inputEditText.setText("");
@@ -327,7 +331,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
      */
     private void getWCList() {
         Intent intent = new Intent(this, SelectProductWCListActivity.class);
-        intent.putExtra(IntentConstant.Intent_Extra_work_line_from,IntentConstant.Intent_Extra_work_line_from_product);
+        intent.putExtra(IntentConstant.Intent_Extra_work_line_from, IntentConstant.Intent_Extra_work_line_from_product);
         startActivityForResult(intent, 200);
     }
 
@@ -393,7 +397,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 //                            boxItemEntityList.get(i).setSub_Ist_ID(istPlaceEntity.getSub_Ist_ID());
 //                        }
 //                    }
-                    if (boxItemEntityList != null && boxItemEntityList.size() > 0){
+                    if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
                         boxItemEntityList.get(0).setIstName(istPlaceEntity.getIstName());
                         boxItemEntityList.get(0).setIst_ID(istPlaceEntity.getIst_ID());
                         boxItemEntityList.get(0).setSub_Ist_ID(istPlaceEntity.getSub_Ist_ID());
@@ -462,21 +466,21 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
     private class ExeWarehouseProductInAsyncTask extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
-            BoxItemEntity entity = boxItemEntityList.get(0);
+        BoxItemEntity entity = boxItemEntityList.get(0);
 
         @Override
         protected Void doInBackground(String... params) {
             int count = 0;
-                //todo  这里取的是0，验证多个是否成功
+            //todo  这里取的是0，验证多个是否成功
 //                WCSubProductItemEntity boxItemEntity = SelectList.get(0);
-                WcIdNameEntity tempWcIdNameEntity = new WcIdNameEntity();
-                tempWcIdNameEntity.setWcId(0);
-                tempWcIdNameEntity.setWcName("");
+            WcIdNameEntity tempWcIdNameEntity = new WcIdNameEntity();
+            tempWcIdNameEntity.setWcId(0);
+            tempWcIdNameEntity.setWcName("");
 
             WCSubProductItemEntity wcSubProductItemEntity = new WCSubProductItemEntity();
 //            wcSubProductItemEntity.set
             WCSubProductEntity subProductEntity = new WCSubProductEntity();
-            if (mesInnerDataEntity != null){
+            if (mesInnerDataEntity != null) {
                 subProductEntity.setPsId(mesInnerDataEntity.getPSID());
                 subProductEntity.setProductId(mesInnerDataEntity.getProductID());
                 subProductEntity.setItemId(mesInnerDataEntity.getItemID());
@@ -486,18 +490,18 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
             wcSubProductItemEntity.setWcSubProductEntity(subProductEntity);
 
 
-                //// TODO: 2020/3/14 remark
-                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(tempWcIdNameEntity,wcSubProductItemEntity,new Date(),
-                        listNo,new Date() ,remark,
-                        UserSingleton.get().getHRID(),UserSingleton.get().getHRName(),
-                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),(int)entity.getQty());
+            //// TODO: 2020/3/14 remark
+            ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(tempWcIdNameEntity, wcSubProductItemEntity, new Date(),
+                    listNo, new Date(), remark,
+                    UserSingleton.get().getHRID(), UserSingleton.get().getHRName(),
+                    thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), (int) entity.getQty());
 
 //                else{
 ////                    ToastUtil.showToastLong("入库失败！");
 //                    System.out.println("==========================入库失败！");
 //                }
 
-                count++;
+            count++;
 
             return null;
         }
@@ -550,11 +554,13 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
         }
 
     }
-   private MESInnerDataEntity mesInnerDataEntity;
+
+    private MESInnerDataEntity mesInnerDataEntity;
+
     private class GetMesDataAsyncTask extends AsyncTask<String, Void, String> {
 
         @Override protected String doInBackground(String... strings) {
-            if (strings == null || strings.length == 0){
+            if (strings == null || strings.length == 0) {
                 return null;
             }
             String cartonNO = strings[0];
@@ -570,19 +576,18 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
             System.out.println("=============================== result = " + result);
             MESDataEntity mesDataEntity = JsonUtil.parseJsonToObject(result, MESDataEntity.class);
 
-            if (mesDataEntity.getCode() == 0){//表示成功
+            if (mesDataEntity.getCode() == 0) {//表示成功
                 System.out.println(mesDataEntity.getCode());
-                String tempJson = mesDataEntity.getMessage().replace("[","").replace("]","");
-               mesInnerDataEntity  = JsonUtil.parseJsonToObject(tempJson, MESInnerDataEntity.class);
-                System.out.println("=============================== " + mesInnerDataEntity.getItemID() + " " +mesInnerDataEntity.getItemUnit());
-
-
+                String tempJson = mesDataEntity.getMessage().replace("[", "").replace("]", "");
+                mesInnerDataEntity = JsonUtil.parseJsonToObject(tempJson, MESInnerDataEntity.class);
+                System.out.println("=============================== " + mesInnerDataEntity.getItemID() + " " + mesInnerDataEntity.getItemUnit());
 
 
                 BoxItemEntity boxItemEntity = new BoxItemEntity();
                 boxItemEntity.setItemName(mesInnerDataEntity.getProductChineseName());
-                boxItemEntity.setQty(mesInnerDataEntity.getQty()) ;
+                boxItemEntity.setQty(mesInnerDataEntity.getQty());
                 boxItemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
+//                boxItemEntity.set
 
 
 //                        WCSubProductItemEntity itemEntity = new WCSubProductItemEntity();
@@ -592,21 +597,19 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 //                        itemEntity.setQty(qty);
 //                        itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
 
-                        boxItemEntityList.add(boxItemEntity);
+                boxItemEntityList.add(boxItemEntity);
 //                        adapter = new ItemProductNonTrayAdapter(ProductScanBoxInActivity.this, boxItemEntityList);
-                        adapter.setData(boxItemEntityList);
-                        inputEditText.setText("");
-                        //// TODO: 2019/12/20 去掉扫描枪几个字
-                        inputEditText.setHint("请继续扫描");
+                adapter.setData(boxItemEntityList);
+                inputEditText.setText("");
+                //// TODO: 2019/12/20 去掉扫描枪几个字
+                inputEditText.setHint("请继续扫描");
 
 
-            }else{
+            } else {
                 ToastUtil.showToastLong("接口请求数据错误！");
             }
         }
     }
-
-
 
 
 }
