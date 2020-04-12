@@ -49,10 +49,12 @@ public class IntentConstant {
     public static final String Intent_Extra_logistics_cf_id = "Extra_logistics_cf_id";
     public static final String Intent_Extra_logistics_cf_name = "Extra_logistics_cf_name";
     public static final String Intent_Extra_do_delivery_bean = "Extra_do_delivery_bean";
+    public static final String Intent_Extra_logistics_select_bean = "Extra_logistics_select_bean";
 
 
     public static final int Intent_Request_Code_Product_Out_And_Delivery_Order = 0X100;
     public static final int Intent_Extra_work_line_from_product = 0X200;
     public static final int Intent_Extra_work_line_from_part = 0X201;
     public static final int Intent_Request_Code_Product_To_Logistics = 0X202;
+    public static final int Intent_Request_Code_Logistics_Select_to_Logistics = 0X203;
 }

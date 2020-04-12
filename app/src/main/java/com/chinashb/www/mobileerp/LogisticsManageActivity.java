@@ -15,6 +15,7 @@ import com.chinashb.www.mobileerp.bean.BuBean;
 import com.chinashb.www.mobileerp.bean.CompanyBean;
 import com.chinashb.www.mobileerp.bean.DeliveryTypeBean;
 import com.chinashb.www.mobileerp.bean.LogisticsCompanyBean;
+import com.chinashb.www.mobileerp.bean.LogisticsSelectBean;
 import com.chinashb.www.mobileerp.bean.ReceiverCompanyBean;
 import com.chinashb.www.mobileerp.bean.entity.LogisticsDeliveryEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
@@ -89,6 +90,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
     private Date deliveryDate, arriveDate, shippingDate;
     private long logisticsDeliveryId = 0;
     private String address;
+    private LogisticsSelectBean logisticsSelectBean;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +100,35 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 
         initView();
         setViewsLisener();
+    }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IntentConstant.Intent_Request_Code_Logistics_Select_to_Logistics){
+            logisticsSelectBean = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_select_bean);
+            invalidateView();
+        }
+    }
+
+    private void invalidateView() {
+        //// TODO: 2020/4/8
+        outDateTextView.setText(getFormatDateString(logisticsSelectBean.getDeliveryDate()));
+        arriveDateTextView.setText(getFormatDateString(logisticsSelectBean.getArriveDate()));
+        loadCarTimeTextView.setText(getFormatDateString(logisticsSelectBean.getShipingDate()));
+
+        receiverAddressEditText.setText(logisticsSelectBean.getDesAddress());
+        driverNameEditText.setText(logisticsSelectBean.getDriverName());
+        telephoneEditText.setText(logisticsSelectBean.getDriverTel());
+        carPlateEditText.setText(logisticsSelectBean.getLicensePlateNO());
+        trackNOEditText.setText(logisticsSelectBean.getTrackNo());
+//        dayNumberEditText.setText(logisticsSelectBean.);
+    }
+
+    private String getFormatDateString(String dateString){
+        if (!TextUtils.isEmpty(dateString) && dateString.contains("T")){
+            dateString = dateString.replace("T"," ");
+        }
+        return dateString;
     }
 
     private void initView() {
@@ -309,7 +340,8 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 
             }
         }else if (view == selectButton){
-
+            Intent intent = new Intent(LogisticsManageActivity.this,LogisticsSelectActivity.class);
+            startActivityForResult(intent,IntentConstant.Intent_Request_Code_Logistics_Select_to_Logistics);
         }
     }
 
@@ -345,6 +377,16 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         }
         if (TextUtils.isEmpty(carPlateEditText.getText())) {
             ToastUtil.showToastShort("请输入车牌号！");
+            return false;
+        }
+
+        if (receiverCompanyBean == null || receiverCompanyBean.getCfId() < 1){
+            ToastUtil.showToastShort("客户信息不完整！");
+            return false;
+        }
+
+        if (logisticsCompanyBean == null ){
+            ToastUtil.showToastShort("请选择物流信息！");
             return false;
         }
         return true;

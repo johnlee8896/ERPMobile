@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_size_10"
+    android:background="@drawable/shape_white_conner_bg"
+    xmlns:tools="http://schemas.android.com/tools">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="物流客户"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/logistics_select_customer_company_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="上汽大众汽车有限公司" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="物流公司"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/logistics_select_logistics_company_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="上海新起物流有限公司" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="运输方式"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/logistics_select_transport_type_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="汽车" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="客户地址"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/logistics_select_address_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="上海浦东康桥工业区康安路669号" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="特殊说明"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/logistics_select_remark_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="哈哈" />
+        </LinearLayout>
+</LinearLayout>

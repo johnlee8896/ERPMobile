@@ -494,7 +494,8 @@ public class ProductInNonTrayScanOuterBoxActivity extends BaseActivity implement
 //                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
 
                 //// TODO: 2020/3/14 remark
-                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
+                int boxId = 0;
+                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(boxId,boxItemEntity,
                         listNo,new Date() ,remark,
                         UserSingleton.get().getHRID(),UserSingleton.get().getHRName(),
                         thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),boxItemEntity.getQty());

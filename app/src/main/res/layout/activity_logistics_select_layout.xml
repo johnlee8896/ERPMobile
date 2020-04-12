@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dimen_size_10"
+    android:paddingRight="@dimen/dimen_size_10">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        app:app_title_text="物流选择页面" />
+
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/logistics_select_customRecyclerView"
+        android:layout_below="@id/product_out_inner_top_layout"
+        android:layout_above="@id/product_out_inner_bottom_layout"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_5"
+        android:layout_marginRight="@dimen/dimen_size_5"
+        android:scrollbars="vertical"
+        app:app_item_margin="@dimen/dimen_size_10"
+        app:app_item_decoration_type="ITEM_SPACE"
+        app:app_layout_style="list_vertical"
+        tools:itemCount="2"
+        tools:listitem="@layout/item_dp_order_detail_layout" />
+
+
+</LinearLayout>

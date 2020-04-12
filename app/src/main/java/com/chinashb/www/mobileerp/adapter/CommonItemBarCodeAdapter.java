@@ -60,9 +60,11 @@ public class CommonItemBarCodeAdapter extends BaseRecycleAdapter<BoxItemEntity, 
             istTextView.setText(entity.getIstName());
             checkBox.setChecked(entity.getSelect());
 
-            String LotWithBox;
-            LotWithBox = entity.getLotNo() + "@" + entity.getBoxName() + entity.getBoxNo();
-            lotTextView.setText(LotWithBox);
+//            String LotWithBox;
+//            LotWithBox = entity.getLotNo() + "@" + entity.getBoxName() + entity.getBoxNo();
+//            LotWithBox = entity.getLotNo() + "@" + entity.getBoxName() + entity.getBoxNo();
+//            lotTextView.setText(LotWithBox);
+            lotTextView.setText(entity.getLotNo());
 
             //istTextView.setText(BoxItemEntity.get());
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

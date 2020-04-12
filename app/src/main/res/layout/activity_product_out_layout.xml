@@ -1,66 +1,389 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/product_out_delivery_order_title_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:app_title_text="成品出库" />
+
     <LinearLayout
+        android:id="@+id/product_out_delivery_order_bottom_layout"
+        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="@dimen/dimen_size_20"
+        android:gravity="bottom"
         android:orientation="vertical">
-
-
-        <Button
-            android:id="@+id/product_out_select_plan_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="@dimen/dimen_size_20"
-            android:layout_weight="1"
-            android:text="请选择发货指令" />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
             android:layout_gravity="center"
-            android:layout_weight="1"
             android:paddingLeft="20dp"
             android:paddingRight="@dimen/dimen_size_20"
             android:gravity="bottom"
             android:orientation="horizontal">
-            <TextView
+
+            <Button
+                android:id="@+id/product_out_out_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
-                android:text="您选择的发货指令是："
-                android:textColor="@color/black" />
-            <TextView
-                android:id="@+id/product_out_order_textView"
-                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:text="出库" />
+            <Button
+                android:id="@+id/product_out_scan_box_out_button"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:textColor="@color/color_blue_00AAEE" />
-
+                android:layout_weight="1"
+                android:text="扫描箱码出库" />
 
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:layout_gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/product_out_sdzh_out_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="三点照合出库" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_below="@id/product_out_delivery_order_title_layout"
+        android:layout_above="@id/product_out_delivery_order_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:id="@+id/product_out_inner_top_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/product_out_select_plan_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:text="请选择发货指令" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="@dimen/dimen_size_20"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:text="您选择的发货指令是："
+                    android:textColor="@color/black" />
+                <TextView
+                    android:id="@+id/product_out_order_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:textColor="@color/color_blue_00AAEE" />
+
+
+            </LinearLayout>
+            <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+                android:id="@+id/product_out_delivery_order_customRecyclerView"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_5"
+                android:layout_marginRight="@dimen/dimen_size_5"
+                android:scrollbars="vertical"
+                app:app_item_decoration_type="ITEM_SPACE"
+                app:app_layout_style="list_vertical"
+                android:visibility="gone"
+                tools:visibility="gone"
+                tools:itemCount="10"
+                tools:listitem="@layout/item_delivery_order_layout" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="发货单"
+                android:layout_marginTop="@dimen/dimen_size_5"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:layout_marginRight="@dimen/dimen_size_5"
+                android:id="@+id/product_out_delivery_order_info_textView"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:id="@+id/product_out_inner_bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/product_out_select_logistics_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:text="请选择物流服务" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="@dimen/dimen_size_20"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <!--<Button-->
+                <!--android:id="@+id/product_no_tray_scan_button"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="start"-->
+                <!--android:layout_weight="1"-->
+                <!--android:visibility="gone"-->
+                <!--android:text="扫码枪扫描" />-->
+
+                <!--<Button-->
+                <!--android:id="@+id/product_non_tray_scan_button"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="start"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="相机扫描托盘物料或单机二维码" />-->
+
+                <LinearLayout
+                    android:id="@+id/product_out_logistics_data_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:orientation="vertical">
+
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_5"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="物流客户"
+                            android:textSize="17sp" />
+
+                        <TextView
+                            android:id="@+id/product_out_logistics_customer_company_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_15"
+                            android:clickable="false"
+                            android:padding="2dp"
+                            android:textColor="@color/black"
+                            android:textSize="17sp"
+                            tools:text="上汽大众汽车有限公司" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_5"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="物流公司"
+                            android:textSize="17sp" />
+
+                        <TextView
+                            android:id="@+id/product_out_logistics_logistics_company_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_15"
+                            android:clickable="false"
+                            android:padding="2dp"
+                            android:textColor="@color/black"
+                            android:textSize="17sp"
+                            tools:text="上海新起物流有限公司" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_5"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="运输方式"
+                            android:textSize="17sp" />
+
+                        <TextView
+                            android:id="@+id/product_out_logistics_transport_type_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_15"
+                            android:clickable="false"
+                            android:ellipsize="end"
+                            android:padding="2dp"
+                            android:singleLine="true"
+                            android:textColor="@color/black"
+                            android:textSize="17sp"
+                            tools:text="汽车" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_5"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="客户地址"
+                            android:textSize="17sp" />
+
+                        <TextView
+                            android:id="@+id/product_out_logistics_address_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_15"
+                            android:clickable="false"
+                            android:ellipsize="end"
+                            android:padding="2dp"
+                            android:textColor="@color/black"
+                            android:textSize="17sp"
+                            tools:text="上海浦东康桥工业区康安路669号" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_5"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="特殊说明"
+                            android:textSize="17sp" />
+
+                        <TextView
+                            android:id="@+id/product_out_logistics_remark_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_15"
+                            android:clickable="false"
+                            android:ellipsize="end"
+                            android:padding="2dp"
+                            android:textColor="@color/black"
+                            android:textSize="17sp"
+                            tools:text="哈哈" />
+
+                    </LinearLayout>
+                    <!--<TextView-->
+                    <!--android:id="@+id/plan_list_plan_detail_textView"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="@dimen/dimen_size_10"-->
+                    <!--android:textSize="17sp"-->
+                    <!--tools:text="生产线分组生产线分组生产线分组生产线分组生产线分组" />-->
+
+                    <!--<TextView-->
+                    <!--android:id="@+id/plan_list_remark_textView"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="@dimen/dimen_size_10"-->
+                    <!--android:clickable="false"-->
+                    <!--android:padding="2dp"-->
+                    <!--android:textSize="17sp"-->
+                    <!--tools:text="备注" />-->
+                </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    tools:text="物流信息"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:layout_marginLeft="@dimen/dimen_size_10"
+                    android:layout_marginRight="@dimen/dimen_size_5"
+                    android:id="@+id/product_out_logistics_info_textView"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+
         <com.chinashb.www.mobileerp.widget.CustomRecyclerView
-            android:id="@+id/product_out_delivery_order_customRecyclerView"
-            android:layout_marginTop="@dimen/dimen_size_10"
+            android:id="@+id/product_out_delivery_order_detail_customRecyclerView"
+            android:layout_below="@id/product_out_inner_top_layout"
+            android:layout_above="@id/product_out_inner_bottom_layout"
+            android:layout_marginTop="@dimen/dimen_size_5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dimen_size_5"
             android:layout_marginRight="@dimen/dimen_size_5"
             android:scrollbars="vertical"
+            tools:visibility="gone"
+            app:app_item_margin="@dimen/dimen_size_10"
             app:app_item_decoration_type="ITEM_SPACE"
             app:app_layout_style="list_vertical"
-            tools:visibility="gone"
-            tools:itemCount="1"
-            tools:listitem="@layout/item_delivery_order_layout" />
+            tools:itemCount="2"
+            tools:listitem="@layout/item_dp_order_detail_layout" />
+
+        <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+            android:id="@+id/product_out_scan_box_item_detail_customRecyclerView"
+            android:layout_below="@id/product_out_inner_top_layout"
+            android:layout_above="@id/product_out_inner_bottom_layout"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_marginRight="@dimen/dimen_size_5"
+            android:scrollbars="vertical"
+            app:app_item_margin="@dimen/dimen_size_10"
+            app:app_item_decoration_type="ITEM_SPACE"
+            app:app_layout_style="list_vertical"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_dp_order_detail_layout" />
         <!--<Button-->
             <!--android:id="@+id/product_non_tray_select_NO_button"-->
             <!--android:layout_width="match_parent"-->
@@ -80,268 +403,16 @@
             <!--tools:text="C-20191226-01"-->
             <!--android:textColor="@color/color_blue_00AAEE" />-->
 
-        <Button
-            android:id="@+id/product_out_select_logistics_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="@dimen/dimen_size_20"
-            android:layout_weight="1"
-            android:text="请选择物流服务" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:paddingLeft="20dp"
-            android:paddingRight="@dimen/dimen_size_20"
-            android:gravity="bottom"
-            android:orientation="horizontal">
-
-            <!--<Button-->
-            <!--android:id="@+id/product_no_tray_scan_button"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="start"-->
-            <!--android:layout_weight="1"-->
-            <!--android:visibility="gone"-->
-            <!--android:text="扫码枪扫描" />-->
-
-            <!--<Button-->
-                <!--android:id="@+id/product_non_tray_scan_button"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="start"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="相机扫描托盘物料或单机二维码" />-->
-
-            <LinearLayout
-                android:id="@+id/product_out_logistics_data_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                tools:visibility="visible"
-                android:orientation="vertical">
 
 
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_5"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="物流客户"
-                        android:textSize="17sp" />
-
-                    <TextView
-                        android:id="@+id/product_out_logistics_customer_company_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_size_15"
-                        android:clickable="false"
-                        android:padding="2dp"
-                        android:textColor="@color/black"
-                        android:textSize="17sp"
-                        tools:text="上汽大众汽车有限公司" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_5"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="物流公司"
-                        android:textSize="17sp" />
-
-                    <TextView
-                        android:id="@+id/product_out_logistics_logistics_company_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_size_15"
-                        android:clickable="false"
-                        android:padding="2dp"
-                        android:textColor="@color/black"
-                        android:textSize="17sp"
-                        tools:text="上海新起物流有限公司" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_5"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="运输方式"
-                        android:textSize="17sp" />
-
-                    <TextView
-                        android:id="@+id/product_out_logistics_transport_type_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_size_15"
-                        android:clickable="false"
-                        android:ellipsize="end"
-                        android:padding="2dp"
-                        android:singleLine="true"
-                        android:textColor="@color/black"
-                        android:textSize="17sp"
-                        tools:text="汽车" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_5"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="客户地址"
-                        android:textSize="17sp" />
-
-                    <TextView
-                        android:id="@+id/product_out_logistics_address_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_size_15"
-                        android:clickable="false"
-                        android:ellipsize="end"
-                        android:padding="2dp"
-                        android:textColor="@color/black"
-                        android:textSize="17sp"
-                        tools:text="上海浦东康桥工业区康安路669号" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_5"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="特殊说明"
-                        android:textSize="17sp" />
-
-                    <TextView
-                        android:id="@+id/product_out_logistics_remark_textView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dimen_size_15"
-                        android:clickable="false"
-                        android:ellipsize="end"
-                        android:padding="2dp"
-                        android:textColor="@color/black"
-                        android:textSize="17sp"
-                        tools:text="哈哈" />
-
-                </LinearLayout>
-                <!--<TextView-->
-                <!--android:id="@+id/plan_list_plan_detail_textView"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="@dimen/dimen_size_10"-->
-                <!--android:textSize="17sp"-->
-                <!--tools:text="生产线分组生产线分组生产线分组生产线分组生产线分组" />-->
-
-                <!--<TextView-->
-                <!--android:id="@+id/plan_list_remark_textView"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="@dimen/dimen_size_10"-->
-                <!--android:clickable="false"-->
-                <!--android:padding="2dp"-->
-                <!--android:textSize="17sp"-->
-                <!--tools:text="备注" />-->
-            </LinearLayout>
-
-        </LinearLayout>
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dimen_size_10"
-            android:layout_gravity="center"
-            android:paddingLeft="20dp"
-            android:paddingRight="@dimen/dimen_size_20"
-            android:layout_weight="1"
-            android:gravity="bottom"
-            android:orientation="horizontal">
 
 
-            <!--<Button-->
-                <!--android:id="@+id/product_non_tray_scan_area_button"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:layout_weight="1"-->
-                <!--android:text="扫描库位" />-->
-
-            <Button
-                android:id="@+id/product_out_out_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="出库" />
-
-        </LinearLayout>
+    </RelativeLayout>
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dimen_size_20"
-            android:layout_gravity="center"
-            android:paddingLeft="20dp"
-            android:paddingRight="@dimen/dimen_size_20"
-            android:layout_weight="1"
-            android:gravity="bottom"
-            android:orientation="horizontal">
-
-
-            <!--<Button-->
-            <!--android:id="@+id/product_non_tray_scan_area_button"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="扫描库位" />-->
-
-            <Button
-                android:id="@+id/product_out_sdzh_out_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="三点照合出库" />
-
-        </LinearLayout>
-
-
-    </LinearLayout>
 
     <EditText
         android:id="@+id/product_out_input_EditText"
@@ -486,5 +557,5 @@
 
     <!--</LinearLayout>-->
 
-</LinearLayout>
+</RelativeLayout>
 

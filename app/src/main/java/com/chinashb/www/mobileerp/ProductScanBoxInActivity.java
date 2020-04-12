@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +75,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
     private List<String> noList;
     private IstPlaceEntity thePlace;
     private CommonSelectInputDialog commonSelectInputDialog;
+
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override public <T> void onClickAction(View v, String tag, T t) {
             if (t != null) {
@@ -86,9 +89,13 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
     };
     private String remark;
     private String listNo;//单据号
+    private String lotNO;
+    private int boxId;
+    private Date manuDate = new Date();
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_product_scan_box_in_layout);
         ButterKnife.bind(this);
         setViewsListener();
@@ -164,10 +171,11 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 //            MB3202004010002,GD2020033100031,C00082917,ITEM2019100918157,5,20200401
             String[] qrContent = content.split(",");
 //            if (qrContent != null && qrContent.length == 7){
+            //实际目前确定是6
             if (qrContent != null && qrContent.length > 5) {
                 String cartonNO = qrContent[0];
-                workLineId = Integer.parseInt(qrContent[5]);
-//                lotNO =
+//                workLineId = Integer.parseInt(qrContent[5]);
+                lotNO = qrContent[5];
                 GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
                 asyncTask.execute(cartonNO);
             } else {
@@ -271,7 +279,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
         } else if (view == scanAreaButton) {
             handleScanArea();
         } else if (view == warehouseInButton) {
-//            handleIntoWareHouse();
+            handleIntoWareHouse();
 //            wcNameTextView.setText("");
 ////            boxItemEntityList = new ArrayList<>()
 //            if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
@@ -279,7 +287,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 //            }
 
 
-            getWCList();
+//            getWCList();
 
         } else if (view == selectNOButton) {
             handleSelectNO();
@@ -473,9 +481,9 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
             int count = 0;
             //todo  这里取的是0，验证多个是否成功
 //                WCSubProductItemEntity boxItemEntity = SelectList.get(0);
-            WcIdNameEntity tempWcIdNameEntity = new WcIdNameEntity();
-            tempWcIdNameEntity.setWcId(0);
-            tempWcIdNameEntity.setWcName("");
+//            WcIdNameEntity tempWcIdNameEntity = new WcIdNameEntity();
+//            tempWcIdNameEntity.setWcId(0);
+//            tempWcIdNameEntity.setWcName("");
 
             WCSubProductItemEntity wcSubProductItemEntity = new WCSubProductItemEntity();
 //            wcSubProductItemEntity.set
@@ -485,14 +493,22 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
                 subProductEntity.setProductId(mesInnerDataEntity.getProductID());
                 subProductEntity.setItemId(mesInnerDataEntity.getItemID());
                 subProductEntity.setIvId(mesInnerDataEntity.getIVID());
+//                subProductEntity.
 
             }
             wcSubProductItemEntity.setWcSubProductEntity(subProductEntity);
+            wcSubProductItemEntity.setLotNo(lotNO);
 
 
             //// TODO: 2020/3/14 remark
-            ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(tempWcIdNameEntity, wcSubProductItemEntity, new Date(),
-                    listNo, new Date(), remark,
+//            ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(tempWcIdNameEntity, wcSubProductItemEntity, new Date(),
+//                    listNo, new Date(), remark,
+//                    UserSingleton.get().getHRID(), UserSingleton.get().getHRName(),
+//                    thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), (int) entity.getQty());
+
+
+            ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(boxId, wcSubProductItemEntity,
+                    listNo, manuDate, remark,
                     UserSingleton.get().getHRID(), UserSingleton.get().getHRName(),
                     thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), (int) entity.getQty());
 
@@ -532,7 +548,8 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
                 } else {
                     //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
+//                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
+                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, "入库完成" , R.mipmap.smiley);
                     boxItemEntityList.remove(entity);
                     adapter.setData(boxItemEntityList);
                 }
@@ -582,11 +599,29 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
                 mesInnerDataEntity = JsonUtil.parseJsonToObject(tempJson, MESInnerDataEntity.class);
                 System.out.println("=============================== " + mesInnerDataEntity.getItemID() + " " + mesInnerDataEntity.getItemUnit());
 
+                boxId = mesInnerDataEntity.getBoxId();
+                String tempString;
+                if (!TextUtils.isEmpty(mesInnerDataEntity.getDateString())){
+                    if (mesInnerDataEntity.getDateString().contains(".")){
+                        tempString = mesInnerDataEntity.getDateString().split(".")[0];
+                    }
+                    tempString = mesInnerDataEntity.getDateString();
+                    try {
+                        manuDate = UnitFormatUtil.sdf_YMDHMS.parse(tempString);
+                    } catch (ParseException e) {
+                        manuDate = new Date();
+                        e.printStackTrace();
+                    }
+
+                }
+
 
                 BoxItemEntity boxItemEntity = new BoxItemEntity();
-                boxItemEntity.setItemName(mesInnerDataEntity.getProductChineseName());
+                boxItemEntity.setItemName(mesInnerDataEntity.getProductChineseName() + "@" + mesInnerDataEntity.getProductDrawNo() + "@" + mesInnerDataEntity.getProductVersion());
                 boxItemEntity.setQty(mesInnerDataEntity.getQty());
                 boxItemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
+
+                boxItemEntity.setLotNo(lotNO);
 //                boxItemEntity.set
 
 

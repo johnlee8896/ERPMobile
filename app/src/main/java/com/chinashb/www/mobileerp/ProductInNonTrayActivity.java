@@ -490,7 +490,13 @@ public class ProductInNonTrayActivity extends BaseActivity implements View.OnCli
 //                        13269,"lwf",
 //                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
 
-                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
+//                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
+//                        listNo,new Date() ,"李伟锋成品入库测试",
+//                        13269,"lwf",
+//                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),boxItemEntity.getQty());
+
+                int boxId = 0;
+                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(boxId,boxItemEntity,
                         listNo,new Date() ,"李伟锋成品入库测试",
                         13269,"lwf",
                         thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),boxItemEntity.getQty());

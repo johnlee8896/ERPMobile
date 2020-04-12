@@ -30,9 +30,9 @@ public class DeliveryOrderAdapter extends BaseRecycleAdapter<DeliveryOrderBean, 
 
     @Override public void onBindViewHolder(DeliveryOrderViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-        holder.itemView.setOnClickListener(v ->{
-            if (onViewClickListener != null){
-                onViewClickListener.onClickAction(v,"",dataList.get(position));
+        holder.itemView.setOnClickListener(v -> {
+            if (onViewClickListener != null) {
+                onViewClickListener.onClickAction(v, "", dataList.get(position));
             }
         });
     }
@@ -46,6 +46,7 @@ public class DeliveryOrderAdapter extends BaseRecycleAdapter<DeliveryOrderBean, 
         @BindView(R.id.item_order_customer_textView) TextView customerTextView;
         @BindView(R.id.item_order_receive_message_textView) TextView receiveMessageTextView;
         @BindView(R.id.item_order_special_remark_textView) TextView remarkTextView;
+        @BindView(R.id.item_order_do_id_textView) TextView doIdTextView;
 
         public DeliveryOrderViewHolder(ViewGroup viewGroup) {
             super(viewGroup, R.layout.item_delivery_order_layout);
@@ -57,12 +58,13 @@ public class DeliveryOrderAdapter extends BaseRecycleAdapter<DeliveryOrderBean, 
                 DeliveryOrderBean bean = (DeliveryOrderBean) t;
                 if (bean != null) {
                     trackNOTextView.setText(bean.getTrackNo());
-                    isTimeAccurateTextView.setText(bean.isSpecificTime()  ? "是" : "否");
+                    isTimeAccurateTextView.setText(bean.isSpecificTime() ? "是" : "否");
                     deliveryTimeTextView.setText(bean.getDeliveryDate());
                     arriveTimeTextView.setText(bean.getArriveDate());
                     customerTextView.setText(bean.getCFChineseName());
                     receiveMessageTextView.setText(bean.getDesInfo());
                     remarkTextView.setText(bean.getSpecial());
+                    doIdTextView.setText(bean.getDOID() + "");
                 }
             }
 

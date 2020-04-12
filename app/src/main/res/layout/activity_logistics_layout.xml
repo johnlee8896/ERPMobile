@@ -40,7 +40,6 @@
         android:layout_toLeftOf="@+id/logistics_title_confirm_button"
         android:layout_marginRight="@dimen/dimen_size_10"
         android:text="选择物流信息"
-        android:visibility="gone"
         android:textSize="@dimen/text_size_16"
         android:textColor="@color/black" />
 

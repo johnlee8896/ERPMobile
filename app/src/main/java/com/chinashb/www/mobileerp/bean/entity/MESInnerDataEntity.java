@@ -22,6 +22,9 @@ public class MESInnerDataEntity {
      * Item_Unit : 个
      */
 
+    //// TODO: 2020/4/7 加上boxID,Date
+    @SerializedName("BoxID") private int BoxId;
+    @SerializedName("Date") private String dateString;
     @SerializedName("PS_ID") private int PSID;
     @SerializedName("Product_ID") private int ProductID;
     @SerializedName("Product_Chinese_Name") private String ProductChineseName;
@@ -31,6 +34,22 @@ public class MESInnerDataEntity {
     @SerializedName("IV_ID") private int IVID;
     @SerializedName("Qty") private int Qty;
     @SerializedName("Item_Unit") private String ItemUnit;
+
+    public String getDateString() {
+        return dateString;
+    }
+
+    public void setDateString(String dateString) {
+        this.dateString = dateString;
+    }
+
+    public int getBoxId() {
+        return BoxId;
+    }
+
+    public void setBoxId(int boxId) {
+        BoxId = boxId;
+    }
 
     public int getPSID() {
         return PSID;

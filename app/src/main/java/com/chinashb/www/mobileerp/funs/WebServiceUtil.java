@@ -55,6 +55,7 @@ public class WebServiceUtil {
 
 
     private static String URL = IP + ":8001/Service.svc";
+//    private static String URL = IP + ":8188/Test_Wss/Service.svc";
 //    private static String URL = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
@@ -68,6 +69,7 @@ public class WebServiceUtil {
 
     //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     private static String URL_Internet = IP + ":8001/Service.svc";
+//    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
 
 
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
@@ -983,7 +985,15 @@ public class WebServiceUtil {
     // WC_Name , PS_ID , Product_ID , Item_ID ,
     // IV_ID , InQty As Double, ManuLotNo , ManuDate As Date,
     // Ist_ID , Remark , Recorder , RecorderName 
-    public static WsResult op_Product_Manu_In_Not_Pallet(WcIdNameEntity wcIdNameEntity, WCSubProductItemEntity subProductItemEntity, Date InDate, String RecordNo,
+//    public static WsResult op_Product_Manu_In_Not_Pallet(WcIdNameEntity wcIdNameEntity, WCSubProductItemEntity subProductItemEntity, Date InDate, String RecordNo,
+//                                                         Date ManuDate, String Remark, int Recorder, String RecorderName,
+//                                                         long Ist_ID, long Sub_Ist_ID, int qty) {
+
+//    Public Function op_Product_Manu_In_Not_Pallet(BoxID As Long, Bu_ID As Integer, RecordNo As String, PS_ID As Long, Product_ID As Long,
+//    Item_ID As Long, IV_ID As Long, InQty As Double, ManuLotNo As String, ManuDate As Date, Ist_ID As Long,
+//    Remark As String, Recorder As Integer, RecorderName As String) As Tuple(Of Boolean, String)
+
+    public static WsResult op_Product_Manu_In_Not_Pallet(int BoxID , WCSubProductItemEntity subProductItemEntity,  String RecordNo,
                                                          Date ManuDate, String Remark, int Recorder, String RecorderName,
                                                          long Ist_ID, long Sub_Ist_ID, int qty) {
 
@@ -991,20 +1001,30 @@ public class WebServiceUtil {
 //        String webMethodName = "op_Product_Manu_In_Not_Pallet_1";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
+
+        //=====================================================================  注意 变量的顺序也很重要
+        //// TODO: 2019/12/31 indate
+//        PropertyInfo propertyInfo2 = new PropertyInfo();
+//        propertyInfo2.setName("InDate");
+//        propertyInfo2.setValue(InDate);
+//        propertyInfo2.setType(Date.class);
+//        propertyInfos.add(propertyInfo2);
+//        System.out.println("================================InDate = " + InDate.toString());
+
         PropertyInfo propertyInfo1 = new PropertyInfo();
-        propertyInfo1.setName("Bu_ID");
-        propertyInfo1.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo1.setName("BoxID");
+        propertyInfo1.setValue(BoxID);
+//        propertyInfo1.setType(Long.class);
         propertyInfo1.setType(Integer.class);
         propertyInfos.add(propertyInfo1);
-        System.out.println("================================Bu_ID = " + UserSingleton.get().getUserInfo().getBu_ID());
+        System.out.println("================================BoxID = " + BoxID);
 
-        //// TODO: 2019/12/31 indate
         PropertyInfo propertyInfo2 = new PropertyInfo();
-        propertyInfo2.setName("InDate");
-        propertyInfo2.setValue(InDate);
-        propertyInfo2.setType(Date.class);
+        propertyInfo2.setName("Bu_ID");
+        propertyInfo2.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo2.setType(Integer.class);
         propertyInfos.add(propertyInfo2);
-        System.out.println("================================InDate = " + InDate.toString());
+        System.out.println("================================Bu_ID = " + UserSingleton.get().getUserInfo().getBu_ID());
 
         PropertyInfo propertyInfo3 = new PropertyInfo();
         propertyInfo3.setName("RecordNo");
@@ -1015,19 +1035,19 @@ public class WebServiceUtil {
         System.out.println("================================RecordNo = " + RecordNo);
 
         //// TODO: 2019/12/31 wc_id  ?
-        PropertyInfo propertyInfo4 = new PropertyInfo();
-        propertyInfo4.setName("WC_ID");
-        propertyInfo4.setValue(wcIdNameEntity.getWcId());
-        propertyInfo4.setType(Long.class);
-        propertyInfos.add(propertyInfo4);
-        System.out.println("================================WC_ID = " + wcIdNameEntity.getWcId());
-
-        PropertyInfo propertyInfo5 = new PropertyInfo();
-        propertyInfo5.setName("WC_Name");
-        propertyInfo5.setValue(wcIdNameEntity.getWcName());
-        propertyInfo5.setType(String.class);
-        propertyInfos.add(propertyInfo5);
-        System.out.println("================================WC_Name = " + wcIdNameEntity.getWcName());
+//        PropertyInfo propertyInfo4 = new PropertyInfo();
+//        propertyInfo4.setName("WC_ID");
+//        propertyInfo4.setValue(wcIdNameEntity.getWcId());
+//        propertyInfo4.setType(Long.class);
+//        propertyInfos.add(propertyInfo4);
+//        System.out.println("================================WC_ID = " + wcIdNameEntity.getWcId());
+//
+//        PropertyInfo propertyInfo5 = new PropertyInfo();
+//        propertyInfo5.setName("WC_Name");
+//        propertyInfo5.setValue(wcIdNameEntity.getWcName());
+//        propertyInfo5.setType(String.class);
+//        propertyInfos.add(propertyInfo5);
+//        System.out.println("================================WC_Name = " + wcIdNameEntity.getWcName());
 
         PropertyInfo propertyInfo6 = new PropertyInfo();
         propertyInfo6.setName("PS_ID");
@@ -1138,7 +1158,7 @@ public class WebServiceUtil {
 
    public static WsResult  op_Product_Manu_Out_Not_Pallet(Date Delivery_Date, long CF_ID ,
                                                           String  CFName ,String SheetNo  ,
-                                  long Delivery_ID ,long DPI_ID ,long DO_ID ){
+                                  long Delivery_ID ,long DPI_ID ,long DO_ID,int PS_ID , String Qty  ){
        String webMethodName = "op_Product_Manu_Out_Not_Pallet";
        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -1179,32 +1199,55 @@ public class WebServiceUtil {
        System.out.println("================================SheetNo = " + SheetNo);
 
        PropertyInfo propertyInfo6 = new PropertyInfo();
-       propertyInfo6.setName("Delivery_ID");
-       propertyInfo6.setValue(Delivery_ID);
-       propertyInfo6.setType(Long.class);
+       propertyInfo6.setName("HR_ID");
+       propertyInfo6.setValue(UserSingleton.get().getHRID());
+       propertyInfo6.setType(Integer.class);
        propertyInfos.add(propertyInfo6);
-       System.out.println("================================Delivery_ID = " + Delivery_ID);
+       System.out.println("================================HR_ID = " + UserSingleton.get().getHRID());
 
        PropertyInfo propertyInfo7 = new PropertyInfo();
-       propertyInfo7.setName("DPI_ID");
-       propertyInfo7.setValue(DPI_ID);
+       propertyInfo7.setName("Delivery_ID");
+       propertyInfo7.setValue(Delivery_ID);
        propertyInfo7.setType(Long.class);
        propertyInfos.add(propertyInfo7);
-       System.out.println("================================DPI_ID = " + DPI_ID);
+       System.out.println("================================Delivery_ID = " + Delivery_ID);
 
        PropertyInfo propertyInfo8 = new PropertyInfo();
-       propertyInfo8.setName("DO_ID");
-       propertyInfo8.setValue(DO_ID);
+       propertyInfo8.setName("DPI_ID");
+       propertyInfo8.setValue(DPI_ID);
        propertyInfo8.setType(Long.class);
        propertyInfos.add(propertyInfo8);
-       System.out.println("================================DO_ID = " + DO_ID);
+       System.out.println("================================DPI_ID = " + DPI_ID);
 
        PropertyInfo propertyInfo9 = new PropertyInfo();
-       propertyInfo9.setName("HR_ID");
-       propertyInfo9.setValue(UserSingleton.get().getHRID());
-       propertyInfo8.setType(Integer.class);
+       propertyInfo9.setName("DO_ID");
+       propertyInfo9.setValue(DO_ID);
+       propertyInfo9.setType(Long.class);
        propertyInfos.add(propertyInfo9);
-       System.out.println("================================HR_ID = " + UserSingleton.get().getHRID());
+       System.out.println("================================DO_ID = " + DO_ID);
+
+//       PropertyInfo propertyInfo9 = new PropertyInfo();
+//       propertyInfo9.setName("HR_ID");
+//       propertyInfo9.setValue(UserSingleton.get().getHRID());
+//       propertyInfo9.setType(Integer.class);
+//       propertyInfos.add(propertyInfo9);
+//       System.out.println("================================HR_ID = " + UserSingleton.get().getHRID());
+
+       PropertyInfo propertyInfo10 = new PropertyInfo();
+       propertyInfo10.setName("PS_ID");
+       propertyInfo10.setValue(PS_ID);
+       propertyInfo10.setType(Integer.class);
+       propertyInfos.add(propertyInfo10);
+       System.out.println("================================PS_ID = " + PS_ID);
+
+       PropertyInfo propertyInfo11 = new PropertyInfo();
+       propertyInfo11.setName("Qty");
+       propertyInfo11.setValue(Qty);
+       propertyInfo11.setType(String.class);
+       propertyInfos.add(propertyInfo11);
+       System.out.println("================================Qty = " +Qty);
+
+//       long PS_ID , String Qty
 
        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
        if (envelope != null) {
@@ -1228,7 +1271,7 @@ public class WebServiceUtil {
                                                  String CarPlateNO, String LogisticsRemark, int Replenish,
                                                  String Delivery_No,
                                                  int LC_ID, Date Shiping_Date, long SID , String Contract_No , int CF_ID,
-                                               Date Arrive_Date , Date LoadTime ,String Des_Address ) {
+                                               Date Arrive_Date , Date LoadTime ,String Des_Address) {
 
         String webMethodName = "saveLogisticsInfoParams";
 //        String webMethodName = "op_Product_Manu_In_Not_Pallet_1";
@@ -1386,6 +1429,13 @@ public class WebServiceUtil {
         propertyInfo21.setValue(UserSingleton.get().getHRID());
         propertyInfo21.setType(Integer.class);
         propertyInfos.add(propertyInfo21);
+
+
+        PropertyInfo propertyInfo22 = new PropertyInfo();
+        propertyInfo22.setName("HR_Name");
+        propertyInfo22.setValue(UserSingleton.get().getHRName());
+        propertyInfo22.setType(String.class);
+        propertyInfos.add(propertyInfo22);
 
 
 //        HR_ID
