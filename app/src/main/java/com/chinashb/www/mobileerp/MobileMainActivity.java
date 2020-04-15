@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.NetWorkReceiver;
@@ -260,8 +261,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             startActivity(intent);
             MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_plan);
         } else if (view == foodOrderTextView){
-            Intent intent = new Intent(this,FoodOrderActivity.class);
-            startActivity(intent);
+//            Intent intent = new Intent(this,FoodOrderActivity.class);
+//            startActivity(intent);
+            new GetTestService2AsyncTask().execute();
         }
     }
 
@@ -319,6 +321,36 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             } else {
                 Toast.makeText(MobileMainActivity.this, "无法访问服务器，请检查网络连接是否正常", Toast.LENGTH_LONG).show();
             }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+
+    private class GetTestService2AsyncTask extends AsyncTask<String, Void, Void> {
+        private WsResult wsResult;
+        @Override
+        protected Void doInBackground(String... params) {
+            wsResult = WebServiceUtil.getAnotherTest("hello");
+//            wsResult = WebServiceUtil.getTryLogin("杨梅", "881102");
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+//            scanProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+           if (wsResult != null && wsResult.getResult()){
+               ToastUtil.showToastShort(wsResult.getErrorInfo());
+           }else{
+               ToastUtil.showToastShort("err " );
+           }
         }
 
         @Override

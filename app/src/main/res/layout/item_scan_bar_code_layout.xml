@@ -112,6 +112,16 @@
                     tools:text="8000"
                     android:textSize="@dimen/text_size_17"
                     android:textColor="@color/black" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/item_common_in_newtv_qty_col"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_height="wrap_content"
+                    tools:text="8000"
+                    android:textSize="@dimen/text_size_17"
+                    android:textColor="@color/black" />
             </LinearLayout>
 
 

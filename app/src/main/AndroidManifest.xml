@@ -58,6 +58,16 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--集团内部调拨 出库选择车间-->
+        <activity
+            android:name=".warehouse.InnerSaleBuSelectActivity"
+            android:screenOrientation="portrait" />
+
+        <!--集团内部调拨 出库给其他车间-->
+        <activity
+            android:name=".warehouse.InnerSaleOutActivity"
+            android:screenOrientation="portrait" />
+
         <!--物流选择页面-->
         <activity
             android:name=".LogisticsSelectActivity"

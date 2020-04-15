@@ -110,7 +110,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         addTrayPhotoButton = findViewById(R.id.btn_add_tray_photo);
         scanAreaButton = (Button) findViewById(R.id.btn_scan_area);
         warehouseInButton = (Button) findViewById(R.id.btn_exe_warehouse_in);
-        inputEditText = (EditText) findViewById(R.id.input_EditeText);
+        inputEditText = (EditText) findViewById(R.id.input_EditText);
 
         stockSwitch = findViewById(R.id.setting_open_suggest_stock_Switch);
         switchLayout = findViewById(R.id.setting_open_suggest_stock_Layout);

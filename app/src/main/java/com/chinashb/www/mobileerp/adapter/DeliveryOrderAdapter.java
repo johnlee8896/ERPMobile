@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.bean.DeliveryOrderBean;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,8 +60,8 @@ public class DeliveryOrderAdapter extends BaseRecycleAdapter<DeliveryOrderBean, 
                 if (bean != null) {
                     trackNOTextView.setText(bean.getTrackNo());
                     isTimeAccurateTextView.setText(bean.isSpecificTime() ? "是" : "否");
-                    deliveryTimeTextView.setText(bean.getDeliveryDate());
-                    arriveTimeTextView.setText(bean.getArriveDate());
+                    deliveryTimeTextView.setText(UnitFormatUtil.getFormatDateStringRemoveTYMD(bean.getDeliveryDate()));
+                    arriveTimeTextView.setText(UnitFormatUtil.getFormatDateStringRemoveTYMD(bean.getArriveDate()));
                     customerTextView.setText(bean.getCFChineseName());
                     receiveMessageTextView.setText(bean.getDesInfo());
                     remarkTextView.setText(bean.getSpecial());

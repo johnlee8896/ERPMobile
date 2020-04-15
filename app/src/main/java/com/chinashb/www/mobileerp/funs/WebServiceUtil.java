@@ -54,8 +54,8 @@ public class WebServiceUtil {
 //        private static String URL = "http://116.236.97.186:8001/Service.svc";
 
 
-    private static String URL = IP + ":8001/Service.svc";
-//    private static String URL = IP + ":8188/Test_Wss/Service.svc";
+//    private static String URL = IP + ":8001/Service.svc";
+    private static String URL = IP + ":8188/Test_Wss/Service.svc";
 //    private static String URL = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
@@ -68,8 +68,8 @@ public class WebServiceUtil {
 
 
     //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
-    private static String URL_Internet = IP + ":8001/Service.svc";
-//    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
+//    private static String URL_Internet = IP + ":8001/Service.svc";
+    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
 
 
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
@@ -77,6 +77,7 @@ public class WebServiceUtil {
 //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
 
     private static String SOAP_ACTION = "http://tempuri.org/IService/";
+    private static String SOAP_ACTION2 = "http://tempuri.org/IService2/";
 
     private static String key = "Money_For_GodMoneyForGod";
 
@@ -98,6 +99,85 @@ public class WebServiceUtil {
 //                        Ist_ID , Sub_Ist_ID ,
 //                        SMLI_ID , SMM_ID , SMT_ID ,
 //                        Qty As Double, txtEntity , txtRecord , Remark , WC_ID )
+
+
+    public static WsResult test(){
+        String webMethodName = "IService2_op_Test2";
+        SoapSerializationEnvelope envelope = invokeSupplierWS(new ArrayList<PropertyInfo>(), webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+        return null;
+    }
+
+
+    public static WsResult getAnotherTest(String productCode){
+        String webMethodName = "getAnotherTest";
+
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("productCode");
+        propertyInfo1.setValue(productCode);
+        propertyInfo1.setType(String.class);
+        propertyInfos.add(propertyInfo1);
+
+//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+
+        SoapSerializationEnvelope envelope = null;
+        // Create request
+        SoapObject soapObject = new SoapObject(NAMESPACE, webMethodName);
+        for (PropertyInfo propertyInfo : propertyInfos) {
+            soapObject.addProperty(propertyInfo);
+        }
+
+        // Create envelope
+        envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envelope.dotNet = true;
+        envelope.bodyOut = soapObject;
+
+        // Set output SOAP object
+        envelope.setOutputSoapObject(soapObject);
+        new MarshalDate().register(envelope);
+
+        // Create HTTP call object
+        HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+        androidHttpTransport.debug = true;
+        try {
+            // Invole web service
+            androidHttpTransport.call(SOAP_ACTION2 + webMethodName, envelope);
+            // Get the response
+            envelope.getResponse();
+        } catch (Exception e) {
+            e.printStackTrace();
+//			resTxt = "Error occured";
+//            ToastUtil.showToastLong(e.getMessage());
+        }
+//        return envelope;
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+        return null;
+    }
 
     public static WsResult op_Commit_Work_line_Item_Non_Plan(
                                                          long Item_ID, long IV_ID,
@@ -2833,6 +2913,195 @@ public class WebServiceUtil {
     }
 
 
+    public static BoxItemEntity op_Check_Commit_Sale_Out_Item_Barcode(String scanContent) {
+        String webMethodName = "op_Check_Commit_Sale_Out_Item_Barcode";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos,"Bu_ID",UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos,"X",scanContent);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        BoxItemEntity box_item = new BoxItemEntity();
+        if (obj != null) {
+            int count = obj.getPropertyCount();
+            SoapObject obj2;
+            for (int i = 0; i < count; i++) {
+                obj2 = (SoapObject) obj.getProperty(i);
+                box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                if (!box_item.getResult()) {
+                    box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                } else {
+                    fill_box_item(box_item, obj2);
+                }
+            }
+        }
+        return box_item;
+    }
+
+//    Function op_Commit_Sale_Out_Item(Bu_ID As Integer, Exer As Integer,
+//                                     EntityID As Long, EntityName As String,
+//                                     Item_ID As Long, IV_ID As Long,
+//                                     LotID As Long, LotNo As String,
+//                                     Ist_ID As Long, Sub_Ist_ID As Long,
+//                                     SMLI_ID As Long, SMM_ID As Long, SMT_ID As Long,
+//                                     Qty As String) As Web_Answer
+
+
+    public static WsResult op_Commit_Sale_Out_Item(int Bu_ID,int Exer,long EntityID,String EntityName,
+            long Item_ID, long IV_ID,
+            long LotID, String LotNo,
+            long Ist_ID, long Sub_Ist_ID,
+            long SMLI_ID, long SMM_ID, long SMT_ID,
+            String Qty) {
+
+        String webMethodName = "op_Commit_Sale_Out_Item";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("Bu_ID");
+//        propertyInfo1.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo1.setValue(Bu_ID);
+        propertyInfo1.setType(Integer.class);
+        propertyInfos.add(propertyInfo1);
+        System.out.println("================================Bu_ID = " + Bu_ID);
+
+        //// TODO: 2019/12/31 indate
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("Exer");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo2.setValue(Exer);
+        propertyInfo2.setType(Long.class);
+        propertyInfos.add(propertyInfo2);
+        System.out.println("================================Exer = " + UserSingleton.get().getHRID());
+
+        PropertyInfo propertyInfo20 = new PropertyInfo();
+        propertyInfo20.setName("EntityID");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo20.setValue(EntityID);
+        propertyInfo20.setType(Long.class);
+        propertyInfos.add(propertyInfo20);
+        System.out.println("================================EntityID = " + EntityID);
+
+        PropertyInfo propertyInfo21 = new PropertyInfo();
+        propertyInfo21.setName("EntityName");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo21.setValue(EntityName);
+        propertyInfo21.setType(String.class);
+        propertyInfos.add(propertyInfo21);
+        System.out.println("================================EntityName = " + EntityName);
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("Item_ID");
+        propertyInfo3.setValue(Item_ID);
+        propertyInfo3.setType(Long.class);
+        propertyInfos.add(propertyInfo3);
+
+        System.out.println("================================Item_ID = " + Item_ID);
+
+        //// TODO: 2019/12/31 wc_id  ?
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("IV_ID");
+        propertyInfo4.setValue(IV_ID);
+        propertyInfo4.setType(Long.class);
+        propertyInfos.add(propertyInfo4);
+        System.out.println("================================IV_ID = " + IV_ID);
+
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo5.setName("LotID");
+        propertyInfo5.setValue(LotID);
+        propertyInfo5.setType(Long.class);
+        propertyInfos.add(propertyInfo5);
+        System.out.println("================================LotID = " + LotID);
+
+        PropertyInfo propertyInfo6 = new PropertyInfo();
+        propertyInfo6.setName("LotNo");
+        propertyInfo6.setValue(LotNo);
+        propertyInfo6.setType(String.class);
+        propertyInfos.add(propertyInfo6);
+        System.out.println("================================LotNo = " + LotNo);
+//
+        PropertyInfo propertyInfo7 = new PropertyInfo();
+        propertyInfo7.setName("Ist_ID");
+        propertyInfo7.setValue(Ist_ID);
+        propertyInfo7.setType(Long.class);
+        propertyInfos.add(propertyInfo7);
+        System.out.println("================================Ist_ID = " + Ist_ID);
+//
+        PropertyInfo propertyInfo8 = new PropertyInfo();
+        propertyInfo8.setName("Sub_Ist_ID");
+        propertyInfo8.setValue(Sub_Ist_ID);
+        propertyInfo8.setType(Long.class);
+        propertyInfos.add(propertyInfo8);
+        System.out.println("================================Sub_Ist_ID = " + Sub_Ist_ID);
+
+
+//        long LotID, String LotNo,
+//        long Ist_ID, long Sub_Ist_ID,
+//        long SMLI_ID, long SMM_ID, long SMT_ID,
+//        double Qty, String txtEntity, String txtRecord, String Remark, int WC_ID
+        PropertyInfo propertyInfo9 = new PropertyInfo();
+        propertyInfo9.setName("SMLI_ID");
+        propertyInfo9.setValue(SMLI_ID);
+        propertyInfo9.setType(Long.class);
+        propertyInfos.add(propertyInfo9);
+        System.out.println("================================SMLI_ID = " + SMLI_ID);
+//
+        PropertyInfo propertyInfo10 = new PropertyInfo();
+        propertyInfo10.setName("SMM_ID");
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setValue(Double.valueOf(subProductItemEntity.getQty()));
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setType(Double.class);
+//        propertyInfo10.setType(Float.class);
+        propertyInfo10.setValue(SMM_ID);
+        propertyInfo10.setType(Long.class);
+        propertyInfos.add(propertyInfo10);
+        System.out.println("================================SMM_ID = " + SMM_ID);
+
+//        ManuLotNo , ManuDate As Date,
+        // Ist_ID , Remark , Recorder , RecorderName
+        PropertyInfo propertyInfo11 = new PropertyInfo();
+        propertyInfo11.setName("SMT_ID");
+        propertyInfo11.setValue(SMT_ID);
+        propertyInfo11.setType(Long.class);
+        propertyInfos.add(propertyInfo11);
+        System.out.println("================================SMT_ID = " + SMT_ID);
+
+
+        PropertyInfo propertyInfo16 = new PropertyInfo();
+        propertyInfo16.setName("Qty");
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setValue(Double.valueOf(subProductItemEntity.getQty()));
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setType(Double.class);
+//        propertyInfo10.setType(Float.class);
+        propertyInfo16.setValue(Qty);
+//        propertyInfo16.setType(Integer.class);
+        propertyInfo16.setType(String.class);
+        propertyInfos.add(propertyInfo16);
+        System.out.println("================================InQty = " + Qty);
+
+
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
+
+    }
 }
 
 

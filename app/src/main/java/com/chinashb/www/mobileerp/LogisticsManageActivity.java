@@ -112,9 +112,9 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 
     private void invalidateView() {
         //// TODO: 2020/4/8
-        outDateTextView.setText(getFormatDateString(logisticsSelectBean.getDeliveryDate()));
-        arriveDateTextView.setText(getFormatDateString(logisticsSelectBean.getArriveDate()));
-        loadCarTimeTextView.setText(getFormatDateString(logisticsSelectBean.getShipingDate()));
+        outDateTextView.setText(UnitFormatUtil.getFormatDateStringRemoveT(logisticsSelectBean.getDeliveryDate()));
+        arriveDateTextView.setText(UnitFormatUtil.getFormatDateStringRemoveT(logisticsSelectBean.getArriveDate()));
+        loadCarTimeTextView.setText(UnitFormatUtil.getFormatDateStringRemoveT(logisticsSelectBean.getShipingDate()));
 
         receiverAddressEditText.setText(logisticsSelectBean.getDesAddress());
         driverNameEditText.setText(logisticsSelectBean.getDriverName());
@@ -122,13 +122,6 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         carPlateEditText.setText(logisticsSelectBean.getLicensePlateNO());
         trackNOEditText.setText(logisticsSelectBean.getTrackNo());
 //        dayNumberEditText.setText(logisticsSelectBean.);
-    }
-
-    private String getFormatDateString(String dateString){
-        if (!TextUtils.isEmpty(dateString) && dateString.contains("T")){
-            dateString = dateString.replace("T"," ");
-        }
-        return dateString;
     }
 
     private void initView() {

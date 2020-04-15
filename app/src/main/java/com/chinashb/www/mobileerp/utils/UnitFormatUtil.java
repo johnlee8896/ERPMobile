@@ -59,6 +59,22 @@ public final class UnitFormatUtil {
     private UnitFormatUtil() {
     }
 
+    // VB中一些带T的date转换
+    public static String getFormatDateStringRemoveT(String dateString){
+        if (!TextUtils.isEmpty(dateString) && dateString.contains("T")){
+            dateString = dateString.replace("T"," ");
+        }
+        return dateString;
+    }
+
+    // VB中一些带T的date转换,只获取年月日
+    public static String getFormatDateStringRemoveTYMD(String dateString){
+        if (!TextUtils.isEmpty(dateString) && dateString.contains("T")){
+            dateString = dateString.split("T")[0];
+        }
+        return dateString;
+    }
+
     // 12345 -> "123.45"
     public static float kiloToTonReturnFloat(long kilo) {
         BigDecimal fenDecimal = new BigDecimal(kilo);

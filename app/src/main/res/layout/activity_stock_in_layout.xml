@@ -113,7 +113,7 @@
     </LinearLayout>
 
     <EditText
-        android:id="@+id/input_EditeText"
+        android:id="@+id/input_EditText"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dimen_size_45"
         android:background="@color/transparent"

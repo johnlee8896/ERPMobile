@@ -140,7 +140,8 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         do_ID = deliveryOrderBean.getDOID() + "";
 
 //        do_ID = "6023";
-        do_ID = "7321";
+//        do_ID = "7321";
+//        do_ID = "7649";
         if (!TextUtils.isEmpty(do_ID)) {
             new GetDeliveryOrderAsyncTask().execute(do_ID);
         }

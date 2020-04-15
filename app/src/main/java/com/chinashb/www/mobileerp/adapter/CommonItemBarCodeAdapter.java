@@ -2,6 +2,7 @@ package com.chinashb.www.mobileerp.adapter;
 
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -24,16 +25,10 @@ import butterknife.ButterKnife;
  */
 
 public class CommonItemBarCodeAdapter extends BaseRecycleAdapter<BoxItemEntity, CommonItemBarCodeAdapter.ItemBarCodeViewHolder> {
-    private boolean isISTVisible ;
-
-    public void setISTVisible(boolean ISTVisible) {
-        isISTVisible = ISTVisible;
-    }
 
     @NonNull @Override public ItemBarCodeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ItemBarCodeViewHolder(parent);
     }
-
 
 
     public static class ItemBarCodeViewHolder extends BaseViewHolder {
@@ -44,10 +39,11 @@ public class CommonItemBarCodeAdapter extends BaseRecycleAdapter<BoxItemEntity, 
         @BindView(R.id.item_common_in_tv_qty_col) EditText qtyEditText;
         @BindView(R.id.item_common_in_tv_ist_name_col) TextView istTextView;
         @BindView(R.id.item_common_cb_select_ist) CheckBox checkBox;
+        @BindView(R.id.item_common_in_newtv_qty_col) TextView qtyTextView;
 
         public ItemBarCodeViewHolder(ViewGroup viewGroup) {
             super(viewGroup, R.layout.item_scan_bar_code_layout);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         @Override public <T> void initUIData(T t) {
@@ -56,6 +52,14 @@ public class CommonItemBarCodeAdapter extends BaseRecycleAdapter<BoxItemEntity, 
             itemNameTextView.setText(entity.getItemName());
             DecimalFormat DF = new DecimalFormat("####.####");
             qtyEditText.setText(DF.format(entity.getQty()));
+            qtyTextView.setText(DF.format(entity.getQty()));
+            if (entity.getCanNotEdit()){
+                qtyEditText.setVisibility(View.GONE);
+                qtyTextView.setVisibility(View.VISIBLE);
+            }else{
+                qtyEditText.setVisibility(View.VISIBLE);
+                qtyTextView.setVisibility(View.GONE);
+            }
             buTextView.setText(entity.getBuName());
             istTextView.setText(entity.getIstName());
             checkBox.setChecked(entity.getSelect());
@@ -75,22 +79,21 @@ public class CommonItemBarCodeAdapter extends BaseRecycleAdapter<BoxItemEntity, 
                 }
             });
 
-            qtyEditText.addTextChangedListener(new TextWatcherImpl(){
+            qtyEditText.addTextChangedListener(new TextWatcherImpl() {
                 @Override public void afterTextChanged(Editable editable) {
                     super.afterTextChanged(editable);
-                        String q = editable.toString();
-                        if (!q.isEmpty()) {
-                            if (Float.parseFloat(q) > 0) {
-                                entity.setQty(Float.parseFloat(q));
-                            } else {
-                                entity.setQty(0);
-                            }
+                    String q = editable.toString();
+                    if (!q.isEmpty()) {
+                        if (Float.parseFloat(q) > 0) {
+                            entity.setQty(Float.parseFloat(q));
                         } else {
                             entity.setQty(0);
                         }
+                    } else {
+                        entity.setQty(0);
+                    }
                 }
             });
-
 
 
         }

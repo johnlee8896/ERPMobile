@@ -43,6 +43,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button completeProductButton;//成品库存
     private Button partStockInButton;//零部件库存
     private Button workLineInButton ;//生产线领料
+    private Button innerSaleOutButton ;//集团内销售出库
     private Button lookQRButton;
 
     private FloatingActionButton floatButton;
@@ -70,6 +71,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         completeProductButton = (Button) findViewById(R.id.btn_query_product_inv);
         partStockInButton = (Button) findViewById(R.id.btn_query_part_inv);
         workLineInButton = findViewById(R.id.btn_check_part_workline_in);
+        innerSaleOutButton = findViewById(R.id.btn_inner_sale_out);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -118,6 +120,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         makingProductButton.setOnClickListener(this);
         workLineInButton.setOnClickListener(this);
         floatButton.setOnClickListener(this);
+        innerSaleOutButton.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -200,6 +203,9 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             workLineIn();
         }else if (view == floatButton) {
             Intent intent = new Intent(StockPartMainActivity.this, ShbTcpTest.class);
+            startActivity(intent);
+        }else if (view == innerSaleOutButton){
+            Intent intent = new Intent(StockPartMainActivity.this,InnerSaleOutActivity.class);
             startActivity(intent);
         }
     }

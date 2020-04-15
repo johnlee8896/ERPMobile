@@ -105,20 +105,33 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
         todayButton.setTextColor(Color.DKGRAY);
         tomorrowButton.setTextColor(Color.DKGRAY);
         //// TODO: 2020/1/3 有待检查和优化
-        if (v == weekAgoButton) {
-            long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 8;
+        if (v == weekAgoButton) {//pc端处理是-3，-7
+//            long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 8;
+//            long endTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND;
+
+            long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 7;
+            long endTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 3;
+//            task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(endTime));
+            //// TODO: 2020/4/12 对于范围，这里真的处理不同寻常，先end，后start
+            task.execute(UnitFormatUtil.formatTimeToDay(endTime), UnitFormatUtil.formatTimeToDay(startTime));
+            weekAgoButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
+        } else if (v == beforeYesterdayButton) {
+//            long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 3;
+//            long endTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 2;
+////            task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(endTime));
+//            task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(startTime));
+
+
+
+            long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 2;
             long endTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND;
 //            task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(endTime));
             task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(startTime));
-            weekAgoButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
-        } else if (v == beforeYesterdayButton) {
-            long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 3;
-            long endTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 2;
-//            task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(endTime));
-            task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(startTime));
+
+
             beforeYesterdayButton.setTextColor(getResources().getColor(R.color.color_orange_FF6A00));
         } else if (v == yesterdayButton) {
-            long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND * 2;
+            long startTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND ;
             long endTime = currentTime - UnitFormatUtil.ONE_DAY_TIME_IN_MILL_SECOND;
 //            task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(endTime));
             task.execute(UnitFormatUtil.formatTimeToDay(startTime), UnitFormatUtil.formatTimeToDay(startTime));

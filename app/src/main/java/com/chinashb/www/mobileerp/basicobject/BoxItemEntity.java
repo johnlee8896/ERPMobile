@@ -35,6 +35,15 @@ public class BoxItemEntity implements Serializable {
     private String SmlRemark = "";
     private String ManuLotNo = "";
     private WsResult ws_result = new WsResult();
+    private boolean canNotEdit = false;
+
+    public void setCanNotEdit(boolean canNotEdit) {
+        this.canNotEdit = canNotEdit;
+    }
+
+    public boolean getCanNotEdit(){
+        return canNotEdit;
+    }
 
     public boolean getResult() {
         return result;
