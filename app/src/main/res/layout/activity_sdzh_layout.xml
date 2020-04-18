@@ -71,7 +71,7 @@
         android:layout_marginLeft="@dimen/dimen_size_5"
         android:background="@drawable/shape_conner_blue_button_bg"
         android:gravity="center"
-        android:text="选择出库物料信息" />
+        android:text="选择出库物流信息" />
 
     <LinearLayout
         android:id="@+id/sdzh_logistics_data_layout"
@@ -273,7 +273,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone" />
+        android:visibility="gone"
+         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_size_5"
+        android:text="该计划下所有预设发货单号"
+        android:textColor="@color/color_blue_00AAEE"
+        android:textSize="@dimen/text_size_16" />
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/sdzh_orderNo_outer_scroll_RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:app_layout_style="list_horizontal"
+        app:app_item_margin="@dimen/dimen_size_10"
+        ></com.chinashb.www.mobileerp.widget.CustomRecyclerView>
 
     <TextView
         android:id="@+id/sdzh_current_info_textView"
@@ -300,22 +315,6 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <!--<LinearLayout-->
-                    <!--android:id="@+id/sdzh_order_No_data_layout"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:orientation="vertical"-->
-                    <!--android:visibility="gone" />-->
-
-                <!--<TextView-->
-                    <!--android:id="@+id/sdzh_current_info_textView"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginTop="@dimen/dimen_size_5"-->
-                    <!--android:layout_marginBottom="@dimen/dimen_size_5"-->
-                    <!--android:padding="@dimen/dimen_size_5"-->
-                    <!--tools:text="当前发货单号  XD000 " />-->
-
                 <LinearLayout
                     android:id="@+id/sdzh_data_layout"
                     android:layout_width="match_parent"
@@ -326,6 +325,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:orientation="horizontal">
 
                         <TextView
@@ -353,7 +353,7 @@
                         android:orientation="vertical">
 
                         <com.chinashb.www.mobileerp.widget.CustomRecyclerView
-                            android:id="@+id/sdzh_root_recyclerView"
+                            android:id="@+id/sdzh_order_number_recyclerView"
                             android:layout_width="match_parent"
                             android:layout_height="150dp"
                             android:layout_marginLeft="@dimen/dimen_size_10"

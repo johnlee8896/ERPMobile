@@ -31,6 +31,7 @@ import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
+import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.google.gson.Gson;
@@ -75,6 +76,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
     private List<String> noList;
     private IstPlaceEntity thePlace;
     private CommonSelectInputDialog commonSelectInputDialog;
+    private String currentCartonNo;
 
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override public <T> void onClickAction(View v, String tag, T t) {
@@ -534,7 +536,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
         @Override
         protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");
+            //tv.setText(fahren + "∞ F");KXCA252A1200415F0002002
             if (ws_result.getResult()) {
                 //添加库位与manuLot的关联
 //                    addIstSubIstManuLotRelation(boxItemEntity);
@@ -549,9 +551,14 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
                 } else {
                     //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
 //                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
-                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, "入库完成" , R.mipmap.smiley);
+                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, "入库完成", R.mipmap.smiley);
                     boxItemEntityList.remove(entity);
                     adapter.setData(boxItemEntityList);
+                    //// TODO: 2020/4/18  这里要更新数据库，防止该箱号重复入库
+//                    String updateSql = String.format("UPDATE MES_CartonCode SET IsWarehousing = 1 where Id = %s and CartonNo = '%s'",boxId,currentCartonNo );
+                    String updateSql = String.format("UPDATE MES_CartonCode SET IsWarehousing = 1 where  CartonNo = '%s'", boxId, currentCartonNo);
+                    UpdateBoxDataBaseAsyncTask task = new UpdateBoxDataBaseAsyncTask();
+                    task.execute(updateSql);
                 }
 
             }
@@ -581,6 +588,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
                 return null;
             }
             String cartonNO = strings[0];
+            currentCartonNo = cartonNO;
             WsResult result =
 //            MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
 //                    WebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
@@ -601,8 +609,8 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
                 boxId = mesInnerDataEntity.getBoxId();
                 String tempString;
-                if (!TextUtils.isEmpty(mesInnerDataEntity.getDateString())){
-                    if (mesInnerDataEntity.getDateString().contains(".")){
+                if (!TextUtils.isEmpty(mesInnerDataEntity.getDateString())) {
+                    if (mesInnerDataEntity.getDateString().contains(".")) {
                         tempString = mesInnerDataEntity.getDateString().split(".")[0];
                     }
                     tempString = mesInnerDataEntity.getDateString();
@@ -641,11 +649,39 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
 
             } else {
-                ToastUtil.showToastLong("接口请求数据错误！");
+//                ToastUtil.showToastLong("接口请求数据错误！");
+                if (!TextUtils.isEmpty(mesDataEntity.getMessage())) {
+                    ToastUtil.showToastShort(mesDataEntity.getMessage());
+                } else {
+                    ToastUtil.showToastLong("接口请求数据错误！");
+                }
             }
         }
     }
 
+
+    private class UpdateBoxDataBaseAsyncTask extends AsyncTask<String, String, WsResult> {
+
+        @Override
+        protected WsResult doInBackground(String... strings) {
+
+            String sql = strings[0];
+            System.out.println("========== UpdateBoxDataBaseAsyncTask sql = " + sql);
+            WsResult result = WebServiceUtil.getDataTable(sql);
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(WsResult result) {
+            super.onPostExecute(result);
+            if (result != null && result.getResult()) {
+//                ToastUtil.showToastLong("更新成功！");
+            } else {
+                ToastUtil.showToastLong("箱号数据库更新失败，错误信息是 " + result.getErrorInfo());
+            }
+
+        }
+    }
 
 }
 

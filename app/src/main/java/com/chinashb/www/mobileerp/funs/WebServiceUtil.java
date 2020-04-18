@@ -54,8 +54,8 @@ public class WebServiceUtil {
 //        private static String URL = "http://116.236.97.186:8001/Service.svc";
 
 
-//    private static String URL = IP + ":8001/Service.svc";
-    private static String URL = IP + ":8188/Test_Wss/Service.svc";
+    private static String URL = IP + ":8001/Service.svc";
+//    private static String URL = IP + ":8188/Test_Wss/Service.svc";
 //    private static String URL = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
@@ -68,8 +68,8 @@ public class WebServiceUtil {
 
 
     //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
-//    private static String URL_Internet = IP + ":8001/Service.svc";
-    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
+    private static String URL_Internet = IP + ":8001/Service.svc";
+//    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
 
 
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
@@ -101,7 +101,7 @@ public class WebServiceUtil {
 //                        Qty As Double, txtEntity , txtRecord , Remark , WC_ID )
 
 
-    public static WsResult test(){
+    public static WsResult test() {
         String webMethodName = "IService2_op_Test2";
         SoapSerializationEnvelope envelope = invokeSupplierWS(new ArrayList<PropertyInfo>(), webMethodName);
         if (envelope != null) {
@@ -120,7 +120,7 @@ public class WebServiceUtil {
     }
 
 
-    public static WsResult getAnotherTest(String productCode){
+    public static WsResult getAnotherTest(String productCode) {
         String webMethodName = "getAnotherTest";
 
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -180,11 +180,11 @@ public class WebServiceUtil {
     }
 
     public static WsResult op_Commit_Work_line_Item_Non_Plan(
-                                                         long Item_ID, long IV_ID,
-                                                         long LotID, String LotNo,
-                                                         long Ist_ID, long Sub_Ist_ID,
-                                                         long SMLI_ID, long SMM_ID, long SMT_ID,
-                                                         String Qty, String txtEntity, String txtRecord, String Remark, long WC_ID) {
+            long Item_ID, long IV_ID,
+            long LotID, String LotNo,
+            long Ist_ID, long Sub_Ist_ID,
+            long SMLI_ID, long SMM_ID, long SMT_ID,
+            String Qty, String txtEntity, String txtRecord, String Remark, long WC_ID) {
 
         String webMethodName = "op_Commit_Work_line_Item_Non_Plan";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -350,7 +350,7 @@ public class WebServiceUtil {
 
     }
 
-    public static WsResult  op_Check_Work_Line_Scan_Item_Barcode_Json(String scanResult) {
+    public static WsResult op_Check_Work_Line_Scan_Item_Barcode_Json(String scanResult) {
 
         String webMethodName = "op_Check_Work_Line_Scan_Item_Barcode_Json";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -366,8 +366,8 @@ public class WebServiceUtil {
 //        propertyInfo2.setType(String.class);
 //        propertyInfos.add(propertyInfo2);
 
-        AddPropertyInfo(propertyInfos,"Bu_ID",UserSingleton.get().getUserInfo().getBu_ID());
-        AddPropertyInfo(propertyInfos,"X",scanResult);
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "X", scanResult);
 
 
 //        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
@@ -378,7 +378,7 @@ public class WebServiceUtil {
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
-     WsResult    result = getWS_Result(obj);
+        WsResult result = getWS_Result(obj);
 //     return result ;
 
 //        System.out.println("***************************** obj = " + obj);
@@ -436,7 +436,7 @@ public class WebServiceUtil {
 //
 //        }
 //        return box_item;
-        return result  ;
+        return result;
 
     }
 
@@ -455,8 +455,8 @@ public class WebServiceUtil {
 //        propertyInfo2.setType(String.class);
 //        propertyInfos.add(propertyInfo2);
 
-        AddPropertyInfo(propertyInfos,"Bu_ID",UserSingleton.get().getUserInfo().getBu_ID());
-        AddPropertyInfo(propertyInfos,"X",scanResult);
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "X", scanResult);
 
 
 //        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
@@ -882,12 +882,17 @@ public class WebServiceUtil {
                     box_item.setEntityName(obj2.getProperty("EntityName").toString());
                     box_item.setLotID(Long.parseLong(obj2.getProperty("LotID").toString()));
                     //// TODO: 2019/11/27 这里的lotNo 取的是DII里面的manulotNo
-                    box_item.setLotNo(obj2.getProperty("LotNo").toString());
+                    if (obj2.getProperty("LotNo") != null) {
+                        box_item.setLotNo(obj2.getProperty("LotNo").toString());
+                    }
                     box_item.setItem_ID(Long.parseLong(obj2.getProperty("Item_ID").toString()));
                     box_item.setIV_ID(Long.parseLong(obj2.getProperty("IV_ID").toString()));
                     box_item.setItemName(obj2.getProperty("ItemName").toString());
                     box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
                     box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
+                    if (obj2.getProperty("Company_ID") != null) {
+                        box_item.setCompany_ID(Integer.parseInt(obj2.getProperty("Company_ID").toString()));
+                    }
                     box_item.setBuName(obj2.getProperty("BuName").toString());
                     box_item.setBoxName(obj2.getProperty("BoxName").toString());
                     box_item.setBoxNo(obj2.getProperty("BoxNo").toString());
@@ -1073,7 +1078,7 @@ public class WebServiceUtil {
 //    Item_ID As Long, IV_ID As Long, InQty As Double, ManuLotNo As String, ManuDate As Date, Ist_ID As Long,
 //    Remark As String, Recorder As Integer, RecorderName As String) As Tuple(Of Boolean, String)
 
-    public static WsResult op_Product_Manu_In_Not_Pallet(int BoxID , WCSubProductItemEntity subProductItemEntity,  String RecordNo,
+    public static WsResult op_Product_Manu_In_Not_Pallet(int BoxID, WCSubProductItemEntity subProductItemEntity, String RecordNo,
                                                          Date ManuDate, String Remark, int Recorder, String RecorderName,
                                                          long Ist_ID, long Sub_Ist_ID, int qty) {
 
@@ -1232,79 +1237,79 @@ public class WebServiceUtil {
 
     }
 
-   /*
+    /*
 
-    */
+     */
 
-   public static WsResult  op_Product_Manu_Out_Not_Pallet(Date Delivery_Date, long CF_ID ,
-                                                          String  CFName ,String SheetNo  ,
-                                  long Delivery_ID ,long DPI_ID ,long DO_ID,int PS_ID , String Qty  ){
-       String webMethodName = "op_Product_Manu_Out_Not_Pallet";
-       ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+    public static WsResult op_Product_Manu_Out_Not_Pallet(Date Delivery_Date, long CF_ID,
+                                                          String CFName, String SheetNo,
+                                                          long Delivery_ID, long DPI_ID, long DO_ID, int PS_ID, String Qty) {
+        String webMethodName = "op_Product_Manu_Out_Not_Pallet";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
-       PropertyInfo propertyInfo1 = new PropertyInfo();
-       propertyInfo1.setName("Bu_ID");
-       //// TODO: 2020/3/27 车间与操作员关系？
-       propertyInfo1.setValue(UserSingleton.get().getUserInfo().getBu_ID());
-       propertyInfo1.setType(Integer.class);
-       propertyInfos.add(propertyInfo1);
-       System.out.println("================================Bu_ID = " + UserSingleton.get().getUserInfo().getBu_ID());
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("Bu_ID");
+        //// TODO: 2020/3/27 车间与操作员关系？
+        propertyInfo1.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo1.setType(Integer.class);
+        propertyInfos.add(propertyInfo1);
+        System.out.println("================================Bu_ID = " + UserSingleton.get().getUserInfo().getBu_ID());
 
-       PropertyInfo propertyInfo2 = new PropertyInfo();
-       propertyInfo2.setName("Delivery_Date");
-       propertyInfo2.setValue(Delivery_Date);
-       propertyInfo2.setType(Date .class);
-       propertyInfos.add(propertyInfo2);
-       System.out.println("================================Delivery_Date = " + Delivery_Date);
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("Delivery_Date");
+        propertyInfo2.setValue(Delivery_Date);
+        propertyInfo2.setType(Date.class);
+        propertyInfos.add(propertyInfo2);
+        System.out.println("================================Delivery_Date = " + Delivery_Date);
 
-       PropertyInfo propertyInfo3 = new PropertyInfo();
-       propertyInfo3.setName("CF_ID");
-       propertyInfo3.setValue(CF_ID);
-       propertyInfo3.setType(Long.class);
-       propertyInfos.add(propertyInfo3);
-       System.out.println("================================CF_ID = " + CF_ID);
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("CF_ID");
+        propertyInfo3.setValue(CF_ID);
+        propertyInfo3.setType(Long.class);
+        propertyInfos.add(propertyInfo3);
+        System.out.println("================================CF_ID = " + CF_ID);
 
-       PropertyInfo propertyInfo4 = new PropertyInfo();
-       propertyInfo4.setName("CFName");
-       propertyInfo4.setValue(CFName);
-       propertyInfo4.setType(String.class);
-       propertyInfos.add(propertyInfo4);
-       System.out.println("================================CFName = " + CFName);
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("CFName");
+        propertyInfo4.setValue(CFName);
+        propertyInfo4.setType(String.class);
+        propertyInfos.add(propertyInfo4);
+        System.out.println("================================CFName = " + CFName);
 
-       PropertyInfo propertyInfo5 = new PropertyInfo();
-       propertyInfo5.setName("SheetNo");
-       propertyInfo5.setValue(SheetNo);
-       propertyInfo5.setType(String.class);
-       propertyInfos.add(propertyInfo5);
-       System.out.println("================================SheetNo = " + SheetNo);
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo5.setName("SheetNo");
+        propertyInfo5.setValue(SheetNo);
+        propertyInfo5.setType(String.class);
+        propertyInfos.add(propertyInfo5);
+        System.out.println("================================SheetNo = " + SheetNo);
 
-       PropertyInfo propertyInfo6 = new PropertyInfo();
-       propertyInfo6.setName("HR_ID");
-       propertyInfo6.setValue(UserSingleton.get().getHRID());
-       propertyInfo6.setType(Integer.class);
-       propertyInfos.add(propertyInfo6);
-       System.out.println("================================HR_ID = " + UserSingleton.get().getHRID());
+        PropertyInfo propertyInfo6 = new PropertyInfo();
+        propertyInfo6.setName("HR_ID");
+        propertyInfo6.setValue(UserSingleton.get().getHRID());
+        propertyInfo6.setType(Integer.class);
+        propertyInfos.add(propertyInfo6);
+        System.out.println("================================HR_ID = " + UserSingleton.get().getHRID());
 
-       PropertyInfo propertyInfo7 = new PropertyInfo();
-       propertyInfo7.setName("Delivery_ID");
-       propertyInfo7.setValue(Delivery_ID);
-       propertyInfo7.setType(Long.class);
-       propertyInfos.add(propertyInfo7);
-       System.out.println("================================Delivery_ID = " + Delivery_ID);
+        PropertyInfo propertyInfo7 = new PropertyInfo();
+        propertyInfo7.setName("Delivery_ID");
+        propertyInfo7.setValue(Delivery_ID);
+        propertyInfo7.setType(Long.class);
+        propertyInfos.add(propertyInfo7);
+        System.out.println("================================Delivery_ID = " + Delivery_ID);
 
-       PropertyInfo propertyInfo8 = new PropertyInfo();
-       propertyInfo8.setName("DPI_ID");
-       propertyInfo8.setValue(DPI_ID);
-       propertyInfo8.setType(Long.class);
-       propertyInfos.add(propertyInfo8);
-       System.out.println("================================DPI_ID = " + DPI_ID);
+        PropertyInfo propertyInfo8 = new PropertyInfo();
+        propertyInfo8.setName("DPI_ID");
+        propertyInfo8.setValue(DPI_ID);
+        propertyInfo8.setType(Long.class);
+        propertyInfos.add(propertyInfo8);
+        System.out.println("================================DPI_ID = " + DPI_ID);
 
-       PropertyInfo propertyInfo9 = new PropertyInfo();
-       propertyInfo9.setName("DO_ID");
-       propertyInfo9.setValue(DO_ID);
-       propertyInfo9.setType(Long.class);
-       propertyInfos.add(propertyInfo9);
-       System.out.println("================================DO_ID = " + DO_ID);
+        PropertyInfo propertyInfo9 = new PropertyInfo();
+        propertyInfo9.setName("DO_ID");
+        propertyInfo9.setValue(DO_ID);
+        propertyInfo9.setType(Long.class);
+        propertyInfos.add(propertyInfo9);
+        System.out.println("================================DO_ID = " + DO_ID);
 
 //       PropertyInfo propertyInfo9 = new PropertyInfo();
 //       propertyInfo9.setName("HR_ID");
@@ -1313,45 +1318,45 @@ public class WebServiceUtil {
 //       propertyInfos.add(propertyInfo9);
 //       System.out.println("================================HR_ID = " + UserSingleton.get().getHRID());
 
-       PropertyInfo propertyInfo10 = new PropertyInfo();
-       propertyInfo10.setName("PS_ID");
-       propertyInfo10.setValue(PS_ID);
-       propertyInfo10.setType(Integer.class);
-       propertyInfos.add(propertyInfo10);
-       System.out.println("================================PS_ID = " + PS_ID);
+        PropertyInfo propertyInfo10 = new PropertyInfo();
+        propertyInfo10.setName("PS_ID");
+        propertyInfo10.setValue(PS_ID);
+        propertyInfo10.setType(Integer.class);
+        propertyInfos.add(propertyInfo10);
+        System.out.println("================================PS_ID = " + PS_ID);
 
-       PropertyInfo propertyInfo11 = new PropertyInfo();
-       propertyInfo11.setName("Qty");
-       propertyInfo11.setValue(Qty);
-       propertyInfo11.setType(String.class);
-       propertyInfos.add(propertyInfo11);
-       System.out.println("================================Qty = " +Qty);
+        PropertyInfo propertyInfo11 = new PropertyInfo();
+        propertyInfo11.setName("Qty");
+        propertyInfo11.setValue(Qty);
+        propertyInfo11.setType(String.class);
+        propertyInfos.add(propertyInfo11);
+        System.out.println("================================Qty = " + Qty);
 
 //       long PS_ID , String Qty
 
-       SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-       if (envelope != null) {
-           if (envelope.bodyIn instanceof SoapFault) {
-               WsResult result = new WsResult();
-               result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
-               result.setResult(false);
-               return result;
-           } else {
-               SoapObject obj = (SoapObject) envelope.bodyIn;
-               WsResult ws_result = Get_WS_Result(obj);
-               return ws_result;
-           }
-       }
-       return null;
-   }
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+        return null;
+    }
 
     //成品出库 物流信息
     public static WsResult op_Product_Logistics(int Abroad, int Mass, int Company_ID, int Bu_ID, int DT_ID,
-                                                 String TrackNo, String DriverName, String DriverTel,
-                                                 String CarPlateNO, String LogisticsRemark, int Replenish,
-                                                 String Delivery_No,
-                                                 int LC_ID, Date Shiping_Date, long SID , String Contract_No , int CF_ID,
-                                               Date Arrive_Date , Date LoadTime ,String Des_Address) {
+                                                String TrackNo, String DriverName, String DriverTel,
+                                                String CarPlateNO, String LogisticsRemark, int Replenish,
+                                                String Delivery_No,
+                                                int LC_ID, Date Shiping_Date, long SID, String Contract_No, int CF_ID,
+                                                Date Arrive_Date, Date LoadTime, String Des_Address) {
 
         String webMethodName = "saveLogisticsInfoParams";
 //        String webMethodName = "op_Product_Manu_In_Not_Pallet_1";
@@ -1458,7 +1463,6 @@ public class WebServiceUtil {
         propertyInfo14.setValue(Shiping_Date);
         propertyInfo14.setType(Date.class);
         propertyInfos.add(propertyInfo14);
-
 
 
 //        long SID , String Contract_No , int CF_ID
@@ -2413,7 +2417,7 @@ public class WebServiceUtil {
                 if (obj2.getProperty("ErrorInfo") != null) {
                     result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 }
-                if (obj2.getProperty("ID") != null){
+                if (obj2.getProperty("ID") != null) {
                     result.setID(Long.parseLong(obj2.getProperty("ID").toString()));
                 }
             }
@@ -2916,8 +2920,8 @@ public class WebServiceUtil {
     public static BoxItemEntity op_Check_Commit_Sale_Out_Item_Barcode(String scanContent) {
         String webMethodName = "op_Check_Commit_Sale_Out_Item_Barcode";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
-        AddPropertyInfo(propertyInfos,"Bu_ID",UserSingleton.get().getUserInfo().getBu_ID());
-        AddPropertyInfo(propertyInfos,"X",scanContent);
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "X", scanContent);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
@@ -2948,12 +2952,12 @@ public class WebServiceUtil {
 //                                     Qty As String) As Web_Answer
 
 
-    public static WsResult op_Commit_Sale_Out_Item(int Bu_ID,int Exer,long EntityID,String EntityName,
-            long Item_ID, long IV_ID,
-            long LotID, String LotNo,
-            long Ist_ID, long Sub_Ist_ID,
-            long SMLI_ID, long SMM_ID, long SMT_ID,
-            String Qty) {
+    public static WsResult op_Commit_Sale_Out_Item(int Bu_ID, int Exer, long EntityID, String EntityName,
+                                                   long Item_ID, long IV_ID,
+                                                   long LotID, String LotNo,
+                                                   long Ist_ID, long Sub_Ist_ID,
+                                                   long SMLI_ID, long SMM_ID, long SMT_ID,
+                                                   String Qty) {
 
         String webMethodName = "op_Commit_Sale_Out_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -3081,8 +3085,6 @@ public class WebServiceUtil {
         propertyInfo16.setType(String.class);
         propertyInfos.add(propertyInfo16);
         System.out.println("================================InQty = " + Qty);
-
-
 
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);

@@ -159,6 +159,7 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
                     if (TextUtils.isEmpty(boxItemEntity.getBuName()) || boxItemEntity.getBuName().contains(nullType)) {
                         boxItemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
                     }
+                    boxItemEntity.setCanNotEdit(true);
                     boxItemEntityArrayList.add(boxItemEntity);
 
                 } else {

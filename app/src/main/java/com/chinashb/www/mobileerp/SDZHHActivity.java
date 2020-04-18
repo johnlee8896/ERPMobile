@@ -2,7 +2,6 @@ package com.chinashb.www.mobileerp;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.adapter.ItemTextViewAdapter;
 import com.chinashb.www.mobileerp.adapter.SDZHOrderBoxDetailAdapter;
 import com.chinashb.www.mobileerp.adapter.SDZHOrderDetailAdapter;
 import com.chinashb.www.mobileerp.adapter.SDZHSinglePartDetailAdapter;
@@ -35,6 +35,7 @@ import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
 import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -62,7 +63,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     @BindView(R.id.sdzh_scan_single_part_bar_button) TextView singlePartBarButton;
     @BindView(R.id.sdzh_remove_single_part_bar_button) TextView removeSinglePartBarButton;
     @BindView(R.id.sdzh_send_order_number_textView) TextView orderNumberTextView;
-    @BindView(R.id.sdzh_root_recyclerView) CustomRecyclerView rootRecyclerView;
+    @BindView(R.id.sdzh_order_number_recyclerView) CustomRecyclerView orderNumberRecyclerView;
     @BindView(R.id.sdzh_data_layout) LinearLayout dataLayout;
     @BindView(R.id.sdzh_empty_layoutView) EmptyLayoutManageView emptyLayoutView;
     @BindView(R.id.sdzh_inner_empty_layoutView) EmptyLayoutManageView innerEmptyLayoutView;
@@ -83,6 +84,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     @BindView(R.id.sdzh_logistics_address_textView) TextView addressTextView;
     @BindView(R.id.sdzh_logistics_remark_textView) TextView remarkTextView;
     @BindView(R.id.sdzh_logistics_data_layout) LinearLayout logisticsDataLayout;
+    @BindView(R.id.sdzh_orderNo_outer_scroll_RecyclerView) CustomRecyclerView orderNoOuterScrollRecyclerView;
     private String do_ID;
     private SDZHOrderDetailAdapter sdzhOrderDetailAdapter;
     private SDZHOrderBoxDetailAdapter boxDetailAdapter;
@@ -95,13 +97,17 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     private boolean hasSingPartSaved = false;
     private boolean isSinglePartScanning = false;
 
+
     private SDZHDeliveryOrderNumberDetailBean sdzhDeliveryOrderNumberDetailBean;
-    private SDZHBoxDetailBean sdzhBoxDetailBean;
+    //    private SDZHBoxDetailBean sdzhBoxDetailBean;
     private SDZHSinglePartBean sdzhSinglePartBean;
 
     private boolean hasClickSelect = false;
     private int selectRemovePosition = 0;
     private DeliveryOrderBean deliveryOrderBean;
+    private ItemTextViewAdapter itemTextViewAdapter;
+
+    private SDZHDeliveryOrderNumberBean orderNumberBean;
 
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override
@@ -116,7 +122,8 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 if (t instanceof SDZHDeliveryOrderNumberDetailBean) {
                     sdzhDeliveryOrderNumberDetailBean = (SDZHDeliveryOrderNumberDetailBean) t;
                 } else if (t instanceof SDZHBoxDetailBean) {
-                    sdzhBoxDetailBean = (SDZHBoxDetailBean) t;
+//                    sdzhBoxDetailBean = (SDZHBoxDetailBean) t;
+                    boxDetailBean = (SDZHBoxDetailBean) t;
                 } else if (t instanceof SDZHSinglePartBean) {
                     sdzhSinglePartBean = (SDZHSinglePartBean) t;
                 }
@@ -142,13 +149,14 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 //        do_ID = "6023";
 //        do_ID = "7321";
 //        do_ID = "7649";
+//        do_ID = "7651";
         if (!TextUtils.isEmpty(do_ID)) {
             new GetDeliveryOrderAsyncTask().execute(do_ID);
         }
 
         //// TODO: 2020/2/26 放这里报错，还没加载？没有
         sdzhOrderDetailAdapter = new SDZHOrderDetailAdapter();
-        rootRecyclerView.setAdapter(sdzhOrderDetailAdapter);
+        orderNumberRecyclerView.setAdapter(sdzhOrderDetailAdapter);
         sdzhOrderDetailAdapter.setOnViewClickListener(onViewClickListener);
 
         boxDetailAdapter = new SDZHOrderBoxDetailAdapter();
@@ -158,6 +166,20 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         singlePartDetailAdapter = new SDZHSinglePartDetailAdapter();
         singlePartRecyclerView.setAdapter(singlePartDetailAdapter);
         singlePartDetailAdapter.setOnViewClickListener(onViewClickListener);
+
+        itemTextViewAdapter = new ItemTextViewAdapter();
+        orderNoOuterScrollRecyclerView.setAdapter(itemTextViewAdapter);
+        itemTextViewAdapter.setOnViewClickListener(new OnViewClickListener() {
+            @Override public <T> void onClickAction(View v, String tag, T t) {
+                if (t != null) {
+                    orderNumberBean = (SDZHDeliveryOrderNumberBean) t;
+                    if (orderNumberBean != null) {
+                        new GetOrderDetailAsyncTask().execute(orderNumberBean.getOrderNo());
+                    }
+                }
+
+            }
+        });
 
         setButtonsNotEnable();
         setViewsListener();
@@ -215,9 +237,15 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 
     }
 
+    private String[] splitStringArray;
+    private List<SDZHSinglePartBean> singleOriginalList;
+
     private void handleSinglePartScan(String outCode) {
 //        List<SDZHSinglePartBean> singOriginalList = singlePartDetailAdapter.getList();
-        List<SDZHSinglePartBean> singleOriginalList;
+//        outCode = outCode.replace("\n","");
+        if (outCode.contains("\r\n")){
+            outCode = outCode.replace("\r\n","");
+        }
         SDZHSinglePartDetailAdapter adapter = (SDZHSinglePartDetailAdapter) singlePartRecyclerView.getAdapter();
         if (adapter != null) {
             if (adapter.getList() != null) {
@@ -229,63 +257,69 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 ToastUtil.showToastLong("该箱已满，请扫描下一箱！");
                 return;
             }
-            String[] strings = outCode.split(",");
-            boolean hasSinglePart = false;
-            if (strings.length == 5) {
-                String productId = strings[3];
-                for (SDZHBoxDetailBean boxDetailBean : boxDetailAdapter.getList()) {
-                    if (productId.equals(boxDetailBean.getProductId())) {
-                        hasSinglePart = true;
-                        break;
-                    }
-                }
+            splitStringArray = outCode.split(",");
+            if (splitStringArray.length == 5) {
+//            boolean hasSinglePart = false;
+//                String productId = splitStringArray[3];
+                String customerProductNo = splitStringArray[2];
 
-                if (!hasSinglePart) {
-                    SDZHSinglePartBean model = new SDZHSinglePartBean();
-                    model.setBoxCode(selectBoxNo);
-                    model.setDoiNO(strings[0]);
-                    model.setProductNo(strings[1]);
-                    model.setWorkNo(strings[2]);
-                    model.setProductId(strings[3]);
-                    model.setLineId(Integer.parseInt(strings[4]));
-                    model.setDOI_Code(outCode);
+                GetProductIdAsyncTask task = new GetProductIdAsyncTask();
+                task.execute(customerProductNo,outCode);
 
-                    singleOriginalList.add(model);
-                    singlePartDetailAdapter.setData(singleOriginalList);
-                    if (singleOriginalList.size() > 0) {
-                        singlePartRecyclerView.setVisibility(View.VISIBLE);
-                        innerEmptyLayoutView.setVisibility(View.GONE);
-                    }
-                    //// TODO: 2020/2/28  ? 最后一参数
-                    refreshCurrentInfo(selectOrderNO, selectBoxNo, boxDetailBean.getBoxQty(), singleOriginalList.size(), model.getWorkNo());
-
-                    String sqlHead = "INSERT INTO DeliveryOrder_Item (BoxCode, DOI_NO, CustomerProductNo,DOI_Code, WorkNo, ProductId, LineId, IsDelete) VALUES";
-                    StringBuilder stringBuilder = new StringBuilder(sqlHead);
-                    if (singleOriginalList.size() == boxDetailBean.getBoxQty()) {
-                        ToastUtil.showToastLong("该箱已满，请扫描下一箱！");
-                        //// TODO: 2020/2/28  保存到数据库
-                        for (SDZHSinglePartBean bean : singleOriginalList) {
-                            String temp = String.format("('%s','%s','%s','%s','%s','%s','%s','%s')", bean.getBoxCode(), bean.getDoiNO(), bean.getProductNo(),
-                                    bean.getDOI_Code(), bean.getWorkNo(), bean.getProductId(), String.valueOf(bean.getLineId()), "0");
-                            stringBuilder.append(temp);
-                            stringBuilder.append(",");
-                        }
-                        String resultSql = stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1);
-                        SaveSinglePartAsyncTask saveSinglePartAsyncTask = new SaveSinglePartAsyncTask();
-                        saveSinglePartAsyncTask.execute(resultSql);
-                        return;
-                    }
-//            ToastUtil.showToastShort("该包装箱号不存在！");
-//                String sql = "INSERT INTO DeliveryOrder_Item (BoxCode, DOI_NO, CustomerProductNo," +
-//                        "DOI_Code, WorkNo, ProductId, LineId, IsDelete) VALUES('" + model.getBoxCode() + "','" + model.getDoiNO() + "','" +
-//                        model.getProductNo() + "','" + model.getDOI_Code() + "','" +
-//                        model.getWorkNo() + "'," + model.getProductId()+ "," + String.valueOf(model.getLineId())+ ",0)";
-
-//                handleInsert
-
-                } else {
-                    ToastUtil.showToastShort("该单机条码已存在，请勿重复扫描！");
-                }
+                //// TODO: 2020/4/18 这里要通过图号获取productId
+//                for (SDZHBoxDetailBean boxDetailBean : boxDetailAdapter.getList()) {
+//                    if (productId.equals(boxDetailBean.getProductId())) {
+//                        hasSinglePart = true;
+//                        break;
+//                    }
+//                }
+//
+//                if (!hasSinglePart) {
+//                    SDZHSinglePartBean model = new SDZHSinglePartBean();
+//                    model.setBoxCode(selectBoxNo);
+//                    model.setDoiNO(splitStringArray[0]);
+//                    model.setProductNo(splitStringArray[1]);
+//                    model.setWorkNo(splitStringArray[2]);
+//                    model.setProductId(splitStringArray[3]);
+//                    model.setLineId(Integer.parseInt(splitStringArray[4]));
+//                    model.setDOI_Code(outCode);
+//
+//                    singleOriginalList.add(model);
+//                    singlePartDetailAdapter.setData(singleOriginalList);
+//                    if (singleOriginalList.size() > 0) {
+//                        singlePartRecyclerView.setVisibility(View.VISIBLE);
+//                        innerEmptyLayoutView.setVisibility(View.GONE);
+//                    }
+//                    //// TODO: 2020/2/28  ? 最后一参数
+//                    refreshCurrentInfo(selectOrderNO, selectBoxNo, boxDetailBean.getBoxQty(), singleOriginalList.size(), model.getWorkNo());
+//
+//                    String sqlHead = "INSERT INTO DeliveryOrder_Item (BoxCode, DOI_NO, CustomerProductNo,DOI_Code, WorkNo, ProductId, LineId, IsDelete) VALUES";
+//                    StringBuilder stringBuilder = new StringBuilder(sqlHead);
+//                    if (singleOriginalList.size() == boxDetailBean.getBoxQty()) {
+//                        ToastUtil.showToastLong("该箱已满，请扫描下一箱！");
+//                        //// TODO: 2020/2/28  保存到数据库
+//                        for (SDZHSinglePartBean bean : singleOriginalList) {
+//                            String temp = String.format("('%s','%s','%s','%s','%s','%s','%s','%s')", bean.getBoxCode(), bean.getDoiNO(), bean.getProductNo(),
+//                                    bean.getDOI_Code(), bean.getWorkNo(), bean.getProductId(), String.valueOf(bean.getLineId()), "0");
+//                            stringBuilder.append(temp);
+//                            stringBuilder.append(",");
+//                        }
+//                        String resultSql = stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1);
+//                        SaveSinglePartAsyncTask saveSinglePartAsyncTask = new SaveSinglePartAsyncTask();
+//                        saveSinglePartAsyncTask.execute(resultSql);
+//                        return;
+//                    }
+////            ToastUtil.showToastShort("该包装箱号不存在！");
+////                String sql = "INSERT INTO DeliveryOrder_Item (BoxCode, DOI_NO, CustomerProductNo," +
+////                        "DOI_Code, WorkNo, ProductId, LineId, IsDelete) VALUES('" + model.getBoxCode() + "','" + model.getDoiNO() + "','" +
+////                        model.getProductNo() + "','" + model.getDOI_Code() + "','" +
+////                        model.getWorkNo() + "'," + model.getProductId()+ "," + String.valueOf(model.getLineId())+ ",0)";
+//
+////                handleInsert
+//
+//                } else {
+//                    ToastUtil.showToastShort("该单机条码已存在，请勿重复扫描！");
+//                }
 
             } else {
                 ToastUtil.showToastShort("单机条码格式不正确！");
@@ -294,11 +328,105 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 
     }
 
+
+    private class GetProductIdAsyncTask extends AsyncTask<String, String, String> {
+        private String outCode;
+        @Override protected String doInBackground(String... strings) {
+            String customerProductNo = strings[0];
+            outCode = strings[1];
+            String sql = String.format("select  Product_ID from product where product_drawno = '%s'", customerProductNo);
+
+            WsResult result = WebServiceUtil.getDataTable(sql);
+            if (result != null && result.getResult()) {
+                String jsonData = result.getErrorInfo();
+                if (!TextUtils.isEmpty(jsonData)) {
+                    //// TODO: 2020/1/3 放这里会出错，刷新UI线程问题
+                    return jsonData;
+
+                }
+            }
+            return null;
+        }
+
+        @Override protected void onPostExecute(String json) {
+            super.onPostExecute(json);
+            if (!TextUtils.isEmpty(json)) {
+                Gson gson = new Gson();
+                List<ProductIdBean> productIdBeanList = gson.fromJson(json, new TypeToken<List<ProductIdBean>>() {
+                }.getType());
+
+                if (productIdBeanList != null && productIdBeanList.size() > 0) {
+                    ProductIdBean productIdBean = productIdBeanList.get(0);
+                    int productId = productIdBean.getProductID();
+
+                    boolean hasSinglePart = false;
+                    for (SDZHBoxDetailBean boxDetailBean : boxDetailAdapter.getList()) {
+//                        if (String.valueOf(productId).trim().equals(boxDetailBean.getProductId())) {
+//                            hasSinglePart = true;
+//                            break;
+//                        }
+                        if (productId == boxDetailBean.getProductId()) {
+                            hasSinglePart = true;
+                        }
+                    }
+
+                    if (!hasSinglePart) {
+                        SDZHSinglePartBean model = new SDZHSinglePartBean();
+                        model.setBoxCode(selectBoxNo);
+                        model.setDoiNO(splitStringArray[0]);
+                        model.setProductNo(splitStringArray[1]);
+                        model.setWorkNo(splitStringArray[2]);
+                        model.setProductId(splitStringArray[3]);
+                        model.setLineId(Integer.parseInt(splitStringArray[4]));
+                        model.setDOI_Code(outCode);
+
+                        singleOriginalList.add(model);
+                        singlePartDetailAdapter.setData(singleOriginalList);
+                        if (singleOriginalList.size() > 0) {
+                            singlePartRecyclerView.setVisibility(View.VISIBLE);
+                            innerEmptyLayoutView.setVisibility(View.GONE);
+                        }
+                        //// TODO: 2020/2/28  ? 最后一参数
+                        refreshCurrentInfo(selectOrderNO, selectBoxNo, boxDetailBean.getBoxQty(), singleOriginalList.size(), model.getWorkNo());
+
+                        String sqlHead = "INSERT INTO DeliveryOrder_Item (BoxCode, DOI_NO, CustomerProductNo,DOI_Code, WorkNo, ProductId, LineId, IsDelete) VALUES";
+                        StringBuilder stringBuilder = new StringBuilder(sqlHead);
+                        if (singleOriginalList.size() == boxDetailBean.getBoxQty()) {
+                            ToastUtil.showToastLong("该箱已满，请扫描下一箱！");
+                            //// TODO: 2020/2/28  保存到数据库
+                            for (SDZHSinglePartBean bean : singleOriginalList) {
+                                String temp = String.format("('%s','%s','%s','%s','%s','%s','%s','%s')", bean.getBoxCode(), bean.getDoiNO(), bean.getProductNo(),
+                                        bean.getDOI_Code(), bean.getWorkNo(), bean.getProductId(), String.valueOf(bean.getLineId()), "0");
+                                stringBuilder.append(temp);
+                                stringBuilder.append(",");
+                            }
+                            String resultSql = stringBuilder.toString().substring(0, stringBuilder.toString().length() - 1);
+                            SaveSinglePartAsyncTask saveSinglePartAsyncTask = new SaveSinglePartAsyncTask();
+                            saveSinglePartAsyncTask.execute(resultSql);
+                            return;
+                        }
+//            ToastUtil.showToastShort("该包装箱号不存在！");
+//                String sql = "INSERT INTO DeliveryOrder_Item (BoxCode, DOI_NO, CustomerProductNo," +
+//                        "DOI_Code, WorkNo, ProductId, LineId, IsDelete) VALUES('" + model.getBoxCode() + "','" + model.getDoiNO() + "','" +
+//                        model.getProductNo() + "','" + model.getDOI_Code() + "','" +
+//                        model.getWorkNo() + "'," + model.getProductId()+ "," + String.valueOf(model.getLineId())+ ",0)";
+
+//                handleInsert
+
+                    } else {
+                        ToastUtil.showToastShort("该单机条码已存在，请勿重复扫描！");
+                    }
+                }
+            }
+        }
+    }
+
     private void handleBoxScan(String content) {
         boolean hasBox = false;
-        for (SDZHBoxDetailBean boxDetailBean : boxDetailAdapter.getList()) {
-            if (content.equals(boxDetailBean.getBoxCode())) {
+        for (SDZHBoxDetailBean bean : boxDetailAdapter.getList()) {
+            if (content.equals(bean.getBoxCode())) {
                 hasBox = true;
+                boxDetailBean = bean;
                 break;
             }
         }
@@ -308,6 +436,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         } else {
             singlePartBarButton.setEnabled(true);
             ToastUtil.showToastShort("请扫描单机条码！");
+            refreshCurrentInfo(orderNumberBean.getOrderNo(), boxDetailBean.getBoxCode(), boxDetailBean.getBoxQty(), 0, "");
 
         }
 
@@ -315,18 +444,22 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 
     private void handleOrderNOScan(String content) {
         boolean hasOrderNO = false;
-//        for (int i = 0; i < orderNoDataLayout.getChildCount(); i++) {
+        List<SDZHDeliveryOrderNumberBean> orderNumberList = itemTextViewAdapter.getList();
+        int index = 0;
+        for (SDZHDeliveryOrderNumberBean bean : orderNumberList) {
 //            TextView textView = (TextView) orderNoDataLayout.getChildAt(i);
-//            if (content.equals(textView.getText().toString())) {
+            if (content.trim().equals(bean.getOrderNo())) {
 //                textView.setBackgroundColor(Color.RED);
-//                hasOrderNO = true;
-//                break;
-//            }
-//        }
-
-        if (content.equals(orderNumberTextView.getText().toString())) {
-            hasOrderNO = true;
+                hasOrderNO = true;
+                orderNumberBean = bean;
+                break;
+            }
+            index++;
         }
+
+//        if (content.equals(orderNumberTextView.getText().toString())) {
+//            hasOrderNO = true;
+//        }
 
 
         if (!hasOrderNO) {
@@ -334,6 +467,8 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         } else {
             boxBarButton.setEnabled(true);
             ToastUtil.showToastShort("请扫描包装箱！");
+
+            itemTextViewAdapter.setSelectPosition(index);
 
         }
     }
@@ -403,7 +538,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         } else if (view == removeSinglePartBarButton) {
             removeSinglePart();
         } else if (view == outButton) {
-            if (logisticsDeliveryId == 0){
+            if (logisticsDeliveryId == 0) {
                 ToastUtil.showToastShort("未选择物流信息！");
                 return;
             }
@@ -500,20 +635,21 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                     orderNumberButton.setEnabled(true);
 
                 }
+                itemTextViewAdapter.setData(sendGoodsOrderNumberBeanList);
 
 //                if (sendGoodsOrderNumberBeanList.size() > 1) {
 
-                orderNoDataLayout.removeAllViews();
-                for (SDZHDeliveryOrderNumberBean bean : sendGoodsOrderNumberBeanList) {
-                    TextView textView = new TextView(SDZHHActivity.this);
-                    textView.setText("发货单号 " + bean.getOrderNo());
-                    orderNoDataLayout.addView(textView);
-                    textView.setOnClickListener(v -> {
-                        v.setBackgroundColor(Color.RED);
-                    });
-                }
-                TextView firstView = (TextView) orderNoDataLayout.getChildAt(0);
-                firstView.setBackgroundColor(Color.RED);
+//                orderNoDataLayout.removeAllViews();
+//                for (SDZHDeliveryOrderNumberBean bean : sendGoodsOrderNumberBeanList) {
+//                    TextView textView = new TextView(SDZHHActivity.this);
+//                    textView.setText("发货单号 " + bean.getOrderNo());
+//                    orderNoDataLayout.addView(textView);
+//                    textView.setOnClickListener(v -> {
+//                        v.setBackgroundColor(Color.RED);
+//                    });
+//                }
+//                TextView firstView = (TextView) orderNoDataLayout.getChildAt(0);
+//                firstView.setBackgroundColor(Color.RED);
 //                }
 
 
@@ -522,6 +658,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 selectOrderNO = bean.getOrderNo();
                 orderNumberTextView.setText(bean.getOrderNo());
 
+                refreshCurrentInfo(bean.getOrderNo(), "", 0, 0, "");
                 new GetOrderDetailAsyncTask().execute(bean.getOrderNo());
             } else {
                 rootDataLayout.setVisibility(View.GONE);
@@ -578,18 +715,18 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             if (sendGoodsOrderNumberDetailBeanList != null && sendGoodsOrderNumberDetailBeanList.size() > 0) {
 
 //                sdzhOrderDetailAdapter = new SDZHOrderDetailAdapter();
-//                rootRecyclerView.setAdapter(sdzhOrderDetailAdapter);
+//                orderNumberRecyclerView.setAdapter(sdzhOrderDetailAdapter);
 
                 sdzhOrderDetailAdapter.setData(sendGoodsOrderNumberDetailBeanList);
                 if (innerEmptyLayoutView.getVisibility() == View.VISIBLE) {
                     innerEmptyLayoutView.setVisibility(View.GONE);
-                    rootRecyclerView.setVisibility(View.VISIBLE);
+                    orderNumberRecyclerView.setVisibility(View.VISIBLE);
                 }
 
                 new GetBoxDetailAsyncTask().execute(orderNo);
 
             } else {
-                rootRecyclerView.setVisibility(View.GONE);
+                orderNumberRecyclerView.setVisibility(View.GONE);
                 innerEmptyLayoutView.setVisibility(View.VISIBLE);
             }
 
@@ -603,8 +740,8 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 
         @Override
         protected String doInBackground(String... strings) {
-//            String order_id = strings[0];
-//            String orderNo = strings[1];
+//            String order_id = splitStringArray[0];
+//            String orderNo = splitStringArray[1];
 
             //// TODO: 2020/2/27   根据参数，这个请求与上面的可同时进行
             String orderNo = strings[0];
@@ -642,7 +779,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             if (boxBeanList != null && boxBeanList.size() > 0) {
 
 //                sdzhOrderDetailAdapter = new SDZHOrderDetailAdapter();
-//                rootRecyclerView.setAdapter(sdzhOrderDetailAdapter);
+//                orderNumberRecyclerView.setAdapter(sdzhOrderDetailAdapter);
 
                 boxDetailAdapter.setData(boxBeanList);
                 boxTitleTextView.setVisibility(View.VISIBLE);
@@ -654,10 +791,10 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 
                 if (innerEmptyLayoutView.getVisibility() == View.VISIBLE) {
                     innerEmptyLayoutView.setVisibility(View.GONE);
-                    rootRecyclerView.setVisibility(View.VISIBLE);
+                    orderNumberRecyclerView.setVisibility(View.VISIBLE);
                 }
             } else {
-                rootRecyclerView.setVisibility(View.GONE);
+                orderNumberRecyclerView.setVisibility(View.GONE);
                 innerEmptyLayoutView.setVisibility(View.VISIBLE);
 
                 boxTitleTextView.setVisibility(View.GONE);
@@ -704,18 +841,18 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             if (singlePartBeanList != null && singlePartBeanList.size() > 0) {
 
 //                sdzhOrderDetailAdapter = new SDZHOrderDetailAdapter();
-//                rootRecyclerView.setAdapter(sdzhOrderDetailAdapter);
+//                orderNumberRecyclerView.setAdapter(sdzhOrderDetailAdapter);
 
                 singlePartDetailAdapter.setData(singlePartBeanList);
                 if (innerEmptyLayoutView.getVisibility() == View.VISIBLE) {
                     innerEmptyLayoutView.setVisibility(View.GONE);
-                    rootRecyclerView.setVisibility(View.VISIBLE);
+                    orderNumberRecyclerView.setVisibility(View.VISIBLE);
                 }
 
                 singlePartTitleTextView.setVisibility(View.VISIBLE);
                 singlePartRecyclerView.setVisibility(View.VISIBLE);
             } else {
-                rootRecyclerView.setVisibility(View.GONE);
+                orderNumberRecyclerView.setVisibility(View.GONE);
                 innerEmptyLayoutView.setVisibility(View.VISIBLE);
 
                 singlePartTitleTextView.setVisibility(View.GONE);
@@ -876,8 +1013,8 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             Date deliveryDate = null;
             try {
                 String deliveryDateString = deliveryOrderBean.getDeliveryDate();
-                if (deliveryDateString.contains("T")){
-                    deliveryDateString = deliveryDateString.replace("T"," ");
+                if (deliveryDateString.contains("T")) {
+                    deliveryDateString = deliveryDateString.replace("T", " ");
                 }
                 deliveryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(deliveryDateString);
             } catch (ParseException e) {
@@ -887,7 +1024,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 deliveryDate = new Date();
             }
             //// TODO: 2020/4/7
-            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(),0,"");
+            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), 0, "");
 //            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(new Date(), 68, "一汽奔腾轿车有限公司", "20200328", 102838, 0, 7426);
             return null;
         }
@@ -902,6 +1039,18 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                     ToastUtil.showToastShort("出库失败 : " + result.getErrorInfo());
                 }
             }
+        }
+    }
+
+    private class ProductIdBean {
+        @SerializedName("Product_ID") private int productID;
+
+        public void setProductID(int productID) {
+            this.productID = productID;
+        }
+
+        public int getProductID() {
+            return productID;
         }
     }
 }

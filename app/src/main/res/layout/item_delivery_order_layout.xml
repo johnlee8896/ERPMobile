@@ -29,7 +29,7 @@
             android:layout_marginLeft="5dp"
             android:clickable="false"
             android:padding="2dp"
-            android:textColor="@color/black"
+            android:textColor="@color/color_orange_FF6A00"
             android:textSize="17sp"
             tools:text="7252" />
 

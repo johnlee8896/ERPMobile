@@ -199,7 +199,9 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
             // This is important, otherwise the result will not be passed to the fragment
             super.onActivityResult(requestCode, resultCode, data);
         }
-    }    @Override
+    }
+
+    @Override
     public void onClick(View view) {
         if (view == addTrayScannerButton) {
             //scanContent= "VG/404731";
@@ -388,7 +390,17 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 //                if (boxItemEntity != null) {
                 //如果来料里设置的公司与该操作员的公司不符
                 //再加一个判断 boxItemEntity.getBu_ID()==0 表示解析出错
-                if (boxItemEntity.getBu_ID() != 0 && boxItemEntity.getBu_ID() != UserSingleton.get().getUserInfo().getBu_ID()) {
+                //// TODO: 2020/4/17 这里应该是companyID
+//                if (boxItemEntity.getBu_ID() != 0 && boxItemEntity.getBu_ID() != UserSingleton.get().getUserInfo().getBu_ID()) {
+////                    ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
+//                    Message message = new Message();
+//                    message.what = 0;
+//                    handler.sendMessage(message);
+//                    return null;
+//                }
+
+
+                if (boxItemEntity.getCompany_ID() != 0 && boxItemEntity.getCompany_ID() != UserSingleton.get().getUserInfo().getCompany_ID()) {
 //                    ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
                     Message message = new Message();
                     message.what = 0;
@@ -594,8 +606,6 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         }
 
     }
-
-
 
 
 }
