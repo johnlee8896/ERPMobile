@@ -70,7 +70,7 @@ public class InnerSaleBuSelectActivity extends BaseActivity {
 //            String buId = params[0];
             String sql = String.format("Select CF_ID,Company.Company_Chinese_Name , Bu_Name From Bu  Inner Join [Company]  With (NoLock)  On [Bu].[Company_ID]=[Company].[Company_ID] " +
                             " Inner Join [Customer_Facility] With (NoLock)  On [Bu].[ID_Customer]=[Customer_Facility].[CF_ID] " +
-                            "Where Bu.Enabled=1 And Bu.Company_ID<>%s And (Bu.Has_Part_Account=1 Or Bu.Has_Product_WareHouse_Account=1)  And Isnull(Bu.Is_Wujin,0)=0  Order By Bu.Company_ID, Bu.Bu_ID ",
+                            "Where Bu.Enabled=1 and Bu.is_obsolete=0 and Bu.is_virtual = 0 And Bu.Company_ID<>%s And (Bu.Has_Part_Account=1 Or Bu.Has_Product_WareHouse_Account=1)  And Isnull(Bu.Is_Wujin,0)=0  Order By Bu.Company_ID, Bu.Bu_ID ",
                     UserSingleton.get().getUserInfo().getBu_ID());
             WsResult result = WebServiceUtil.getDataTable(sql);
             if (result != null && result.getResult()) {

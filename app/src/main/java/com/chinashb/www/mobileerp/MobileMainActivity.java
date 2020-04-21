@@ -106,7 +106,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 "inner join bu on bu.bu_id=bu_dep.Bu_ID " +
                 "inner join company on company.company_id=bu.Company_ID " +
                 " where hr_adm.HR_ID=" + UserSingleton.get().getHRID() + " and hr_adm.deleted=0 " +
-                " and bu.enabled=1 and bu.is_obsolete=0 " +
+                " and bu.enabled=1 and bu.is_obsolete=0 and bu.is_virtual = 0 " +
                 " Union " +
                 "select distinct company.Company_ID, company.Company_Chinese_Name,Company.Brief,bu.bu_id,bu.bu_name " +
                 "from hr_adm " +
