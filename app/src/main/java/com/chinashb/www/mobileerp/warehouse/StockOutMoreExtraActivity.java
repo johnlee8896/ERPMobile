@@ -1,5 +1,6 @@
 package com.chinashb.www.mobileerp.warehouse;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
@@ -26,10 +27,13 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
+import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -136,8 +140,29 @@ public class StockOutMoreExtraActivity extends BaseActivity {
                 }
 
                 if (newissuelist.size() > 0) {
-                    AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
-                    task.execute();
+                    if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+
+                        AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
+                        task.execute();
+                    }else{
+                        CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockOutMoreExtraActivity.this)
+                                .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
+                                .setLeftText("确定");
+
+
+                        builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                            @Override
+                            public void onViewClick(Dialog dialog, View v, int tag) {
+                                switch (tag) {
+                                    case CommAlertDialog.TAG_CLICK_LEFT:
+                                        CommonUtil.doLogout(StockOutMoreExtraActivity.this);
+                                        dialog.dismiss();
+                                        break;
+                                }
+                            }
+                        });
+                        builder.create().show();
+                    }
 
                 }
 

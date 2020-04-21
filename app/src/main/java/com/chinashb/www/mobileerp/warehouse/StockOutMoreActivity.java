@@ -1,5 +1,6 @@
 package com.chinashb.www.mobileerp.warehouse;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -19,15 +21,18 @@ import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
-import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
+import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.widget.CommAlertDialog;
+import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.chinashb.www.mobileerp.widget.TitleLayoutManagerView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -135,8 +140,29 @@ public class StockOutMoreActivity extends BaseActivity {
 
     private void handleStockOut() {
         if (boxItemEntityList.size() > 0) {
-            AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
-            task.execute();
+            if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+
+                AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
+                task.execute();
+            }else{
+                CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockOutMoreActivity.this)
+                        .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
+                        .setLeftText("确定");
+
+
+                builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                    @Override
+                    public void onViewClick(Dialog dialog, View v, int tag) {
+                        switch (tag) {
+                            case CommAlertDialog.TAG_CLICK_LEFT:
+                                CommonUtil.doLogout(StockOutMoreActivity.this);
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                });
+                builder.create().show();
+            }
         }
     }
 

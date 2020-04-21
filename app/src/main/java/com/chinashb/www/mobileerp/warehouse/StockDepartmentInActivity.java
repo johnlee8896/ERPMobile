@@ -1,5 +1,6 @@
 package com.chinashb.www.mobileerp.warehouse;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -43,6 +44,8 @@ import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.CommAlertDialog;
+import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.chinashb.www.mobileerp.widget.SelectUseDialog;
 import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -276,8 +279,31 @@ public class StockDepartmentInActivity extends BaseActivity {
 //                        return;
 //                    }
 
-                    WarehouseOutAsyncTask task = new WarehouseOutAsyncTask();
-                    task.execute();
+
+                    //// TODO: 2020/4/21 这里可以与isLogin的公共判断方法合并
+                    if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+
+                        WarehouseOutAsyncTask task = new WarehouseOutAsyncTask();
+                        task.execute();
+                    }else{
+                        CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockDepartmentInActivity.this)
+                                .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
+                                .setLeftText("确定");
+
+
+                        builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                            @Override
+                            public void onViewClick(Dialog dialog, View v, int tag) {
+                                switch (tag) {
+                                    case CommAlertDialog.TAG_CLICK_LEFT:
+                                        CommonUtil.doLogout(StockDepartmentInActivity.this);
+                                        dialog.dismiss();
+                                        break;
+                                }
+                            }
+                        });
+                        builder.create().show();
+                    }
                 } else {
                     ToastUtil.showToastShort("没有领料信息！");
                 }

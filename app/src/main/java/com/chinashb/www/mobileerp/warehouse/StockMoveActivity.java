@@ -1,13 +1,14 @@
 package com.chinashb.www.mobileerp.warehouse;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,17 +18,19 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.adapter.AdapterMoveBoxItem;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
+import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.widget.CommAlertDialog;
+import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.chinashb.www.mobileerp.adapter.AdapterMoveBoxItem;
-import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
-import com.chinashb.www.mobileerp.funs.WebServiceUtil;
-import com.chinashb.www.mobileerp.funs.CommonUtil;
-
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -130,8 +133,29 @@ public class StockMoveActivity extends BaseActivity {
                 }
             }
             if (selectedcount > 0) {
-                AsyncExeWarehouseMove task = new AsyncExeWarehouseMove();
-                task.execute();
+                if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+
+                    AsyncExeWarehouseMove task = new AsyncExeWarehouseMove();
+                    task.execute();
+                }else{
+                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockMoveActivity.this)
+                            .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
+                            .setLeftText("确定");
+
+
+                    builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                        @Override
+                        public void onViewClick(Dialog dialog, View v, int tag) {
+                            switch (tag) {
+                                case CommAlertDialog.TAG_CLICK_LEFT:
+                                    CommonUtil.doLogout(StockMoveActivity.this);
+                                    dialog.dismiss();
+                                    break;
+                            }
+                        }
+                    });
+                    builder.create().show();
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 package com.chinashb.www.mobileerp.funs;
 
+import android.app.Activity;
 import android.content.Context;
-
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
+import com.chinashb.www.mobileerp.commonactivity.LoginActivity;
 import com.chinashb.www.mobileerp.permission.PermissionsUtil;
 import com.chinashb.www.mobileerp.utils.PermissionGroupDefine;
 import com.google.gson.JsonObject;
@@ -42,6 +42,23 @@ import java.util.List;
 import java.util.Set;
 
 public class CommonUtil {
+
+//    public static void doLogout(){
+//        Intent intent = new Intent();
+//        intent.setClass(this, LoginActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
+//        finish();
+//    }
+
+    public static void doLogout(Activity activity){
+        Intent intent = new Intent();
+        intent.setClass(activity, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        activity.startActivity(intent);
+        activity.finish();
+    }
+
     public static String StringWithSpace(String s, Integer l) {
         String r = s;
 

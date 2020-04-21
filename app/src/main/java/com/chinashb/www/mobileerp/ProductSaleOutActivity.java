@@ -1,5 +1,6 @@
 package com.chinashb.www.mobileerp;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,12 +22,16 @@ import com.chinashb.www.mobileerp.bean.entity.LogisticsDeliveryEntity;
 import com.chinashb.www.mobileerp.bean.entity.MESDataEntity;
 import com.chinashb.www.mobileerp.bean.entity.MESInnerDataEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
+import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -221,8 +226,31 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
 
     private void handleProductOut() {
 //        if (TextUtils.equals(customerFacilityName, deliveryOrderBean.getCFChineseName())) {
-        HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
-        outAsyncTask.execute(tempDpOrderDetailBean.getPSID() + "", tempDpOrderDetailBean.getDPIQuantity());
+
+        if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+
+            HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
+            outAsyncTask.execute(tempDpOrderDetailBean.getPSID() + "", tempDpOrderDetailBean.getDPIQuantity());
+        }else{
+            CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutActivity.this)
+                    .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
+                    .setLeftText("确定");
+
+
+            builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                @Override
+                public void onViewClick(Dialog dialog, View v, int tag) {
+                    switch (tag) {
+                        case CommAlertDialog.TAG_CLICK_LEFT:
+                            CommonUtil.doLogout(ProductSaleOutActivity.this);
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            });
+            builder.create().show();
+        }
+
 //        } else {
 //            ToastUtil.showToastLong("发货指令中客户名称与物流信息中客户名称不一致，请检查！");
 //        }
