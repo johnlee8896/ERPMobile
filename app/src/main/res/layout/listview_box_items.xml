@@ -78,7 +78,6 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="仓位"
-            android:theme="@style/Base.V7.Widget.AppCompat.EditText"
              />
 
         <CheckBox

@@ -2,6 +2,7 @@ package com.chinashb.www.mobileerp.funs;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 
@@ -16,7 +17,6 @@ import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
-import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.google.gson.Gson;
@@ -890,7 +890,13 @@ public class WebServiceUtil {
                     box_item.setItemName(obj2.getProperty("ItemName").toString());
                     box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
                     box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
-                    if (obj2.getProperty("Company_ID") != null) {
+                    //// TODO: 2020/4/22 这里先去掉，会报illegal property
+//                    obj2.getPropertySafely()
+//                    if (obj2.getProperty("Company_ID") != null) {
+//                        box_item.setCompany_ID(Integer.parseInt(obj2.getProperty("Company_ID").toString()));
+//                    }
+                     Object tempObject = obj2.getPropertySafely("Company_ID");
+                    if (tempObject != null && !TextUtils.isEmpty(tempObject.toString()) && !TextUtils.equals(tempObject.toString(),"null")) {
                         box_item.setCompany_ID(Integer.parseInt(obj2.getProperty("Company_ID").toString()));
                     }
                     box_item.setBuName(obj2.getProperty("BuName").toString());
