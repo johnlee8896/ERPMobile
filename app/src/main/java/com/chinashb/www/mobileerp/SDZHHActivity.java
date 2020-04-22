@@ -470,10 +470,15 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         if (!hasBox) {
             ToastUtil.showToastShort("该包装箱号不存在！");
         } else {
-            singlePartBarButton.setEnabled(true);
-            ToastUtil.showToastShort("请扫描单机条码！");
-            refreshCurrentInfo(orderNumberBean.getOrderNo(), boxDetailBean.getBoxCode(), boxDetailBean.getBoxQty(), 0, "");
-            currentScanState = SCAN_SINGLE_PART_CODE;
+            if (!boxDetailBean.getIsOK()){
+                ToastUtil.showToastShort("该箱已装满！");
+            }else{
+                singlePartBarButton.setEnabled(true);
+                ToastUtil.showToastShort("请扫描单机条码！");
+                refreshCurrentInfo(orderNumberBean.getOrderNo(), boxDetailBean.getBoxCode(), boxDetailBean.getBoxQty(), 0, "");
+                currentScanState = SCAN_SINGLE_PART_CODE;
+            }
+
 
         }
         inputEditText.setText("");
@@ -1156,7 +1161,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 deliveryDate = new Date();
             }
             //// TODO: 2020/4/7
-            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), 0, qty);
+            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), orderNumberBean.getPSId(), qty);
 //            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(new Date(), 68, "一汽奔腾轿车有限公司", "20200328", 102838, 0, 7426);
             return null;
         }
