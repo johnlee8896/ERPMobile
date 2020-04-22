@@ -257,6 +257,20 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 ToastUtil.showToastLong("该箱已满，请扫描下一箱！");
                 return;
             }
+            boolean isRepeat = false;
+            //判断重复扫描
+            for (SDZHSinglePartBean bean : singleOriginalList){
+                if (TextUtils.equals(bean.getDOI_Code(),outCode)){
+                    ToastUtil.showToastShort("该单件码已存在，请勿重复扫描！");
+                    isRepeat = true;
+                    break;
+                }
+            }
+            if (isRepeat){
+                return;
+            }
+
+
             splitStringArray = outCode.split(",");
             if (splitStringArray.length == 5) {
 //            boolean hasSinglePart = false;
@@ -394,6 +408,9 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                         if (singleOriginalList.size() == boxDetailBean.getBoxQty()) {
                             ToastUtil.showToastLong("该箱已满，请扫描下一箱！");
                             //// TODO: 2020/2/28  保存到数据库
+
+
+
                             for (SDZHSinglePartBean bean : singleOriginalList) {
                                 String temp = String.format("('%s','%s','%s','%s','%s','%s','%s','%s')", bean.getBoxCode(), bean.getDoiNO(), bean.getProductNo(),
                                         bean.getDOI_Code(), bean.getWorkNo(), bean.getProductId(), String.valueOf(bean.getLineId()), "0");
@@ -941,6 +958,11 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             super.onPostExecute(result);
             if (result != null && result.getResult()) {
                 ToastUtil.showToastLong("更新成功！");
+
+
+                //更新箱子状态，为已装满
+                new GetBoxDetailAsyncTask().execute(selectOrderNO);
+
             } else {
                 ToastUtil.showToastLong("更新失败，错误信息是 " + result.getErrorInfo());
             }
