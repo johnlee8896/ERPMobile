@@ -389,8 +389,30 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
 //                    deliveryDate = new Date();
 //                }
 //                 WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, 0, deliveryOrderBean.getDOID(), mesInnerDataEntity.getPSID(), mesInnerDataEntity.getQty() + "");
-                HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
-                outAsyncTask.execute(mesInnerDataEntity.getPSID() + "", mesInnerDataEntity.getQty() + "");
+
+                if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+                    HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
+                    outAsyncTask.execute(mesInnerDataEntity.getPSID() + "", mesInnerDataEntity.getQty() + "");
+                }else{
+                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutActivity.this)
+                            .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
+                            .setLeftText("确定");
+
+
+                    builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                        @Override
+                        public void onViewClick(Dialog dialog, View v, int tag) {
+                            switch (tag) {
+                                case CommAlertDialog.TAG_CLICK_LEFT:
+                                    CommonUtil.doLogout(ProductSaleOutActivity.this);
+                                    dialog.dismiss();
+                                    break;
+                            }
+                        }
+                    });
+                    builder.create().show();
+                }
+
 
 //                if (mesInnerDataEntity.getPSID() != )
 

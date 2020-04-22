@@ -23,7 +23,9 @@ import com.chinashb.www.mobileerp.bean.SDZHDeliveryOrderNumberBean;
 import com.chinashb.www.mobileerp.bean.SDZHDeliveryOrderNumberDetailBean;
 import com.chinashb.www.mobileerp.bean.SDZHSinglePartBean;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.AppUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
@@ -197,7 +199,8 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             //                logisticsDeliveryEntity = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_entity);
             if (data != null) {
                 logisticsDeliveryId = data.getLongExtra(IntentConstant.Intent_Extra_logistics_delivery_id, 0);
-                customerFacilityId = data.getLongExtra(IntentConstant.Intent_Extra_logistics_cf_id, 0);
+//                customerFacilityId = data.getLongExtra(IntentConstant.Intent_Extra_logistics_cf_id, 0);
+                customerFacilityId = data.getIntExtra(IntentConstant.Intent_Extra_logistics_cf_id, 0);
 
                 if (logisticsDeliveryId > 0) {
                     customerCompanyTextView.setText(data.getCharSequenceExtra(IntentConstant.Intent_Extra_logistics_customer_company_name));
@@ -241,6 +244,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     private List<SDZHSinglePartBean> singleOriginalList;
 
     private void handleSinglePartScan(String outCode) {
+        System.out.println("========= outCode = " + outCode);
 //        List<SDZHSinglePartBean> singOriginalList = singlePartDetailAdapter.getList();
 //        outCode = outCode.replace("\n","");
         if (outCode.contains("\r\n")){
@@ -337,6 +341,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 
             } else {
                 ToastUtil.showToastShort("单机条码格式不正确！");
+                inputEditText.setText("");
             }
         }
 
@@ -381,17 +386,27 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 //                        }
                         if (productId == boxDetailBean.getProductId()) {
                             hasSinglePart = true;
+                            break;
                         }
                     }
 
-                    if (!hasSinglePart) {
+                    if (hasSinglePart) {
                         SDZHSinglePartBean model = new SDZHSinglePartBean();
                         model.setBoxCode(selectBoxNo);
                         model.setDoiNO(splitStringArray[0]);
                         model.setProductNo(splitStringArray[1]);
                         model.setWorkNo(splitStringArray[2]);
                         model.setProductId(splitStringArray[3]);
-                        model.setLineId(Integer.parseInt(splitStringArray[4]));
+                        if (splitStringArray[4].length() <= 2){
+                            try{
+                                model.setLineId(Integer.parseInt(splitStringArray[4]));
+                            }catch (Exception e){
+                                model.setLineId(0);//表示这个产线 返回的是 20200422 这种格式
+                            }
+
+                        }else{
+                            model.setLineId(0);
+                        }
                         model.setDOI_Code(outCode);
 
                         singleOriginalList.add(model);
@@ -431,9 +446,10 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 //                handleInsert
 
                     } else {
-                        ToastUtil.showToastShort("该单机条码已存在，请勿重复扫描！");
+                        ToastUtil.showToastShort("该单机条码Product_ID不在该发货计划内！");
                     }
                 }
+                inputEditText.setText("");
             }
         }
     }
@@ -441,7 +457,10 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     private void handleBoxScan(String content) {
         boolean hasBox = false;
         for (SDZHBoxDetailBean bean : boxDetailAdapter.getList()) {
-            if (content.equals(bean.getBoxCode())) {
+            //这里面有箱号有空格 不能直接trim，
+            content = content.replace("\n","");
+//            if (content.equals(bean.getBoxCode().replace("\n",""))) {
+            if (TextUtils.equals(content,bean.getBoxCode().replace("\n",""))) {
                 hasBox = true;
                 boxDetailBean = bean;
                 break;
@@ -454,8 +473,10 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             singlePartBarButton.setEnabled(true);
             ToastUtil.showToastShort("请扫描单机条码！");
             refreshCurrentInfo(orderNumberBean.getOrderNo(), boxDetailBean.getBoxCode(), boxDetailBean.getBoxQty(), 0, "");
+            currentScanState = SCAN_SINGLE_PART_CODE;
 
         }
+        inputEditText.setText("");
 
     }
 
@@ -486,8 +507,10 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             ToastUtil.showToastShort("请扫描包装箱！");
 
             itemTextViewAdapter.setSelectPosition(index);
+            currentScanState = SCAN_BOX_CODE;
 
         }
+        inputEditText.setText("");
     }
 
 
@@ -523,7 +546,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 if (editable.toString().length() > 3 && editable.toString().endsWith("\n")) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
-                    if (TextUtils.isEmpty(editable.toString())) {
+                    if (!TextUtils.isEmpty(editable.toString())) {
                         switch (currentScanState) {
                             case SCAN_ORDER_NUMBER:
                                 handleOrderNOScan(editable.toString());
@@ -555,17 +578,101 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         } else if (view == removeSinglePartBarButton) {
             removeSinglePart();
         } else if (view == outButton) {
-            if (logisticsDeliveryId == 0) {
-                ToastUtil.showToastShort("未选择物流信息！");
-                return;
-            }
-            HandleSDZHProductOutAsyncTask outAsyncTask = new HandleSDZHProductOutAsyncTask();
-            outAsyncTask.execute();
+            handleSaleOut();
         } else if (view == logisticsButton) {
             Intent intent = new Intent(this, LogisticsManageActivity.class);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_To_Logistics);
         }
     }
+
+    private void handleSaleOut() {
+
+        if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+//           judgeIsFullAndHandle();
+            if (logisticsDeliveryId == 0) {
+                ToastUtil.showToastShort("未选择物流信息！");
+                return;
+            }
+
+            if (boxDetailBean != null && singleOriginalList != null && (singleOriginalList.size() < boxDetailBean.getBoxQty()) ){
+//            ToastUtil.showToastShort("当前箱子不满，确定要出库吗？");
+                CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(SDZHHActivity.this)
+                        .setTitle("").setMessage("当前箱子不满，确定要出库吗？")
+                        .setLeftText("确定").setRightText("取消");
+
+
+                builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                    @Override
+                    public void onViewClick(Dialog dialog, View v, int tag) {
+                        switch (tag) {
+                            case CommAlertDialog.TAG_CLICK_LEFT:
+                                HandleSDZHProductOutAsyncTask outAsyncTask = new HandleSDZHProductOutAsyncTask();
+                                outAsyncTask.execute(singleOriginalList.size() + "");
+                                dialog.dismiss();
+                                break;
+                            case CommAlertDialog.TAG_CLICK_RIGHT:
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                });
+                builder.create().show();
+
+            }else{
+                HandleSDZHProductOutAsyncTask outAsyncTask = new HandleSDZHProductOutAsyncTask();
+                outAsyncTask.execute(singleOriginalList.size() + "");
+            }
+
+
+        }else{
+            CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(SDZHHActivity.this)
+                    .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
+                    .setLeftText("确定");
+
+
+            builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                @Override
+                public void onViewClick(Dialog dialog, View v, int tag) {
+                    switch (tag) {
+                        case CommAlertDialog.TAG_CLICK_LEFT:
+                            CommonUtil.doLogout(SDZHHActivity.this);
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            });
+            builder.create().show();
+        }
+    }
+
+//    private void judgeIsFullAndHandle(){
+//        if (boxDetailBean != null && singleOriginalList != null && (singleOriginalList.size() < boxDetailBean.getBoxQty()) ){
+////            ToastUtil.showToastShort("当前箱子不满，确定要出库吗？");
+//            CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(SDZHHActivity.this)
+//                    .setTitle("").setMessage("当前箱子不满，确定要出库吗？")
+//                    .setLeftText("确定").setRightText("取消");
+//
+//
+//            builder.setOnViewClickListener(new OnDialogViewClickListener() {
+//                @Override
+//                public void onViewClick(Dialog dialog, View v, int tag) {
+//                    switch (tag) {
+//                        case CommAlertDialog.TAG_CLICK_LEFT:
+//                            handleSaleOut();
+//                            dialog.dismiss();
+//                            break;
+//                        case CommAlertDialog.TAG_CLICK_RIGHT:
+//                            dialog.dismiss();
+//                            break;
+//                    }
+//                }
+//            });
+//            builder.create().show();
+//
+//        }else{
+//            handleSaleOut();
+//        }
+//    }
 
     private void removeSinglePart() {
         if (sdzhSinglePartBean != null) {
@@ -928,6 +1035,8 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             UpdateBoxAsyncTask updateBoxAsyncTask = new UpdateBoxAsyncTask();
             updateBoxAsyncTask.execute(updateSql);
 
+            singleOriginalList = new ArrayList<>();
+
         }
     }
 
@@ -1026,11 +1135,12 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
     /**
      * 三点照合成品出库
      */
-    private class HandleSDZHProductOutAsyncTask extends AsyncTask<Void, Void, Void> {
+    private class HandleSDZHProductOutAsyncTask extends AsyncTask<String, Void, Void> {
         private WsResult result;
 
-        @Override protected Void doInBackground(Void... voids) {
+        @Override protected Void doInBackground(String... strings) {
 //            long cfID = 0;
+            String qty = strings[0];
             long dpi_id = 0;
             Date deliveryDate = null;
             try {
@@ -1046,7 +1156,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 deliveryDate = new Date();
             }
             //// TODO: 2020/4/7
-            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), 0, "");
+            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), 0, qty);
 //            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(new Date(), 68, "一汽奔腾轿车有限公司", "20200328", 102838, 0, 7426);
             return null;
         }
