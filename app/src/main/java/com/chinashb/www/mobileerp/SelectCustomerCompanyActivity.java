@@ -15,18 +15,11 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.ReceiverCompanyBean;
-import com.chinashb.www.mobileerp.bean.BuBean;
-import com.chinashb.www.mobileerp.bean.CompanyBean;
-import com.chinashb.www.mobileerp.bean.DeliveryTypeBean;
-import com.chinashb.www.mobileerp.bean.DepartmentBean;
-import com.chinashb.www.mobileerp.bean.LogisticsCompanyBean;
-import com.chinashb.www.mobileerp.bean.ReceiverCompanyBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
-import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
 import com.chinashb.www.mobileerp.widget.SelectUseAdapter;
@@ -84,6 +77,7 @@ public class SelectCustomerCompanyActivity extends BaseActivity {
         if (buId > 0){
             handleQueryCustomer("");
         }
+        originalBUDataList = new ArrayList<>();
     }
 
     private void handleQueryCustomer(String whereSql) {
@@ -152,7 +146,8 @@ public class SelectCustomerCompanyActivity extends BaseActivity {
 //            List<ReceiverCompanyBean> tempList = getFilterList(input);
 //            bindObjectListsToAdapterBU(tempList);
 //            adapter.setData(getFilterList(keyWord));
-            String whereSql = String.format(" and CF_Chinese_Name like '%%s%' ",keyWord);
+//            String whereSql = String.format(" and CF_Chinese_Name like \'%%s%\' ",keyWord);
+            String whereSql = " and CF_Chinese_Name like '%"+keyWord+"%'";
             handleQueryCustomer(whereSql);
         } else {
             //todo
@@ -236,7 +231,14 @@ public class SelectCustomerCompanyActivity extends BaseActivity {
 
         @Override protected void onPostExecute(List<T> companyList) {
             super.onPostExecute(companyList);
-            adapter.setData(companyList);
+            if (companyList != null && companyList.size() > 0){
+                adapter.setData(companyList);
+                emptyManager.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            }else{
+                emptyManager.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+            }
 
         }
 

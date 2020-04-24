@@ -104,12 +104,20 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IntentConstant.Intent_Request_Code_Logistics_Select_to_Logistics){
-            logisticsSelectBean = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_select_bean);
-            invalidateView();
-        }else if (requestCode == IntentConstant.Intent_Request_Code_Logistics_Customer_to_Logistics){
-            receiverCompanyBean = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_customer_bean);
-            receiverCompanyNameTextView.setText(receiverCompanyBean.getCustomer());
+        if (data != null){
+
+            if (requestCode == IntentConstant.Intent_Request_Code_Logistics_Select_to_Logistics){
+                logisticsSelectBean = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_select_bean);
+                invalidateView();
+            }else if (requestCode == IntentConstant.Intent_Request_Code_Logistics_Customer_to_Logistics){
+                receiverCompanyBean = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_customer_bean);
+                if (receiverCompanyBean != null){
+                    receiverCompanyNameTextView.setText(receiverCompanyBean.getCustomer());
+                    if (!TextUtils.isEmpty(receiverCompanyBean.getFgAddress())){
+                        receiverAddressEditText.setText(receiverCompanyBean.getFgAddress());
+                    }
+                }
+            }
         }
     }
 
