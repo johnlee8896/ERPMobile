@@ -1161,7 +1161,11 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 deliveryDate = new Date();
             }
             //// TODO: 2020/4/7
-            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), orderNumberBean.getPSId(), qty);
+            if (customerFacilityId == deliveryOrderBean.getCFID()){
+                //// TODO: 2020/4/23
+            }
+//            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), orderNumberBean.getPSId(), qty);
+            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, deliveryOrderBean.getCFID(), deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), orderNumberBean.getPSId(), qty);
 //            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(new Date(), 68, "一汽奔腾轿车有限公司", "20200328", 102838, 0, 7426);
             return null;
         }

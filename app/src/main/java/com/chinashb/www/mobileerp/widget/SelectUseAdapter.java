@@ -69,7 +69,8 @@ public class SelectUseAdapter<T> extends BaseRecycleAdapter<T, SelectUseAdapter.
             }else if (t instanceof BuBean){
                 useTextView.setText(((BuBean)t).getBuName());
             }else if(t instanceof ReceiverCompanyBean){
-                useTextView.setText(((ReceiverCompanyBean)t).getCustomer());
+//                useTextView.setText(((ReceiverCompanyBean)t).getCustomer());
+                useTextView.setText(((ReceiverCompanyBean)t).getFactory());
             }else if(t instanceof LogisticsCompanyBean){
                 useTextView.setText(((LogisticsCompanyBean)t).getLcName());
             }else if(t instanceof DeliveryTypeBean){

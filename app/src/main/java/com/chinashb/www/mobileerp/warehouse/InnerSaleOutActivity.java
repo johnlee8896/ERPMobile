@@ -104,7 +104,9 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
         });
     }
 
+    private boolean isCurrentSmallPackage = false;
     private void parseContent(String content) {
+        isCurrentSmallPackage = false;
         if (TextUtils.isEmpty(content)) {
             return;
         }
@@ -115,6 +117,9 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
                 String qrTitle = qrContent[0];
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
+                        if (qrTitle.equals("VE") || qrTitle.equals("V9")){
+                            isCurrentSmallPackage = true;
+                        }
                         //物品条码
                         scanContent = content;
                         GetItemQRCodeAsyncTask task = new GetItemQRCodeAsyncTask();
@@ -184,6 +189,9 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
                         boxItemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
                     }
                     boxItemEntity.setCanNotEdit(true);
+                    if (isCurrentSmallPackage){
+                        boxItemEntity.setCanNotEdit(false);
+                    }
                     boxItemEntityArrayList.add(boxItemEntity);
 
                 } else {

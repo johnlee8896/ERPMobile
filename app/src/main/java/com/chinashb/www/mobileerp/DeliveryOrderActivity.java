@@ -162,7 +162,7 @@ public class DeliveryOrderActivity extends BaseActivity implements View.OnClickL
         protected String doInBackground(String... strings) {
             String startDate = strings[0];
             String endDate = strings[1];
-            String sql = String.format("Select D.DO_ID,  D.TrackNo, D.SpecificTime , D.Delivery_Date , D.Arrive_Date, F.CF_Chinese_Name , Des_Info ,  Special , D.Done ,D.Part_Done A FROM DP_Order As D\n" +
+            String sql = String.format("Select D.DO_ID,  D.TrackNo, D.SpecificTime , D.Delivery_Date , D.Arrive_Date,F.CF_ID , F.CF_Chinese_Name , Des_Info ,  Special , D.Done ,D.Part_Done A FROM DP_Order As D\n" +
                     "Inner Join Customer_Facility As F On D.CF_ID=F.CF_ID \n" +
                     "Where D.Bu_ID=%s And D.Deleted=0 And Datediff(day,D.Delivery_Date,'%s') >= 0 And Datediff(day,D.Delivery_Date,'%s') <= 0 And Isnull(D.Done,0)=0 \n" +
                     "Order By D.Delivery_Date, D.DO_ID", UserSingleton.get().getUserInfo().getBu_ID(), startDate, endDate);

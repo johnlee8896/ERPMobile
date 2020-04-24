@@ -107,6 +107,9 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         if (requestCode == IntentConstant.Intent_Request_Code_Logistics_Select_to_Logistics){
             logisticsSelectBean = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_select_bean);
             invalidateView();
+        }else if (requestCode == IntentConstant.Intent_Request_Code_Logistics_Customer_to_Logistics){
+            receiverCompanyBean = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_customer_bean);
+            receiverCompanyNameTextView.setText(receiverCompanyBean.getCustomer());
         }
     }
 
@@ -222,7 +225,12 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
             }
         } else if (view == receiverCompanyNameTextView) {
             if (buBean != null) {
-                getSelectReceiverCompanyDialog();
+//                getSelectReceiverCompanyDialog();
+
+                Intent intent = new Intent(LogisticsManageActivity.this,SelectCustomerCompanyActivity.class);
+                intent.putExtra(IntentConstant.Intent_Extra_current_bu_id,buBean.getBuId());
+                startActivityForResult(intent,IntentConstant.Intent_Request_Code_Logistics_Customer_to_Logistics);
+
             } else {
                 ToastUtil.showToastShort("请先选择车间");
             }

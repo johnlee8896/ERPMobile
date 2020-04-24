@@ -20,6 +20,7 @@ public class DeliveryOrderBean implements Parcelable {
      * SpecificTime : false
      * Delivery_Date : 2020-01-03T00:00:00
      * Arrive_Date : 2020-01-06T00:00:00
+     * CF_ID:5 //这是增加的
      * CF_Chinese_Name : 重庆长安汽车股份有限公司北京长安汽车公司
      * Des_Info :
      * Special :
@@ -32,6 +33,7 @@ public class DeliveryOrderBean implements Parcelable {
     @SerializedName("SpecificTime") private boolean SpecificTime;
     @SerializedName("Delivery_Date") private String DeliveryDate;
     @SerializedName("Arrive_Date") private String ArriveDate;
+    @SerializedName("CF_ID") private int CFID;
     @SerializedName("CF_Chinese_Name") private String CFChineseName;
     @SerializedName("Des_Info") private String DesInfo;
     @SerializedName("Special") private String Special;
@@ -44,6 +46,7 @@ public class DeliveryOrderBean implements Parcelable {
         SpecificTime = in.readByte() != 0;
         DeliveryDate = in.readString();
         ArriveDate = in.readString();
+        CFID = in.readInt();
         CFChineseName = in.readString();
         DesInfo = in.readString();
         Special = in.readString();
@@ -62,6 +65,14 @@ public class DeliveryOrderBean implements Parcelable {
             return new DeliveryOrderBean[size];
         }
     };
+
+    public int getCFID() {
+        return CFID;
+    }
+
+    public void setCFID(int CFID) {
+        this.CFID = CFID;
+    }
 
     public int getDOID() {
         return DOID;
@@ -143,6 +154,7 @@ public class DeliveryOrderBean implements Parcelable {
         this.PartDone = PartDone;
     }
 
+
     @Override public int describeContents() {
         return 0;
     }
@@ -153,6 +165,7 @@ public class DeliveryOrderBean implements Parcelable {
         dest.writeByte((byte) (SpecificTime ? 1 : 0));
         dest.writeString(DeliveryDate);
         dest.writeString(ArriveDate);
+        dest.writeInt(CFID);
         dest.writeString(CFChineseName);
         dest.writeString(DesInfo);
         dest.writeString(Special);
