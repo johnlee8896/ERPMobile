@@ -58,6 +58,11 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--三点照合扫托标出库-->
+        <activity
+            android:name=".SDZHScanPalletCodeActivity"
+            android:screenOrientation="portrait" />
+
         <!--物流信息页面选 客户公司-->
         <activity
             android:name=".SelectCustomerCompanyActivity"

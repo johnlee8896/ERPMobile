@@ -112,7 +112,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
             }else if (requestCode == IntentConstant.Intent_Request_Code_Logistics_Customer_to_Logistics){
                 receiverCompanyBean = data.getParcelableExtra(IntentConstant.Intent_Extra_logistics_customer_bean);
                 if (receiverCompanyBean != null){
-                    receiverCompanyNameTextView.setText(receiverCompanyBean.getCustomer());
+                    receiverCompanyNameTextView.setText(receiverCompanyBean.getFactory());
                     if (!TextUtils.isEmpty(receiverCompanyBean.getFgAddress())){
                         receiverAddressEditText.setText(receiverCompanyBean.getFgAddress());
                     }

@@ -62,7 +62,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="三点照合出库" />
+                android:text="三点照合扫单机出库" />
+            <Button
+                android:id="@+id/product_out_sdzh_scan_pallet_out_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="三点照合扫托标出库" />
 
         </LinearLayout>
     </LinearLayout>

@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="三点照合" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dimen_size_5"
+        android:paddingRight="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/sdzh_scan_pallet_scan_order_number_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="扫描送货单号" />
+
+        <TextView
+            android:id="@+id/sdzh_scan_pallet_scan_box_bar_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="扫描外箱条码" />
+
+        <TextView
+            android:id="@+id/sdzh_scan_pallet_scan_single_part_bar_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:visibility="gone"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="扫描单机条码" />
+
+        <TextView
+            android:id="@+id/sdzh_scan_pallet_scan_pallet_bar_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="扫描托标" />
+
+        <TextView
+            android:id="@+id/sdzh_scan_pallet_remove_single_part_bar_button"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:visibility="gone"
+            android:gravity="center"
+            android:text="移除单机条码" />
+
+    </LinearLayout>
+    <TextView
+        android:id="@+id/sdzh_scan_pallet_scan_order_logistics_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_marginLeft="@dimen/dimen_size_5"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="选择出库物流信息" />
+
+    <LinearLayout
+        android:id="@+id/sdzh_scan_pallet_logistics_data_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:orientation="vertical">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="物流客户"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/sdzh_scan_pallet_logistics_customer_company_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="上汽大众汽车有限公司" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="物流公司"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/sdzh_scan_pallet_logistics_logistics_company_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="上海新起物流有限公司" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="运输方式"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/sdzh_scan_pallet_logistics_transport_type_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:singleLine="true"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="汽车" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="客户地址"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/sdzh_scan_pallet_logistics_address_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="上海浦东康桥工业区康安路669号" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="特殊说明"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/sdzh_scan_pallet_logistics_remark_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_size_15"
+                android:clickable="false"
+                android:ellipsize="end"
+                android:padding="2dp"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="哈哈" />
+
+        </LinearLayout>
+        <!--<TextView-->
+        <!--android:id="@+id/plan_list_plan_detail_textView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="@dimen/dimen_size_10"-->
+        <!--android:textSize="17sp"-->
+        <!--tools:text="生产线分组生产线分组生产线分组生产线分组生产线分组" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/plan_list_remark_textView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="@dimen/dimen_size_10"-->
+        <!--android:clickable="false"-->
+        <!--android:padding="2dp"-->
+        <!--android:textSize="17sp"-->
+        <!--tools:text="备注" />-->
+    </LinearLayout>
+    <TextView
+        android:id="@+id/sdzh_scan_pallet_scan_order_out_button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_marginLeft="@dimen/dimen_size_5"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="出库" />
+    <EditText
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:id="@+id/sdzh_scan_pallet_input_EditeText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_35"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="接收扫描结果"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14"
+        />
+    <!--<TextView-->
+    <!--android:id="@+id/sdzh_scan_pallet_remove_single_part_bar_button"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
+    <!--android:layout_marginTop="@dimen/dimen_size_15"-->
+    <!--android:layout_marginRight="@dimen/dimen_size_20"-->
+    <!--android:background="@drawable/shape_conner_blue_button_bg"-->
+    <!--android:gravity="center"-->
+    <!--android:text="移除单机条码" />-->
+
+    <LinearLayout
+        android:id="@+id/sdzh_scan_pallet_order_No_data_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_size_5"
+        android:text="该计划下所有预设发货单号"
+        android:textColor="@color/color_blue_00AAEE"
+        android:textSize="@dimen/text_size_16" />
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/sdzh_scan_pallet_orderNo_outer_scroll_RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:app_layout_style="list_horizontal"
+        app:app_item_margin="@dimen/dimen_size_10"
+        ></com.chinashb.www.mobileerp.widget.CustomRecyclerView>
+
+    <TextView
+        android:id="@+id/sdzh_scan_pallet_current_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:layout_marginBottom="@dimen/dimen_size_5"
+        android:padding="@dimen/dimen_size_5"
+        tools:text="当前发货单号  XD000 " />
+
+    <!--android:descendantFocusability="blocksDescendants"-->
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/sdzh_scan_pallet_root_data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/sdzh_scan_pallet_data_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="@dimen/dimen_size_5"
+                            android:text="发货单号"
+                            android:textColor="@color/color_blue_00AAEE"
+                            android:textSize="@dimen/text_size_16" />
+
+                        <TextView
+                            android:id="@+id/sdzh_scan_pallet_send_order_number_textView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:padding="@dimen/dimen_size_5"
+                            android:textColor="@color/color_blue_00AAEE"
+                            android:textSize="@dimen/text_size_16"
+                            tools:text="D088098098098098" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+                            android:id="@+id/sdzh_scan_pallet_order_number_recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="150dp"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginRight="@dimen/dimen_size_10"
+                            android:nestedScrollingEnabled="false"
+                            android:scrollbars="vertical"
+                            app:app_item_decoration_type="ITEM_SPACE"
+                            app:app_layout_style="list_vertical"
+                            tools:itemCount="1"
+                            tools:listitem="@layout/item_sdzh_order_number_layout">
+
+                        </com.chinashb.www.mobileerp.widget.CustomRecyclerView>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_height="0.8dp"
+                        android:layout_width="match_parent"
+                        android:background="@drawable/shape_divide_line_horizontal"/>
+
+
+                    <TextView
+                        android:id="@+id/sdzh_scan_pallet_box_title_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_10"
+                        android:padding="@dimen/dimen_size_5"
+                        android:text="包装箱详情"
+                        android:textColor="@color/color_orange_F58B23"
+                        android:textSize="@dimen/text_size_16"
+                        tools:visibility="visible" />
+
+                    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+                        android:id="@+id/sdzh_scan_pallet_box_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_size_10"
+                        android:layout_marginRight="@dimen/dimen_size_10"
+                        android:nestedScrollingEnabled="false"
+                        android:scrollbars="vertical"
+                        android:visibility="gone"
+                        app:app_item_decoration_type="ITEM_SPACE"
+                        app:app_layout_style="list_vertical"
+                        tools:itemCount="1"
+                        app:app_item_margin="@dimen/dimen_size_5"
+                        tools:listitem="@layout/item_sdzh_box_detail_layout"
+                        tools:visibility="visible">
+
+                    </com.chinashb.www.mobileerp.widget.CustomRecyclerView>
+
+
+                    <TextView
+                        android:id="@+id/sdzh_scan_pallet_single_part_title_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_10"
+                        android:padding="@dimen/dimen_size_5"
+                        android:text="箱内单机详情"
+                        android:textColor="@color/color_red_E94156"
+                        android:textSize="@dimen/text_size_16"
+                        tools:visibility="visible" />
+
+                    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+                        android:id="@+id/sdzh_scan_pallet_single_part_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_size_10"
+                        android:layout_marginRight="@dimen/dimen_size_10"
+                        android:nestedScrollingEnabled="false"
+                        android:scrollbars="vertical"
+                        android:visibility="gone"
+                        app:app_item_decoration_type="ITEM_SPACE"
+                        app:app_layout_style="list_vertical"
+                        tools:itemCount="1"
+                        app:app_item_margin="@dimen/dimen_size_5"
+                        tools:listitem="@layout/item_sdzh_single_part_layout"
+                        tools:visibility="visible">
+
+                    </com.chinashb.www.mobileerp.widget.CustomRecyclerView>
+
+                    <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+                        android:id="@+id/sdzh_scan_pallet_inner_empty_layoutView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+                    android:id="@+id/sdzh_scan_pallet_empty_layoutView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <com.chinashb.www.mobileerp.widget.EmptyLayoutManageView
+                android:id="@+id/sdzh_scan_pallet_root_empty_layoutView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

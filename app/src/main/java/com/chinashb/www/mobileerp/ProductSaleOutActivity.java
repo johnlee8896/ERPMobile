@@ -71,6 +71,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
     @BindView(R.id.product_out_logistics_info_textView) TextView logisticsInfoTextView;
     @BindView(R.id.product_out_scan_box_out_button) Button scanBoxOutButton;
     @BindView(R.id.product_out_scan_box_item_detail_customRecyclerView) CustomRecyclerView boxItemRecyclerView;
+    @BindView(R.id.product_out_sdzh_scan_pallet_out_button) Button scanPalletOutButton;
 
     private DeliveryOrderBean deliveryOrderBean;
     private DeliveryOrderAdapter deliveryOrderAdapter;
@@ -176,6 +177,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
         outButton.setOnClickListener(this);
         sdzhOutButton.setOnClickListener(this);
         scanBoxOutButton.setOnClickListener(this);
+        scanPalletOutButton.setOnClickListener(this);
     }
 
     @Override public void onClick(View v) {
@@ -202,6 +204,14 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
             }
         } else if (v == scanBoxOutButton) {
             new IntentIntegrator(this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+        }else if (v == scanPalletOutButton){
+            if (deliveryOrderBean != null) {
+                Intent intent = new Intent(this, SDZHScanPalletCodeActivity.class);
+                intent.putExtra(IntentConstant.Intent_Extra_do_delivery_bean, deliveryOrderBean);
+                startActivity(intent);
+            } else {
+                ToastUtil.showToastShort("请先选择发货指令");
+            }
         }
     }
 
@@ -227,11 +237,11 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
     private void handleProductOut() {
 //        if (TextUtils.equals(customerFacilityName, deliveryOrderBean.getCFChineseName())) {
 
-        if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+        if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
 
             HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
             outAsyncTask.execute(tempDpOrderDetailBean.getPSID() + "", tempDpOrderDetailBean.getDPIQuantity());
-        }else{
+        } else {
             CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutActivity.this)
                     .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
                     .setLeftText("确定");
@@ -289,13 +299,13 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
             if (result != null) {
                 if (result.getResult()) {
                     logisticsDeliveryId = result.getID();
-                    ToastUtil.showToastShort("出库成功！" );
+                    ToastUtil.showToastShort("出库成功！");
                     //如果是 同PC端的出库，一般不用
-                    if (outButton.getVisibility() == View.VISIBLE && tempDpOrderDetailBean != null){
+                    if (outButton.getVisibility() == View.VISIBLE && tempDpOrderDetailBean != null) {
                         dpOrderDetailBeanList.remove(tempDpOrderDetailBean);
                         dpOrderDetailAdapter.setData(dpOrderDetailBeanList);
                         tempDpOrderDetailBean = null;
-                    }else {
+                    } else {
                         //这是扫描箱码出库的模式,需要作些箱号相关的数据库更新
 
                         //同时刷新显示列表
@@ -390,10 +400,10 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
 //                }
 //                 WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, 0, deliveryOrderBean.getDOID(), mesInnerDataEntity.getPSID(), mesInnerDataEntity.getQty() + "");
 
-                if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+                if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
                     HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
                     outAsyncTask.execute(mesInnerDataEntity.getPSID() + "", mesInnerDataEntity.getQty() + "");
-                }else{
+                } else {
                     CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutActivity.this)
                             .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
                             .setLeftText("确定");

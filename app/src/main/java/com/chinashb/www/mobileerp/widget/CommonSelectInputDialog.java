@@ -92,6 +92,10 @@ public class CommonSelectInputDialog<T> extends BaseDialog {
         adapter.setData(list);
     }
 
+    public void setRecyclerViewGone(){
+        recyclerView.setVisibility(View.GONE);
+    }
+
     public void refreshCommonContentList(List<T> list){
         adapter.setData(list);
     }
@@ -125,5 +129,12 @@ public class CommonSelectInputDialog<T> extends BaseDialog {
     }
 
 
+    public void setInputTextHint(String hint) {
+        remarkEditText.setHint(hint);
+    }
+
+    public void setInputDialogTitle(String title) {
+        titleTextView.setText(title);
+    }
 }
 
