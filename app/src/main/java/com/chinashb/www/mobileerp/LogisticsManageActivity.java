@@ -133,6 +133,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
         telephoneEditText.setText(logisticsSelectBean.getDriverTel());
         carPlateEditText.setText(logisticsSelectBean.getLicensePlateNO());
         trackNOEditText.setText(logisticsSelectBean.getTrackNo());
+        receiverCompanyNameTextView.setText(logisticsSelectBean.getCfChineseName());
 //        dayNumberEditText.setText(logisticsSelectBean.);
     }
 

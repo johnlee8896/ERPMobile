@@ -266,6 +266,9 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
                     ToastUtil.showToastShort("当前出库数大于剩余数");
                 }else{
                     refreshCurrentInfo(selectOrderNO, selectBoxNo, boxDetailBean.getBoxQty(), singleOriginalList.size(), number + "");
+                    //// TODO: 2020/4/26
+                    HandleSDZHProductOutAsyncTask outAsyncTask = new HandleSDZHProductOutAsyncTask();
+                    outAsyncTask.execute(number + "");
                 }
 //                remarkTextView.setText((CharSequence) t);
             }
