@@ -53,6 +53,9 @@ public class IntentConstant {
     public static final String Intent_Extra_logistics_customer_bean = "Extra_logistics_customer_bean";
 
 
+    public static final String Intent_Extra_logistics_from = "Extra_logistics_from";
+
+
 
     public static final String Intent_Extra_current_bu_id = "Extra_current_bu_id";
     public static final String Intent_Extra_select_bu_bean = "Extra_select_bu_bean";
@@ -65,5 +68,10 @@ public class IntentConstant {
     public static final int Intent_Request_Code_Logistics_Select_to_Logistics = 0X203;
     public static final int Intent_Request_Code_Sale_Out_to_Bu = 0X204;
     public static final int Intent_Request_Code_Logistics_Customer_to_Logistics = 0X205;
+
+
+    public static final int Intent_Request_Code_Logistics_from_product_sale_out = 0X206;
+    public static final int Intent_Request_Code_Logistics_from_sdzh = 0X207;
+    public static final int Intent_Request_Code_Logistics_from_sdzh_scan_pallet = 0X208;
 
 }

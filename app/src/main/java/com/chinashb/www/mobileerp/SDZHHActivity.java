@@ -123,9 +123,15 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 hasClickSelect = true;
                 if (t instanceof SDZHDeliveryOrderNumberDetailBean) {
                     sdzhDeliveryOrderNumberDetailBean = (SDZHDeliveryOrderNumberDetailBean) t;
+                    selectOrderNO = sdzhDeliveryOrderNumberDetailBean.getOrderNo();
+                    refreshCurrentInfo(sdzhDeliveryOrderNumberDetailBean.getOrderNo(), "", 0, 0, "");
+                    new GetOrderDetailAsyncTask().execute(sdzhDeliveryOrderNumberDetailBean.getOrderNo());
                 } else if (t instanceof SDZHBoxDetailBean) {
 //                    sdzhBoxDetailBean = (SDZHBoxDetailBean) t;
                     boxDetailBean = (SDZHBoxDetailBean) t;
+                    selectBoxNo = boxDetailBean.getBoxCode();
+                    new GetSinglePartDetailAsyncTask().execute(selectBoxNo);
+
                 } else if (t instanceof SDZHSinglePartBean) {
                     sdzhSinglePartBean = (SDZHSinglePartBean) t;
                 }
@@ -539,6 +545,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 
     private void handleBoxScan(String content) {
         boolean hasBox = false;
+        int index = 0;
         for (SDZHBoxDetailBean bean : boxDetailAdapter.getList()) {
             //这里面有箱号有空格 不能直接trim，
             content = content.replace("\n","");
@@ -548,6 +555,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 boxDetailBean = bean;
                 break;
             }
+            index++;
         }
 
         if (!hasBox) {
@@ -557,6 +565,9 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 ToastUtil.showToastShort("该箱已装满！");
             }else{
                 singlePartBarButton.setEnabled(true);
+
+                boxDetailAdapter.setSelectPosition(index);
+
                 ToastUtil.showToastShort("请扫描单机条码！");
                 refreshCurrentInfo(orderNumberBean.getOrderNo(), boxDetailBean.getBoxCode(), boxDetailBean.getBoxQty(), 0, "");
                 currentScanState = SCAN_SINGLE_PART_CODE;
@@ -673,6 +684,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             handleSaleOut();
         } else if (view == logisticsButton) {
             Intent intent = new Intent(this, LogisticsManageActivity.class);
+            intent.putExtra(IntentConstant.Intent_Extra_logistics_from,IntentConstant.Intent_Request_Code_Logistics_from_sdzh);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_To_Logistics);
         }
     }
@@ -799,7 +811,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
 //                sdzhSinglePartBean.getDOI_Code());
 
         String sql = String.format("update DeliveryOrder_Item set IsDelete = 1 where BoxCode = '%s' and DOI_NO = '%s'", sdzhSinglePartBean.getBoxCode(),
-                sdzhSinglePartBean.getDOI_Code());
+                sdzhSinglePartBean.getDoiNO());
         DeleteSinglePartAsyncTask task = new DeleteSinglePartAsyncTask();
         task.execute(sql);
 //        singlePartDetailAdapter.notifyItemRemoved(selectRemovePosition);

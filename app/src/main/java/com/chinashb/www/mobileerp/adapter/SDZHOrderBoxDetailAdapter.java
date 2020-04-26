@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 public class SDZHOrderBoxDetailAdapter extends BaseRecycleAdapter<SDZHBoxDetailBean, SDZHOrderBoxDetailAdapter.SDZHBoxDetailViewHolder> {
 
     private OnViewClickListener onViewClickListener;
+//    private int lastSelectPosition = 0;
 
     public SDZHOrderBoxDetailAdapter setOnViewClickListener(OnViewClickListener onViewClickListener) {
         this.onViewClickListener = onViewClickListener;
@@ -35,14 +36,41 @@ public class SDZHOrderBoxDetailAdapter extends BaseRecycleAdapter<SDZHBoxDetailB
     public void onBindViewHolder(SDZHBoxDetailViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
 
-
+        if (position == selectPosition){
+            holder.itemView.setSelected(true);
+        }
         holder.itemView.setOnClickListener(v -> {
-            notifyDataSetChanged();
+//            notifyDataSetChanged();
+//            notifyItemChanged(position);
+//            for (int i = 0; i < dataList.size() ; i++){
+//                if (i != position){
+//                    notifyItemChanged(i);
+//                }
+//            }
+//            if (lastSelectPosition != position){
+//                notifyItemChanged(lastSelectPosition);
+//            }
+//            notifyDataSetChanged();
+//            setData(dataList);
+
+
+
+            //// TODO: 2020/4/26
+            // if (position - firstItemPosition >= 0) {
+            //             //得到要更新的item的view
+            //             View view = mRecyclerView.getChildAt(position - firstItemPosition+1);
+            //             if (null != mRecyclerView.getChildViewHolder(view)){
+            //                 ProductsViewHolder viewHolder = (ProductsViewHolder)mRecyclerView.getChildViewHolder(view);
+            //
+            // //do something
+            //            }  ```
             holder.itemView.setSelected(!holder.itemView.isSelected());
             if (onViewClickListener != null) {
                 onViewClickListener.onClickAction(v, "", holder.itemView.isSelected() ? dataList.get(position) : null);
             }
+//            lastSelectPosition = position;
         });
+
     }
 
     public static class SDZHBoxDetailViewHolder extends BaseViewHolder {

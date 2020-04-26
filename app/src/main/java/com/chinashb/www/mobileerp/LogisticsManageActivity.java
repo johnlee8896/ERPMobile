@@ -91,13 +91,14 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
     private long logisticsDeliveryId = 0;
     private String address;
     private LogisticsSelectBean logisticsSelectBean;
+    private int intent_code_logistics_from = 0;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_logistics_layout);
         ButterKnife.bind(this);
-
+        intent_code_logistics_from = getIntent().getIntExtra(IntentConstant.Intent_Extra_logistics_from,0);
         initView();
         setViewsLisener();
     }
@@ -479,6 +480,19 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 
 
                     Intent intent = new Intent(LogisticsManageActivity.this, ProductSaleOutActivity.class);
+
+                    switch (intent_code_logistics_from) {
+//                        case IntentConstant.Intent_Request_Code_Logistics_from_product_sale_out:
+//                            intent = new Intent(LogisticsManageActivity.this, ProductSaleOutActivity.class);
+//                            break;
+                        case IntentConstant.Intent_Request_Code_Logistics_from_sdzh:
+                            intent = new Intent(LogisticsManageActivity.this, SDZHHActivity.class);
+                            break;
+                        case IntentConstant.Intent_Request_Code_Logistics_from_sdzh_scan_pallet:
+                            intent = new Intent(LogisticsManageActivity.this, SDZHScanPalletCodeActivity.class);
+                            break;
+                    }
+
                     //// TODO: 2020/1/17 传递一堆参数
 //                    intent.putExtra(IntentConstant.Intent_Extra_logistics_entity, entity);
 

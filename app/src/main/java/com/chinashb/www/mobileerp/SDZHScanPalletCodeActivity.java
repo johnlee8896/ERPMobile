@@ -126,9 +126,14 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
                 hasClickSelect = true;
                 if (t instanceof SDZHDeliveryOrderNumberDetailBean) {
                     sdzhDeliveryOrderNumberDetailBean = (SDZHDeliveryOrderNumberDetailBean) t;
+                    selectOrderNO = sdzhDeliveryOrderNumberDetailBean.getOrderNo();
+                    refreshCurrentInfo(sdzhDeliveryOrderNumberDetailBean.getOrderNo(), "", 0, 0, "");
+                    new GetOrderDetailAsyncTask().execute(sdzhDeliveryOrderNumberDetailBean.getOrderNo());
                 } else if (t instanceof SDZHBoxDetailBean) {
 //                    sdzhBoxDetailBean = (SDZHBoxDetailBean) t;
                     boxDetailBean = (SDZHBoxDetailBean) t;
+                    selectBoxNo = boxDetailBean.getBoxCode();
+                    new GetSinglePartDetailAsyncTask().execute(selectBoxNo);
                 } else if (t instanceof SDZHSinglePartBean) {
                     sdzhSinglePartBean = (SDZHSinglePartBean) t;
                 }
@@ -308,7 +313,7 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
             //判断重复扫描
             for (SDZHSinglePartBean bean : singleOriginalList) {
                 if (TextUtils.equals(bean.getDOI_Code().toLowerCase(), outCode.toLowerCase())) {
-                    ToastUtil.showToastShort("该单件码已存在，请勿重复扫描！");
+                    ToastUtil.showToastShort("该托标码已存在，请勿重复扫描！");
                     isRepeat = true;
                     break;
                 }
@@ -386,7 +391,7 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
                         }
 
                     } else {
-                        ToastUtil.showToastShort("该单机条码Product_ID不在该发货计划内！");
+                        ToastUtil.showToastShort("该托标Product_ID不在该发货计划内！");
                     }
                 } else {
                     customerProductNo = splitStringArray[2];
@@ -451,7 +456,7 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
 //                }
 
             } else {
-                ToastUtil.showToastShort("单机条码格式不正确！");
+                ToastUtil.showToastShort("托标条码格式不正确！");
                 inputEditText.setText("");
             }
         }
@@ -566,7 +571,7 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
                         }
 
                     } else {
-                        ToastUtil.showToastShort("该单机条码Product_ID不在该发货计划内！");
+                        ToastUtil.showToastShort("该托标Product_ID不在该发货计划内！");
                     }
                 }
                 inputEditText.setText("");
@@ -576,6 +581,7 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
 
     private void handleBoxScan(String content) {
         boolean hasBox = false;
+        int index = 0;
         for (SDZHBoxDetailBean bean : boxDetailAdapter.getList()) {
             //这里面有箱号有空格 不能直接trim，
             content = content.replace("\n", "");
@@ -585,6 +591,7 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
                 boxDetailBean = bean;
                 break;
             }
+            index++;
         }
 
         if (!hasBox) {
@@ -594,7 +601,9 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
                 ToastUtil.showToastShort("该箱已装满！");
             } else {
                 singlePartBarButton.setEnabled(true);
-                ToastUtil.showToastShort("请扫描单机条码！");
+                scanPalletBarButton.setEnabled(true);
+                ToastUtil.showToastShort("请扫描托标！");
+                boxDetailAdapter.setSelectPosition(index);
                 refreshCurrentInfo(orderNumberBean.getOrderNo(), boxDetailBean.getBoxCode(), boxDetailBean.getBoxQty(), 0, "");
                 currentScanState = SCAN_PALLET_CODE;
             }
@@ -669,6 +678,7 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
 //        orderNumberButton.setEnabled(false);
         boxBarButton.setEnabled(false);
         singlePartBarButton.setEnabled(false);
+        scanPalletBarButton.setEnabled(false);
         removeSinglePartBarButton.setEnabled(false);
     }
 
@@ -723,6 +733,7 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
             handleSaleOut();
         } else if (view == logisticsButton) {
             Intent intent = new Intent(this, LogisticsManageActivity.class);
+            intent.putExtra(IntentConstant.Intent_Extra_logistics_from,IntentConstant.Intent_Request_Code_Logistics_from_sdzh_scan_pallet);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_To_Logistics);
         } else if (view == scanPalletBarButton) {
             new IntentIntegrator(this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
@@ -852,7 +863,7 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
 //                sdzhSinglePartBean.getDOI_Code());
 
         String sql = String.format("update DeliveryOrder_Item set IsDelete = 1 where BoxCode = '%s' and DOI_NO = '%s'", sdzhSinglePartBean.getBoxCode(),
-                sdzhSinglePartBean.getDOI_Code());
+                sdzhSinglePartBean.getDoiNO());
         DeleteSinglePartAsyncTask task = new DeleteSinglePartAsyncTask();
         task.execute(sql);
 //        singlePartDetailAdapter.notifyItemRemoved(selectRemovePosition);
@@ -1223,6 +1234,7 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
 
             progressDialog.dismiss();
             singlePartBarButton.setEnabled(false);
+            scanPalletBarButton.setEnabled(false);
 
         }
     }

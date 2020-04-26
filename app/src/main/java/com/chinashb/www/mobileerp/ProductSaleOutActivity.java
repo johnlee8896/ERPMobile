@@ -187,6 +187,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
 //            startActivity(intent);
         } else if (v == logisticsButton) {
             Intent intent = new Intent(this, LogisticsManageActivity.class);
+            intent.putExtra(IntentConstant.Intent_Extra_logistics_from,IntentConstant.Intent_Request_Code_Logistics_from_product_sale_out);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_To_Logistics);
         } else if (v == outButton) {
             if (tempDpOrderDetailBean != null) {

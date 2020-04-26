@@ -67,9 +67,9 @@ public class SDZHSinglePartDetailAdapter extends BaseRecycleAdapter<SDZHSinglePa
             SDZHSinglePartBean entity = (SDZHSinglePartBean) t;
             if (entity != null) {
                 //// TODO: 2020/2/27  ? 
-                serialNumberTextView.setText(entity.getDoiNO());
-                customerNumberTextView.setText(entity.getProductNo());
-                barCodeTextView.setText(entity.getDOI_Code());
+                serialNumberTextView.setText(entity.getDoiNO().replace("\n",""));
+                customerNumberTextView.setText(entity.getProductNo().replace("\n",""));
+                barCodeTextView.setText(entity.getDOI_Code().replace("\n",""));
             }
         }
     }
