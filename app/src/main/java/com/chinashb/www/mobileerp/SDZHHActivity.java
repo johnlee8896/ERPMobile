@@ -574,6 +574,15 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
         } else {
             if (!boxDetailBean.getIsOK()){
                 ToastUtil.showToastShort("该箱已装满！");
+
+                if (boxDetailAdapter != null){
+                    if (singlePartDetailAdapter.getList() != null){
+                        singleOriginalList = singlePartDetailAdapter.getList();
+                    }
+                }else{
+                    singleOriginalList = new ArrayList<>();
+                }
+
             }else{
                 singlePartBarButton.setEnabled(true);
 
@@ -1150,7 +1159,7 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
             UpdateBoxAsyncTask updateBoxAsyncTask = new UpdateBoxAsyncTask();
             updateBoxAsyncTask.execute(updateSql);
 
-            singleOriginalList = new ArrayList<>();
+//            singleOriginalList = new ArrayList<>();
 
         }
     }
@@ -1286,6 +1295,18 @@ public class SDZHHActivity extends BaseActivity implements View.OnClickListener 
                 if (result.getResult()) {
                     logisticsDeliveryId = result.getID();
                     ToastUtil.showToastShort("出库成功！");
+
+                    //出库完成后的一些处理
+                    if (singleOriginalList != null ){
+                        if (singleOriginalList.size() == boxDetailBean.getBoxQty()){
+                            //满箱出库
+                            singleOriginalList = new ArrayList<>();
+                            boxDetailBean = null;
+                        }else if (singleOriginalList.size() < boxDetailBean.getBoxQty()){
+                            //未满箱出库,
+
+                        }
+                    }
                 } else {
                     ToastUtil.showToastShort("出库失败 : " + result.getErrorInfo());
                 }
