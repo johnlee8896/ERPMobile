@@ -175,7 +175,7 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 //            MB3202004010002,GD2020033100031,C00082917,ITEM2019100918157,5,20200401
             String[] qrContent = content.split(",");
 //            if (qrContent != null && qrContent.length == 7){
-            //实际目前确定是6
+            //实际目前确定是6  todo    之后又增加了productId是7个了
             if (qrContent != null && qrContent.length > 5) {
                 String cartonNO = qrContent[0];
 //                workLineId = Integer.parseInt(qrContent[5]);

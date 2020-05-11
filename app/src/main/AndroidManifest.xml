@@ -58,6 +58,11 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--车间要货计划-->
+        <activity
+            android:name=".BuPlanGoodsActivity"
+            android:screenOrientation="portrait" />
+
         <!--三点照合扫托标出库-->
         <activity
             android:name=".SDZHScanPalletCodeActivity"
