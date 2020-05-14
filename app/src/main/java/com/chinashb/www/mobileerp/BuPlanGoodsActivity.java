@@ -13,17 +13,22 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.adapter.BuPlanGoodsItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.BuPlanGoodsItemBean;
 import com.chinashb.www.mobileerp.bean.PlanGoodsIVIDBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.task.TasksActivity;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
 import com.chinashb.www.mobileerp.widget.SelectUseAdapter;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
@@ -45,8 +50,9 @@ public class BuPlanGoodsActivity extends BaseActivity {
     @BindView(R.id.bu_plan_goods_recyclerView) CustomRecyclerView recyclerView;
     @BindView(R.id.bu_plan_goods_emptyManager) EmptyLayoutManageView emptyManager;
 
-    private SelectUseAdapter adapter;
-    private List<PlanGoodsIVIDBean> originalBUDataList;
+    private BuPlanGoodsItemAdapter adapter;
+    private List<BuPlanGoodsItemBean> originalBUDataList;
+    private List<BuPlanGoodsItemBean> originalBUDataNoInvQtyList;
     private int buId;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,28 +61,14 @@ public class BuPlanGoodsActivity extends BaseActivity {
         setContentView(R.layout.activity_bu_plan_goods_layout);
         ButterKnife.bind(this);
 
-        adapter = new SelectUseAdapter();
+        adapter = new BuPlanGoodsItemAdapter();
         recyclerView.setAdapter(adapter);
-        adapter.setOnViewClickListener(new OnViewClickListener() {
-            @Override public <T> void onClickAction(View v, String tag, T t) {
-                if (t != null) {
-                    if (t instanceof PlanGoodsIVIDBean) {
-                        PlanGoodsIVIDBean receiverCompanyBean = (PlanGoodsIVIDBean) t;
-//                        Intent intent = new Intent(BuPlanGoodsActivity.this,LogisticsManageActivity.class);
-//                        intent.putExtra(IntentConstant.Intent_Extra_logistics_customer_bean,receiverCompanyBean);
-//                        setResult(IntentConstant.Intent_Request_Code_Logistics_Customer_to_Logistics,intent);
-//                        finish();
-                    }
-
-                }
-            }
-        });
 
         setViewsListener();
 
-        buId = getIntent().getIntExtra(IntentConstant.Intent_Extra_current_bu_id,0);
+        buId = getIntent().getIntExtra(IntentConstant.Intent_Extra_current_bu_id, 0);
         buId = 54;
-        if (buId > 0){
+        if (buId > 0) {
             handleQueryIVList();
         }
         originalBUDataList = new ArrayList<>();
@@ -96,7 +88,7 @@ public class BuPlanGoodsActivity extends BaseActivity {
                 " Inner Join [Package_Bom]  With (NoLock)  On [Package].[Package_ID]=[Package_Bom].[Package_ID] \n" +
                 " Inner Join [Item]  With (NoLock)  On [Package_Bom].[Item_ID]=[Item].[Item_ID] \n" +
                 " Inner Join [#MPI_IV]  With (NoLock)  On [Product].[Product_ID]=[#MPI_IV].[Product_ID] \n" +
-                " Where  Item.IV_ID Not In (Select IV_ID From ListP  Inner Join Lists On Lists.LID=ListP.LID    And (Lists.Bu_ID=%s)  And Plan_Type_ID=9) ", buId,buId ,buId ,buId ,buId );
+                " Where  Item.IV_ID Not In (Select IV_ID From ListP  Inner Join Lists On Lists.LID=ListP.LID    And (Lists.Bu_ID=%s)  And Plan_Type_ID=9) ", buId, buId, buId, buId, buId);
         SelectIVIDListAsyncTask<PlanGoodsIVIDBean> task = new SelectIVIDListAsyncTask();
         task.execute(sql);
     }
@@ -159,7 +151,7 @@ public class BuPlanGoodsActivity extends BaseActivity {
 //            bindObjectListsToAdapterBU(tempList);
 //            adapter.setData(getFilterList(keyWord));
 //            String whereSql = String.format(" and CF_Chinese_Name like \'%%s%\' ",keyWord);
-            String whereSql = " and CF_Chinese_Name like '%"+keyWord+"%'";
+            String whereSql = " and CF_Chinese_Name like '%" + keyWord + "%'";
             handleQueryIVList();
         } else {
             //todo
@@ -233,17 +225,17 @@ public class BuPlanGoodsActivity extends BaseActivity {
 
         @Override protected void onPostExecute(List<T> planGoodsIVIDList) {
             super.onPostExecute(planGoodsIVIDList);
-            if (planGoodsIVIDList != null && planGoodsIVIDList.size() > 0){
+            if (planGoodsIVIDList != null && planGoodsIVIDList.size() > 0) {
 //                adapter.setData(companyList);
 //                emptyManager.setVisibility(View.GONE);
 //                recyclerView.setVisibility(View.VISIBLE);
                 StringBuilder temp = new StringBuilder("(");
                 int size = planGoodsIVIDList.size();
                 int i = 0;
-                for (T bean : planGoodsIVIDList){
-                    if ( bean instanceof PlanGoodsIVIDBean){
+                for (T bean : planGoodsIVIDList) {
+                    if (bean instanceof PlanGoodsIVIDBean) {
                         temp.append(((PlanGoodsIVIDBean) bean).getIvID());
-                        if (i < size -1){
+                        if (i < size - 1) {
                             temp.append(",");
                         }
                         i++;
@@ -251,18 +243,26 @@ public class BuPlanGoodsActivity extends BaseActivity {
                 }
                 temp.append(")");
 
-                GetBuPlanGoodsItemListAsyncTask task = new GetBuPlanGoodsItemListAsyncTask();
+                GetBuPlanGoodsItemListAsyncTask<BuPlanGoodsItemBean> task = new GetBuPlanGoodsItemListAsyncTask();
                 String sql = String.format(" if object_id('tempdb..#UnListTemp') is not null drop Table #UnListTemp\n" +
                         "   Select identity(int, 1,1) As No, Convert(bigint,IV_ID) As IV_ID Into #UnListTemp From Item_Version Where IV_ID In  %s ;\n" +
-                        "   Select #UnListTemp.No As No, Item.Item_ID, Item_Version.IV_ID, Item.Item + ' '+Item.Item_Name + ' ' + Item.Item_Spec2 As 物料, Item.Item As 物料编码, \n" +
-                        "Item.Item_Name as 名称, Item.Item_Spec2 as 规格, Item_Version.Item_Version as 版本,'' As BackColor,Item.LeadTime As 提前期,Item.LotSizeDay As 起订量,'' As 清单, '' As 备注\n" +
+                        "   Select #UnListTemp.No As No, Item.Item_ID, Item_Version.IV_ID, Item.Item + ' '+Item.Item_Name + ' ' + Item.Item_Spec2 As item_spec, Item.Item As item_name_code, \n" +
+                        "Item.Item_Name as item_name, Item.Item_Spec2 as spec, Item_Version.Item_Version as version\n" +
                         " From Item Inner Join Item_Version On Item.Item_ID=Item_Version.Item_ID  \n" +
                         " Inner Join #UnlistTemp On #UnlistTemp.IV_ID=Item_Version.IV_ID \n" +
                         "  Left Join Lead_Time On Lead_Time.IV_ID = #UnlistTemp.IV_ID And Lead_Time.Bu_ID=%s And Lead_Time.Ac_Type=1 And Lead_Time.Deleted=0 \n" +
-                        "    Where Item_Version.IV_ID IN  %s  Order By No ; ",temp.toString(),buId,temp.toString());
-                task.execute(sql);
+                        "    Where Item_Version.IV_ID IN  %s  Order By No ; ", temp.toString(), buId, temp.toString());
+                try {
+                    task.execute(sql);
+                } catch (Exception e) {
+                    ToastUtil.showToastShort("数据获取失败，原因：" + e.getMessage());
+                }
 
-            }else{
+
+
+
+
+            } else {
 //                emptyManager.setVisibility(View.VISIBLE);
 //                recyclerView.setVisibility(View.GONE);
                 ToastUtil.showToastShort("查询语句错误或没有相关数据！");
@@ -272,9 +272,77 @@ public class BuPlanGoodsActivity extends BaseActivity {
 
     }
 
-
-
+    private CommProgressDialog progressDialog;
     private class GetBuPlanGoodsItemListAsyncTask<T> extends AsyncTask<String, Void, List<T>> {
+
+        @Override protected List<T> doInBackground(String... strings) {
+            String sql = strings[0];
+            WsResult result = WebServiceUtil.getDataTable(sql);
+            List<T> commonDataList = null;
+            if (result != null && result.getResult()) {
+                String jsonData = result.getErrorInfo();
+                Gson gson = new Gson();
+                commonDataList = gson.fromJson(jsonData, new TypeToken<List<BuPlanGoodsItemBean>>() {
+                }.getType());
+
+                if (commonDataList != null && commonDataList.size() > 0) {
+                    if (commonDataList.get(0) instanceof BuPlanGoodsItemBean) {
+                        commonDataList = gson.fromJson(jsonData, new TypeToken<List<BuPlanGoodsItemBean>>() {
+                        }.getType());
+                    }
+                }
+            }
+            return commonDataList;
+        }
+
+        @Override protected void onPostExecute(List<T> buPlanGoodsItemBeanList) {
+            super.onPostExecute(buPlanGoodsItemBeanList);
+            if (buPlanGoodsItemBeanList != null && buPlanGoodsItemBeanList.size() > 0) {
+                StringBuilder temp = new StringBuilder("(");
+                int size = buPlanGoodsItemBeanList.size();
+                int i = 0;
+                for (T bean : buPlanGoodsItemBeanList) {
+                    if (bean instanceof BuPlanGoodsItemBean) {
+                        temp.append(((BuPlanGoodsItemBean) bean).getItemID());
+                        if (i < size - 1) {
+                            temp.append(",");
+                        }
+                        i++;
+                    }
+                }
+                temp.append(")");
+
+
+
+
+
+
+
+                adapter.setData((List<BuPlanGoodsItemBean>) buPlanGoodsItemBeanList);
+                emptyManager.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+            } else {
+                emptyManager.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+                ToastUtil.showToastShort("查询语句错误或没有相关数据！");
+            }
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+        }
+
+        @Override protected void onPreExecute() {
+            super.onPreExecute();
+            if (progressDialog == null) {
+                progressDialog = new CommProgressDialog.Builder(BuPlanGoodsActivity.this).setTitle("正在获取数据").create();
+            }
+            progressDialog.show();
+        }
+    }
+
+
+
+    private class GetInvQtyListAsyncTask<T> extends AsyncTask<String, Void, List<T>> {
 
         @Override protected List<T> doInBackground(String... strings) {
 //            String sql = "select Company_ID,Company_Chinese_Name,Company_English_Name from company where Company_Enabled = 1";
@@ -284,32 +352,49 @@ public class BuPlanGoodsActivity extends BaseActivity {
             if (result != null && result.getResult()) {
                 String jsonData = result.getErrorInfo();
                 Gson gson = new Gson();
-//                commonDataList = gson.fromJson(jsonData, new TypeToken<List<PlanGoodsIVIDBean>>() {
-//                }.getType());
-//
-//                if (commonDataList != null && commonDataList.size() > 0) {
-//                    if (commonDataList.get(0) instanceof PlanGoodsIVIDBean) {
-//                        commonDataList = gson.fromJson(jsonData, new TypeToken<List<PlanGoodsIVIDBean>>() {
-//                        }.getType());
-//                    }
-//                }
+                commonDataList = gson.fromJson(jsonData, new TypeToken<List<CurrentInvQtyBean>>() {
+                }.getType());
+
+                if (commonDataList != null && commonDataList.size() > 0) {
+                    if (commonDataList.get(0) instanceof CurrentInvQtyBean) {
+                        commonDataList = gson.fromJson(jsonData, new TypeToken<List<CurrentInvQtyBean>>() {
+                        }.getType());
+                    }
+                }
             }
             return commonDataList;
         }
 
-        @Override protected void onPostExecute(List<T> planGoodsIVIDList) {
-            super.onPostExecute(planGoodsIVIDList);
-            if (planGoodsIVIDList != null && planGoodsIVIDList.size() > 0){
-//                adapter.setData(companyList);
-//                emptyManager.setVisibility(View.GONE);
-//                recyclerView.setVisibility(View.VISIBLE);
-            }else{
+        @Override protected void onPostExecute(List<T> currentInvQtyBeanList) {
+            super.onPostExecute(currentInvQtyBeanList);
+            if (currentInvQtyBeanList != null && currentInvQtyBeanList.size() > 0) {
+
+
+
+
+
+
+            } else {
 //                emptyManager.setVisibility(View.VISIBLE);
 //                recyclerView.setVisibility(View.GONE);
-                ToastUtil.showToastShort("查询语句错误");
+                ToastUtil.showToastShort("查询库存语句错误或没有相关数据！");
             }
 
         }
 
     }
+
+    private class CurrentInvQtyBean{
+        @SerializedName("currentInvQty") double currentInvQty;
+
+        public double getCurrentInvQty() {
+            return currentInvQty;
+        }
+
+        public void setCurrentInvQty(double currentInvQty) {
+            this.currentInvQty = currentInvQty;
+        }
+    }
+
+
 }

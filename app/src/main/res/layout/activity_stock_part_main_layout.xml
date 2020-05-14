@@ -4,24 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
         android:layout_width="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="50dp"
         app:app_title_text="仓库管理"
-        android:layout_height="50dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_stock_system_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="仓库管理"
-         />
+        android:text="仓库管理" />
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:scrollbars="vertical"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -38,9 +40,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingTop="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
                     <!--<TextView-->
                     <!--android:id="@+id/main_warehouse_manage__product_button"-->
                     <!--android:layout_width="match_parent"-->
@@ -92,9 +94,9 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingTop="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
                         android:id="@+id/imageView3"
@@ -136,9 +138,9 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingTop="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
                         android:id="@+id/imageView7"
@@ -178,9 +180,9 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingTop="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
                         android:id="@+id/imageView5"
@@ -221,9 +223,9 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingTop="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
 
@@ -264,9 +266,9 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingTop="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
 
@@ -308,9 +310,9 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingTop="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
 
@@ -352,9 +354,9 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingTop="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
 
@@ -375,30 +377,30 @@
 
                     <ImageView
 
-                        android:id="@+id/btn_return_goods_supplier"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:visibility="visible"
-                    app:srcCompat="@drawable/ic_settings_remote_black_24dp" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/ic_settings_remote_black_24dp" />
 
                     <Button
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="left"
-                    android:background="@drawable/squarebutton"
-                    android:text="供应商退货"
-                    android:textColor="#ffffff"
-                    android:textSize="14sp"
-                    android:visibility="visible" />
+                        android:id="@+id/btn_return_goods_supplier"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="供应商退货"
+                        android:textColor="#ffffff"
+                        android:textSize="14sp"
+                        android:visibility="visible" />
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingTop="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ImageView
 
@@ -418,28 +420,29 @@
                         android:textSize="18sp" />
 
                     <!--<ImageView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_gravity="center_vertical"-->
-                        <!--android:visibility="visible"-->
-                        <!--app:srcCompat="@drawable/ic_settings_remote_black_24dp" />-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_gravity="center_vertical"-->
+                    <!--android:visibility="visible"-->
+                    <!--app:srcCompat="@drawable/ic_settings_remote_black_24dp" />-->
 
                     <!--<Button-->
-                        <!--android:layout_width="100dp"-->
-                        <!--android:layout_height="60dp"-->
-                        <!--android:layout_gravity="left"-->
-                        <!--android:background="@drawable/squarebutton"-->
-                        <!--android:text=""-->
-                        <!--android:textColor="#ffffff"-->
-                        <!--android:textSize="14sp"-->
-                        <!--android:visibility="visible" />-->
+                    <!--android:layout_width="100dp"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:layout_gravity="left"-->
+                    <!--android:background="@drawable/squarebutton"-->
+                    <!--android:text=""-->
+                    <!--android:textColor="#ffffff"-->
+                    <!--android:textSize="14sp"-->
+                    <!--android:visibility="visible" />-->
                 </TableRow>
+
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingBottom="5dp"
                     android:paddingLeft="5dp"
-                    android:paddingTop="5dp">
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
                     <ProgressBar
                         android:id="@+id/pb_scan_progressbar"
@@ -456,14 +459,13 @@
                         app:backgroundTint="@android:color/background_light"
                         app:srcCompat="@mipmap/smiley"
                         app:useCompatPadding="false" />
-                </TableRow>>
+                </TableRow>
+                >
             </TableLayout>
 
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
-
-
 
 
     <!--</LinearLayout>-->

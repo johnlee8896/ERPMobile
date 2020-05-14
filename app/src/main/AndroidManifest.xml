@@ -58,6 +58,11 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--供应商退货页面-->
+        <activity
+            android:name=".SupplierReturnActivity"
+            android:screenOrientation="portrait" />
+
         <!--车间要货计划-->
         <activity
             android:name=".BuPlanGoodsActivity"

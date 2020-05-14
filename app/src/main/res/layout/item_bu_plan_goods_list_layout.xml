@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_size_5"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_size_5">
+
+    <android.support.constraint.Barrier
+        android:id="@+id/bu_plan_goods_common_barrier"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="bu_plan_goods_common_first_info_textView,bu_plan_goods_second_info_textView,bu_plan_goods_third_info_textView"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/bu_plan_goods_common_first_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="Item_ID:" />
+
+    <TextView
+        android:id="@+id/bu_plan_goods_first_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/login_title_color"
+        app:layout_constraintLeft_toRightOf="@id/bu_plan_goods_common_barrier"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="3267" />
+
+    <TextView
+        android:id="@+id/bu_plan_goods_first_right_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintLeft_toRightOf="@id/bu_plan_goods_first_name_textView"
+        android:layout_marginLeft="@dimen/dimen_size_50"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="版本:" />
+
+    <TextView
+        android:id="@+id/bu_plan_goods_first_right_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintLeft_toRightOf="@id/bu_plan_goods_first_right_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="A1" />
+
+    <TextView
+        android:id="@+id/bu_plan_goods_second_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/bu_plan_goods_common_first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/bu_plan_goods_common_first_info_textView"
+        android:text="物料:" />
+
+    <TextView
+        android:id="@+id/bu_plan_goods_second_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/bu_plan_goods_common_barrier"
+        app:layout_constraintTop_toBottomOf="@id/bu_plan_goods_second_info_textView"
+        app:layout_constraintTop_toTopOf="@id/bu_plan_goods_second_info_textView"
+        tools:text="PYG-CA7220-1212-1 衬套 " />
+
+
+    <TextView
+        android:id="@+id/bu_plan_goods_third_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bu_plan_goods_second_info_textView"
+        android:text="当前库存: " />
+
+    <TextView
+        android:id="@+id/bu_plan_goods_third_name_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@id/bu_plan_goods_third_info_textView"
+        app:layout_constraintLeft_toRightOf="@id/bu_plan_goods_common_barrier"
+        app:layout_constraintTop_toTopOf="@id/bu_plan_goods_third_info_textView"
+        tools:text="0" />
+
+    <!--<TextView-->
+        <!--android:id="@+id/bu_plan_goods_fourth_info_textView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingTop="@dimen/dimen_size_10"-->
+        <!--android:textColor="@color/black"-->
+        <!--android:textSize="@dimen/text_size_15"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/bu_plan_goods_third_info_textView"-->
+        <!--tools:text="车间名称434343: " />-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/bu_plan_goods_fourth_name_textView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--android:paddingTop="@dimen/dimen_size_10"-->
+        <!--android:textColor="@color/color_orange_FF6A00"-->
+        <!--android:textSize="@dimen/text_size_18"-->
+        <!--app:layout_constraintBottom_toBottomOf="@id/bu_plan_goods_fourth_info_textView"-->
+        <!--app:layout_constraintLeft_toRightOf="@id/bu_plan_goods_common_barrier"-->
+        <!--app:layout_constraintTop_toTopOf="@id/bu_plan_goods_fourth_info_textView"-->
+        <!--tools:text="钣金车间" />-->
+
+</android.support.constraint.ConstraintLayout>
