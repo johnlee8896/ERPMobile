@@ -67,6 +67,7 @@ public class BuPlanGoodsActivity extends BaseActivity {
         setViewsListener();
 
         buId = getIntent().getIntExtra(IntentConstant.Intent_Extra_current_bu_id, 0);
+
         buId = 54;
         if (buId > 0) {
             handleQueryIVList();
