@@ -30,6 +30,17 @@ public class BuPlanGoodsItemBean {
     @SerializedName("spec") private String spec;
     @SerializedName("version") private String version;
 
+    private  double inv_qty;
+
+    public double getInv_qty() {
+        return inv_qty;
+    }
+
+    public BuPlanGoodsItemBean setInv_qty(double inv_qty) {
+        this.inv_qty = inv_qty;
+        return this;
+    }
+
     public int getNo() {
         return No;
     }

@@ -39,6 +39,7 @@ public class BuPlanGoodsItemAdapter extends BaseRecycleAdapter<BuPlanGoodsItemBe
                 itemIDTextView.setText(bean.getItemID() + "");
                 versionTextView.setText(bean.getVersion());
                 nameTextView.setText(bean.getItemSpec());
+                storageTextView.setText(bean.getInv_qty() + "");
             }
         }
     }

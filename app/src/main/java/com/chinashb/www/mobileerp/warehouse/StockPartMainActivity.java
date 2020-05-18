@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
@@ -90,6 +89,13 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         setHomeButton();
         setViewsListener();
         handleGetDepartment();
+
+        handleGetBuAcAndInvTable();
+
+    }
+
+    //获取bu 和最新ac_table和inv_table的对应关系并保存
+    private void handleGetBuAcAndInvTable() {
 
     }
 

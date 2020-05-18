@@ -1,6 +1,5 @@
 package com.chinashb.www.mobileerp;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,15 +17,12 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BuPlanGoodsItemBean;
 import com.chinashb.www.mobileerp.bean.PlanGoodsIVIDBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
-import com.chinashb.www.mobileerp.task.TasksActivity;
-import com.chinashb.www.mobileerp.utils.IntentConstant;
-import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
-import com.chinashb.www.mobileerp.widget.SelectUseAdapter;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -66,9 +62,10 @@ public class BuPlanGoodsActivity extends BaseActivity {
 
         setViewsListener();
 
-        buId = getIntent().getIntExtra(IntentConstant.Intent_Extra_current_bu_id, 0);
+//        buId = getIntent().getIntExtra(IntentConstant.Intent_Extra_current_bu_id, 0);
 
-        buId = 54;
+//        buId = 54;
+        buId = UserSingleton.get().getUserInfo().getBu_ID();
         if (buId > 0) {
             handleQueryIVList();
         }
@@ -227,9 +224,6 @@ public class BuPlanGoodsActivity extends BaseActivity {
         @Override protected void onPostExecute(List<T> planGoodsIVIDList) {
             super.onPostExecute(planGoodsIVIDList);
             if (planGoodsIVIDList != null && planGoodsIVIDList.size() > 0) {
-//                adapter.setData(companyList);
-//                emptyManager.setVisibility(View.GONE);
-//                recyclerView.setVisibility(View.VISIBLE);
                 StringBuilder temp = new StringBuilder("(");
                 int size = planGoodsIVIDList.size();
                 int i = 0;
@@ -259,14 +253,8 @@ public class BuPlanGoodsActivity extends BaseActivity {
                     ToastUtil.showToastShort("数据获取失败，原因：" + e.getMessage());
                 }
 
-
-
-
-
             } else {
-//                emptyManager.setVisibility(View.VISIBLE);
-//                recyclerView.setVisibility(View.GONE);
-                ToastUtil.showToastShort("查询语句错误或没有相关数据！");
+                ToastUtil.showToastShort("查询IV_ID语句错误或没有相关数据！");
             }
 
         }
@@ -299,6 +287,7 @@ public class BuPlanGoodsActivity extends BaseActivity {
         @Override protected void onPostExecute(List<T> buPlanGoodsItemBeanList) {
             super.onPostExecute(buPlanGoodsItemBeanList);
             if (buPlanGoodsItemBeanList != null && buPlanGoodsItemBeanList.size() > 0) {
+                originalBUDataNoInvQtyList = (List<BuPlanGoodsItemBean>) buPlanGoodsItemBeanList;
                 StringBuilder temp = new StringBuilder("(");
                 int size = buPlanGoodsItemBeanList.size();
                 int i = 0;
@@ -313,19 +302,17 @@ public class BuPlanGoodsActivity extends BaseActivity {
                 }
                 temp.append(")");
 
-
-
-
-
-
-
-                adapter.setData((List<BuPlanGoodsItemBean>) buPlanGoodsItemBeanList);
-                emptyManager.setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
+//                adapter.setData((List<BuPlanGoodsItemBean>) buPlanGoodsItemBeanList);
+//                emptyManager.setVisibility(View.GONE);
+//                recyclerView.setVisibility(View.VISIBLE);
+//                "select inv_table from bu_ac where bu_id = 54 and ac_type = 1 and Active = 1";
+                String sql = String.format("select inv_qty as currentInvQty from Inv_54_97_1 where item_id in %s ",temp.toString());
+                GetInvQtyListAsyncTask<CurrentInvQtyBean> task = new GetInvQtyListAsyncTask();
+                task.execute(sql);
             } else {
-                emptyManager.setVisibility(View.VISIBLE);
-                recyclerView.setVisibility(View.GONE);
-                ToastUtil.showToastShort("查询语句错误或没有相关数据！");
+//                emptyManager.setVisibility(View.VISIBLE);
+//                recyclerView.setVisibility(View.GONE);
+                ToastUtil.showToastShort("查询item语句错误或没有相关数据！");
             }
             if (progressDialog != null && progressDialog.isShowing()) {
                 progressDialog.dismiss();
@@ -346,7 +333,6 @@ public class BuPlanGoodsActivity extends BaseActivity {
     private class GetInvQtyListAsyncTask<T> extends AsyncTask<String, Void, List<T>> {
 
         @Override protected List<T> doInBackground(String... strings) {
-//            String sql = "select Company_ID,Company_Chinese_Name,Company_English_Name from company where Company_Enabled = 1";
             String sql = strings[0];
             WsResult result = WebServiceUtil.getDataTable(sql);
             List<T> commonDataList = null;
@@ -369,15 +355,23 @@ public class BuPlanGoodsActivity extends BaseActivity {
         @Override protected void onPostExecute(List<T> currentInvQtyBeanList) {
             super.onPostExecute(currentInvQtyBeanList);
             if (currentInvQtyBeanList != null && currentInvQtyBeanList.size() > 0) {
-
-
-
-
+                if (currentInvQtyBeanList.size() == originalBUDataNoInvQtyList.size()){
+                    List<BuPlanGoodsItemBean> buPlanGoodsItemBeanList = new ArrayList<>();
+                    int i = 0;
+                    for (BuPlanGoodsItemBean bean : originalBUDataNoInvQtyList ){
+                        bean.setInv_qty(((CurrentInvQtyBean)currentInvQtyBeanList.get(i)).currentInvQty);
+                        buPlanGoodsItemBeanList.add(bean);
+                        i++;
+                    }
+                    adapter.setData(buPlanGoodsItemBeanList);
+                    emptyManager.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                }
 
 
             } else {
-//                emptyManager.setVisibility(View.VISIBLE);
-//                recyclerView.setVisibility(View.GONE);
+                emptyManager.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
                 ToastUtil.showToastShort("查询库存语句错误或没有相关数据！");
             }
 
