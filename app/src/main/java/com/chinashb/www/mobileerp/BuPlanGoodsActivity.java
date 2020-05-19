@@ -28,6 +28,7 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -301,12 +302,15 @@ public class BuPlanGoodsActivity extends BaseActivity {
                     }
                 }
                 temp.append(")");
+                String sql = String.format("select  item_id,Isnull(Sum(Inv_Qty),0)as currentInvQty from Inv_54_97_1 where item_id in %s  group by item_id",temp.toString());
 
-//                adapter.setData((List<BuPlanGoodsItemBean>) buPlanGoodsItemBeanList);
-//                emptyManager.setVisibility(View.GONE);
-//                recyclerView.setVisibility(View.VISIBLE);
-//                "select inv_table from bu_ac where bu_id = 54 and ac_type = 1 and Active = 1";
-                String sql = String.format("select inv_qty as currentInvQty from Inv_54_97_1 where item_id in %s ",temp.toString());
+
+//                "Select AllItem.Item_ID, Isnull(Inv.currentInvQty,0) FROM \n" +
+//                        "(Select Item_ID  FROM item Where item_id in  (2864,64766,52315,61406) ) As AllItem\n" +
+//                        "Left join (\n" +
+//                        "select Item_ID, Sum(inv_qty) as currentInvQty from Inv_54_97_1 where item_id in  (2864,64766,52315,61406) \n" +
+//                        "Group BY Item_ID\n" +
+//                        ") As Inv On AllItem.item_ID=Inv.item_ID"
                 GetInvQtyListAsyncTask<CurrentInvQtyBean> task = new GetInvQtyListAsyncTask();
                 task.execute(sql);
             } else {
@@ -354,19 +358,26 @@ public class BuPlanGoodsActivity extends BaseActivity {
 
         @Override protected void onPostExecute(List<T> currentInvQtyBeanList) {
             super.onPostExecute(currentInvQtyBeanList);
+            HashMap<Long,Double> itemIdInvQtyHashMap = new HashMap<>();
             if (currentInvQtyBeanList != null && currentInvQtyBeanList.size() > 0) {
-                if (currentInvQtyBeanList.size() == originalBUDataNoInvQtyList.size()){
+                for (T bean : currentInvQtyBeanList){
+                    if (bean instanceof CurrentInvQtyBean){
+                        itemIdInvQtyHashMap.put(((CurrentInvQtyBean)bean).getItem_id(),((CurrentInvQtyBean)bean).getCurrentInvQty());
+                    }
+                }
+
+//                if (currentInvQtyBeanList.size() == originalBUDataNoInvQtyList.size()){
                     List<BuPlanGoodsItemBean> buPlanGoodsItemBeanList = new ArrayList<>();
                     int i = 0;
                     for (BuPlanGoodsItemBean bean : originalBUDataNoInvQtyList ){
-                        bean.setInv_qty(((CurrentInvQtyBean)currentInvQtyBeanList.get(i)).currentInvQty);
+                        bean.setInv_qty(itemIdInvQtyHashMap.get(bean.getItemID()));
                         buPlanGoodsItemBeanList.add(bean);
-                        i++;
+//                        i++;
                     }
                     adapter.setData(buPlanGoodsItemBeanList);
                     emptyManager.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
-                }
+//                }
 
 
             } else {
@@ -381,6 +392,15 @@ public class BuPlanGoodsActivity extends BaseActivity {
 
     private class CurrentInvQtyBean{
         @SerializedName("currentInvQty") double currentInvQty;
+        @SerializedName("item_id") long item_id;
+
+        public long getItem_id() {
+            return item_id;
+        }
+
+        public void setItem_id(long item_id) {
+            this.item_id = item_id;
+        }
 
         public double getCurrentInvQty() {
             return currentInvQty;
