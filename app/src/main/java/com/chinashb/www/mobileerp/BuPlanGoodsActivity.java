@@ -370,7 +370,7 @@ public class BuPlanGoodsActivity extends BaseActivity {
                     List<BuPlanGoodsItemBean> buPlanGoodsItemBeanList = new ArrayList<>();
                     int i = 0;
                     for (BuPlanGoodsItemBean bean : originalBUDataNoInvQtyList ){
-                        bean.setInv_qty(itemIdInvQtyHashMap.get(bean.getItemID()));
+                        bean.setInv_qty(itemIdInvQtyHashMap.get(bean.getItemID()) != null ? itemIdInvQtyHashMap.get(bean.getItemID()): 0.0);
                         buPlanGoodsItemBeanList.add(bean);
 //                        i++;
                     }
