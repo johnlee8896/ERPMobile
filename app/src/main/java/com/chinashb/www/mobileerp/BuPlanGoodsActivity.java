@@ -18,16 +18,20 @@ import com.chinashb.www.mobileerp.bean.BuPlanGoodsItemBean;
 import com.chinashb.www.mobileerp.bean.PlanGoodsIVIDBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
+import com.chinashb.www.mobileerp.widget.TimePickerManager;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,17 +44,23 @@ import butterknife.ButterKnife;
  * @description 车间要货计划
  */
 
-public class BuPlanGoodsActivity extends BaseActivity {
+public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickListener, OnViewClickListener {
     @BindView(R.id.bu_plan_goods_search_TextView) TextView searchTextView;
     @BindView(R.id.bu_plan_goods_input_editText) EditText searchEditText;
     @BindView(R.id.search_clear_input_ImageView) ImageView clearImageView;
     @BindView(R.id.bu_plan_goods_recyclerView) CustomRecyclerView recyclerView;
     @BindView(R.id.bu_plan_goods_emptyManager) EmptyLayoutManageView emptyManager;
+    @BindView(R.id.bu_plan_goods_start_textView) TextView startTimeTextView;
+    @BindView(R.id.bu_plan_goods_end_textView) TextView endTimeTextView;
 
     private BuPlanGoodsItemAdapter adapter;
     private List<BuPlanGoodsItemBean> originalBUDataList;
     private List<BuPlanGoodsItemBean> originalBUDataNoInvQtyList;
+    private TimePickerManager timePickerManager;
     private int buId;
+    private String startDateString;
+    private String endDateString;
+    private String currentDate = "";
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +71,12 @@ public class BuPlanGoodsActivity extends BaseActivity {
         adapter = new BuPlanGoodsItemAdapter();
         recyclerView.setAdapter(adapter);
 
+        timePickerManager = new TimePickerManager(BuPlanGoodsActivity.this);
         setViewsListener();
+
+        currentDate = UnitFormatUtil.formatTimeToDay(System.currentTimeMillis());
+        startDateString = currentDate;
+        endDateString = currentDate;
 
 //        buId = getIntent().getIntExtra(IntentConstant.Intent_Extra_current_bu_id, 0);
 
@@ -139,6 +154,9 @@ public class BuPlanGoodsActivity extends BaseActivity {
                 return false;
             }
         });
+
+        endTimeTextView.setOnClickListener(this);
+        startTimeTextView.setOnClickListener(this);
     }
 
     private void doSearchAction(String keyWord) {
@@ -156,6 +174,43 @@ public class BuPlanGoodsActivity extends BaseActivity {
             //todo
 //            bindObjectListsToAdapterBU(originalBUDataList);
             adapter.setData(originalBUDataList);
+        }
+    }
+
+    private void showTimePickerDialog(String pickType) {
+        timePickerManager
+                .setOnViewClickListener(BuPlanGoodsActivity.this)
+                .showDialog(pickType);
+    }
+
+    private String getText(Date date) {
+        return UnitFormatUtil.sdf_YMD.format(date);
+    }
+
+    @Override public void onClick(View v) {
+        if (v == startTimeTextView) {
+            showTimePickerDialog(TimePickerManager.PICK_TYPE_START);
+        } else if (v == endTimeTextView) {
+            showTimePickerDialog(TimePickerManager.PICK_TYPE_END);
+        }
+    }
+
+    @Override public <T> void onClickAction(View v, String tag, T date) {
+        if (tag.equals(TimePickerManager.PICK_TYPE_START)) {
+//            startDateString = ((Date) date).getTime();
+            startDateString = getText((Date) date);
+            startTimeTextView.setText(getText((Date) date));
+            startTimeTextView.setTextColor(getResources().getColor(R.color.color_blue_528FFF));
+
+        } else if (tag.equals(TimePickerManager.PICK_TYPE_END)) {
+            endDateString = getText((Date) date);
+            endTimeTextView.setText(getText((Date) date));
+            endTimeTextView.setTextColor(getResources().getColor(R.color.color_blue_528FFF));
+//            task.execute();
+
+//            PlanShowListActivity.GetMPAsyncTask task;
+//            task = new PlanShowListActivity.GetMPAsyncTask();
+//            task.execute();
         }
     }
 
@@ -263,6 +318,7 @@ public class BuPlanGoodsActivity extends BaseActivity {
     }
 
     private CommProgressDialog progressDialog;
+
     private class GetBuPlanGoodsItemListAsyncTask<T> extends AsyncTask<String, Void, List<T>> {
 
         @Override protected List<T> doInBackground(String... strings) {
@@ -302,7 +358,7 @@ public class BuPlanGoodsActivity extends BaseActivity {
                     }
                 }
                 temp.append(")");
-                String sql = String.format("select  item_id,Isnull(Sum(Inv_Qty),0)as currentInvQty from Inv_54_97_1 where item_id in %s  group by item_id",temp.toString());
+                String sql = String.format("select  item_id,Isnull(Sum(Inv_Qty),0)as currentInvQty from Inv_54_97_1 where item_id in %s  group by item_id", temp.toString());
 
 
 //                "Select AllItem.Item_ID, Isnull(Inv.currentInvQty,0) FROM \n" +
@@ -333,7 +389,6 @@ public class BuPlanGoodsActivity extends BaseActivity {
     }
 
 
-
     private class GetInvQtyListAsyncTask<T> extends AsyncTask<String, Void, List<T>> {
 
         @Override protected List<T> doInBackground(String... strings) {
@@ -358,25 +413,27 @@ public class BuPlanGoodsActivity extends BaseActivity {
 
         @Override protected void onPostExecute(List<T> currentInvQtyBeanList) {
             super.onPostExecute(currentInvQtyBeanList);
-            HashMap<Long,Double> itemIdInvQtyHashMap = new HashMap<>();
+            HashMap<Long, Double> itemIdInvQtyHashMap = new HashMap<>();
             if (currentInvQtyBeanList != null && currentInvQtyBeanList.size() > 0) {
-                for (T bean : currentInvQtyBeanList){
-                    if (bean instanceof CurrentInvQtyBean){
-                        itemIdInvQtyHashMap.put(((CurrentInvQtyBean)bean).getItem_id(),((CurrentInvQtyBean)bean).getCurrentInvQty());
+                for (T bean : currentInvQtyBeanList) {
+                    if (bean instanceof CurrentInvQtyBean) {
+                        itemIdInvQtyHashMap.put(((CurrentInvQtyBean) bean).getItem_id(), ((CurrentInvQtyBean) bean).getCurrentInvQty());
                     }
                 }
 
 //                if (currentInvQtyBeanList.size() == originalBUDataNoInvQtyList.size()){
-                    List<BuPlanGoodsItemBean> buPlanGoodsItemBeanList = new ArrayList<>();
-                    int i = 0;
-                    for (BuPlanGoodsItemBean bean : originalBUDataNoInvQtyList ){
-                        bean.setInv_qty(itemIdInvQtyHashMap.get(bean.getItemID()) != null ? itemIdInvQtyHashMap.get(bean.getItemID()): 0.0);
-                        buPlanGoodsItemBeanList.add(bean);
+                List<BuPlanGoodsItemBean> buPlanGoodsItemBeanList = new ArrayList<>();
+                int i = 0;
+                for (BuPlanGoodsItemBean bean : originalBUDataNoInvQtyList) {
+                    //又是long 与int 的关系
+//                    bean.setInv_qty(itemIdInvQtyHashMap.get(bean.getItemID()) != null ? itemIdInvQtyHashMap.get(bean.getItemID()) : 0.0);
+                    bean.setInv_qty(itemIdInvQtyHashMap.get(bean.getItemID()) != null ? itemIdInvQtyHashMap.get(bean.getItemID()) : 0.0);
+                    buPlanGoodsItemBeanList.add(bean);
 //                        i++;
-                    }
-                    adapter.setData(buPlanGoodsItemBeanList);
-                    emptyManager.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
+                }
+                adapter.setData(buPlanGoodsItemBeanList);
+                emptyManager.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
 //                }
 
 
@@ -390,7 +447,7 @@ public class BuPlanGoodsActivity extends BaseActivity {
 
     }
 
-    private class CurrentInvQtyBean{
+    private class CurrentInvQtyBean {
         @SerializedName("currentInvQty") double currentInvQty;
         @SerializedName("item_id") long item_id;
 

@@ -174,7 +174,7 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
         protected Void doInBackground(String... params) {
             String sql = "Select M.MPIWC_ID,dbo.get_mw_plan_show_name(mpiwc_ID) As MwName,dbo.get_mw_plan_show_name_html(mpiwc_ID) As HtmlMwName, M.MPI_Remark " +
                     "From MPI_WC As M " +
-                    "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + " " +
+                    "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + "  and allow_iss=1" +
                     " Order By PShift_ID, Shift_No";
             WsResult result = WebServiceUtil.getDataTable(sql);
             if (result != null && result.getResult()) {

@@ -22,7 +22,8 @@ public class BuPlanGoodsItemBean {
      */
 
     @SerializedName("No") private int No;
-    @SerializedName("Item_ID") private int ItemID;
+//    @SerializedName("Item_ID") private int ItemID;
+    @SerializedName("Item_ID") private long ItemID;
     @SerializedName("IV_ID") private int IVID;
     @SerializedName("item_spec") private String itemSpec;
     @SerializedName("item_name_code") private String itemNameCode;
@@ -49,11 +50,11 @@ public class BuPlanGoodsItemBean {
         this.No = No;
     }
 
-    public int getItemID() {
+    public long getItemID() {
         return ItemID;
     }
 
-    public void setItemID(int ItemID) {
+    public void setItemID(long ItemID) {
         this.ItemID = ItemID;
     }
 
