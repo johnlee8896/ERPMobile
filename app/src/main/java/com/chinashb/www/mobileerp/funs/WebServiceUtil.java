@@ -2432,6 +2432,7 @@ public class WebServiceUtil {
     }
 
     public static WsResult getDataTable(String sql) {
+        System.out.println("================ getDataTable sql =" + sql);
         int maxCount = 1000;
         //方便打印完整log
         if (sql.length() > maxCount) {

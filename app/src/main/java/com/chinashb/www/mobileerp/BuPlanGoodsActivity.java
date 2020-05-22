@@ -89,8 +89,24 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void handleQueryIVList() {
+        String tempStartDateString = "GetDate()";
+        StringBuilder whereStringBuilder = new StringBuilder();
+        if (TextUtils.equals(startDateString,UnitFormatUtil.formatTimeToDay(System.currentTimeMillis())) &&
+        TextUtils.equals(endDateString,UnitFormatUtil.formatTimeToDay(System.currentTimeMillis()))){
+            whereStringBuilder.append(tempStartDateString);
+        }else{
+            if(!TextUtils.isEmpty(startDateString)){
+                tempStartDateString = startDateString;
+            }
+            whereStringBuilder.append(tempStartDateString);
+    //        String tempEndDateString = "";
+            if (!TextUtils.isEmpty(endDateString)){
+    //            tempEndDateString = "and MPI.MPI_Date <= " + endDateString;
+               whereStringBuilder.append(" and MPI.MPI_Date <= " + endDateString);
+            }
+        }
         String sql = String.format(" if object_id('tempdb..#MPI_IV') is not null drop Table #MPI_IV\n" +
-                " Select Distinct Product_ID,Item_ID, IV_ID Into #MPI_IV From MPI  Where  MPI.Bu_ID=%s And Deleted=0 And MPI.MPI_Date>=GetDate(); Select Distinct Abom.IV_ID From Abomv  Inner Join [Abom]  With (NoLock)  On [Abomv].[Abv_ID]=[Abom].[Abv_ID] \n" +
+                " Select Distinct Product_ID,Item_ID, IV_ID Into #MPI_IV From MPI  Where  MPI.Bu_ID=%s And Deleted=0 And MPI.MPI_Date>= %s ; Select Distinct Abom.IV_ID From Abomv  Inner Join [Abom]  With (NoLock)  On [Abomv].[Abv_ID]=[Abom].[Abv_ID] \n" +
                 " And Abomv.Active=1   Inner Join [#MPI_IV]  With (NoLock)  On [AbomV].[IV_ID]=[#MPI_IV].[IV_ID] \n" +
                 " Where   Abom.IV_ID Not In (Select IV_ID From ListP  Inner Join Lists On ListP.LID=Lists.LID    And (Lists.Bu_ID=%s)  And (Plan_Type_ID=9 Or Plan_Type_ID=6 Or Plan_Type_ID=8 Or Plan_Type_ID=10 Or Plan_Type_ID=11)) \n" +
                 " Union Select Distinct AbomZ.CIV_ID As IV_ID From AbomZ  Where \n" +
@@ -102,7 +118,7 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
                 " Inner Join [Package_Bom]  With (NoLock)  On [Package].[Package_ID]=[Package_Bom].[Package_ID] \n" +
                 " Inner Join [Item]  With (NoLock)  On [Package_Bom].[Item_ID]=[Item].[Item_ID] \n" +
                 " Inner Join [#MPI_IV]  With (NoLock)  On [Product].[Product_ID]=[#MPI_IV].[Product_ID] \n" +
-                " Where  Item.IV_ID Not In (Select IV_ID From ListP  Inner Join Lists On Lists.LID=ListP.LID    And (Lists.Bu_ID=%s)  And Plan_Type_ID=9) ", buId, buId, buId, buId, buId);
+                " Where  Item.IV_ID Not In (Select IV_ID From ListP  Inner Join Lists On Lists.LID=ListP.LID    And (Lists.Bu_ID=%s)  And Plan_Type_ID=9) ", buId,whereStringBuilder, buId, buId, buId, buId);
         SelectIVIDListAsyncTask<PlanGoodsIVIDBean> task = new SelectIVIDListAsyncTask();
         task.execute(sql);
     }
