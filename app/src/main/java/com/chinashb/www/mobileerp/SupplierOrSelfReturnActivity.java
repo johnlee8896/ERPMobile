@@ -19,6 +19,7 @@ import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -26,6 +27,7 @@ import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
+import com.chinashb.www.mobileerp.widget.TitleLayoutManagerView;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -40,16 +42,17 @@ import butterknife.ButterKnife;
 /***
  * @date 创建时间 2020/5/13 14:56
  * @author 作者: xxblwf
- * @description 供应商退货
+ * @description 供应商退货, 及自制车间退货
  */
 
-public class SupplierReturnActivity extends BaseActivity implements View.OnClickListener {
+public class SupplierOrSelfReturnActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.supplier_return_scan_camera_button) Button scanCameraButton;
     @BindView(R.id.supplier_return_input_EditText) EditText inputEditText;
     @BindView(R.id.supplier_return_confirm_button) Button confirmButton;
     @BindView(R.id.supplier_return_recyclerView) CustomRecyclerView recyclerView;
     @BindView(R.id.supplier_return_remark_button) Button remarkButton;
     @BindView(R.id.supplier_return_remark_TextView) TextView remarkTextView;
+    @BindView(R.id.supplier_return_titleLayoutView) TitleLayoutManagerView titleLayoutView;
 
     private CommonItemBarCodeAdapter adapter;
     private List<BoxItemEntity> boxItemEntityArrayList = new ArrayList<>();
@@ -57,11 +60,19 @@ public class SupplierReturnActivity extends BaseActivity implements View.OnClick
     private String remark;
     private String scanContent;
     private BoxItemEntity tempBoxItemEntity;
+    private boolean currentSelfProductReturn = false;//默认是供应商退货，目前只有供应商和自制车间
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_supplier_return_layout);
         ButterKnife.bind(this);
+
+
+        currentSelfProductReturn = getIntent().getBooleanExtra(IntentConstant.Intent_Extra_supplier_or_self_return_boolean, false);
+        if (currentSelfProductReturn) {
+            titleLayoutView.setTitle("自制车间退货");
+        }
+
 
         scanCameraButton.setOnClickListener(this);
         confirmButton.setOnClickListener(this);
@@ -124,7 +135,7 @@ public class SupplierReturnActivity extends BaseActivity implements View.OnClick
                 task.execute(boxItemEntityArrayList.get(0).getLotID() + "");
 
             } else {
-                CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(SupplierReturnActivity.this)
+                CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(SupplierOrSelfReturnActivity.this)
                         .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
                         .setLeftText("确定");
 
@@ -134,7 +145,7 @@ public class SupplierReturnActivity extends BaseActivity implements View.OnClick
                     public void onViewClick(Dialog dialog, View v, int tag) {
                         switch (tag) {
                             case CommAlertDialog.TAG_CLICK_LEFT:
-                                CommonUtil.doLogout(SupplierReturnActivity.this);
+                                CommonUtil.doLogout(SupplierOrSelfReturnActivity.this);
                                 dialog.dismiss();
                                 break;
                         }
@@ -165,7 +176,7 @@ public class SupplierReturnActivity extends BaseActivity implements View.OnClick
             handleIntoWareHouse();
         } else if (v == remarkButton) {
             if (remarkDialog == null) {
-                remarkDialog = new CommonSelectInputDialog(SupplierReturnActivity.this);
+                remarkDialog = new CommonSelectInputDialog(SupplierOrSelfReturnActivity.this);
             }
             remarkDialog.show();
             remarkDialog.setOnViewClickListener(remarkOnViewClickListener);
@@ -283,14 +294,26 @@ public class SupplierReturnActivity extends BaseActivity implements View.OnClick
 
         @Override
         protected void onPostExecute(Void result) {
-            if (wssCase == 1 || wssCase == 4) {
-                //采购入库，供应商
-                boxItemEntityArrayList.add(tempBoxItemEntity);
-                adapter.setData(boxItemEntityArrayList);
-                inputEditText.setText("");
-                inputEditText.setHint("请继续扫描");
+            boxItemEntityArrayList.add(tempBoxItemEntity);
+            adapter.setData(boxItemEntityArrayList);
+            inputEditText.setText("");
+            inputEditText.setHint("请继续扫描");
+            if (currentSelfProductReturn) {
+                if (wssCase == 8 || wssCase == 11) {
+                    //采购入库，供应商
+                } else {
+                    ToastUtil.showToastShort("当前物料不属于供应商，不能执行供应商退货！");
+                }
             } else {
-                ToastUtil.showToastShort("当前物料不属于供应商，不能执行供应商退货！");
+                if (wssCase == 1 || wssCase == 4) {
+//                    //采购入库，供应商
+//                    boxItemEntityArrayList.add(tempBoxItemEntity);
+//                    adapter.setData(boxItemEntityArrayList);
+//                    inputEditText.setText("");
+//                    inputEditText.setHint("请继续扫描");
+                } else {
+                    ToastUtil.showToastShort("当前物料不属于供应商，不能执行供应商退货！");
+                }
             }
         }
 

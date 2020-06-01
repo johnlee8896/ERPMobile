@@ -60,7 +60,7 @@
 
         <!--供应商退货页面-->
         <activity
-            android:name=".SupplierReturnActivity"
+            android:name=".SupplierOrSelfReturnActivity"
             android:screenOrientation="portrait" />
 
         <!--车间要货计划-->

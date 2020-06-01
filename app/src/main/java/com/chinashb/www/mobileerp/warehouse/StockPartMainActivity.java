@@ -16,17 +16,19 @@ import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.BuPlanGoodsActivity;
 import com.chinashb.www.mobileerp.PartWorkLinePutActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.SupplierReturnActivity;
+import com.chinashb.www.mobileerp.SupplierOrSelfReturnActivity;
 import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.ShbTcpTest;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.IntConsumer;
 
 public class StockPartMainActivity extends BaseActivity implements View.OnClickListener {
     RecyclerView mRecyclerView;
@@ -228,7 +230,11 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             Intent intent = new Intent(StockPartMainActivity.this, BuPlanGoodsActivity.class);
             startActivity(intent);
         }else if (view == supplierReturnGoodsButton){
-            Intent intent = new Intent(StockPartMainActivity.this, SupplierReturnActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, SupplierOrSelfReturnActivity.class);
+            startActivity(intent);
+        }else if (view == selfProductReturnGoodsButton){
+            Intent intent = new Intent(StockPartMainActivity.this, SupplierOrSelfReturnActivity.class);
+            intent.putExtra(IntentConstant.Intent_Extra_supplier_or_self_return_boolean,true);
             startActivity(intent);
         }
     }

@@ -14,10 +14,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.BaseActivity;
+import com.chinashb.www.mobileerp.BuPlanGoodsActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.StaticVariableUtils;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -49,6 +52,8 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
     private Button nextDayButton;
     private Button nextSevenButton;
     private TextView txtDay;
+    private boolean bu_option_mp_bom = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,8 +154,13 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         dateString = sdf.format(showdate);
         txtDay.setText(dateString);
-        GetMWAsyncTask t = new GetMWAsyncTask();
-        t.execute();
+        if (!bu_option_mp_bom){
+            GetBuOptionAsyncTask task = new GetBuOptionAsyncTask();
+            task.execute();
+        }else{
+            GetMWAsyncTask t = new GetMWAsyncTask();
+            t.execute();
+        }
     }
 
     @Override
@@ -174,7 +184,8 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
         protected Void doInBackground(String... params) {
             String sql = "Select M.MPIWC_ID,dbo.get_mw_plan_show_name(mpiwc_ID) As MwName,dbo.get_mw_plan_show_name_html(mpiwc_ID) As HtmlMwName, M.MPI_Remark " +
                     "From MPI_WC As M " +
-                    "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + "  and allow_iss=1" +
+                    "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + (bu_option_mp_bom  ? " and allow_iss=1" : " ") +
+//                    "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + "  and allow_iss=1" +
                     " Order By PShift_ID, Shift_No";
             WsResult result = WebServiceUtil.getDataTable(sql);
             if (result != null && result.getResult()) {
@@ -252,6 +263,50 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         super.onResume();
+    }
+
+
+    class GetBuOptionAsyncTask extends AsyncTask<String ,Void ,Void>{
+
+        @Override protected Void doInBackground(String... strings) {
+//            String sql = strings[0];
+            String sql = "select Option_MP_BOM from bu where bu_id = " + UserSingleton.get().getUserInfo().getBu_ID();
+            WsResult result = WebServiceUtil.getDataTable(sql);
+            List<OptionMPBoxISSBean> commonDataList = new ArrayList<>();
+            if (result != null && result.getResult()) {
+                String jsonData = result.getErrorInfo();
+                Gson gson = new Gson();
+                commonDataList = gson.fromJson(jsonData, new TypeToken<List<OptionMPBoxISSBean>>() {
+                }.getType());
+                if (commonDataList != null && commonDataList.size() > 0) {
+                    if (commonDataList.get(0) instanceof OptionMPBoxISSBean) {
+                      bu_option_mp_bom = commonDataList.get(0).optionMPBoM;
+                    }
+                }
+            }
+            return null;
+        }
+
+        @Override protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            GetMWAsyncTask t = new GetMWAsyncTask();
+            t.execute();
+        }
+    }
+
+    /**
+     * 该车间是否有可投料的开关
+     */
+    private class OptionMPBoxISSBean {
+        @SerializedName("Option_MP_BOM") boolean optionMPBoM;
+
+        public boolean isOptionMPBoM() {
+            return optionMPBoM;
+        }
+
+        public void setOptionMPBoM(boolean optionMPBoM) {
+            this.optionMPBoM = optionMPBoM;
+        }
     }
 
 }

@@ -52,6 +52,7 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
     @BindView(R.id.bu_plan_goods_emptyManager) EmptyLayoutManageView emptyManager;
     @BindView(R.id.bu_plan_goods_start_textView) TextView startTimeTextView;
     @BindView(R.id.bu_plan_goods_end_textView) TextView endTimeTextView;
+    @BindView(R.id.bu_plan_goods_time_confirm_TextView) TextView timeConfirmTextView;
 
     private BuPlanGoodsItemAdapter adapter;
     private List<BuPlanGoodsItemBean> originalBUDataList;
@@ -61,6 +62,8 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
     private String startDateString;
     private String endDateString;
     private String currentDate = "";
+    private Date startDate, endDate;
+    private CommProgressDialog progressDialog;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,20 +92,25 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
     }
 
     private void handleQueryIVList() {
+        if (progressDialog == null) {
+            progressDialog = new CommProgressDialog.Builder(BuPlanGoodsActivity.this).setTitle("正在获取数据").create();
+        }
+        progressDialog.show();
         String tempStartDateString = "GetDate()";
         StringBuilder whereStringBuilder = new StringBuilder();
-        if (TextUtils.equals(startDateString,UnitFormatUtil.formatTimeToDay(System.currentTimeMillis())) &&
-        TextUtils.equals(endDateString,UnitFormatUtil.formatTimeToDay(System.currentTimeMillis()))){
+        if (TextUtils.equals(startDateString, UnitFormatUtil.formatTimeToDay(System.currentTimeMillis())) &&
+                TextUtils.equals(endDateString, UnitFormatUtil.formatTimeToDay(System.currentTimeMillis()))) {
             whereStringBuilder.append(tempStartDateString);
-        }else{
-            if(!TextUtils.isEmpty(startDateString)){
-                tempStartDateString = startDateString;
+        } else {
+            if (!TextUtils.isEmpty(startDateString)) {
+                //要加上引号间隔
+                tempStartDateString = String.format("' %s '", startDateString);
             }
             whereStringBuilder.append(tempStartDateString);
-    //        String tempEndDateString = "";
-            if (!TextUtils.isEmpty(endDateString)){
-    //            tempEndDateString = "and MPI.MPI_Date <= " + endDateString;
-               whereStringBuilder.append(" and MPI.MPI_Date <= " + endDateString);
+            //        String tempEndDateString = "";
+            if (!TextUtils.isEmpty(endDateString)) {
+                //            tempEndDateString = "and MPI.MPI_Date <= " + endDateString;
+                whereStringBuilder.append(" and MPI.MPI_Date <= '" + endDateString + "'");
             }
         }
         String sql = String.format(" if object_id('tempdb..#MPI_IV') is not null drop Table #MPI_IV\n" +
@@ -118,7 +126,7 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
                 " Inner Join [Package_Bom]  With (NoLock)  On [Package].[Package_ID]=[Package_Bom].[Package_ID] \n" +
                 " Inner Join [Item]  With (NoLock)  On [Package_Bom].[Item_ID]=[Item].[Item_ID] \n" +
                 " Inner Join [#MPI_IV]  With (NoLock)  On [Product].[Product_ID]=[#MPI_IV].[Product_ID] \n" +
-                " Where  Item.IV_ID Not In (Select IV_ID From ListP  Inner Join Lists On Lists.LID=ListP.LID    And (Lists.Bu_ID=%s)  And Plan_Type_ID=9) ", buId,whereStringBuilder, buId, buId, buId, buId);
+                " Where  Item.IV_ID Not In (Select IV_ID From ListP  Inner Join Lists On Lists.LID=ListP.LID    And (Lists.Bu_ID=%s)  And Plan_Type_ID=9) ", buId, whereStringBuilder, buId, buId, buId, buId);
         SelectIVIDListAsyncTask<PlanGoodsIVIDBean> task = new SelectIVIDListAsyncTask();
         task.execute(sql);
     }
@@ -173,19 +181,31 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
 
         endTimeTextView.setOnClickListener(this);
         startTimeTextView.setOnClickListener(this);
+        timeConfirmTextView.setOnClickListener(this);
     }
 
     private void doSearchAction(String keyWord) {
         if (originalBUDataList == null) {
             return;
         }
+        List<BuPlanGoodsItemBean> tempBeanList = new ArrayList<>();
         if (!keyWord.isEmpty()) {
 //            List<PlanGoodsIVIDBean> tempList = getFilterList(input);
 //            bindObjectListsToAdapterBU(tempList);
 //            adapter.setData(getFilterList(keyWord));
 //            String whereSql = String.format(" and CF_Chinese_Name like \'%%s%\' ",keyWord);
-            String whereSql = " and CF_Chinese_Name like '%" + keyWord + "%'";
-            handleQueryIVList();
+//            String whereSql = " and CF_Chinese_Name like '%" + keyWord + "%'";
+//            handleQueryIVList();
+
+            for (BuPlanGoodsItemBean buPlanGoodsItemBean :originalBUDataList){
+                if ((buPlanGoodsItemBean.getItemID() + "").contains(keyWord) || buPlanGoodsItemBean.getItemSpec().contains(keyWord)){
+                    tempBeanList.add(buPlanGoodsItemBean);
+                }
+            }
+            if (tempBeanList.size() > 0){
+
+            adapter.setData(tempBeanList);
+            }
         } else {
             //todo
 //            bindObjectListsToAdapterBU(originalBUDataList);
@@ -208,6 +228,12 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
             showTimePickerDialog(TimePickerManager.PICK_TYPE_START);
         } else if (v == endTimeTextView) {
             showTimePickerDialog(TimePickerManager.PICK_TYPE_END);
+        } else if (v == timeConfirmTextView) {
+            if (endDate != null && startDate != null && (endDate.getTime() < startDate.getTime())) {
+                ToastUtil.showToastShort("结束时期须大于开始日期！");
+            } else {
+                handleQueryIVList();
+            }
         }
     }
 
@@ -215,11 +241,13 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
         if (tag.equals(TimePickerManager.PICK_TYPE_START)) {
 //            startDateString = ((Date) date).getTime();
             startDateString = getText((Date) date);
+            startDate = (Date) date;
             startTimeTextView.setText(getText((Date) date));
             startTimeTextView.setTextColor(getResources().getColor(R.color.color_blue_528FFF));
 
         } else if (tag.equals(TimePickerManager.PICK_TYPE_END)) {
             endDateString = getText((Date) date);
+            endDate = (Date) date;
             endTimeTextView.setText(getText((Date) date));
             endTimeTextView.setTextColor(getResources().getColor(R.color.color_blue_528FFF));
 //            task.execute();
@@ -332,8 +360,6 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
         }
 
     }
-
-    private CommProgressDialog progressDialog;
 
     private class GetBuPlanGoodsItemListAsyncTask<T> extends AsyncTask<String, Void, List<T>> {
 
@@ -448,6 +474,7 @@ public class BuPlanGoodsActivity extends BaseActivity implements View.OnClickLis
 //                        i++;
                 }
                 adapter.setData(buPlanGoodsItemBeanList);
+                originalBUDataList = buPlanGoodsItemBeanList;
                 emptyManager.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
 //                }
