@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -579,8 +580,8 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
                     boxItemEntityList.remove(entity);
                     adapter.setData(boxItemEntityList);
                     //// TODO: 2020/4/18  这里要更新数据库，防止该箱号重复入库
-//                    String updateSql = String.format("UPDATE MES_CartonCode SET IsWarehousing = 1 where Id = %s and CartonNo = '%s'",boxId,currentCartonNo );
-                    String updateSql = String.format("UPDATE MES_CartonCode SET IsWarehousing = 1 where  CartonNo = '%s'", boxId, currentCartonNo);
+                    String updateSql = String.format("UPDATE MES_CartonCode SET IsWarehousing = 1 where Id = %s and CartonNo = '%s'",boxId,currentCartonNo );
+//                    String updateSql = String.format("UPDATE MES_CartonCode SET IsWarehousing = 1 where  CartonNo = '%s'", boxId, currentCartonNo);
                     UpdateBoxDataBaseAsyncTask task = new UpdateBoxDataBaseAsyncTask();
                     task.execute(updateSql);
                 }
@@ -647,26 +648,19 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
 
                 }
 
-
                 BoxItemEntity boxItemEntity = new BoxItemEntity();
                 boxItemEntity.setItemName(mesInnerDataEntity.getProductChineseName() + "@" + mesInnerDataEntity.getProductDrawNo() + "@" + mesInnerDataEntity.getProductVersion());
                 boxItemEntity.setQty(mesInnerDataEntity.getQty());
                 boxItemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
 
                 boxItemEntity.setLotNo(lotNO);
-//                boxItemEntity.set
+                if (!is_box_existed(boxItemEntity)){
+                    boxItemEntityList.add(boxItemEntity);
+                    adapter.setData(boxItemEntityList);
+                }else {
+                    ToastUtil.showToastShort("该包装已经在装载列表中");
+                }
 
-
-//                        WCSubProductItemEntity itemEntity = new WCSubProductItemEntity();
-//                        itemEntity.setWcSubProductEntity(entity);
-//                        itemEntity.setSelect(true);
-//                        itemEntity.setLotNo(lotNo);
-//                        itemEntity.setQty(qty);
-//                        itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
-
-                boxItemEntityList.add(boxItemEntity);
-//                        adapter = new ItemProductNonTrayAdapter(ProductScanBoxInActivity.this, boxItemEntityList);
-                adapter.setData(boxItemEntityList);
                 inputEditText.setText("");
                 //// TODO: 2019/12/20 去掉扫描枪几个字
                 inputEditText.setHint("请继续扫描");
@@ -681,6 +675,21 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
                 }
             }
         }
+    }
+
+
+    protected boolean is_box_existed(BoxItemEntity box_item) {
+        boolean result = false;
+        if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
+            for (BoxItemEntity itemEntity : boxItemEntityList){
+                if (TextUtils.equals(itemEntity.getLotNo(),box_item.getLotNo()) && TextUtils.equals(itemEntity.getItemName(),box_item.getItemName()) &&
+                       itemEntity.getQty() == box_item.getQty()){
+                    return true;
+                }
+            }
+        }
+
+        return result;
     }
 
 
