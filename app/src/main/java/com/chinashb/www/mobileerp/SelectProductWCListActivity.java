@@ -73,7 +73,8 @@ public class SelectProductWCListActivity extends BaseActivity {
         @Override
         protected Void doInBackground(String... params) {
             //// TODO: 2019/12/19 这里去掉type这个字段
-            String sql = null;
+            //这里不能为null，因为若不走if和else if则会报错
+            String sql = "";
             if (work_line_from == 0 || work_line_from == IntentConstant.Intent_Extra_work_line_from_product) {
                 sql = String.format(" Select WC_Id,WC_Name  From P_WC Where Bu_ID=%s", UserSingleton.get().getUserInfo().getBu_ID());
             } else if (work_line_from == IntentConstant.Intent_Extra_work_line_from_part) {

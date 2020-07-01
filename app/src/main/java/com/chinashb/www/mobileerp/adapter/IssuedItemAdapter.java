@@ -58,6 +58,8 @@ public class IssuedItemAdapter extends RecyclerView.Adapter<IssuedItemAdapter.Is
 
         holder.tvIssuedLastMoment.setText(Issued_Item.getLastIssueMoment());
 
+        holder.itemIDTextView.setText(Issued_Item.getItem_ID() + "");
+
     }
 
     @Override
@@ -74,6 +76,7 @@ public class IssuedItemAdapter extends RecyclerView.Adapter<IssuedItemAdapter.Is
         TextView tvIssuedQty;
         TextView tvIssuedLastMoment;
         TextView tvMoreQty;
+        TextView itemIDTextView;
 
 
         IssuedItemViewHolder(View view) {
@@ -87,6 +90,8 @@ public class IssuedItemAdapter extends RecyclerView.Adapter<IssuedItemAdapter.Is
             tvIssuedQty=(TextView)view.findViewById(R.id.tv_issuedqty);
             tvIssuedLastMoment=(TextView)view.findViewById(R.id.tv_issued_last_moment);
             tvMoreQty=(TextView)view.findViewById(R.id.tv_moreqty);
+
+            itemIDTextView = view.findViewById(R.id.tv_item_id_name_textView);
 
 
         }

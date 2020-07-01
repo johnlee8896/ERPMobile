@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/underline"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dimen_size_20"
@@ -146,10 +147,59 @@
 
         </LinearLayout>
 
+        <!--<LinearLayout-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="@dimen/dimen_size_10"-->
+            <!--android:orientation="horizontal">-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tv_moreqty_info"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="差额："-->
+                <!--android:textColor="@color/colorAccent" />-->
+
+            <!--<TextView-->
+                <!--android:id="@+id/tv_moreqty"-->
+                <!--android:layout_marginLeft="@dimen/dimen_size_10"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="差额"-->
+                <!--android:textColor="@color/colorAccent" />-->
+
+        <!--</LinearLayout>-->
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_item_id_info"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="Item_ID：" />
+
+            <TextView
+                android:id="@+id/tv_item_id_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="60017" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
@@ -169,7 +219,6 @@
 
         </LinearLayout>
     </LinearLayout>
-
 
     <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->
