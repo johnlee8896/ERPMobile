@@ -151,6 +151,14 @@
                 android:editable="true"
                 android:ems="10"
                 android:inputType="numberDecimal" />
+
+            <TextView
+                android:id="@+id/tv_issue_more_qty"
+                android:layout_width="80dp"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="numberDecimal" />
         </TableRow>
     </TableLayout>
 

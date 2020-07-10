@@ -461,6 +461,8 @@ public class StockDepartmentInActivity extends BaseActivity {
         }
     }
 
+    private boolean isCurrentSmallPackage = false;
+
     protected void parseScanResult(String result) {
 //        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
@@ -476,6 +478,9 @@ public class StockDepartmentInActivity extends BaseActivity {
                 String qrTitle = qrContent[0];
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
+                        if (qrTitle.equals("VE") || qrTitle.equals("V9")){
+                            isCurrentSmallPackage = true;
+                        }
                         //物品条码
                         scanstring = result;
                         AsyncGetIssueMoreExtraBox task = new AsyncGetIssueMoreExtraBox();
@@ -497,6 +502,12 @@ public class StockDepartmentInActivity extends BaseActivity {
             if (boxItemEntity.getResult()) {
                 if (!is_box_existed(boxItemEntity)) {
                     boxItemEntity.setSelect(true);
+                    //限制部门领料，只有扫小包装时才能编辑数量
+                    boxItemEntity.setCanNotEdit(true);
+                    if (isCurrentSmallPackage){
+                        boxItemEntity.setCanNotEdit(false);
+                    }
+
                     boxItemEntityList.add(boxItemEntity);
                 } else {
                     boxItemEntity.setResult(false);

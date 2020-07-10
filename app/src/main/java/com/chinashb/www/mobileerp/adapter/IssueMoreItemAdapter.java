@@ -61,8 +61,15 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
         holder.tvLotDescription.setText(Box_Item.getLotDescription());
 
         DecimalFormat dfs = new DecimalFormat("####.####");
-        holder.tvQty.setText(dfs.format(Box_Item.getQty()));
+        holder.etQty.setText(dfs.format(Box_Item.getQty()));
 
+        if (Box_Item.getCanNotEdit()){
+            holder.etQty.setVisibility(View.GONE);
+            holder.qtyTextView.setVisibility(View.VISIBLE);
+        }else{
+            holder.etQty.setVisibility(View.VISIBLE);
+            holder.qtyTextView.setVisibility(View.GONE);
+        }
 
         if (!showNeedMore) {
             holder.tvNeedTitle.setVisibility(View.GONE);
@@ -70,7 +77,7 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
         }
         holder.tvNeed.setText(CommonUtil.DecimalFormat(Box_Item.getNeedMoreQty()));
 
-        holder.tvQty.addTextChangedListener(new TextWatcher() {
+        holder.etQty.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -125,7 +132,8 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
         TextView tvNeedTitle;
         TextView tvNeed;
         TextView tvLotDescription;
-        EditText tvQty;
+        EditText etQty;
+        TextView qtyTextView;
 
 
         IssueMoreItemViewHolder(View view) {
@@ -138,7 +146,8 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
             tvNeedTitle = (TextView) view.findViewById(R.id.tv_issue_more_item_needmore_row);
             tvNeed = (TextView) view.findViewById(R.id.tv_issue_more_item_needmore);
             tvLotDescription = (TextView) view.findViewById(R.id.tv_issue_more_item_lot_description);
-            tvQty = (EditText) view.findViewById(R.id.et_issue_more_qty);
+            etQty = (EditText) view.findViewById(R.id.et_issue_more_qty);
+            qtyTextView = view.findViewById(R.id.tv_issue_more_qty);
 
 
         }
