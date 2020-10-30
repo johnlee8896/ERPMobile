@@ -58,6 +58,11 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--d成品扫托盘入库-->
+        <activity
+            android:name=".ProductScanCodeBoxInActivity"
+            android:screenOrientation="portrait" />
+
         <!--供应商退货页面-->
         <activity
             android:name=".SupplierOrSelfReturnActivity"

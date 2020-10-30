@@ -34,6 +34,7 @@ import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
@@ -398,6 +399,9 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         @Override
         protected Void doInBackground(String... params) {
             BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanContent);
+
+            //// TODO: 2020/10/19 test
+            String s = JsonUtil.objectToJson(boxItemEntity);
 
 //            //// TODO: 2020/1/9 这里先处理，为避免因供应商选错，而导致入错账的问题
 //            if (boxItemEntity != null) {

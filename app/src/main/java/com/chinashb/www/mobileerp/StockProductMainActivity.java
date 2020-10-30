@@ -32,6 +32,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
 
     @BindView(R.id.stock_product_scan_into_non_tray_Button) Button scanIntoNonTrayButton;
     @BindView(R.id.product_main_other_in_textView) TextView otherInTextView;
+    @BindView(R.id.product_main_scan_code_box_in_textView) TextView scanCodeBoxInTextView;
     @BindView(R.id.product_main_sale_out_textView) TextView saleOutTextView;
     @BindView(R.id.product_main_other_out_textView) TextView otherOutTextView;
     @BindView(R.id.product_main_scan_box_textView) TextView scanBoxInTextView;
@@ -54,6 +55,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         scanIntoNonTrayButton.setOnClickListener(this);
         otherOutTextView.setOnClickListener(this);
         otherInTextView.setOnClickListener(this);
+        scanCodeBoxInTextView.setOnClickListener(this);
         saleOutTextView.setOnClickListener(this);
         scanBoxInTextView.setOnClickListener(this);
     }
@@ -79,6 +81,9 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
             startActivity(intent);
         } else if (v == otherInTextView) {
 
+        }  else if (v == scanCodeBoxInTextView) {
+            Intent intent = new Intent(this, ProductScanCodeBoxInActivity.class);
+            startActivity(intent);
         } else if (v == otherOutTextView) {
 
         } else if (v == scanBoxInTextView){

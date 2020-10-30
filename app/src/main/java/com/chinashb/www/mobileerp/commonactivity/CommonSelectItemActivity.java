@@ -281,22 +281,24 @@ public class CommonSelectItemActivity extends BaseActivity {
 //                        }
 //                    }
 
-                for (int i = 0; i < originalBUDataList.size(); i++) {
-                    if (bean instanceof BUItemBean) {
-                        List tempList = new ArrayList<BUItemBean>();
+                if (bean instanceof BUItemBean) {
+                    List tempList = new ArrayList<BUItemBean>();
+                    for (int i = 0; i < originalBUDataList.size(); i++) {
                         BUItemBean buItemBean = (BUItemBean) originalBUDataList.get(i);
                         if (buItemBean.getCompanyChineseName().contains(keyWord) || buItemBean.getBUName().contains(keyWord)) {
                             tempList.add(buItemBean);
                         }
-                        return tempList;
-                    } else if (bean instanceof DepartmentBean) {
-                        List tempList = new ArrayList<BUItemBean>();
+                    }
+                    return tempList;
+                } else if (bean instanceof DepartmentBean) {
+                    List tempList = new ArrayList<BUItemBean>();
+                    for (int i = 0; i < originalBUDataList.size(); i++) {
                         DepartmentBean departmentBean = (DepartmentBean) originalBUDataList.get(i);
                         if (departmentBean.getDepartmentName().contains(keyWord) || departmentBean.getPDN().contains(keyWord)) {
                             tempList.add(departmentBean);
                         }
-                        return tempList;
                     }
+                    return tempList;
                 }
             }
         }

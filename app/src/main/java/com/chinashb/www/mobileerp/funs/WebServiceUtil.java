@@ -58,7 +58,7 @@ public class WebServiceUtil {
     private static String URL = IP + ":8188/Test_Wss/Service.svc";
 //    private static String URL = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
-    private static String URL_Intranet = "http://172.16.1.80:8188/Test_Wss/Service.svc";
+//    private static String URL_Intranet = "http://172.16.1.80:8188/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
 
     //        private static String URL_Intranet = IP + ":8001/Service.svc";
@@ -73,7 +73,7 @@ public class WebServiceUtil {
 
 
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-//    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
 //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
 
     private static String SOAP_ACTION = "http://tempuri.org/IService/";
@@ -151,6 +151,8 @@ public class WebServiceUtil {
         new MarshalDate().register(envelope);
 
         // Create HTTP call object
+
+
         HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
         androidHttpTransport.debug = true;
         try {
@@ -542,6 +544,10 @@ public class WebServiceUtil {
         new MarshalDate().register(envelope);
 
         // Create HTTP call object
+//        Current_Net_Link = "Intranet";
+        if (UserSingleton.get().isCurrentInnerNetLink() || TextUtils.equals(Current_Net_Link,"Intranet")){
+            URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+        }
         HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
         androidHttpTransport.debug = true;
         try {
@@ -1242,6 +1248,65 @@ public class WebServiceUtil {
         return null;
 
     }
+
+
+
+    //成品扫描托盘入库  BoxID As Long, Ist_ID As Long, Remark As String, Recorder As Integer
+    public static WsResult op_Product_Manu_In_Pallet(int BoxID,
+                                                         long Ist_ID, String Remark) {
+
+        String webMethodName = "op_Product_Manu_In_Pallet";
+//        String webMethodName = "op_Product_Manu_In_Not_Pallet_1";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("BoxID");
+        propertyInfo1.setValue(BoxID);
+//        propertyInfo1.setType(Long.class);
+        propertyInfo1.setType(Integer.class);
+        propertyInfos.add(propertyInfo1);
+        System.out.println("================================BoxID = " + BoxID);
+
+
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("Ist_ID");
+        propertyInfo2.setValue(Ist_ID);
+        propertyInfo2.setType(Long.class);
+        propertyInfos.add(propertyInfo2);
+        System.out.println("================================Ist_ID = " + Ist_ID);
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("Remark");
+        propertyInfo3.setValue(Remark);
+        propertyInfo3.setType(String.class);
+        propertyInfos.add(propertyInfo3);
+        System.out.println("================================Remark = " + Remark);
+
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("Recorder");
+        propertyInfo4.setValue(UserSingleton.get().getUserInfo().getHR_ID());
+        propertyInfo4.setType(Integer.class);
+        propertyInfos.add(propertyInfo4);
+        System.out.println("================================Recorder = " + UserSingleton.get().getUserInfo().getHR_ID());
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+        return null;
+
+    }
+
 
     /*
 
@@ -2344,7 +2409,7 @@ public class WebServiceUtil {
         String webMethodName = "op_Commit_Inv_Move";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
-//        AddPropertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
         AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
         AddPropertyInfo(propertyInfos, "SMLI_ID", box_item.getSMLI_ID());
         AddPropertyInfo(propertyInfos, "SMM_ID", box_item.getSMM_ID());

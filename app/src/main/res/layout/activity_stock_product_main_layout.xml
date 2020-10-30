@@ -23,6 +23,7 @@
     <TextView
         android:id="@+id/product_main_other_in_textView"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="50dp"
         android:layout_marginLeft="@dimen/dimen_size_20"
         android:layout_marginTop="@dimen/dimen_size_15"
@@ -30,6 +31,17 @@
         android:background="@drawable/shape_conner_blue_button_bg"
         android:gravity="center"
         android:text="成品入库(其他入库)" />
+
+    <TextView
+        android:id="@+id/product_main_scan_code_box_in_textView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="成品入库(扫托盘标签)" />
 
     <TextView
         android:id="@+id/product_main_scan_box_textView"
@@ -51,7 +63,18 @@
         android:layout_marginRight="@dimen/dimen_size_20"
         android:background="@drawable/shape_conner_blue_button_bg"
         android:gravity="center"
-        android:text="成品出库(销售)" />
+        android:text="成品出库(销售)三点照合" />
+
+    <TextView
+        android:id="@+id/product_main_sale_out_code_box_textView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="成品出库(扫托盘标签)" />
 
     <TextView
         android:id="@+id/product_main_other_out_textView"

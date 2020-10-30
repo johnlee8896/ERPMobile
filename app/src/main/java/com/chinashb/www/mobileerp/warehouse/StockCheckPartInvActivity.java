@@ -169,7 +169,8 @@ public class StockCheckPartInvActivity extends BaseActivity {
                         W + ") As W On W.Warehouse_ID=CheckInventory.Warehouse_ID " +
                         "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type +
                         " And " +
-                        "Datediff(day, Insert_Time, Getdate())<30 ";
+//                        "Datediff(day, Insert_Time, Getdate())<30 ";
+                        "Datediff(day, Insert_Time, Getdate())<100 ";
 
 //                String sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20)," +
 //                        "Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory " +

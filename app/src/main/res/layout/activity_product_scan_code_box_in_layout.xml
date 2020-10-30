@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="成品（托盘）扫描入库" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--<TextView-->
+        <!--android:id="@+id/textView"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_weight="1"-->
+        <!--android:paddingLeft="20dp"-->
+        <!--android:text="托盘入库"-->
+        <!--android:textColor="@color/black" />-->
+
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/setting_open_suggest_stock_Layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:paddingLeft="20dp"-->
+        <!--android:paddingRight="20dp">-->
+
+        <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:text="提示建议存放仓库"-->
+        <!--android:textColor="@color/color_333333"-->
+        <!--android:textSize="14sp" />-->
+
+        <!--<Switch-->
+        <!--android:id="@+id/setting_open_suggest_stock_Switch"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:checked="false"-->
+        <!--android:thumb="@drawable/selector_switch_thumb_style"-->
+        <!--android:track="@drawable/selector_switch_track_style" />-->
+
+        <!--</RelativeLayout>-->
+        <Button
+            android:id="@+id/product_in_scan_code_box_select_wc_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:text="请选择线别" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:paddingLeft="20dp"
+            android:visibility="gone"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="您选择的产线是："
+                android:textColor="@color/black" />
+            <TextView
+                android:id="@+id/product_in_scan_code_box_wc_name_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:textColor="@color/color_blue_00AAEE" />
+        </LinearLayout>
+        <Button
+            android:id="@+id/product_in_scan_code_box_select_NO_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:text="选择或输入入库单据" />
+        <TextView
+            android:id="@+id/product_in_scan_code_box_NO_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:layout_marginLeft="20dp"
+            tools:text="C-20191226-01"
+            android:textColor="@color/color_blue_00AAEE" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <!--<Button-->
+            <!--android:id="@+id/product_no_tray_scan_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="start"-->
+            <!--android:layout_weight="1"-->
+            <!--android:visibility="gone"-->
+            <!--android:text="扫码枪扫描" />-->
+
+            <Button
+                android:id="@+id/product_in_scan_code_box_scan_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:text="请扫描箱号" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/product_in_scan_code_box_scan_area_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="扫描库位" />
+
+            <Button
+                android:id="@+id/product_in_scan_code_box_warehouse_in_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="入库登账" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/product_in_scan_code_box_input_EditText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="接收扫描结果"
+        android:paddingLeft="@dimen/dimen_size_20"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14"
+        />
+
+
+    <TextView
+        android:layout_marginTop="@dimen/dimen_size_30"
+        android:id="@+id/product_in_scan_code_box_item_info_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dimen_size_20"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:text="物料信息"
+        android:textColor="@color/black" />
+
+    <TextView
+        android:layout_marginTop="@dimen/dimen_size_30"
+        android:id="@+id/product_in_scan_code_box_ist_info_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dimen_size_20"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:text="入库区域"
+        android:textColor="@color/black" />
+
+
+    <!--<Button-->
+    <!--android:id="@+id/btn_scan_area_green"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
+    <!--android:layout_gravity="left"-->
+    <!--android:text="跳过先进先出" />-->
+
+    <!--<Button-->
+    <!--android:id="@+id/btn_remark_select"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
+    <!--android:layout_gravity="left"-->
+    <!--android:text="备注（选择或添加）" />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:paddingLeft="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/product_in_scan_code_box_tv_item_name_col"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="物品"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/product_in_scan_code_box_tv_bu_name_col"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="车间"
+                android:textColor="@color/black" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:paddingLeft="20dp"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/product_in_scan_code_box_tv_inv_in_lotno"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:text="批次"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/product_in_scan_code_box_tv_qty_col"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="数量"
+                android:textColor="@android:color/holo_green_dark" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:paddingLeft="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/product_in_scan_code_box_tv_ist_name_col"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+
+                android:text="仓位"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/product_in_scan_code_box_tv_inv_in_selected"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="选择"
+                android:textColor="@color/black" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:paddingLeft="20dp"
+        android:visibility="gone"
+        android:orientation="horizontal">
+        <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+            android:id="@+id/product_in_scan_code_box_recyclerView"
+            android:layout_width="match_parent"
+            tools:listitem="@layout/item_scan_bar_code_layout"
+            android:layout_height="match_parent"/>
+        <!--<android.support.v7.widget.RecyclerView-->
+        <!--android:id="@+id/"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"-->
+
+        <!--android:clickable="true"-->
+        <!--tools:layout_editor_absoluteX="8dp"-->
+        <!--tools:layout_editor_absoluteY="8dp">-->
+
+        <!--</android.support.v7.widget.RecyclerView>-->
+
+    </LinearLayout>
+
+</LinearLayout>
+

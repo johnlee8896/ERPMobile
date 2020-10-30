@@ -182,6 +182,8 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 userInfoEntity.setHR_ID(UserSingleton.get().getHRID());
                 UserSingleton.get().setUserInfo(userInfoEntity);
                 userNameTextView.setText(userInfoEntity.getBu_Name() + ":" + UserSingleton.get().getHRName());
+
+                UserSingleton.get().setHasSwitchedBu(true);
             }
         }
     }
@@ -218,9 +220,34 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 ToastUtil.showToastLong("请先登录");
                 return;
             }
-            Intent intent = new Intent(MobileMainActivity.this, StockPartMainActivity.class);
-            startActivity(intent);
-            MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_part_management);
+
+            //判断是否切换过车间，如果没有，给个提示，以免弄错
+            if (!UserSingleton.get().hasSwitchedBu) {
+                CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(MobileMainActivity.this)
+                        .setTitle("提示").setMessage("进入仓库操作需要相对应的车间，您是否需要切换车间？")
+                        .setLeftText("确定").setRightText("取消");
+
+
+                builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                    @Override
+                    public void onViewClick(Dialog dialog, View v, int tag) {
+                        switch (tag) {
+                            case CommAlertDialog.TAG_CLICK_LEFT:
+                                jumpToSwitchBuActivity();
+                                dialog.dismiss();
+                                break;
+                            case CommAlertDialog.TAG_CLICK_RIGHT:
+                                jumpToStockPartActivity();
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                });
+                builder.create().show();
+            } else {
+                jumpToStockPartActivity();
+            }
+
         } else if (view == warehouseProductTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
@@ -235,23 +262,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 return;
             }
 //            Intent intent = new Intent(MobileMainActivity.this, SelectItemActivity.class);
-            Intent intent = new Intent(MobileMainActivity.this, CommonSelectItemActivity.class);
-            String sql = getSqlBu();
-
-            List<Integer> ColWidth = new ArrayList<Integer>(Arrays.asList(50, 200, 100, 50, 180));
-            List<String> ColCaption = new ArrayList<String>(Arrays.asList("Company_ID", "公司", "Brief", "Bu_ID", "车间"));
-            List<String> HiddenCol = new ArrayList<String>(Arrays.asList("Company_ID", "Brief", "Bu_ID"));
-
-            String Title = "选择车间";
-            intent.putExtra("Title", Title);
-            intent.putExtra("SQL", sql);
-            intent.putExtra("ColWidthList", (Serializable) ColWidth);
-            intent.putExtra("ColCaptionList", (Serializable) ColCaption);
-            intent.putExtra("hiddenColList", (Serializable) HiddenCol);
-
-            intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_BU);
-            startActivityForResult(intent, 200);
-            MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_switch_bu);
+            jumpToSwitchBuActivity();
         } else if (view == planTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
@@ -260,11 +271,37 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             Intent intent = new Intent(this, PlanManagerActivity.class);
             startActivity(intent);
             MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_plan);
-        } else if (view == foodOrderTextView){
+        } else if (view == foodOrderTextView) {
 //            Intent intent = new Intent(this,FoodOrderActivity.class);
 //            startActivity(intent);
             new GetTestService2AsyncTask().execute();
         }
+    }
+
+    private void jumpToStockPartActivity() {
+        Intent intent = new Intent(MobileMainActivity.this, StockPartMainActivity.class);
+        startActivity(intent);
+        MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_part_management);
+    }
+
+    private void jumpToSwitchBuActivity() {
+        Intent intent = new Intent(MobileMainActivity.this, CommonSelectItemActivity.class);
+        String sql = getSqlBu();
+
+        List<Integer> ColWidth = new ArrayList<Integer>(Arrays.asList(50, 200, 100, 50, 180));
+        List<String> ColCaption = new ArrayList<String>(Arrays.asList("Company_ID", "公司", "Brief", "Bu_ID", "车间"));
+        List<String> HiddenCol = new ArrayList<String>(Arrays.asList("Company_ID", "Brief", "Bu_ID"));
+
+        String Title = "选择车间";
+        intent.putExtra("Title", Title);
+        intent.putExtra("SQL", sql);
+        intent.putExtra("ColWidthList", (Serializable) ColWidth);
+        intent.putExtra("ColCaptionList", (Serializable) ColCaption);
+        intent.putExtra("hiddenColList", (Serializable) HiddenCol);
+
+        intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_BU);
+        startActivityForResult(intent, 200);
+        MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_switch_bu);
     }
 
 
@@ -332,6 +369,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 
     private class GetTestService2AsyncTask extends AsyncTask<String, Void, Void> {
         private WsResult wsResult;
+
         @Override
         protected Void doInBackground(String... params) {
             wsResult = WebServiceUtil.getAnotherTest("hello");
@@ -346,11 +384,11 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 
         @Override
         protected void onPostExecute(Void result) {
-           if (wsResult != null && wsResult.getResult()){
-               ToastUtil.showToastShort(wsResult.getErrorInfo());
-           }else{
-               ToastUtil.showToastShort("err " );
-           }
+            if (wsResult != null && wsResult.getResult()) {
+                ToastUtil.showToastShort(wsResult.getErrorInfo());
+            } else {
+                ToastUtil.showToastShort("err ");
+            }
         }
 
         @Override

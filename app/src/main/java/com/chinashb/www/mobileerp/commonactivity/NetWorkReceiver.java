@@ -46,7 +46,8 @@ public class NetWorkReceiver extends BroadcastReceiver {
                         ip.startsWith("172.17.6") ||
                         ip.startsWith("172.17.7") ||
                         ip.startsWith("172.17.8") ||
-                        ip.startsWith("172.17.9")) {
+                        ip.startsWith("172.17.9")||
+                        ip.startsWith("172.17.26")) {
 
                     WebServiceUtil.set_net_link_to_intranet();
                 } else {

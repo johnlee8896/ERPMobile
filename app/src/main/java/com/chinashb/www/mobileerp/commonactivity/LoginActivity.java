@@ -381,9 +381,11 @@ public class LoginActivity extends BaseActivity {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedID) {
             if (intranetRadioButton.getId() == checkedID) {
+                UserSingleton.get().setCurrentInnerNetLink(true);
                 WebServiceUtil.set_net_link_to_intranet();
             }
             if (internetRadioButton.getId() == checkedID) {
+                UserSingleton.get().setCurrentInnerNetLink(false);
                 WebServiceUtil.set_net_link_to_internet();
             }
         }
@@ -488,6 +490,7 @@ public class LoginActivity extends BaseActivity {
                 Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
 //            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
                 intent.putExtra(IntentConstant.Intent_Extra_hr_id, UserSingleton.get().getHRID());
+                UserSingleton.get().setHasSwitchedBu(false);//每次登录进来置空
                 startActivity(intent);
                 finish();
             }

@@ -11,12 +11,31 @@ import java.util.HashMap;
  * @description 用单例模式管理用户，包含登录状态等
  */
 public class UserSingleton {
+    public boolean hasSwitchedBu;
     private HashMap<Integer, String> departmentMap;
     private UserAllInfoEntity userAllInfoEntity;
+    private  boolean isCurrentInnerNetLink;
 
     private UserSingleton(){
 
     }
+
+    public boolean isCurrentInnerNetLink() {
+        return isCurrentInnerNetLink;
+    }
+
+    public void setCurrentInnerNetLink(boolean currentInnerNetLink) {
+        isCurrentInnerNetLink = currentInnerNetLink;
+    }
+
+    public boolean isHasSwitchedBu() {
+        return hasSwitchedBu;
+    }
+
+    public void setHasSwitchedBu(boolean hasSwitchedBu) {
+        this.hasSwitchedBu = hasSwitchedBu;
+    }
+
     private UserInfoEntity userInfo;
 
     public UserInfoEntity getUserInfo() {

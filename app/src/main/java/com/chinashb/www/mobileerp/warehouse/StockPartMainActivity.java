@@ -85,6 +85,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
         userInfo = UserSingleton.get().getUserInfo();
+        System.out.println("***************** bu_id = " + userInfo.getBu_ID());
         userpic = CommonUtil.pictureBitmap;
         tvTitle.setText(userInfo.getBu_Name() + ":" + "仓库管理");
         String Test;

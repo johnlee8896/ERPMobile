@@ -18,22 +18,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
+import com.chinashb.www.mobileerp.PartItemMiddleActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
+import com.chinashb.www.mobileerp.adapter.PartInvQueryAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
+import com.chinashb.www.mobileerp.basicobject.PartsEntity;
 import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.AppUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.chinashb.www.mobileerp.widget.TitleLayoutManagerView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -62,6 +69,7 @@ public class StockOutMoreActivity extends BaseActivity {
     private EditText inputEditText;
     private boolean isDirect;
     private TitleLayoutManagerView titleLayoutManagerView;
+    private long currentItemId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,6 +252,9 @@ public class StockOutMoreActivity extends BaseActivity {
                 if (!isBoxExist(boxItemEntity)) {
                     boxItemEntity.setSelect(true);
                     setNeedQty(boxItemEntity);
+
+                    currentItemId = boxItemEntity.getItem_ID();
+
                     boxItemEntityList.add(boxItemEntity);
                 } else {
                     boxItemEntity.setResult(false);
@@ -508,7 +519,13 @@ public class StockOutMoreActivity extends BaseActivity {
                 if (!ws_result.getResult() ) {
                     CommonUtil.ShowToast(StockOutMoreActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
                 } else {
-                    CommonUtil.ShowToast(StockOutMoreActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
+//                    CommonUtil.ShowToast(StockOutMoreActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
+                    ItemInvQueryAsyncTask task = new ItemInvQueryAsyncTask();
+                    task.execute(currentItemId + "");
+
+
+
+
                 }
             }
         }
@@ -516,6 +533,66 @@ public class StockOutMoreActivity extends BaseActivity {
         @Override
         protected void onPreExecute() {
             pbScan.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+private List<PartsEntity> partsEntityList;
+    private class ItemInvQueryAsyncTask extends AsyncTask<String, Void, Void> {
+        //ArrayList<PartsEntity> us = new ArrayList<PartsEntity>();
+        @Override
+        protected Void doInBackground(String... params) {
+//            String keyWord = filterEditText.getText().toString();
+            if (params != null && params.length > 0){
+                String itemId = params[0];
+                String js = WebServiceUtil.getQueryInv(UserSingleton.get().getUserInfo().getBu_ID(), 1, itemId, 1, 20);
+                Gson gson = new Gson();
+                partsEntityList = gson.fromJson(js, new TypeToken<List<PartsEntity>>() {
+                }.getType());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //tv.setText(fahren + "∞ F");b
+            if (partsEntityList == null || partsEntityList.size() == 0) {
+//                dataLayout.setVisibility(View.GONE);
+                ToastUtil.showToastShort("未找到当前物料的库存!");
+            }else{
+                double totalInv = 0;
+               for (PartsEntity entity : partsEntityList){
+                   totalInv += entity.getInv();
+               }
+                CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockOutMoreActivity.this)
+                        .setTitle("提示").setMessage(String.format("出库成功，该物料当前库存为%s！",totalInv + ""))
+                        .setLeftText("确定");
+
+
+                builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                    @Override
+                    public void onViewClick(Dialog dialog, View v, int tag) {
+                        switch (tag) {
+                            case CommAlertDialog.TAG_CLICK_LEFT:
+                                currentItemId = 0;
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                });
+                builder.create().show();
+            }
+
+            //pbScan.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
         }
 
         @Override

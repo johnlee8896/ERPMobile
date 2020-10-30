@@ -422,10 +422,15 @@ public class CommonUtil {
                         ip.startsWith("172.16.7.") ||
                         ip.startsWith("172.16.8.") ||
                         ip.startsWith("172.16.9.") ||
+                        ip.startsWith("172.16.10.") ||
+                        ip.startsWith("172.16.11.") ||
+                        ip.startsWith("172.16.12.") ||
+                        ip.startsWith("172.16.13.") ||
                         ip.startsWith("172.17.6") ||
                         ip.startsWith("172.17.7") ||
                         ip.startsWith("172.17.8") ||
-                        ip.startsWith("172.17.9")) {
+                        ip.startsWith("172.17.9") ||
+                        ip.startsWith("172.17.26")) {
 
                     WebServiceUtil.set_net_link_to_intranet();
                 } else {
