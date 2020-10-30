@@ -34,6 +34,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.product_main_other_in_textView) TextView otherInTextView;
     @BindView(R.id.product_main_scan_code_box_in_textView) TextView scanCodeBoxInTextView;
     @BindView(R.id.product_main_sale_out_textView) TextView saleOutTextView;
+    @BindView(R.id.product_main_sale_out_code_box_textView) TextView saleOutCodeBoxTextView;
     @BindView(R.id.product_main_other_out_textView) TextView otherOutTextView;
     @BindView(R.id.product_main_scan_box_textView) TextView scanBoxInTextView;
 
@@ -57,6 +58,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         otherInTextView.setOnClickListener(this);
         scanCodeBoxInTextView.setOnClickListener(this);
         saleOutTextView.setOnClickListener(this);
+        saleOutCodeBoxTextView.setOnClickListener(this);
         scanBoxInTextView.setOnClickListener(this);
     }
 
@@ -79,10 +81,13 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         } else if (v == saleOutTextView) {
             Intent intent = new Intent(this, ProductSaleOutActivity.class);
             startActivity(intent);
-        } else if (v == otherInTextView) {
+        }else if (v == saleOutCodeBoxTextView) {
+            Intent intent = new Intent(this, ProductSaleOutCodeBoxActivity.class);
+            startActivity(intent);
+        }else if (v == otherInTextView) {
 
         }  else if (v == scanCodeBoxInTextView) {
-            Intent intent = new Intent(this, ProductScanCodeBoxInActivity.class);
+            Intent intent = new Intent(this, ProductInScanCodeBoxActivity.class);
             startActivity(intent);
         } else if (v == otherOutTextView) {
 

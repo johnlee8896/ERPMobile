@@ -60,7 +60,7 @@
 
         <!--d成品扫托盘入库-->
         <activity
-            android:name=".ProductScanCodeBoxInActivity"
+            android:name=".ProductInScanCodeBoxActivity"
             android:screenOrientation="portrait" />
 
         <!--供应商退货页面-->

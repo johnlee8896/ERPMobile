@@ -17,17 +17,13 @@ import com.chinashb.www.mobileerp.adapter.CommonItemBarCodeAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
-import com.chinashb.www.mobileerp.bean.entity.MESDataEntity;
-import com.chinashb.www.mobileerp.bean.entity.MESInnerDataEntity;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductEntity;
-import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
-import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -41,7 +37,6 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -55,7 +50,7 @@ import butterknife.ButterKnife;
  * @description 扫描ERP程序生成的托盘标签入库，成品
  */
 
-public class ProductScanCodeBoxInActivity extends BaseActivity implements View.OnClickListener {
+public class ProductInScanCodeBoxActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.product_in_scan_code_box_scan_button) Button scanBoxButton;
     @BindView(R.id.product_in_scan_code_box_scan_area_button) Button scanAreaButton;
     @BindView(R.id.product_in_scan_code_box_warehouse_in_button) Button warehouseInButton;
@@ -244,7 +239,7 @@ public class ProductScanCodeBoxInActivity extends BaseActivity implements View.O
 
     private void handleSelectNO() {
         if (commonSelectInputDialog == null) {
-            commonSelectInputDialog = new CommonSelectInputDialog(ProductScanCodeBoxInActivity.this);
+            commonSelectInputDialog = new CommonSelectInputDialog(ProductInScanCodeBoxActivity.this);
         }
         commonSelectInputDialog.show();
         commonSelectInputDialog.setOnViewClickListener(onViewClickListener);
@@ -409,7 +404,7 @@ public class ProductScanCodeBoxInActivity extends BaseActivity implements View.O
                 public void onViewClick(Dialog dialog, View v, int tag) {
                     switch (tag) {
                         case CommAlertDialog.TAG_CLICK_LEFT:
-                            CommonUtil.doLogout(ProductScanCodeBoxInActivity.this);
+                            CommonUtil.doLogout(ProductInScanCodeBoxActivity.this);
                             dialog.dismiss();
                             break;
                     }
@@ -493,12 +488,12 @@ public class ProductScanCodeBoxInActivity extends BaseActivity implements View.O
             if (ws_result != null) {
                 if (!ws_result.getResult()) {
                     //Toast.makeText(StockInActivity.this,ws_result.getErrorInfo(),Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(ProductScanCodeBoxInActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
+                    CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
 
                 } else {
                     //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
 //                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
-                    CommonUtil.ShowToast(ProductScanCodeBoxInActivity.this, "入库完成", R.mipmap.smiley);
+                    CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, "入库完成", R.mipmap.smiley);
                     hasScanItem = false;
                     inputEditText.setText("");
 
