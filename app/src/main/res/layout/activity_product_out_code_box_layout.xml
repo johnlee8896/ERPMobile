@@ -5,11 +5,10 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
         android:id="@+id/product_out_code_box_delivery_order_title_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         app:app_title_text="成品出库" />
 
     <LinearLayout
@@ -194,11 +193,12 @@
                     android:orientation="vertical">
 
 
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dimen_size_5"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -223,7 +223,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dimen_size_5">
+                        android:layout_marginTop="@dimen/dimen_size_5"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -237,7 +238,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/dimen_size_15"
-                            android:baselineAligned="false"
                             android:clickable="false"
                             android:padding="2dp"
                             android:textColor="@color/black"
@@ -378,16 +378,16 @@
 
         <com.chinashb.www.mobileerp.widget.CustomRecyclerView
             android:id="@+id/product_out_code_box_scan_box_item_detail_customRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/product_out_code_box_inner_bottom_layout"
             android:layout_below="@id/product_out_code_box_inner_top_layout"
-            android:layout_marginLeft="@dimen/dimen_size_5"
+            android:layout_above="@id/product_out_code_box_inner_bottom_layout"
             android:layout_marginTop="@dimen/dimen_size_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_5"
             android:layout_marginRight="@dimen/dimen_size_5"
             android:scrollbars="vertical"
-            app:app_item_decoration_type="ITEM_SPACE"
             app:app_item_margin="@dimen/dimen_size_10"
+            app:app_item_decoration_type="ITEM_SPACE"
             app:app_layout_style="list_vertical"
             tools:itemCount="2"
             tools:listitem="@layout/item_dp_order_detail_layout" />

@@ -58,6 +58,12 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--d成品扫托盘出库-->
+        <activity
+            android:name=".ProductSaleOutCodeBoxActivity"
+            android:screenOrientation="portrait" />
+
+
         <!--d成品扫托盘入库-->
         <activity
             android:name=".ProductInScanCodeBoxActivity"

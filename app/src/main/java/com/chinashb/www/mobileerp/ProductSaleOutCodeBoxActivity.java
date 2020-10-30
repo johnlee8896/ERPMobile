@@ -19,14 +19,11 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.DeliveryOrderBean;
 import com.chinashb.www.mobileerp.bean.DpOrderDetailBean;
 import com.chinashb.www.mobileerp.bean.entity.LogisticsDeliveryEntity;
-import com.chinashb.www.mobileerp.bean.entity.MESDataEntity;
-import com.chinashb.www.mobileerp.bean.entity.MESInnerDataEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
-import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
@@ -37,9 +34,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -50,7 +45,7 @@ import butterknife.ButterKnife;
  * @author 作者: liweifeng
  * @description 扫描托盘标签关联发货指令出库
  */
-class ProductSaleOutCodeBoxActivity extends BaseActivity implements View.OnClickListener {
+public class ProductSaleOutCodeBoxActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.product_out_code_box_select_plan_button) Button selectPlanButton;
     @BindView(R.id.product_out_code_box_order_textView) TextView productNonTrayWcNameTextView;
     //    @BindView(R.id.product_non_tray_scan_button) Button productNonTrayScanButton;
@@ -83,12 +78,14 @@ class ProductSaleOutCodeBoxActivity extends BaseActivity implements View.OnClick
     private String customerFacilityName = "";
     private DpOrderDetailBean tempDpOrderDetailBean;
     private int boxId = 0;
+    private ArrayList<Integer> box_IDList;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_out_code_box_layout);
         ButterKnife.bind(this);
 
+        box_IDList = new ArrayList<>();
         initViews();
         setViewsListener();
     }
@@ -220,16 +217,32 @@ class ProductSaleOutCodeBoxActivity extends BaseActivity implements View.OnClick
             return;
         }
         System.out.println("============ scan content = " + content);
-        if (content.contains(",")) {
-//            MB3202004010002,GD2020033100031,C00082917,ITEM2019100918157,5,20200401
-            String[] qrContent = content.split(",");
-            if (qrContent != null && qrContent.length > 5) {
-                String cartonNO = qrContent[0];
-//                lotNO = qrContent[5];
-                GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
-                asyncTask.execute(cartonNO);
-            } else {
-                ToastUtil.showToastShort("箱码格式错误！");
+//        if (content.contains(",")) {
+////            MB3202004010002,GD2020033100031,C00082917,ITEM2019100918157,5,20200401
+//            String[] qrContent = content.split(",");
+//            if (qrContent != null && qrContent.length > 5) {
+//                String cartonNO = qrContent[0];
+////                lotNO = qrContent[5];
+//                GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
+//                asyncTask.execute(cartonNO);
+//            } else {
+//                ToastUtil.showToastShort("箱码格式错误！");
+//            }
+//        }
+
+        if (content.contains("/")) {
+            String[] qrContent;
+            qrContent = content.split("/");
+            if (qrContent.length >= 2) {
+
+                if (content.startsWith("Pallet") && qrContent.length == 8) {
+                    boxId = Integer.parseInt(qrContent[1]);
+//                    itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s",qrContent[1],qrContent[3],qrContent[5],qrContent[7]));
+                    inputEditText.setText("");
+//                    hasScanItem = true;
+                    box_IDList.add(boxId);
+                    handleProductOut();
+                }
             }
         }
     }
@@ -240,7 +253,8 @@ class ProductSaleOutCodeBoxActivity extends BaseActivity implements View.OnClick
         if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
 
             HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
-            outAsyncTask.execute(tempDpOrderDetailBean.getPSID() + "", tempDpOrderDetailBean.getDPIQuantity());
+//            outAsyncTask.execute(tempDpOrderDetailBean.getPSID() + "", tempDpOrderDetailBean.getDPIQuantity());
+            outAsyncTask.execute();
         } else {
             CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(this)
                     .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
@@ -271,25 +285,26 @@ class ProductSaleOutCodeBoxActivity extends BaseActivity implements View.OnClick
 
         @Override protected Void doInBackground(String... strings) {
 //            long cfID = 0;
-            long dpi_id = 0;
-//            2020-01-03T00:00:00
-            int psId = Integer.parseInt(strings[0]);
-            String qty = strings[1];
-//            new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss").parse("2019-01-03 10:59:27")
-            Date deliveryDate = null;
-            try {
-                String tempDateString = deliveryOrderBean.getDeliveryDate();
-                if (tempDateString.contains("T")) {
-                    tempDateString = tempDateString.replace("T", " ");
-                }
-                deliveryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tempDateString);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if (deliveryDate == null) {
-                deliveryDate = new Date();
-            }
-            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), psId, qty);
+//            long dpi_id = 0;
+////            2020-01-03T00:00:00
+//            int psId = Integer.parseInt(strings[0]);
+//            String qty = strings[1];
+////            new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss").parse("2019-01-03 10:59:27")
+//            Date deliveryDate = null;
+//            try {
+//                String tempDateString = deliveryOrderBean.getDeliveryDate();
+//                if (tempDateString.contains("T")) {
+//                    tempDateString = tempDateString.replace("T", " ");
+//                }
+//                deliveryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tempDateString);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            if (deliveryDate == null) {
+//                deliveryDate = new Date();
+//            }
+//            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), psId, qty);
+            result = WebServiceUtil.op_Pro_Pallet_Sale_Out_Mobile(deliveryOrderBean.getDOID(),logisticsDeliveryId,box_IDList,deliveryOrderBean.getTrackNo(),deliveryOrderBean.getCFChineseName());
 //            result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(new Date(), 68, "一汽奔腾轿车有限公司", "20200328", 102838, 0, 7426);
             return null;
         }
@@ -352,124 +367,125 @@ class ProductSaleOutCodeBoxActivity extends BaseActivity implements View.OnClick
 
     }
 
-    private class GetMesDataAsyncTask extends AsyncTask<String, Void, String> {
-
-        @Override protected String doInBackground(String... strings) {
-            if (strings == null || strings.length == 0) {
-                return null;
-            }
-            String cartonNO = strings[0];
-            WsResult result =
-//            MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
-//                    WebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
-                    WebServiceUtil.GetSaveFinishedProductCodeDataByMes(cartonNO);
-            return result.getErrorInfo();
-        }
-
-        @Override protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            System.out.println("=============================== result = " + result);
-            MESDataEntity mesDataEntity = JsonUtil.parseJsonToObject(result, MESDataEntity.class);
-            MESInnerDataEntity mesInnerDataEntity;
-            if (mesDataEntity.getCode() == 0) {//表示成功
-                String tempJson = mesDataEntity.getMessage().replace("[", "").replace("]", "");
-                mesInnerDataEntity = JsonUtil.parseJsonToObject(tempJson, MESInnerDataEntity.class);
-                System.out.println("=============================== " + mesInnerDataEntity.getItemID() + " " + mesInnerDataEntity.getItemUnit());
-
-                boxId = mesInnerDataEntity.getBoxId();
-
-//                result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), tempDpOrderDetailBean.getPSID(), tempDpOrderDetailBean.getDPIQuantity());
-
-                if (logisticsDeliveryId == 0) {
-                    ToastUtil.showToastShort("未选择物流信息！");
-                    return;
-                }
-
-//                Date deliveryDate = null;
-//                try {
-//                    String tempDateString = deliveryOrderBean.getDeliveryDate();
-//                    if (tempDateString.contains("T")) {
-//                        tempDateString = tempDateString.replace("T", " ");
-//                    }
-//                    deliveryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tempDateString);
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                if (deliveryDate == null) {
-//                    deliveryDate = new Date();
-//                }
-//                 WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, 0, deliveryOrderBean.getDOID(), mesInnerDataEntity.getPSID(), mesInnerDataEntity.getQty() + "");
-
-                if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
-                    HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
-                    outAsyncTask.execute(mesInnerDataEntity.getPSID() + "", mesInnerDataEntity.getQty() + "");
-                } else {
-                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutCodeBoxActivity.this)
-                            .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
-                            .setLeftText("确定");
-
-
-                    builder.setOnViewClickListener(new OnDialogViewClickListener() {
-                        @Override
-                        public void onViewClick(Dialog dialog, View v, int tag) {
-                            switch (tag) {
-                                case CommAlertDialog.TAG_CLICK_LEFT:
-                                    CommonUtil.doLogout(ProductSaleOutCodeBoxActivity.this);
-                                    dialog.dismiss();
-                                    break;
-                            }
-                        }
-                    });
-                    builder.create().show();
-                }
-
-
-//                if (mesInnerDataEntity.getPSID() != )
-
-
-//                String tempString;
-//                if (!TextUtils.isEmpty(mesInnerDataEntity.getDateString())){
-//                    if (mesInnerDataEntity.getDateString().contains(".")){
-//                        tempString = mesInnerDataEntity.getDateString().split(".")[0];
-//                    }
-//                    tempString = mesInnerDataEntity.getDateString();
-//                    try {
-//                        manuDate = UnitFormatUtil.sdf_YMDHMS.parse(tempString);
-//                    } catch (ParseException e) {
-//                        manuDate = new Date();
-//                        e.printStackTrace();
-//                    }
+//    private class GetMesDataAsyncTask extends AsyncTask<String, Void, String> {
 //
-//                }
-
-
-//                BoxItemEntity boxItemEntity = new BoxItemEntity();
-//                boxItemEntity.setItemName(mesInnerDataEntity.getProductChineseName() + "@" + mesInnerDataEntity.getProductDrawNo() + "@" + mesInnerDataEntity.getProductVersion());
-//                boxItemEntity.setQty(mesInnerDataEntity.getQty());
-//                boxItemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
+//        @Override protected String doInBackground(String... strings) {
+//            if (strings == null || strings.length == 0) {
+//                return null;
+//            }
+//            String cartonNO = strings[0];
+//            WsResult result =
+////            MESWebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
+////                    WebServiceUtil.GetSaveFinishedProductCodeDataByMes("XH1910130001");
+//                    WebServiceUtil.GetSaveFinishedProductCodeDataByMes(cartonNO);
+//            return result.getErrorInfo();
+//        }
 //
-//                boxItemEntity.setLotNo(lotNO);
-//                boxItemEntity.set
-
-
-//                        WCSubProductItemEntity itemEntity = new WCSubProductItemEntity();
-//                        itemEntity.setWcSubProductEntity(entity);
-//                        itemEntity.setSelect(true);
-//                        itemEntity.setLotNo(lotNo);
-//                        itemEntity.setQty(qty);
-//                        itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
-
-//                boxItemEntityList.add(boxItemEntity);
-////                        deliveryOrderAdapter = new ItemProductNonTrayAdapter(ProductScanBoxInActivity.this, boxItemEntityList);
-//                deliveryOrderAdapter.setData(boxItemEntityList);
-                inputEditText.setText("");
-                //// TODO: 2019/12/20 去掉扫描枪几个字
-                inputEditText.setHint("请继续扫描");
-
-
-            } else {
-                ToastUtil.showToastLong("接口请求数据错误！");
-            }
-        }
-    }
+//        @Override protected void onPostExecute(String result) {
+//            super.onPostExecute(result);
+//            System.out.println("=============================== result = " + result);
+//            MESDataEntity mesDataEntity = JsonUtil.parseJsonToObject(result, MESDataEntity.class);
+//            MESInnerDataEntity mesInnerDataEntity;
+//            if (mesDataEntity.getCode() == 0) {//表示成功
+//                String tempJson = mesDataEntity.getMessage().replace("[", "").replace("]", "");
+//                mesInnerDataEntity = JsonUtil.parseJsonToObject(tempJson, MESInnerDataEntity.class);
+//                System.out.println("=============================== " + mesInnerDataEntity.getItemID() + " " + mesInnerDataEntity.getItemUnit());
+//
+//                boxId = mesInnerDataEntity.getBoxId();
+//
+////                result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), tempDpOrderDetailBean.getPSID(), tempDpOrderDetailBean.getDPIQuantity());
+//
+//                if (logisticsDeliveryId == 0) {
+//                    ToastUtil.showToastShort("未选择物流信息！");
+//                    return;
+//                }
+//
+////                Date deliveryDate = null;
+////                try {
+////                    String tempDateString = deliveryOrderBean.getDeliveryDate();
+////                    if (tempDateString.contains("T")) {
+////                        tempDateString = tempDateString.replace("T", " ");
+////                    }
+////                    deliveryDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(tempDateString);
+////                } catch (ParseException e) {
+////                    e.printStackTrace();
+////                }
+////                if (deliveryDate == null) {
+////                    deliveryDate = new Date();
+////                }
+////                 WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, 0, deliveryOrderBean.getDOID(), mesInnerDataEntity.getPSID(), mesInnerDataEntity.getQty() + "");
+//
+//                if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
+//                    HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
+////                    outAsyncTask.execute(mesInnerDataEntity.getPSID() + "", mesInnerDataEntity.getQty() + "");
+//                    outAsyncTask.execute();
+//                } else {
+//                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutCodeBoxActivity.this)
+//                            .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
+//                            .setLeftText("确定");
+//
+//
+//                    builder.setOnViewClickListener(new OnDialogViewClickListener() {
+//                        @Override
+//                        public void onViewClick(Dialog dialog, View v, int tag) {
+//                            switch (tag) {
+//                                case CommAlertDialog.TAG_CLICK_LEFT:
+//                                    CommonUtil.doLogout(ProductSaleOutCodeBoxActivity.this);
+//                                    dialog.dismiss();
+//                                    break;
+//                            }
+//                        }
+//                    });
+//                    builder.create().show();
+//                }
+//
+//
+////                if (mesInnerDataEntity.getPSID() != )
+//
+//
+////                String tempString;
+////                if (!TextUtils.isEmpty(mesInnerDataEntity.getDateString())){
+////                    if (mesInnerDataEntity.getDateString().contains(".")){
+////                        tempString = mesInnerDataEntity.getDateString().split(".")[0];
+////                    }
+////                    tempString = mesInnerDataEntity.getDateString();
+////                    try {
+////                        manuDate = UnitFormatUtil.sdf_YMDHMS.parse(tempString);
+////                    } catch (ParseException e) {
+////                        manuDate = new Date();
+////                        e.printStackTrace();
+////                    }
+////
+////                }
+//
+//
+////                BoxItemEntity boxItemEntity = new BoxItemEntity();
+////                boxItemEntity.setItemName(mesInnerDataEntity.getProductChineseName() + "@" + mesInnerDataEntity.getProductDrawNo() + "@" + mesInnerDataEntity.getProductVersion());
+////                boxItemEntity.setQty(mesInnerDataEntity.getQty());
+////                boxItemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
+////
+////                boxItemEntity.setLotNo(lotNO);
+////                boxItemEntity.set
+//
+//
+////                        WCSubProductItemEntity itemEntity = new WCSubProductItemEntity();
+////                        itemEntity.setWcSubProductEntity(entity);
+////                        itemEntity.setSelect(true);
+////                        itemEntity.setLotNo(lotNo);
+////                        itemEntity.setQty(qty);
+////                        itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
+//
+////                boxItemEntityList.add(boxItemEntity);
+//////                        deliveryOrderAdapter = new ItemProductNonTrayAdapter(ProductScanBoxInActivity.this, boxItemEntityList);
+////                deliveryOrderAdapter.setData(boxItemEntityList);
+//                inputEditText.setText("");
+//                //// TODO: 2019/12/20 去掉扫描枪几个字
+//                inputEditText.setHint("请继续扫描");
+//
+//
+//            } else {
+//                ToastUtil.showToastLong("接口请求数据错误！");
+//            }
+//        }
+//    }
 }

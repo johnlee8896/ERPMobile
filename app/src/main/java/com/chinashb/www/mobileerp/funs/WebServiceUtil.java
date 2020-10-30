@@ -1312,6 +1312,92 @@ public class WebServiceUtil {
 
      */
 
+
+
+//    Function op_Pro_Pallet_Sale_Out_Mobile(DP_Order_ID As Long, Delivery_ID As Long, BoxIDList As List(Of Long), HR_ID As Integer, Bu_ID As Integer, SheetNo As String, CF_Name As String) As Tuple(Of Boolean, String)
+
+    public static WsResult op_Pro_Pallet_Sale_Out_Mobile(long DO_ID, long Delivery_ID,ArrayList<Integer> BoxIDList,
+                                                           String SheetNo,String CFName) {
+        String webMethodName = "op_Pro_Pallet_Sale_Out_Mobile";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("DP_Order_ID");
+        propertyInfo1.setValue(DO_ID);
+        propertyInfo1.setType(Long.class);
+        propertyInfos.add(propertyInfo1);
+        System.out.println("================================DO_ID = " + DO_ID);
+
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("Delivery_ID");
+        propertyInfo2.setValue(Delivery_ID);
+        propertyInfo2.setType(Long.class);
+        propertyInfos.add(propertyInfo2);
+        System.out.println("================================Delivery_ID = " + Delivery_ID);
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("BoxIDList");
+        propertyInfo3.setValue(BoxIDList);
+        propertyInfo3.setType(Date.class);
+        propertyInfos.add(propertyInfo3);
+        System.out.println("================================BoxIDList = " + BoxIDList);
+
+
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("HR_ID");
+        propertyInfo4.setValue(UserSingleton.get().getHRID());
+        propertyInfo4.setType(Integer.class);
+        propertyInfos.add(propertyInfo4);
+        System.out.println("================================HR_ID = " + UserSingleton.get().getHRID());
+
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo5.setName("Bu_ID");
+        //// TODO: 2020/3/27 车间与操作员关系？
+        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo5.setType(Integer.class);
+        propertyInfos.add(propertyInfo5);
+        System.out.println("================================Bu_ID = " + UserSingleton.get().getUserInfo().getBu_ID());
+
+        PropertyInfo propertyInfo6 = new PropertyInfo();
+        propertyInfo6.setName("SheetNo");
+        propertyInfo6.setValue(SheetNo);
+        propertyInfo6.setType(String.class);
+        propertyInfos.add(propertyInfo6);
+        System.out.println("================================SheetNo = " + SheetNo);
+
+
+        PropertyInfo propertyInfo7 = new PropertyInfo();
+        propertyInfo7.setName("CFName");
+        propertyInfo7.setValue(CFName);
+        propertyInfo7.setType(String.class);
+        propertyInfos.add(propertyInfo7);
+        System.out.println("================================CFName = " + CFName);
+
+
+//       long PS_ID , String Qty
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+        return null;
+    }
+
+
+
+
+
+
+
     public static WsResult op_Product_Manu_Out_Not_Pallet(Date Delivery_Date, long CF_ID,
                                                           String CFName, String SheetNo,
                                                           long Delivery_ID, long DPI_ID, long DO_ID, int PS_ID, String Qty) {
@@ -2821,6 +2907,7 @@ public class WebServiceUtil {
         String crpName = "";
         String crpPw = "";
         try {
+//            String newp = EncryptDecryptUtil.encode(pw);
             crpName = EncryptDecryptUtil.encryptToBase64(name, key);
             crpPw = EncryptDecryptUtil.encryptToBase64(pw, key);
         } catch (Exception e) {
