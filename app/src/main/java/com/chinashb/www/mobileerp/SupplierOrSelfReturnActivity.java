@@ -82,7 +82,8 @@ public class SupplierOrSelfReturnActivity extends BaseActivity implements View.O
             @Override
             public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                if (editable.toString().length() > 7 && editable.toString().endsWith("\n")) {
+//                if (editable.toString().length() > 7 && editable.toString().endsWith("\n")) {
+                if (editable.toString().length() > 7 ) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
                     parseContent(editable.toString());

@@ -151,7 +151,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                if (editable.toString().length() > 7 && editable.toString().endsWith("\n")) {
+//                if (editable.toString().length() > 7 && editable.toString().endsWith("\n")) {
+                if (editable.toString().length() > 7 ) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
                     parseScanResult(editable.toString());

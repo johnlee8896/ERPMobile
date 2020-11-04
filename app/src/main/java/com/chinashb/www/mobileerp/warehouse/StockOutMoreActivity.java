@@ -127,7 +127,8 @@ public class StockOutMoreActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                if (editable.toString().endsWith("\n")) {
+//                if (editable.toString().endsWith("\n")) {
+                if (editable.toString().length() > 0) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
 
 //                    parseScanResult(editable.toString());

@@ -114,7 +114,8 @@ public class StockMoveActivity extends BaseActivity {
         inputEditText.addTextChangedListener(new TextWatcherImpl(){
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                if (editable.toString().endsWith("\n")){
+//                if (editable.toString().endsWith("\n")){
+                if (editable.toString().length() > 0) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
                     parseScanResult(editable.toString());

@@ -773,7 +773,8 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
             @Override
             public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-                if (editable.toString().length() > 3 && editable.toString().endsWith("\n")) {
+//                if (editable.toString().length() > 3 && editable.toString().endsWith("\n")) {
+                if (editable.toString().length() > 3) {
 //                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
                     System.out.println("========================扫描结果:" + editable.toString());
                     if (!TextUtils.isEmpty(editable.toString())) {
