@@ -52,7 +52,7 @@
         android:layout_marginRight="@dimen/dimen_size_20"
         android:background="@drawable/shape_conner_blue_button_bg"
         android:gravity="center"
-        android:text="成品入库(扫描箱号)" />
+        android:text="成品入库(扫描MES箱号)" />
 
     <TextView
         android:id="@+id/product_main_sale_out_textView"
@@ -63,7 +63,7 @@
         android:layout_marginRight="@dimen/dimen_size_20"
         android:background="@drawable/shape_conner_blue_button_bg"
         android:gravity="center"
-        android:text="成品出库(销售)三点照合" />
+        android:text="成品出库(销售)MES及三点照合" />
 
     <TextView
         android:id="@+id/product_main_sale_out_code_box_textView"
@@ -83,6 +83,7 @@
         android:layout_marginLeft="@dimen/dimen_size_20"
         android:layout_marginTop="@dimen/dimen_size_15"
         android:layout_marginRight="@dimen/dimen_size_20"
+        android:visibility="gone"
         android:background="@drawable/shape_conner_blue_button_bg"
         android:gravity="center"
         android:text="成品出库(非销售,其他出库)" />
@@ -91,6 +92,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dimen_size_10"
+        android:visibility="gone"
         android:orientation="vertical">
 
 

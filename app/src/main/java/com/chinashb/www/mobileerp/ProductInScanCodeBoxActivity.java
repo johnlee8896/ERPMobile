@@ -496,6 +496,8 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                     CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, "入库完成", R.mipmap.smiley);
                     hasScanItem = false;
                     inputEditText.setText("");
+                    itemInfoTextView.setText("物料信息");
+                    istInfoTextView.setText("入库区域");
 
                 }
 

@@ -2966,6 +2966,34 @@ public class WebServiceUtil {
         return result;
     }
 
+    //获取Mes数据，只是为了出库，拿 到数量，ps_id信息
+    public static WsResult GetSaveFinishedProductCodeDataByMesForSaleOut(String carton) {
+        String webMethodName = "GetSaveFinishedProductCodeDataByMesForSaleOut";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "productCode", carton);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult result = new WsResult();
+        if (obj != null) {
+            int count = obj.getPropertyCount();
+            SoapObject obj2;
+            for (int i = 0; i < count; i++) {
+                obj2 = (SoapObject) obj.getProperty(i);
+                result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                if (!result.getResult()) {
+                    result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                } else {
+                    result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                }
+            }
+
+        } else {
+            result.setResult(false);
+            result.setErrorInfo("无法访问服务器，请检查网络连接是否正常");
+        }
+        return result;
+    }
+
 
     public static String getQueryInv(int Bu_ID, int Ac_Type, String F, int PageNi, int NumberInPage) {
         String result = null;

@@ -18,6 +18,7 @@ import com.chinashb.www.mobileerp.adapter.DpOrderDetailAdapter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.DeliveryOrderBean;
 import com.chinashb.www.mobileerp.bean.DpOrderDetailBean;
+import com.chinashb.www.mobileerp.bean.MesDataInfoForSaleOutBean;
 import com.chinashb.www.mobileerp.bean.entity.LogisticsDeliveryEntity;
 import com.chinashb.www.mobileerp.bean.entity.MESDataEntity;
 import com.chinashb.www.mobileerp.bean.entity.MESInnerDataEntity;
@@ -227,8 +228,12 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
             if (qrContent != null && qrContent.length > 5) {
                 String cartonNO = qrContent[0];
 //                lotNO = qrContent[5];
-                GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
+
+//                GetMesDataAsyncTask asyncTask = new GetMesDataAsyncTask();
+//                asyncTask.execute(cartonNO);
+                GetMesDataInfoForSaleOutAsyncTask asyncTask = new GetMesDataInfoForSaleOutAsyncTask();
                 asyncTask.execute(cartonNO);
+
             } else {
                 ToastUtil.showToastShort("箱码格式错误！");
             }
@@ -404,6 +409,110 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
                 if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
                     HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
                     outAsyncTask.execute(mesInnerDataEntity.getPSID() + "", mesInnerDataEntity.getQty() + "");
+                } else {
+                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutActivity.this)
+                            .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
+                            .setLeftText("确定");
+
+
+                    builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                        @Override
+                        public void onViewClick(Dialog dialog, View v, int tag) {
+                            switch (tag) {
+                                case CommAlertDialog.TAG_CLICK_LEFT:
+                                    CommonUtil.doLogout(ProductSaleOutActivity.this);
+                                    dialog.dismiss();
+                                    break;
+                            }
+                        }
+                    });
+                    builder.create().show();
+                }
+
+
+//                if (mesInnerDataEntity.getPSID() != )
+
+
+//                String tempString;
+//                if (!TextUtils.isEmpty(mesInnerDataEntity.getDateString())){
+//                    if (mesInnerDataEntity.getDateString().contains(".")){
+//                        tempString = mesInnerDataEntity.getDateString().split(".")[0];
+//                    }
+//                    tempString = mesInnerDataEntity.getDateString();
+//                    try {
+//                        manuDate = UnitFormatUtil.sdf_YMDHMS.parse(tempString);
+//                    } catch (ParseException e) {
+//                        manuDate = new Date();
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+
+
+//                BoxItemEntity boxItemEntity = new BoxItemEntity();
+//                boxItemEntity.setItemName(mesInnerDataEntity.getProductChineseName() + "@" + mesInnerDataEntity.getProductDrawNo() + "@" + mesInnerDataEntity.getProductVersion());
+//                boxItemEntity.setQty(mesInnerDataEntity.getQty());
+//                boxItemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
+//
+//                boxItemEntity.setLotNo(lotNO);
+//                boxItemEntity.set
+
+
+//                        WCSubProductItemEntity itemEntity = new WCSubProductItemEntity();
+//                        itemEntity.setWcSubProductEntity(entity);
+//                        itemEntity.setSelect(true);
+//                        itemEntity.setLotNo(lotNo);
+//                        itemEntity.setQty(qty);
+//                        itemEntity.setBuName(UserSingleton.get().getUserInfo().getBu_Name());
+
+//                boxItemEntityList.add(boxItemEntity);
+////                        deliveryOrderAdapter = new ItemProductNonTrayAdapter(ProductScanBoxInActivity.this, boxItemEntityList);
+//                deliveryOrderAdapter.setData(boxItemEntityList);
+                inputEditText.setText("");
+                //// TODO: 2019/12/20 去掉扫描枪几个字
+                inputEditText.setHint("请继续扫描");
+
+
+            } else {
+                ToastUtil.showToastLong("接口请求数据错误！");
+            }
+        }
+    }
+
+
+    private class GetMesDataInfoForSaleOutAsyncTask extends AsyncTask<String, Void, String> {
+
+        @Override protected String doInBackground(String... strings) {
+            if (strings == null || strings.length == 0) {
+                return null;
+            }
+            String cartonNO = strings[0];
+            WsResult result = WebServiceUtil.GetSaveFinishedProductCodeDataByMesForSaleOut(cartonNO);
+            return result.getErrorInfo();
+        }
+
+        @Override protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            System.out.println("=============================== mes data info result = " + result);
+            MESDataEntity mesDataEntity = JsonUtil.parseJsonToObject(result, MESDataEntity.class);
+            MesDataInfoForSaleOutBean mesDataInfoForSaleOutBean;
+            if (mesDataEntity.getCode() == 0) {//表示成功
+                String tempJson = mesDataEntity.getMessage().replace("[", "").replace("]", "");
+                mesDataInfoForSaleOutBean = JsonUtil.parseJsonToObject(tempJson, MesDataInfoForSaleOutBean.class);
+                System.out.println("=============================== " + mesDataInfoForSaleOutBean.getQty() + " " + mesDataInfoForSaleOutBean.getPSID());
+
+                boxId = mesDataInfoForSaleOutBean.getId();//这个是box_id
+
+//                result = WebServiceUtil.op_Product_Manu_Out_Not_Pallet(deliveryDate, customerFacilityId, deliveryOrderBean.getCFChineseName(), deliveryOrderBean.getTrackNo(), logisticsDeliveryId, dpi_id, deliveryOrderBean.getDOID(), tempDpOrderDetailBean.getPSID(), tempDpOrderDetailBean.getDPIQuantity());
+
+                if (logisticsDeliveryId == 0) {
+                    ToastUtil.showToastShort("未选择物流信息！");
+                    return;
+                }
+
+                if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
+                    HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
+                    outAsyncTask.execute(mesDataInfoForSaleOutBean.getPSID() + "", mesDataInfoForSaleOutBean.getQty() + "");
                 } else {
                     CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutActivity.this)
                             .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
