@@ -255,7 +255,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 //            }
             ToastUtil.showToastLong("请直接用扫码枪进行扫描，确保蓝牙已连接配对！");
         } else if (view == addTrayPhotoButton) {
-            new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+//            new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+            parseScanResult("");
         } else if (view == scanAreaButton) {
             if (boxItemEntityList.size() > 0) {
                 int selectedcount = 0;
@@ -285,6 +286,13 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         if (TextUtils.isEmpty(content)) {
             return;
         }
+//        content = "VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114";
+
+
+
+
+
+
 //        content = content.trim();
 //        content = content.replace(" ",""); 不能随便去空格，因有些 D00 A5样式
         System.out.println("============ scan content = " + content);

@@ -3,6 +3,8 @@ package com.chinashb.www.mobileerp.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.chinashb.www.mobileerp.APP;
@@ -39,5 +41,29 @@ public class AppUtil {
         if (activity.getCurrentFocus() != null && activity.getCurrentFocus().getWindowToken() != null) {
             imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+
+    private static int screenWidth, screenHeight;
+    public static int getScreenHeight(){
+        if (screenHeight <= 0){
+            initScreenSize();
+        }
+        return screenHeight;
+    }
+
+    public static int getScreenWidth(){
+        if (screenWidth <= 0){
+            initScreenSize();
+        }
+        return screenWidth;
+    }
+
+    private static void initScreenSize() {
+        WindowManager manager = (WindowManager) APP.get().getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        manager.getDefaultDisplay().getMetrics(outMetrics);
+        screenWidth = outMetrics.widthPixels;
+        screenHeight = outMetrics.heightPixels;
     }
 }

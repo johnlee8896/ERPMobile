@@ -78,4 +78,13 @@ public class PermissionGroupDefine {
     public final static String[] PERMISSION_ALL_ACTIVITY_FLOAT_WINDOW = {
             Manifest.permission.SYSTEM_ALERT_WINDOW
     };
+
+
+    public final static String[] PERMISSION_LOCATION_AND_WIFI = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.CHANGE_WIFI_STATE,
+    };
+
+
 }

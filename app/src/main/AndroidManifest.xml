@@ -58,9 +58,14 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
-        <!--d成品扫托盘出库-->
+        <!--考勤管理页面-->
         <activity
             android:name=".ProductSaleOutCodeBoxActivity"
+            android:screenOrientation="portrait" />
+
+        <!--d成品扫托盘出库-->
+        <activity
+            android:name=".AttendanceActivity"
             android:screenOrientation="portrait" />
 
 

@@ -57,7 +57,7 @@ public class StockQueryPartActivity extends BaseActivity {
     private PartInvQueryAdapter partsAdapter;
     private List<PartsEntity> partsEntityList;//零部件
 
-    private PartsEntity selected_item;
+    private PartsEntity partsEntity;
     private int currentPage = 1;
     private String keyWord = "";
 
@@ -163,11 +163,11 @@ public class StockQueryPartActivity extends BaseActivity {
                 mRecyclerView.setAdapter(partsAdapter);
                 partsAdapter.setOnItemClickListener((view, position) -> {
                             if (partsEntityList != null) {
-                                selected_item = partsEntityList.get(position);
+                                partsEntity = partsEntityList.get(position);
 //                            QueryPartInvItemAsyncTask task = new QueryPartInvItemAsyncTask();
 //                            task.execute(selected_item.getItem_ID());
                                 Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
-                                intent.putExtra("selected_item", (Serializable) selected_item);
+                                intent.putExtra("selected_item", (Serializable) partsEntity);
                                 startActivityForResult(intent, 100);
                             }
                         }

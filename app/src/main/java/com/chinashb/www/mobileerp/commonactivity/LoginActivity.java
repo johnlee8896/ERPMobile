@@ -29,6 +29,7 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.entity.MESInnerDataEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.EncryptDecryptUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.SPSingleton;
@@ -425,6 +426,12 @@ public class LoginActivity extends BaseActivity {
 //                Intent resultIntent = new Intent();
 //                setResult(1, resultIntent);
 //                finish();
+
+                try {
+                    EncryptDecryptUtil.encode("89123456");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 UserSingleton.get().setHRID(wsResult.getID().intValue());
                 UserSingleton.get().setHRName(nameEditText.getText().toString());
                 SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());

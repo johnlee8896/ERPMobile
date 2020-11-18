@@ -96,25 +96,31 @@
         <attr name="app_hide_back_image" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="ClockPanelLayout">
-        <attr name="app_ring_width" format="dimension"></attr>
-        <attr name="app_ring_color" format="color|reference"></attr>
-        <attr name="app_normal_color" format="color|reference"></attr>
-        <attr name="app_exception_color" format="color|reference"></attr>
+<!--    <declare-styleable name="ClockPanelLayout">-->
+<!--        <attr name="app_ring_width" format="dimension"></attr>-->
+<!--        <attr name="app_ring_color" format="color|reference"></attr>-->
+<!--        <attr name="app_normal_color" format="color|reference"></attr>-->
+<!--        <attr name="app_exception_color" format="color|reference"></attr>-->
 
 
 
-        <attr name="app_time_text_margin_ring" format="dimension"></attr>
+<!--        <attr name="app_time_text_margin_ring" format="dimension"></attr>-->
 
-        <attr name="app_logo_src" format="reference"></attr>
-        <attr name="app_logo_src_exception" format="reference"></attr>
+<!--        <attr name="app_logo_src" format="reference"></attr>-->
+<!--        <attr name="app_logo_src_exception" format="reference"></attr>-->
 
-        <attr name="app_time_text_size" format="dimension"></attr>
-        <attr name="app_time_text_color" format="color"></attr>
+<!--        <attr name="app_time_text_size" format="dimension"></attr>-->
+<!--        <attr name="app_time_text_color" format="color"></attr>-->
 
-        <attr name="app_start_time" format="integer"></attr>
-        <attr name="app_end_time" format="integer"></attr>
+<!--        <attr name="app_start_time" format="integer"></attr>-->
+<!--        <attr name="app_end_time" format="integer"></attr>-->
 
-    </declare-styleable>
+<!--    </declare-styleable>-->
+
+    <style name="style_divide_line_horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/divide_line_size</item>
+        <item name="android:background">@color/divide_line_color</item>
+    </style>
 
 </resources>

@@ -48,11 +48,11 @@ public final class UnitFormatUtil {
     public static final int ONE_DAY_TIME_IN_MILL_SECOND = 86400000;
 
     private static class UtilHelper {
-//        private static SimpleDateFormat sdf_YMDHM = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-//        private static SimpleDateFormat sdf_YMDHMS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        private static SimpleDateFormat sdf_YMD = new SimpleDateFormat("yyyy-MM-dd");
+        private static SimpleDateFormat sdf_YMDHM = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        private static SimpleDateFormat sdf_YMDHMS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        private static SimpleDateFormat sdf_YMD = new SimpleDateFormat("yyyy-MM-dd");
 
-//        private static SimpleDateFormat sdf_HMS = new SimpleDateFormat("HH:mm:ss");
+        private static SimpleDateFormat sdf_HMS = new SimpleDateFormat("HH:mm:ss");
     }
 
     /***故意私有构造和final声明，目的为了禁止继承和实例化*/
@@ -311,6 +311,16 @@ public final class UnitFormatUtil {
         } else {
             return String.format("%02d:%02d", minutes, seconds);
         }
+    }
+
+
+    public static String getCurrentYMD(){
+        return UtilHelper.sdf_YMD.format(System.currentTimeMillis());
+    }
+
+    public static String formatLongToYMD(long date){
+        return UtilHelper.sdf_YMD.format(date);
+
     }
 
 

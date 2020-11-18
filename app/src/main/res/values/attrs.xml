@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="TextImageView">
+        <attr name="app_image_text" format="string"/>
+        <attr name="app_image_text_color" format="color"/>
+        <attr name="app_image_text_size" format="dimension"/>
+    </declare-styleable>
+
+    <declare-styleable name="TitleLayoutManageLayout">
+        <attr name="app_title_text" format="string" />
+        <attr name="app_title_text_color" format="color" />
+        <attr name="app_title_text_size" format="dimension" />
+        <attr name="app_left_image_src" format="reference" />
+        <attr name="app_is_hide_left_icon" format="boolean" />
+        <!--<attr name="app_right_image_src" format="reference" />-->
+    </declare-styleable>
+
+    <declare-styleable name="CircleBgImageTextView">
+        <attr name="app_bg_color" format="color"/>
+    </declare-styleable>
+
+    <declare-styleable name="GroupApproveLayout">
+        <attr name="app_show_line_style" format="enum">
+            <enum name="SHOW_ALL" value="0"/>
+            <enum name="SHOW_TOP" value="1"/>
+            <enum name="SHOW_BOTTOM" value="2"/>
+            <enum name="SHOW_NONE" value="3"/>
+        </attr>
+
+        <attr name="app_divide_line_size" format="dimension" />
+        <attr name="app_divide_line_color" format="color" />
+
+        <attr name="app_index_bg_color" format="color"/>
+        <attr name="app_index_text_color" format="color"/>
+
+        <attr name="app_job_position_text_size" format="dimension"/>
+        <attr name="app_job_position_text_color" format="color"/>
+        <attr name="app_job_position_text" format="string|reference"/>
+
+        <attr name="app_apply_name" format="string|reference"/>
+        <attr name="app_apply_name_text_size" format="dimension"/>
+        <attr name="app_apply_name_text_color" format="color"/>
+
+        <attr name="app_index_text" format="string|reference"/>
+    </declare-styleable>
+
+    <!--带有"*"的文字-->
+    <declare-styleable name="ImportantTextView">
+        <attr name="app_important_text" format="string"></attr>
+        <attr name="app_important_text_color" format="color"></attr>
+    </declare-styleable>
+
+    <declare-styleable name="ClockPanelLayout">
+        <attr name="app_ring_width" format="dimension"></attr>
+        <attr name="app_ring_color" format="color|reference"></attr>
+        <attr name="app_normal_color" format="color|reference"></attr>
+        <attr name="app_exception_color" format="color|reference"></attr>
+
+
+
+        <attr name="app_time_text_margin_ring" format="dimension"></attr>
+
+        <attr name="app_logo_src" format="reference"></attr>
+        <attr name="app_logo_src_exception" format="reference"></attr>
+
+        <attr name="app_time_text_size" format="dimension"></attr>
+        <attr name="app_time_text_color" format="color"></attr>
+
+        <attr name="app_start_time" format="integer"></attr>
+        <attr name="app_end_time" format="integer"></attr>
+
+    </declare-styleable>
+
+
+    <!--验证码输入框的属性-->
+    <declare-styleable name="VerificationCodeEditText">
+        <attr name="app_text_count" format="integer|reference" />
+
+        <attr name="app_text_margin" format="dimension|reference" />
+        <attr name="app_line_height" format="dimension|reference" />
+
+        <attr name="app_line_current_color" format="color|reference" />
+        <attr name="app_line_normal_color" format="color|reference" />
+    </declare-styleable>
+
+    <!--GroupSettingItemLayout的自定义相关属性-->
+    <declare-styleable name="GroupSettingItemLayout">
+        <attr name="app_item_image_src" format="reference" />
+
+        <attr name="app_item_text" format="string|reference" />
+        <attr name="app_item_text_color" format="color|reference" />
+        <attr name="app_item_text_size" format="dimension|reference" />
+        <attr name="app_item_text_margin_image_size" format="dimension|reference" />
+
+    </declare-styleable>
+
+    <!--自定义圆形进度条相关属性-->
+    <declare-styleable name="CustomCircleProgressBar">
+        <attr name="outside_color" format="color" />
+        <attr name="outside_radius" format="dimension" />
+        <attr name="inside_color" format="color" />
+        <attr name="progress_text_color" format="color" />
+        <attr name="progress_text_size" format="dimension" />
+        <attr name="progress_width" format="dimension" />
+        <attr name="max_progress" format="integer" />
+        <attr name="progress" format="float" />
+        <attr name="direction">
+            <enum name="left" value="0" />
+            <enum name="top" value="1" />
+            <enum name="right" value="2" />
+            <enum name="bottom" value="3" />
+        </attr>
+    </declare-styleable>
+
+
+    <!--自定义日历控件-->
+
+    <declare-styleable name="CalendarView">
+
+        <attr name="calendar_padding" format="dimension" /><!--日历内部左右padding-->
+
+        <attr name="week_background" format="color" /><!--周背景-->
+        <attr name="week_line_background" format="color" /><!--线条颜色-->
+        <attr name="week_text_color" format="color" /><!--周栏字体颜色-->
+        <attr name="week_text_size" format="dimension" /><!--周栏字体大小-->
+
+        <attr name="month_view" format="string" /><!--完全自定义月视图-->
+
+        <attr name="week_view" format="string" /> <!--完全自定义周视图-->
+        <attr name="week_bar_height" format="dimension" /> <!--星期栏的高度-->
+        <attr name="week_bar_view" format="string" /> <!--如果需要的话使用自定义星期栏-->
+
+        <attr name="scheme_text" format="string" />
+        <attr name="day_text_size" format="dimension" />
+        <attr name="lunar_text_size" format="dimension" />
+        <attr name="calendar_height" format="dimension" />
+        <attr name="scheme_text_color" format="color" />
+        <attr name="scheme_month_text_color" format="color" />
+        <attr name="scheme_lunar_text_color" format="color" />
+        <attr name="scheme_theme_color" format="color" />
+
+        <attr name="selected_theme_color" format="color" />
+        <attr name="selected_text_color" format="color" />
+        <attr name="selected_lunar_text_color" format="color" />
+
+        <attr name="current_day_text_color" format="color" />
+        <attr name="current_day_lunar_text_color" format="color" />
+        <attr name="current_month_text_color" format="color" />
+        <attr name="other_month_text_color" format="color" />
+        <attr name="current_month_after_today_lunar_text_color" format="color" />
+        <attr name="current_month_before_today_lunar_text_color" format="color" />
+        <attr name="other_month_lunar_text_color" format="color" />
+
+
+        <!-- 年视图相关 -->
+        <attr name="year_view_month_text_size" format="dimension" />
+        <attr name="year_view_day_text_size" format="dimension" />
+        <attr name="year_view_month_text_color" format="color" />
+        <attr name="year_view_day_text_color" format="color" />
+        <attr name="year_view_scheme_color" format="color" />
+        <attr name="year_view_background" format="color" />
+
+        <!--日期范围-->
+        <attr name="min_year" format="integer" />
+        <attr name="max_year" format="integer" />
+        <attr name="min_year_month" format="integer" />
+        <attr name="max_year_month" format="integer" />
+
+        <!--月视图是否可滚动-->
+        <attr name="month_view_scrollable" format="boolean" />
+        <!--周视图是否可滚动-->
+        <attr name="week_view_scrollable" format="boolean" />
+        <!--年视图是否可滚动-->
+        <attr name="year_view_scrollable" format="boolean" />
+
+        <!-- 月份显示模式 -->
+        <attr name="month_view_show_mode">
+            <enum name="mode_all" value="0" />
+            <enum name="mode_only_current" value="1" />
+            <enum name="mode_fix" value="2" />
+        </attr>
+
+        <!-- 自定义周起始 -->
+        <attr name="week_start_with">
+            <enum name="sun" value="1" />
+            <enum name="mon" value="2" />
+            <enum name="sat" value="7" />
+        </attr>
+
+        <!--<attr name="select_mode">-->
+        <!--<enum name="default_mode" value="0"/>-->
+        <!--<enum name="single_mode" value="1"/>-->
+        <!--</attr>-->
+    </declare-styleable>
+
+
+    <declare-styleable name="CalendarLayout">
+        <attr name="default_status">
+            <enum name="expand" value="0" />
+            <enum name="shrink" value="1" />
+        </attr>
+
+        <attr name="calendar_show_mode">
+            <enum name="both_month_week_view" value="0" />
+            <enum name="only_week_view" value="1" />
+            <enum name="only_month_view" value="2" />
+        </attr>
+
+        <attr name="calendar_content_view_id" format="integer" />
+    </declare-styleable>
+
+    <!-- 发起申请详情页中部分文字对齐的Style -->
+    <declare-styleable name="TextAlignGroupView">
+        <attr name="leftText" format="string" />
+        <attr name="rightText" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="TextEditViewGroup">
+        <attr name="leftTextText" format="string"/>
+        <attr name="rightEditText" format="string"/>
+    </declare-styleable>
+
+
+
+
+
+
+
+    <!--GroupImageTextLayout的自定义相关属性-->
+    <declare-styleable name="GroupImageTextLayout">
+        <attr name="app_image_src" format="reference" />
+        <attr name="app_image_width" format="dimension" />
+        <attr name="app_image_height" format="dimension" />
+        <attr name="app_image_background" format="color|reference" />
+
+        <attr name="app_child_view_margin_start" format="dimension" />
+
+        <attr name="app_scale_type" format="enum">
+            <enum name="MATRIX" value="0" />
+            <enum name="FIT_XY" value="1" />
+            <enum name="FIT_START" value="2" />
+            <enum name="FIT_CENTER" value="3" />
+            <enum name="FIT_END" value="4" />
+            <enum name="CENTER" value="5" />
+            <enum name="CENTER_CROP" value="6" />
+            <enum name="CENTER_INSIDE" value="7" />
+        </attr>
+
+        <attr name="app_text" format="string|reference" />
+        <attr name="app_text_color" format="color|reference" />
+        <attr name="app_text_size" format="dimension|reference" />
+        <attr name="app_text_background" format="color|reference" />
+        <attr name="app_text_margin_image_size" format="dimension|reference" />
+        <attr name="app_text_single_line" format="boolean" />
+        <attr name="app_text_max_line" format="integer" />
+        <attr name="app_text_max_width" format="dimension" />
+
+        <attr name="app_text_gravity" format="enum">
+            <enum name="center_horizontal" value="0" />
+            <enum name="left" value="1" />
+            <enum name="right" value="2" />
+            <enum name="center" value="3" />
+            <enum name="center_vertical" value="4" />
+        </attr>
+
+        <attr name="app_parent_orientation" format="enum">
+            <enum name="IMAGE_LEFT_TEXT_RIGHT" value="0" />
+            <enum name="IMAGE_TOP_TEXT_BOTTOM" value="1" />
+            <enum name="IMAGE_RIGHT_TEXT_LEFT" value="2" />
+            <enum name="IMAGE_BOTTOM_TEXT_TOP" value="3" />
+            <enum name="IMAGE_RIGHT_TEXT_LEFT_SIDE_ALIGN" value="4" />
+        </attr>
+    </declare-styleable>
+
+
+
+
+</resources>

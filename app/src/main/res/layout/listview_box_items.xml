@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/underline"
-    android:orientation="vertical">
+    android:background="@drawable/underline">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,14 +20,14 @@
             android:gravity="center_horizontal"
             android:text="物品" />
 
-    <TextView
-        android:id="@+id/tv_bu_name"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:text="车间" />
+        <TextView
+            android:id="@+id/tv_bu_name"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="车间" />
 
 
     </LinearLayout>
@@ -55,9 +54,7 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:text="数量"
-            android:textColor="@android:color/holo_green_dark"
-           />
-
+            android:textColor="@android:color/holo_green_dark" />
 
 
     </LinearLayout>
@@ -70,6 +67,13 @@
 
         android:orientation="horizontal">
 
+        <CheckBox
+            android:id="@+id/cb_select_ist"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="选择" />
+
         <TextView
             android:id="@+id/tv_ist_name"
             android:layout_width="100dp"
@@ -77,15 +81,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:gravity="center_horizontal"
-            android:text="仓位"
-             />
-
-        <CheckBox
-            android:id="@+id/cb_select_ist"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="选择" />
+            android:text="仓位" />
 
     </LinearLayout>
 

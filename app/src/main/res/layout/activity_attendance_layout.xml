@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50"
+        app:app_is_hide_left_icon="true"
+        app:app_title_text="考勤打卡" />
+    <TextView
+        android:id="@+id/fragment_attendance_today_textView"
+        android:layout_width="match_parent"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:text="今天 2018"
+        android:textSize="@dimen/text_size_16"
+        android:paddingBottom="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:background="@color/color_blue_2E7FEF"
+        android:textColor="@color/white"
+        android:layout_height="wrap_content" />
+
+    <com.chinashb.www.mobileerp.widget.calendar.CalendarLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        app:calendar_content_view_id="@+id/fragment_bottom_content_ScrollView"
+        app:default_status="shrink">
+
+        <com.chinashb.www.mobileerp.widget.calendar.CalendarView
+            android:id="@+id/fragment_attendance_calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@color/white"
+            android:visibility="visible"
+            app:calendar_padding="@dimen/dimen_size_10"
+            app:current_day_lunar_text_color="#ff0000"
+            app:current_day_text_color="#ff0000"
+            app:current_month_before_today_lunar_text_color="#CFCFCF"
+            app:current_month_text_color="#333333"
+            app:lunar_text_size="10sp"
+            app:max_year="2022"
+            app:max_year_month="12"
+            app:min_year="2016"
+            app:min_year_month="9"
+            app:month_view_show_mode="mode_only_current"
+            app:other_month_lunar_text_color="#e1e1e1"
+            app:other_month_text_color="#e1e1e1"
+            app:scheme_lunar_text_color="#CFCFCF"
+            app:selected_lunar_text_color="#128c4b"
+            app:selected_text_color="#128c4b"
+            app:selected_theme_color="#80cfcfcf"
+            app:week_background="#fff"
+            app:week_bar_height="40dp"
+            app:week_line_background="#00000000"
+            app:week_start_with="mon"
+            app:week_text_size="10sp"
+            app:year_view_background="#f6f6f6"
+            app:year_view_day_text_color="#333333"
+            app:year_view_day_text_size="9sp"
+            app:year_view_month_text_color="#ff0000"
+            app:year_view_month_text_size="20sp"
+            app:year_view_scheme_color="#f17706" />
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/fragment_bottom_content_ScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/attendance_gray_bg">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <com.chinashb.www.mobileerp.widget.group.GroupImageTextLayout
+                    android:id="@+id/fragment_attendance_location_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="30dp"
+                    android:paddingLeft="@dimen/dimen_size_10"
+                    android:paddingTop="@dimen/dimen_size_5"
+                    android:paddingRight="@dimen/dimen_size_10"
+                    android:paddingBottom="@dimen/dimen_size_5"
+                    android:layout_marginTop="@dimen/dimen_size_10"
+
+                    app:app_image_src="@mipmap/icon_location"
+                    app:app_parent_orientation="IMAGE_LEFT_TEXT_RIGHT"
+                    app:app_text="明道大厦8号"
+                    app:app_text_color="@color/color_333333"
+                    app:app_text_gravity="left"
+                    app:app_text_margin_image_size="10dp"
+                    app:app_text_size="@dimen/text_size_15" />
+
+
+                <com.chinashb.www.mobileerp.widget.ClockPanelLayout
+                    android:id="@+id/fragment_attendance_clock_panel_Layout"
+                    android:layout_width="245dp"
+                    android:layout_height="245dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:background="#0000"
+                    app:app_ring_color="@color/color_EEEEEE"
+                    app:app_ring_width="13dp"
+                    app:app_exception_color="#E94156"
+                    app:app_normal_color="#355FFF"
+                    app:app_logo_src="@mipmap/ic_clock_blue"
+                    app:app_logo_src_exception="@mipmap/ic_clock_red"
+                    app:app_time_text_color="#8C8C8C"
+                    app:app_time_text_margin_ring="5dp"
+                    app:app_time_text_size="10sp">
+
+                    <LinearLayout
+                        android:id="@+id/fragment_attendance_attendance_Layout"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/selector_circle_blue_bg_graient"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/fragment_attendance_current_time_TextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="09:23:34"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_size_22" />
+
+                        <TextView
+                            android:id="@+id/fragment_attendance_attendance_info_TextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="打卡"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_size_18" />
+
+                    </LinearLayout>
+
+                </com.chinashb.www.mobileerp.widget.ClockPanelLayout>
+
+
+                <View style="@style/style_divide_line_horizontal" />
+
+                <TextView
+                    android:id="@+id/fragment_attendance_in_outside_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_size_18"
+                    android:layout_marginTop="@dimen/dimen_size_10"
+                    android:gravity="center_vertical"
+                    android:minHeight="30dp"
+                    android:text="外勤" />
+
+                <View style="@style/style_divide_line_horizontal" />
+
+                <RelativeLayout
+                    android:id="@+id/fragment_attendance_on_duty_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dimen_size_10"
+                    android:paddingTop="@dimen/dimen_size_10"
+                    android:paddingRight="@dimen/dimen_size_10"
+                    android:paddingBottom="@dimen/dimen_size_10"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/fragment_attendance_on_duty_time_textView"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/dimen_size_5"
+                        android:text="上班 09:30"
+                        android:textColor="@color/color_333333"
+                        android:textSize="@dimen/text_size_16" />
+
+                    <TextView
+                        android:id="@+id/fragment_attendance_on_duty_status_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="正常"
+                        android:textColor="@color/color_228BE0"
+                        android:textSize="@dimen/text_size_16" />
+
+                    <com.chinashb.www.mobileerp.widget.group.GroupImageTextLayout
+                        android:id="@+id/fragment_attendance_on_duty_location_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/fragment_attendance_on_duty_status_textView"
+                        android:layout_toRightOf="@id/fragment_attendance_on_duty_time_textView"
+                        android:paddingRight="@dimen/dimen_size_10"
+                        app:app_image_src="@mipmap/icon_location"
+                        app:app_parent_orientation="IMAGE_LEFT_TEXT_RIGHT"
+                        app:app_text="明道大厦"
+                        app:app_text_color="@color/color_333333"
+                        app:app_text_gravity="left"
+                        app:app_text_margin_image_size="5dp"
+                        app:app_text_size="@dimen/text_size_16"
+                        />
+                </RelativeLayout>
+
+                <View style="@style/style_divide_line_horizontal" />
+
+                <TextView
+                    android:id="@+id/fragment_attendance_on_duty_out_textView"
+                    android:layout_width="match_parent"
+                    android:text="外勤原因：忘了"
+                    android:visibility="gone"
+                    android:paddingLeft="@dimen/dimen_size_18"
+                    android:layout_height="wrap_content" />
+
+                <View style="@style/style_divide_line_horizontal" />
+                <RelativeLayout
+                    android:id="@+id/fragment_attendance_off_duty_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dimen_size_10"
+                    android:paddingTop="@dimen/dimen_size_10"
+                    android:paddingRight="@dimen/dimen_size_10"
+                    android:paddingBottom="@dimen/dimen_size_10"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/fragment_attendance_off_duty_time_textView"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/dimen_size_5"
+                        android:text="下班 09:30"
+                        android:textColor="@color/color_333333"
+                        android:textSize="@dimen/text_size_16" />
+
+                    <TextView
+                        android:id="@+id/fragment_attendance_off_duty_status_textView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="正常"
+                        android:textColor="@color/color_228BE0"
+                        android:textSize="@dimen/text_size_16" />
+
+                    <com.chinashb.www.mobileerp.widget.group.GroupImageTextLayout
+                        android:id="@+id/fragment_attendance_off_duty_location_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/fragment_attendance_off_duty_status_textView"
+                        android:layout_toRightOf="@id/fragment_attendance_off_duty_time_textView"
+                        android:paddingRight="@dimen/dimen_size_10"
+                        app:app_image_src="@mipmap/icon_location"
+                        app:app_parent_orientation="IMAGE_LEFT_TEXT_RIGHT"
+                        app:app_text="明道大厦明道大厦"
+                        app:app_text_color="@color/color_333333"
+                        app:app_text_gravity="left"
+                        app:app_text_margin_image_size="5dp"
+                        app:app_text_size="@dimen/text_size_16" />
+                </RelativeLayout>
+                <TextView
+                    android:id="@+id/fragment_attendance_off_duty_out_textView"
+                    android:layout_width="match_parent"
+                    android:text="外勤原因：忘了"
+                    android:visibility="gone"
+                    android:paddingLeft="@dimen/dimen_size_18"
+                    android:layout_height="wrap_content" />
+
+                <View style="@style/style_divide_line_horizontal" />
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+    </com.chinashb.www.mobileerp.widget.calendar.CalendarLayout>
+
+
+</LinearLayout>

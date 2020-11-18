@@ -93,4 +93,8 @@
     <color name="color_custom_tab_deselected_text">#ffffff</color>
     <color name="color_custom_tab_indicator">#ffffff</color>
     <color name="color_blue_0072FF">#0072FF</color>
+
+
+    <color name="attendance_gray_bg">#FAFBFC</color>
+    <color name="color_228BE0">#228BE0</color>
 </resources>
