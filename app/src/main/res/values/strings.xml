@@ -109,6 +109,8 @@
     <string name="my_request_to_approve_count">待审批(%d)</string>
     <string name="my_request_has_approve_count">已审批(%d)</string>
     <string name="request_server_error">请求错误：</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确定</string>
 
     <string-array name="week_string_array">
         <item>日</item>

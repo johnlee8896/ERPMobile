@@ -161,7 +161,6 @@ public class FoodOrderActivity extends BaseActivity {
         handler.removeMessages(TAG_UPDATE_CURRENT_TIME);
     }
 
-
     private class CommitFoodAsyncTask extends AsyncTask<String, Void, WsResult> {
         @Override
         protected WsResult doInBackground(String... params) {

@@ -18,7 +18,9 @@ public class AttendanceDetailBean {
      * remark : 打卡
      */
 
-    @SerializedName("date") private long date;
+//    @SerializedName("date") private long date;
+            //这里因是VB的关键字，故无效
+    @SerializedName("currentDate") private long date;
     @SerializedName("type") private StatusBean type;
     @SerializedName("out") private StatusBean out;
     @SerializedName("status") private StatusBean status;

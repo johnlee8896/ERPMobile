@@ -2,6 +2,7 @@ package com.chinashb.www.mobileerp;
 
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -13,15 +14,18 @@ import android.widget.TextView;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.AttendanceDetailBean;
 import com.chinashb.www.mobileerp.bean.AttendanceInfoBean;
 import com.chinashb.www.mobileerp.bean.AttendanceReportBean;
 import com.chinashb.www.mobileerp.bean.SystemDateBean;
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.libapi.bean.BaseBean;
 import com.chinashb.www.mobileerp.libapi.bean.BaseListBean;
 import com.chinashb.www.mobileerp.permission.PermissionsUtil;
 import com.chinashb.www.mobileerp.singleton.GPSLocationSingleton;
 import com.chinashb.www.mobileerp.singleton.SPSingleton;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.APIDefine;
 import com.chinashb.www.mobileerp.utils.ColorStateUtils;
 import com.chinashb.www.mobileerp.utils.DeviceUtil;
@@ -56,6 +60,7 @@ import java.util.TimeZone;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import okhttp3.internal.Util;
 
 /***
  * @date 创建时间 2020/11/13 4:27 PM
@@ -117,11 +122,13 @@ public class AttendanceActivity extends BaseActivity {
     @BindView(R.id.fragment_attendance_off_duty_out_textView) TextView offDutyOutTextView;
     @BindView(R.id.fragment_attendance_today_textView) TextView todayTextView;
 
+    private static final int TAG_UPDATE_ORDER_SUCCESS = 0X101;
     private double longitude;
     private double latitude;
     private String locationName;
     private boolean canAttendance = false;
     private boolean isInnerRange = false;
+    private int commitType = 0;
     AMapLocationListener locationListener = new AMapLocationListener() {
         @Override
         public void onLocationChanged(AMapLocation location) {
@@ -177,13 +184,23 @@ public class AttendanceActivity extends BaseActivity {
                 currentTimeTextView.setText(UnitFormatUtil.formatLongToHMS(System.currentTimeMillis()));
                 currentTimeTextView.setVisibility(View.VISIBLE);
                 handler.sendEmptyMessageDelayed(TAG_UPDATE_CURRENT_TIME, 1000);
+            }else if (msg.what == TAG_UPDATE_ORDER_SUCCESS) {
+                currentTimeTextView.setText(UnitFormatUtil.formatLongToHMS(System.currentTimeMillis()));
+                currentTimeTextView.setVisibility(View.VISIBLE);
+                handler.sendEmptyMessageDelayed(TAG_UPDATE_CURRENT_TIME, 1000);
+//                updateAttendanceLayooutInfo();
             }
+
         }
     };
 
     private boolean hasRequestedPermission = false;
     private Unbinder unbinder;
 
+
+    private void updateAttendanceLayooutInfo() {
+
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -210,7 +227,7 @@ public class AttendanceActivity extends BaseActivity {
         }.getType();
         Map<String, String> map = new HashMap<>();
         map.put("day", dayNumber + "");
-        PresenterSingleton.get().doGetData(AttendanceActivity.this, APIDefine.API_attendance_report, map, type, this);
+//        PresenterSingleton.get().doGetData(AttendanceActivity.this, APIDefine.API_attendance_report, map, type, this);
     }
 
     private void initClockPanel() {
@@ -229,7 +246,10 @@ public class AttendanceActivity extends BaseActivity {
         map.put("date", String.valueOf(dateLong));
         Type type = new TypeToken<BaseBean<BaseListBean<AttendanceDetailBean>>>() {
         }.getType();
-        PresenterSingleton.get().doGetData(AttendanceActivity.this, APIDefine.API_get_attendance_by_date, map, type, this);
+//        PresenterSingleton.get().doGetData(AttendanceActivity.this, APIDefine.API_get_attendance_by_date, map, type, this);
+
+        GetAttendanceDetailTask task = new GetAttendanceDetailTask();
+        task.execute(UnitFormatUtil .getCurrentYMD());
     }
 
     private void refreshUIByDay(long selectDate) {
@@ -319,7 +339,7 @@ public class AttendanceActivity extends BaseActivity {
         }.getType();
         Map<String, String> map = new HashMap<>();
         map.put("date", String.valueOf(System.currentTimeMillis()));
-        PresenterSingleton.get().doGetData(AttendanceActivity.this, APIDefine.API_get_system_time, map, type, this);
+//        PresenterSingleton.get().doGetData(AttendanceActivity.this, APIDefine.API_get_system_time, map, type, this);
     }
 
     private CalendarEntity getSchemeCalendar(long dateTime, boolean isException) {
@@ -519,6 +539,8 @@ public class AttendanceActivity extends BaseActivity {
     }
 
     private void beginAttendance(String remark) {
+//        executeAttendance(HR_ID As Integer, HR_Name As String, day_span As String, device_id As String, latitude As String, longitude As String, address As String, remark As String, out As Integer)
+
         Map<String, String> map = new HashMap<>();
         map.put("address", locationName);
         map.put("day_span", 0 + "");
@@ -526,11 +548,14 @@ public class AttendanceActivity extends BaseActivity {
         map.put("latitude", latitude + "");
         map.put("longitude", longitude + "");
         map.put("remark", remark);
+        map.put("out", isInnerRange ? "0" : "1");
 
-        Type type = new TypeToken<BaseBean>() {
-        }.getType();
-
-        PresenterSingleton.get().doPostAction(AttendanceActivity.this, APIDefine.API_attendance, map, type, this);
+//        Type type = new TypeToken<BaseBean>() {
+////        }.getType();
+////
+////        PresenterSingleton.get().doPostAction(AttendanceActivity.this, APIDefine.API_attendance, map, type, this);
+        ExecuteAttendanceTask task = new ExecuteAttendanceTask();
+        task.execute(map);
     }
 
     private void stopLocation() {
@@ -541,12 +566,13 @@ public class AttendanceActivity extends BaseActivity {
     private void getAttendanceRule() {
         Type type = new TypeToken<BaseBean<AttendanceInfoBean>>() {
         }.getType();
-        PresenterSingleton.get().doGetData(APIDefine.API_get_attendance_myinfo, type, this);
+//        PresenterSingleton.get().doGetData(APIDefine.API_get_attendance_myinfo, type, this);
     }
 
     private void showApiError(String api, BaseBean msg, String requestApi) {
         if (api.equals(requestApi)) {
-            ToastUtil.showToastShort(getString(R.string.request_server_error) + api + msg.getMessage());
+//            ToastUtil.showToastShort(getString(R.string.request_server_error) + api + msg.getMessage());
+            ToastUtil.showToastShort("接口请求错误" + api + msg.getMessage());
         }
     }
 
@@ -614,6 +640,45 @@ public class AttendanceActivity extends BaseActivity {
                 }
                 addDateStatusToView(dateStatusMap);
             }
+        }
+    }
+
+    private class ExecuteAttendanceTask extends AsyncTask< Map<String, String> ,Void,WsResult>{
+
+        @Override protected WsResult doInBackground(Map<String, String>... maps) {
+            if (maps.length > 0){
+              return  WebServiceUtil.executeAttendance(maps[0]);
+            }
+            return null;
+        }
+
+        @Override protected void onPostExecute(WsResult result) {
+            if (result.getResult()) {
+                ToastUtil.showToastLong(commitType == 1 ? "打卡成功！" : "更新打卡成功！");
+            } else {
+                ToastUtil.showToastLong("操作失败！" + result.getErrorInfo());
+            }
+            handler.sendEmptyMessage(TAG_UPDATE_ORDER_SUCCESS);
+        }
+    }
+
+
+    private class GetAttendanceDetailTask extends AsyncTask< String ,Void,WsResult>{
+
+        @Override protected WsResult doInBackground(String... strings) {
+            if (strings.length > 0){
+                return  WebServiceUtil.getAttendanceDetailByDay(strings[0]);
+            }
+            return null;
+        }
+
+        @Override protected void onPostExecute(WsResult result) {
+            if (result.getResult()) {
+                ToastUtil.showToastLong(commitType == 1 ? "打卡成功！" : "更新打卡成功！");
+            } else {
+                ToastUtil.showToastLong("操作失败！" + result.getErrorInfo());
+            }
+            handler.sendEmptyMessage(TAG_UPDATE_ORDER_SUCCESS);
         }
     }
 

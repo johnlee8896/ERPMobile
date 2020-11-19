@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 /***
  * @date 创建时间 2018/3/22 15:54
- * @author 作者: yulong
+ * @author 作者: liweifeng
  * @description 通用的状态bean
  */
 public class StatusBean implements Parcelable {

@@ -19,7 +19,8 @@ public class AttendanceReportBean {
      * remark :
      */
 
-    @SerializedName("date") private long date;
+//    @SerializedName("date") private long date;
+    @SerializedName("currentDate") private long date;
     @SerializedName("start_time") private long startTime;
     @SerializedName("end_time") private long endTime;
     @SerializedName("status") private StatusBean status;

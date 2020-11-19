@@ -2,6 +2,7 @@ package com.chinashb.www.mobileerp.funs;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -40,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static com.chinashb.www.mobileerp.funs.CommonUtil.isNothing2String;
 
@@ -3290,6 +3293,141 @@ public class WebServiceUtil {
 
         return null;
 
+    }
+
+    public static WsResult executeAttendance(Map<String, String> map) {
+        String webMethodName = "executeAttendance";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("HR_ID");
+//        propertyInfo1.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo1.setValue(UserSingleton.get().getHRID());
+        propertyInfo1.setType(Integer.class);
+        propertyInfos.add(propertyInfo1);
+        System.out.println("================================HR_ID = " + UserSingleton.get().getHRID());
+
+        //// TODO: 2019/12/31 indate
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("HR_Name");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo2.setValue(map.get("HR_Name"));
+        propertyInfo2.setType(Long.class);
+        propertyInfos.add(propertyInfo2);
+        System.out.println("================================HR_Name = " + map.get("HR_Name"));
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("day_span");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo3.setValue(map.get("day_span"));
+        propertyInfo3.setType(String.class);
+        propertyInfos.add(propertyInfo3);
+        System.out.println("================================day_span = " + map.get("day_span"));
+
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("device_id");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo4.setValue(map.get("device_id"));
+        propertyInfo4.setType(String.class);
+        propertyInfos.add(propertyInfo4);
+        System.out.println("================================device_id = " + map.get("device_id"));
+
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo5.setName("latitude");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo5.setValue(map.get("latitude"));
+        propertyInfo5.setType(String.class);
+        propertyInfos.add(propertyInfo5);
+        System.out.println("================================latitude = " + map.get("latitude"));
+
+        PropertyInfo propertyInfo6 = new PropertyInfo();
+        propertyInfo6.setName("longitude");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo6.setValue(map.get("longitude"));
+        propertyInfo6.setType(String.class);
+        propertyInfos.add(propertyInfo6);
+        System.out.println("================================longitude = " + map.get("longitude"));
+
+        PropertyInfo propertyInfo7 = new PropertyInfo();
+        propertyInfo7.setName("address");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo7.setValue(map.get("address"));
+        propertyInfo7.setType(String.class);
+        propertyInfos.add(propertyInfo7);
+        System.out.println("================================address = " + map.get("address"));
+
+        PropertyInfo propertyInfo8 = new PropertyInfo();
+        propertyInfo8.setName("remark");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo8.setValue(map.get("remark"));
+        propertyInfo8.setType(String.class);
+        propertyInfos.add(propertyInfo8);
+        System.out.println("================================remark = " + map.get("remark"));
+
+        PropertyInfo propertyInfo9 = new PropertyInfo();
+        propertyInfo9.setName("out");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo9.setValue(map.get("out"));
+        propertyInfo9.setType(String.class);
+        propertyInfos.add(propertyInfo9);
+        System.out.println("================================out = " + map.get("out"));
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
+    }
+
+
+    public static WsResult getAttendanceDetailByDay(String dayDate) {
+        String webMethodName = "getAttendanceDetailByDay";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("HR_ID");
+//        propertyInfo1.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo1.setValue(UserSingleton.get().getHRID());
+        propertyInfo1.setType(Integer.class);
+        propertyInfos.add(propertyInfo1);
+        System.out.println("================================HR_ID = " + UserSingleton.get().getHRID());
+
+        //// TODO: 2019/12/31 indate
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("dayDate");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo2.setValue(dayDate);
+        propertyInfo2.setType(String.class);
+        propertyInfos.add(propertyInfo2);
+        System.out.println("================================dayDate = " + dayDate);
+
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
     }
 }
 

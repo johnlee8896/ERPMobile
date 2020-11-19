@@ -62,4 +62,5 @@
 
     <!--分割线高度-->
     <dimen name="divide_line_size">0.7dp</dimen>
+    <dimen name="dimen_size_120">120dp</dimen>
 </resources>

@@ -81,6 +81,7 @@
     <color name="color_red_E94156">#E94156</color>
     <color name="color_F9F9F9">#f9f9f9</color>
     <color name="color_blue_28B9D6">#28B9D6</color>
+    <color name="color_228BE0">#228BE0</color>
 
     <color name="color_green_27D346">#27D346</color>
 
@@ -96,5 +97,8 @@
 
 
     <color name="attendance_gray_bg">#FAFBFC</color>
-    <color name="color_228BE0">#228BE0</color>
+
+
+
+
 </resources>
