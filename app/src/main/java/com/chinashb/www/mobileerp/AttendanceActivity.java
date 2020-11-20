@@ -25,7 +25,6 @@ import com.chinashb.www.mobileerp.libapi.bean.BaseListBean;
 import com.chinashb.www.mobileerp.permission.PermissionsUtil;
 import com.chinashb.www.mobileerp.singleton.GPSLocationSingleton;
 import com.chinashb.www.mobileerp.singleton.SPSingleton;
-import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.APIDefine;
 import com.chinashb.www.mobileerp.utils.ColorStateUtils;
 import com.chinashb.www.mobileerp.utils.DeviceUtil;
@@ -60,7 +59,6 @@ import java.util.TimeZone;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import okhttp3.internal.Util;
 
 /***
  * @date 创建时间 2020/11/13 4:27 PM

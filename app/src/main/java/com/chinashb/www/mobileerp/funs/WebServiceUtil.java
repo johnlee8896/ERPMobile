@@ -2,7 +2,6 @@ package com.chinashb.www.mobileerp.funs;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
@@ -20,7 +19,6 @@ import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
-import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -2571,8 +2569,8 @@ public class WebServiceUtil {
 
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
-
-                result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+//todo 这里报错，illeagel property
+//                result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
 
                 if (obj2.getProperty("ErrorInfo") != null) {
                     result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());

@@ -97,6 +97,7 @@
 
 
     <color name="attendance_gray_bg">#FAFBFC</color>
+    <color name="comm_view_click_bg">#2000</color>
 
 
 

@@ -45,7 +45,7 @@
             android:layout_height="@dimen/dimen_size_45"
             android:layout_weight="1"
             android:textColor="@color/color_blue_2E7FEF"
-            android:background="@drawable/selector_item_sdzh_box_click_corner_bg"
+            android:background="@drawable/selector_comm_click_white_bg"
             android:text="@string/cancel"
             android:textSize="@dimen/text_size_16"
             />
@@ -54,7 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/dimen_size_45"
             android:layout_weight="1"
-            android:background="@drawable/selector_item_sdzh_box_click_corner_bg"
+            android:background="@drawable/selector_comm_click_white_bg"
             android:text="@string/ok"
             android:textColor="@color/color_blue_2E7FEF"
             android:textSize="@dimen/text_size_16"
