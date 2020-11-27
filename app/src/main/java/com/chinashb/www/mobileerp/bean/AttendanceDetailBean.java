@@ -20,7 +20,8 @@ public class AttendanceDetailBean {
 
 //    @SerializedName("date") private long date;
             //这里因是VB的关键字，故无效
-    @SerializedName("currentDate") private long date;
+//    @SerializedName("currentDate") private long date;
+    @SerializedName("currentDate") private String date;
     @SerializedName("type") private StatusBean type;
     @SerializedName("out") private StatusBean out;
     @SerializedName("status") private StatusBean status;
@@ -28,11 +29,11 @@ public class AttendanceDetailBean {
     @SerializedName("address") private String address;
     @SerializedName("remark") private String remark;
 
-    public long getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(long date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

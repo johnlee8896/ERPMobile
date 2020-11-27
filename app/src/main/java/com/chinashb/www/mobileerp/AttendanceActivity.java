@@ -18,6 +18,7 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.AttendanceDetailBean;
 import com.chinashb.www.mobileerp.bean.AttendanceInfoBean;
 import com.chinashb.www.mobileerp.bean.AttendanceReportBean;
+import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.SystemDateBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.libapi.bean.BaseBean;
@@ -96,6 +97,7 @@ import butterknife.Unbinder;
 //        }
 //]
 //    }
+@SuppressWarnings("ALL")
 public class AttendanceActivity extends BaseActivity {
     private static final int TAG_UPDATE_CURRENT_TIME = 100;
     private static final long ONE_DAY_TIME_MILLIS = 86400000;
@@ -121,6 +123,7 @@ public class AttendanceActivity extends BaseActivity {
     @BindView(R.id.fragment_attendance_today_textView) TextView todayTextView;
 
     private static final int TAG_UPDATE_ORDER_SUCCESS = 0X101;
+    private static final int TAG_Request_fail = 0X102;
     private double longitude;
     private double latitude;
     private String locationName;
@@ -136,6 +139,10 @@ public class AttendanceActivity extends BaseActivity {
                     longitude = location.getLongitude();
                     latitude = location.getLatitude();
                     locationName = location.getAddress();
+
+                    System.out.println("================================================longitude = " + longitude);
+                    System.out.println("================================================latitude = " + latitude);
+                    System.out.println("================================================locationName = " + locationName);
 
                     String rule = SPSingleton.get().getString(SPDefine.KEY_attendance_rule, "");
                     if (!StringUtils.isStringValid(rule)) {
@@ -196,9 +203,6 @@ public class AttendanceActivity extends BaseActivity {
     private Unbinder unbinder;
 
 
-    private void updateAttendanceLayooutInfo() {
-
-    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,6 +215,9 @@ public class AttendanceActivity extends BaseActivity {
                 hasRequestedPermission = true;
             }
         });
+
+        //// TODO: 2020/11/20
+        GPSLocationSingleton.get().beginLocationWithPermission(true, locationListener);
 
         getAttendanceDetail(System.currentTimeMillis());
         initViews();
@@ -370,7 +377,7 @@ public class AttendanceActivity extends BaseActivity {
 
     }
 
-    private void showBeforeTodayAttendance(BaseListBean<AttendanceDetailBean> listBean) {
+    private void showBeforeTodayAttendance(List<AttendanceDetailBean> listBean) {
         attendanceLayout.setEnabled(false);
         infoTextView.setText("");
         onDutyOutTextView.setVisibility(View.GONE);
@@ -381,8 +388,9 @@ public class AttendanceActivity extends BaseActivity {
         currentTimeTextView.setVisibility(View.GONE);
         //其他时间如果是今天之前的话，只有一条数据和两条数据，一条判断是旷工还是休息
         if (isBeforeToday) {
-            if (listBean.getCount() == 1) {
-                AttendanceDetailBean bean = listBean.getResults().get(0);
+//            if (listBean.getCount() == 1) {
+            if (listBean.size() == 1) {
+                AttendanceDetailBean bean = listBean.get(0);
                 if (bean != null) {
                     infoTextView.setText(bean.getStatus().getMessage());
                 }
@@ -393,9 +401,9 @@ public class AttendanceActivity extends BaseActivity {
                 }
 
                 clockPanelLayout.setProgressDegree(0);
-            } else if (listBean.getCount() == 2) {
-                AttendanceDetailBean onBean = listBean.getResults().get(0);
-                AttendanceDetailBean offBean = listBean.getResults().get(1);
+            } else if (listBean.size() == 2) {
+                AttendanceDetailBean onBean = listBean.get(0);
+                AttendanceDetailBean offBean = listBean.get(1);
                 initOnDutyLayout(onBean);
                 initOffDutyLayout(offBean);
                 infoTextView.setText("已完成");
@@ -405,14 +413,15 @@ public class AttendanceActivity extends BaseActivity {
         }
     }
 
-    private void showTodayAttendance(BaseListBean<AttendanceDetailBean> listBean) {
+//    private void showTodayAttendance(BaseListBean<AttendanceDetailBean> listBean) {
+    private void showTodayAttendance(List<AttendanceDetailBean> listBean) {
         attendanceLayout.setEnabled(true);
 //        GPSLocationSingleton.get().startLocationLoop(locationListener);
         if (hasRequestedPermission) {
             GPSLocationSingleton.get().beginLocationWithPermission(true, locationListener);
         }
         inOutsideTextView.setVisibility(View.VISIBLE);
-        if (listBean.getCount() == 0) {
+        if (listBean.size() == 0) {
             infoTextView.setText("上班打卡");
             onDutyLayout.setVisibility(View.GONE);
             offDutyLayout.setVisibility(View.GONE);
@@ -420,18 +429,18 @@ public class AttendanceActivity extends BaseActivity {
             offDutyOutTextView.setVisibility(View.GONE);
 
             clockPanelLayout.setProgressDegree(0);
-        } else if (listBean.getCount() == 1) {
-            AttendanceDetailBean bean = listBean.getResults().get(0);
+        } else if (listBean.size() == 1) {
+            AttendanceDetailBean bean = listBean.get(0);
             initOnDutyLayout(bean);
             infoTextView.setText("下班打卡");
             offDutyLayout.setVisibility(View.GONE);
             offDutyOutTextView.setVisibility(View.GONE);
             clockPanelLayout.setStartTime(bean.getDate());
             clockPanelLayout.setProgressDegree(1);
-            clockPanelLayout.setStartBitmapException(judgeBeanIsException(listBean.getResults().get(0)));
-        } else if (listBean.getCount() == 2) {
-            AttendanceDetailBean onBean = listBean.getResults().get(0);
-            AttendanceDetailBean offBean = listBean.getResults().get(1);
+            clockPanelLayout.setStartBitmapException(judgeBeanIsException(listBean.get(0)));
+        } else if (listBean.size() == 2) {
+            AttendanceDetailBean onBean = listBean.get(0);
+            AttendanceDetailBean offBean = listBean.get(1);
             initOnDutyLayout(onBean);
             initOffDutyLayout(offBean);
             infoTextView.setText("更新打卡");
@@ -473,7 +482,8 @@ public class AttendanceActivity extends BaseActivity {
 
     private void initOnDutyLayout(AttendanceDetailBean bean) {
         onDutyLayout.setVisibility(View.VISIBLE);
-        onDutyTimeTextView.setText(String.format("%s %s ", bean.getType().getMessage(), UnitFormatUtil.formatLongToHMS(bean.getDate())));
+//        onDutyTimeTextView.setText(String.format("%s %s ", bean.getType().getMessage(), UnitFormatUtil.formatLongToHMS(bean.getDate())));
+        onDutyTimeTextView.setText(String.format("%s %s ", bean.getType().getMessage(), bean.getDate()));
         onDutyLocationLayout.setText(StringUtils.transferTooLongString(bean != null ? bean.getAddress() : ""));
         onDutyStatusTextView.setText(bean.getStatus().getMessage());
         onDutyStatusTextView.setTextColor(ColorStateUtils.getColorByState(AttendanceActivity.this, bean.getStatus().getCode()));
@@ -489,7 +499,7 @@ public class AttendanceActivity extends BaseActivity {
 
     private void initOffDutyLayout(AttendanceDetailBean bean) {
         offDutyLayout.setVisibility(View.VISIBLE);
-        offDutyTimeTextView.setText(String.format("%s %s ", bean.getType().getMessage(), UnitFormatUtil.formatLongToHMS(bean.getDate())));
+        offDutyTimeTextView.setText(String.format("%s %s ", bean.getType().getMessage(), bean.getDate()));
         offDutyLocationLayout.setText(StringUtils.transferTooLongString(bean != null ? bean.getAddress() : ""));
 
         offDutyStatusTextView.setText(bean.getStatus().getMessage());
@@ -518,6 +528,11 @@ public class AttendanceActivity extends BaseActivity {
                 showRemarkDialog();
             }
         }
+        
+        //// TODO: 2020/11/20  
+        beginAttendance("");
+
+
     }
 
     private void showConfirmDialog() {
@@ -621,13 +636,13 @@ public class AttendanceActivity extends BaseActivity {
 
             }
         } else if (api.equals(APIDefine.API_get_attendance_by_date)) {
-            BaseListBean<AttendanceDetailBean> listBean = (BaseListBean<AttendanceDetailBean>) t;
-            attendanceRecordCounter = listBean.getCount();
-            if (isToday) {
-                showTodayAttendance(listBean);
-            } else {
-                showBeforeTodayAttendance(listBean);
-            }
+//            BaseListBean<AttendanceDetailBean> listBean = (BaseListBean<AttendanceDetailBean>) t;
+//            attendanceRecordCounter = listBean.getCount();
+//            if (isToday) {
+//                showTodayAttendance(listBean);
+//            } else {
+//                showBeforeTodayAttendance(listBean);
+//            }
         } else if (api.equals(APIDefine.API_attendance_report)) {
             BaseListBean<AttendanceReportBean> listBean = (BaseListBean<AttendanceReportBean>) t;
             if (listBean != null && listBean.getCount() > 0) {
@@ -664,19 +679,43 @@ public class AttendanceActivity extends BaseActivity {
     private class GetAttendanceDetailTask extends AsyncTask< String ,Void,WsResult>{
 
         @Override protected WsResult doInBackground(String... strings) {
-            if (strings.length > 0){
-                return  WebServiceUtil.getAttendanceDetailByDay(strings[0]);
+            try{
+                if (strings.length > 0){
+                    return  WebServiceUtil.getAttendanceDetailByDay(strings[0]);
+                }
+                return null;
+            }catch(Exception e){
+                return null;
             }
-            return null;
+
         }
 
         @Override protected void onPostExecute(WsResult result) {
-            if (result.getResult()) {
-                ToastUtil.showToastLong(commitType == 1 ? "打卡成功！" : "更新打卡成功！");
-            } else {
-                ToastUtil.showToastLong("操作失败！" + result.getErrorInfo());
+            if (result == null){
+                ToastUtil.showToastLong("获取考勤信息失败！" );
+            }else{
+                if (result.getResult()) {
+                    ToastUtil.showToastLong(commitType == 1 ? "打卡成功！" : "更新打卡成功！");
+                    try{
+                        Type type = new TypeToken<List<AttendanceDetailBean>>() {
+                        }.getType();
+                        List<AttendanceDetailBean> listBean = JsonUtil .parseJsonToObject(result.getErrorInfo(),type);
+
+                        if (isToday) {
+                            showTodayAttendance(listBean);
+                        } else {
+                            showBeforeTodayAttendance(listBean);
+                        }
+                    }catch(Exception e){
+                        ToastUtil.showToastShort(e.getMessage());
+                    }
+
+                } else {
+                    ToastUtil.showToastLong("操作失败！" + result.getErrorInfo());
+                }
+//                handler.sendEmptyMessage(TAG_UPDATE_ORDER_SUCCESS);
             }
-            handler.sendEmptyMessage(TAG_UPDATE_ORDER_SUCCESS);
+
         }
     }
 

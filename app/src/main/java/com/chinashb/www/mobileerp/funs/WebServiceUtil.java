@@ -55,8 +55,8 @@ public class WebServiceUtil {
 //        private static String URL = "http://116.236.97.186:8001/Service.svc";
 
 
-//    private static String URL = IP + ":8001/Service.svc";
-    private static String URL = IP + ":8188/Test_Wss/Service.svc";
+    private static String URL = IP + ":8001/Service.svc";
+//    private static String URL = IP + ":8188/Test_Wss/Service.svc";
 //    private static String URL = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://172.16.1.80:8188/Test_Wss/Service.svc";
@@ -69,8 +69,8 @@ public class WebServiceUtil {
 
 
     //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
-//    private static String URL_Internet = IP + ":8001/Service.svc";
-    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
+    private static String URL_Internet = IP + ":8001/Service.svc";
+//    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
 
 
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
@@ -2569,8 +2569,9 @@ public class WebServiceUtil {
 
             for (int i = 0; i < count; i++) {
                 obj2 = (SoapObject) obj.getProperty(i);
-//todo 这里报错，illeagel property
-//                result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                if (obj2.getProperty("Result") != null) {
+                    result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                }
 
                 if (obj2.getProperty("ErrorInfo") != null) {
                     result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
@@ -3309,10 +3310,10 @@ public class WebServiceUtil {
         PropertyInfo propertyInfo2 = new PropertyInfo();
         propertyInfo2.setName("HR_Name");
 //        propertyInfo2.setValue(UserSingleton.get().getHRID());
-        propertyInfo2.setValue(map.get("HR_Name"));
+        propertyInfo2.setValue(UserSingleton.get().getHRName());
         propertyInfo2.setType(Long.class);
         propertyInfos.add(propertyInfo2);
-        System.out.println("================================HR_Name = " + map.get("HR_Name"));
+        System.out.println("================================HR_Name = " + UserSingleton.get().getHRName());
 
         PropertyInfo propertyInfo3 = new PropertyInfo();
         propertyInfo3.setName("day_span");

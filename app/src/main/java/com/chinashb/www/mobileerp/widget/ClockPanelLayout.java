@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 
 import java.util.Date;
 
@@ -183,6 +184,21 @@ public class ClockPanelLayout extends RelativeLayout {
     }
 
     public ClockPanelLayout setStartTime(long startTime) {
+        Date date = new Date(startTime);
+        this.startMinute = date.getHours() * 60 + date.getMinutes();
+        positions[0] = (float) startMinute / DAY_MINUTES;
+        return this;
+    }
+
+    public ClockPanelLayout setEndTime(String endTime) {
+        String tempDate = String.format("%s %s", UnitFormatUtil .getCurrentYMD() );
+        Date date = new Date(endTime);
+        this.endMinute = date.getHours() * 60 + date.getMinutes();
+        positions[1] = (float) endMinute / DAY_MINUTES;
+        return this;
+    }
+
+    public ClockPanelLayout setStartTime(String startTime) {
         Date date = new Date(startTime);
         this.startMinute = date.getHours() * 60 + date.getMinutes();
         positions[0] = (float) startMinute / DAY_MINUTES;
