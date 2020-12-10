@@ -22,9 +22,12 @@ import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.SPSingleton;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.SPDefine;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
@@ -37,6 +40,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -94,11 +98,23 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
     private String lotNO;
     private int boxId;
     private Date manuDate = new Date();
+    private boolean hasScanIst = false;
+    //对于多台设备同时操作，这个判断没有用
+//    private ArrayList<Integer> boxIDList;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_product_scan_code_box_in_layout);
+        //保存所有已扫过的boxID，去重复判断
+        String boxIDListString = SPSingleton.get().getString(SPDefine.KEY_code_box_id_List);
+        Type type = new TypeToken<ArrayList<Integer>>() {
+        }.getType();
+//        boxIDList = JsonUtil.parseJsonToObject(boxIDListString,type);
+//        if (boxIDList == null ){
+//            boxIDList = new ArrayList<>();
+//        }
+
         ButterKnife.bind(this);
         setViewsListener();
         initView();
@@ -174,9 +190,13 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 
                 if (content.startsWith("Pallet") && qrContent.length == 8) {
                     boxId = Integer.parseInt(qrContent[1]);
-                    itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s",qrContent[1],qrContent[3],qrContent[5],qrContent[7]));
-                    inputEditText.setText("");
-                    hasScanItem = true;
+//                    if (boxIDList.contains(boxId)){
+//                        ToastUtil.showToastShort("该托盘已入库，请勿重复入库！");
+//                    }else{
+                        itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s",qrContent[1],qrContent[3],qrContent[5],qrContent[7]));
+                        inputEditText.setText("");
+                        hasScanItem = true;
+//                    }
                 } else if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
                     //仓库位置码
                     scanContent = content;
@@ -369,6 +389,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
             recyclerView.setAdapter(adapter);
             //pbScan.setVisibility(View.INVISIBLE);
             inputEditText.setText("");
+            hasScanIst = true;
             System.out.println("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + "id" + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
             istInfoTextView.setText("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + "id" + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
 //            ToastUtil.showToastShort("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
@@ -390,9 +411,13 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 
     private void handleIntoWareHouse() {
         if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
+            if (hasScanIst){
+                ExeWarehouseProductInCodeBoxAsyncTask task = new ExeWarehouseProductInCodeBoxAsyncTask();
+                task.execute();
+            }else{
+                ToastUtil.showToastShort("没有扫描仓库位置码，请重新扫描！");
+            }
 
-            ExeWarehouseProductInCodeBoxAsyncTask task = new ExeWarehouseProductInCodeBoxAsyncTask();
-            task.execute();
         } else {
             CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(this)
                     .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
@@ -498,6 +523,10 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                     inputEditText.setText("");
                     itemInfoTextView.setText("物料信息");
                     istInfoTextView.setText("入库区域");
+                    hasScanIst = false;
+//                    if (boxIDList != null){
+//                        boxIDList.add(boxId);
+//                    }
 
                 }
 
@@ -519,6 +548,8 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 
     }
 
-
-
+//    @Override protected void onDestroy() {
+//        super.onDestroy();
+//        SPSingleton.get().putString(SPDefine.KEY_code_box_id_List,JsonUtil.objectToJson(boxIDList));
+//    }
 }

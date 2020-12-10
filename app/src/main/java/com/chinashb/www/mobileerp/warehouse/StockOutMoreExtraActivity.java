@@ -247,6 +247,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
 
     private class GetIssueMoreExtraBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity scanresult;
+        boolean scanNormal = true;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -256,6 +257,10 @@ public class StockOutMoreExtraActivity extends BaseActivity {
             scanresult = bi;
             if (bi.getResult() ) {
                 if (!is_box_existed(bi)) {
+                    if (bi.getQty() < 0){
+                        scanNormal = false;
+
+                    }
                     bi.setSelect(true);
                     newissuelist.add(bi);
                 } else {
@@ -307,7 +312,11 @@ public class StockOutMoreExtraActivity extends BaseActivity {
                 }
             }
 
-            mRecyclerView.setAdapter(issueMoreItemAdapter);
+            if (scanNormal){
+                 mRecyclerView.setAdapter(issueMoreItemAdapter);
+            }else{
+                ToastUtil.showToastLong("数量为负数，物料码有误，请重新扫描！");
+            }
             inputEditText.setText("");
             inputEditText.setHint("请继续扫描");
             //pbScan.setVisibility(View.INVISIBLE);

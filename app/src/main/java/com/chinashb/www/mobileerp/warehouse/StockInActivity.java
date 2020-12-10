@@ -255,8 +255,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 //            }
             ToastUtil.showToastLong("请直接用扫码枪进行扫描，确保蓝牙已连接配对！");
         } else if (view == addTrayPhotoButton) {
-//            new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-            parseScanResult("");
+            new IntentIntegrator(StockInActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+//            parseScanResult("");
         } else if (view == scanAreaButton) {
             if (boxItemEntityList.size() > 0) {
                 int selectedcount = 0;

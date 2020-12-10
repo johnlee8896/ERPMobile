@@ -243,6 +243,7 @@ public class StockOutMoreActivity extends BaseActivity {
 
     private class GetIssueMoreBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity boxItemEntity;
+        boolean scanNormal = true;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -255,6 +256,10 @@ public class StockOutMoreActivity extends BaseActivity {
                     setNeedQty(boxItemEntity);
 
                     currentItemId = boxItemEntity.getItem_ID();
+                    if (boxItemEntity.getQty() < 0){
+                        scanNormal = false;
+
+                    }
 
                     boxItemEntityList.add(boxItemEntity);
                 } else {
@@ -297,16 +302,21 @@ public class StockOutMoreActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            if (boxItemEntity != null) {
-                if (!boxItemEntity.getResult()) {
-                    CommonUtil.ShowToast(StockOutMoreActivity.this, boxItemEntity.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
+            if (scanNormal){
+                if (boxItemEntity != null) {
+                    if (!boxItemEntity.getResult()) {
+                        CommonUtil.ShowToast(StockOutMoreActivity.this, boxItemEntity.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
+                    }
                 }
-            }
-            issueMoreItemAdapter.notifyDataSetChanged();
-            recyclerView.setAdapter(issueMoreItemAdapter);
-            pbScan.setVisibility(View.INVISIBLE);
-            if (isDirect) {
-                handleStockOut();
+                issueMoreItemAdapter.notifyDataSetChanged();
+                recyclerView.setAdapter(issueMoreItemAdapter);
+                pbScan.setVisibility(View.INVISIBLE);
+                if (isDirect) {
+                    handleStockOut();
+                }
+
+            }else{
+                ToastUtil.showToastLong("数量为负数，物料码有误，请重新扫描！");
             }
             inputEditText.setText("");
             inputEditText.setHint("请继续扫描");
