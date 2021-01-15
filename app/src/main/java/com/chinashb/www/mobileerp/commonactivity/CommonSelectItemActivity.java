@@ -20,6 +20,7 @@ import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
+import com.chinashb.www.mobileerp.bean.PanDianItemBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.utils.AppUtil;
@@ -299,6 +300,8 @@ public class CommonSelectItemActivity extends BaseActivity {
                         }
                     }
                     return tempList;
+                }else if (bean instanceof PanDianItemBean){
+                    //todo
                 }
             }
         }
@@ -474,6 +477,12 @@ public class CommonSelectItemActivity extends BaseActivity {
 //                    if (departmentBeanList != null && departmentBeanList.size() > 0) {
 //                        return departmentBeanList;
 //                    }
+                    break;
+                case IntentConstant.Select_Search_From_Select_PanDina:
+                    List<PanDianItemBean> panDianItemBeanList = WebServiceUtil.getPanDianBeanList(SQL);
+                    if (panDianItemBeanList != null && panDianItemBeanList.size() > 0) {
+                        return panDianItemBeanList;
+                    }
                     break;
 //                default:
 //                    break;

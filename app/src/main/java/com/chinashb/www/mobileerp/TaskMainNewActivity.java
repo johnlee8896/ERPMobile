@@ -1,4 +1,10 @@
-package com.chinashb.www.mobileerp.task;
+package com.chinashb.www.mobileerp;
+
+/***
+ * @date 创建时间 2021/1/14 21:48
+ * @author 作者: xxblwf
+ * @description 任务管理页面
+ */
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,14 +18,14 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.chinashb.www.mobileerp.BaseActivity;
-import com.chinashb.www.mobileerp.R;
+
 import com.chinashb.www.mobileerp.adapter.TaskJsonAdapter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.TaskBean;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.task.TaskDetailActivity;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
@@ -36,7 +42,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TasksActivity extends BaseActivity {
+public class TaskMainNewActivity extends BaseActivity {
 
     @BindView(R.id.navigation_task) BottomNavigationView navigation;
     @BindView(R.id.fab_new_task_button) FloatingActionButton fabNewTaskButton;
@@ -170,7 +176,7 @@ public class TasksActivity extends BaseActivity {
         protected void onPreExecute() {
             //pbScan.setVisibility(View.VISIBLE);
             if (progressDialog == null) {
-                progressDialog = new CommProgressDialog.Builder(TasksActivity.this).setTitle("正在获取数据").create();
+                progressDialog = new CommProgressDialog.Builder(TaskMainNewActivity.this).setTitle("正在获取数据").create();
             }
             progressDialog.show();
         }
@@ -217,7 +223,7 @@ public class TasksActivity extends BaseActivity {
 
             getUserPics();
             if (beanList != null && beanList.size() > 0) {
-                beanList = beanList.subList(0, beanList.size() > 20 ? 19 : beanList.size());
+                beanList.subList(0, beanList.size() > 20 ? 19 : beanList.size());
             }
             return beanList;
 
@@ -269,8 +275,7 @@ public class TasksActivity extends BaseActivity {
 
         private String getSqlDoneINotKnow() {
             int HR_ID = UserSingleton.get().getHRID();
-//            String sql_get_task_finished_but_i_not_know = " Select TTask_Ver.TID, " +
-            String sql_get_task_finished_but_i_not_know = " Select top 30 TTask_Ver.TID, " +
+            String sql_get_task_finished_but_i_not_know = " Select TTask_Ver.TID, " +
                     " (Select max(access_time) from TTask_Access " +
                     " Where Visitor = " + HR_ID + " group by tid having tid=ttask_ver.tid) As LastAccess " +
                     " From TTask_Ver " +
@@ -324,7 +329,7 @@ public class TasksActivity extends BaseActivity {
             for (int i = 0; i < hrIDList.size(); i++) {
                 Integer x = hrIDList.get(i);
                 if (x != 0) {
-                    Bitmap bitmap = CommonUtil.getUserPic(TasksActivity.this, CommonUtil.userPictureMap, x);
+                    Bitmap bitmap = CommonUtil.getUserPic(TaskMainNewActivity.this, CommonUtil.userPictureMap, x);
 
                 }
             }
@@ -463,11 +468,11 @@ public class TasksActivity extends BaseActivity {
         }
 
         protected void bindObjectListsToAdapter(List<TaskBean> beanList) {
-//            ObjectAdapter = new TaskJsonListAdapter(TasksActivity.this, beanList);
+//            ObjectAdapter = new TaskJsonListAdapter(TaskMainNewActivity.this, beanList);
             //赋值 列宽度
             //ObjectAdapter.ColWidthList = ColWidthList;
             //ObjectAdapter.hiddenColList =hiddenColList;
-//            recyclerView.setLayoutManager(new LinearLayoutManager(TasksActivity.this));
+//            recyclerView.setLayoutManager(new LinearLayoutManager(TaskMainNewActivity.this));
 //            recyclerView.setAdapter(ObjectAdapter);
             adapter.setData(beanList);
             if (beanList != null && beanList.size() > 0) {
@@ -483,7 +488,7 @@ public class TasksActivity extends BaseActivity {
                 @Override public <T> void onClickAction(View v, String tag, T t) {
                     if (t != null) {
                         TaskBean bean = (TaskBean) t;
-                        Intent intent = new Intent(TasksActivity.this, TaskDetailActivity.class);
+                        Intent intent = new Intent(TaskMainNewActivity.this, TaskDetailActivity.class);
                         intent.putExtra(IntentConstant.Intent_Extra_task_bean, bean);
                         startActivity(intent);
                     }
@@ -494,3 +499,4 @@ public class TasksActivity extends BaseActivity {
     }
 
 }
+

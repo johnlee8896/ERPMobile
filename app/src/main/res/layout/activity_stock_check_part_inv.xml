@@ -1,43 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--xmlns:tools="http://schemas.android.com/tools"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--tools:context=".warehouse.StockCheckPartInvActivity">-->
+<?xml version="1.0" encoding="utf-8"?><!--<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--xmlns:app="http://schemas.android.com/apk/res-auto"--><!--xmlns:tools="http://schemas.android.com/tools"--><!--android:layout_width="match_parent"--><!--android:layout_height="match_parent"--><!--tools:context=".warehouse.StockCheckPartInvActivity">-->
 
-    <!--<android.support.design.widget.AppBarLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:theme="@style/AppTheme.AppBarOverlay">-->
+<!--<android.support.design.widget.AppBarLayout--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--android:theme="@style/AppTheme.AppBarOverlay">-->
 
-        <!--<android.support.v7.widget.Toolbar-->
-            <!--android:id="@+id/toolbar"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="?attr/actionBarSize"-->
-            <!--android:background="?attr/colorPrimary"-->
-            <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
+<!--<android.support.v7.widget.Toolbar--><!--android:id="@+id/toolbar"--><!--android:layout_width="match_parent"--><!--android:layout_height="?attr/actionBarSize"--><!--android:background="?attr/colorPrimary"--><!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
 
-    <!--</android.support.design.widget.AppBarLayout>-->
+<!--</android.support.design.widget.AppBarLayout>-->
 
-    <!--<include-->
-        <!--layout="@layout/content_stock_check_part_inv"-->
-        <!--android:visibility="visible" />-->
+<!--<include--><!--layout="@layout/content_stock_check_part_inv"--><!--android:visibility="visible" />-->
 
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|end"-->
-        <!--android:layout_margin="@dimen/fab_margin"-->
-        <!--android:visibility="invisible"-->
-        <!--app:srcCompat="@android:drawable/ic_dialog_email" />-->
+<!--<android.support.design.widget.FloatingActionButton--><!--android:id="@+id/fab"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_gravity="bottom|end"--><!--android:layout_margin="@dimen/fab_margin"--><!--android:visibility="invisible"--><!--app:srcCompat="@android:drawable/ic_dialog_email" />-->
 
 <!--</android.support.design.widget.CoordinatorLayout>-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <!--<include-->
     <!--layout="@layout/content_stock_check_part_inv"-->
@@ -45,24 +22,24 @@
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="horizontal">-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="horizontal">-->
 
-                <!--<TextView-->
-                    <!--android:id="@+id/tv_checkinventory_file"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:text="选择盘点文件"-->
-                     <!--/>-->
+            <!--<TextView-->
+            <!--android:id="@+id/tv_checkinventory_file"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_weight="1"-->
+            <!--android:text="选择盘点文件"-->
+            <!--/>-->
             <!--</LinearLayout>-->
 
             <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
@@ -104,21 +81,54 @@
                         android:text="扫描物料" />
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/check_inv_search_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/check_inv_search_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/search_action_TextView"
+                        android:background="@drawable/shape_white_half_transparent_conner"
+                        android:drawablePadding="@dimen/dimen_size_10"
+                        android:hint="请输入item_id,ps_id,物料名称等进行搜索"
+                        android:imeOptions="actionSearch"
+                        android:paddingLeft="8dp"
+                        android:singleLine="true"
+                        android:textColor="#0A222E"
+                        android:textColorHint="@color/color_CCCCCC"
+                        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+                        android:textSize="16sp" />
+
+                    <Button
+                        android:id="@+id/btn_check_inv_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="搜索" />
+                </LinearLayout>
+
             </LinearLayout>
+
             <EditText
                 android:id="@+id/content_stock_check_part_input_EditeText"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_size_60"
-                android:paddingTop="@dimen/dimen_size_15"
                 android:background="@color/transparent"
                 android:gravity="center_vertical"
                 android:hint="接收扫描结果"
                 android:paddingLeft="@dimen/dimen_size_10"
+                android:paddingTop="@dimen/dimen_size_15"
                 android:paddingRight="@dimen/dimen_size_10"
                 android:textColor="@color/black"
                 android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
-                android:textSize="@dimen/text_size_14"
-                />
+                android:textSize="@dimen/text_size_14" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -134,30 +144,38 @@
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
-                            android:layout_marginLeft="@dimen/dimen_size_10"
-                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:id="@+id/kuWeiDanYuanTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
                             android:text="库位单元" />
 
                         <TextView
                             android:id="@+id/tv_check_stock_ist"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
                             android:text="......"
-                             />
+                            android:textColor="@color/black" />
+
+                        <EditText
+                            android:id="@+id/et_check_stock_ist"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:hint="请输入库存单元如实际线别等"
+                            android:textColor="@color/black"
+                            android:visibility="gone" />
                     </TableRow>
 
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView17"
@@ -171,17 +189,16 @@
                             android:id="@+id/tv_check_stock_item_code"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
                             android:paddingRight="@dimen/dimen_size_5"
                             android:text="......"
-                             />
+                            android:textColor="@color/black" />
                     </TableRow>
 
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView16"
@@ -195,15 +212,14 @@
                             android:id="@+id/tv_check_stock_ist_erp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
                             android:text="......"
-                            />
+                            android:textColor="@color/black" />
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView6"
@@ -217,15 +233,14 @@
                             android:id="@+id/tv_check_stock_item_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="......"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
-                             />
+                            android:text="......"
+                            android:textColor="@color/black" />
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView20"
@@ -239,14 +254,22 @@
                             android:id="@+id/tv_check_stock_manulotno"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
                             android:text="......"
-                             />
+                            android:textColor="@color/black" />
+                        <EditText
+                            android:id="@+id/et_check_stock_manulotno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:hint="请输入生产批次"
+                            android:textColor="@color/black" />
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView8"
@@ -260,15 +283,14 @@
                             android:id="@+id/tv_check_stock_box"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="......"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
-                             />
+                            android:text="......"
+                            android:textColor="@color/black" />
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView9"
@@ -282,15 +304,14 @@
                             android:id="@+id/tv_check_stock_box_left_qty"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="......"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
-                             />
+                            android:text="......"
+                            android:textColor="@color/black" />
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView21"
@@ -304,15 +325,16 @@
                             android:id="@+id/et_check_stock_box_n"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:ems="14"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:ems="14"
                             android:inputType="number|numberSigned"
-                            android:text="1" />
+                            android:text="1"
+                            android:textColor="@color/black" />
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView22"
@@ -326,14 +348,15 @@
                             android:id="@+id/et_check_stock_box_pn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:ems="14"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
-                            android:inputType="number|numberSigned|numberDecimal" />
+                            android:ems="14"
+                            android:inputType="number|numberSigned|numberDecimal"
+                            android:textColor="@color/black" />
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView23"
@@ -347,15 +370,16 @@
                             android:id="@+id/et_check_stock_box_dq"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:ems="14"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:ems="14"
                             android:inputType="number|numberSigned|numberDecimal"
-                            android:text="" />
+                            android:text=""
+                            android:textColor="@color/black" />
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
 
                         <TextView
@@ -373,9 +397,10 @@
                             android:layout_marginRight="@dimen/dimen_size_20"
                             android:text="小计" />
                     </TableRow>
+
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView10"
@@ -389,14 +414,14 @@
                             android:id="@+id/et_check_stock_box_real_qty"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
-                            android:inputType="number|numberSigned|numberDecimal" />
+                            android:inputType="number|numberSigned|numberDecimal"
+                            android:textColor="@color/black" />
                     </TableRow>
 
                     <TableRow
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" >
+                        android:layout_height="match_parent">
 
                         <TextView
                             android:id="@+id/textView18"
@@ -411,10 +436,10 @@
                             style="@style/Widget.AppCompat.EditText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:ems="14"
-                            android:textColor="@color/black"
                             android:layout_marginLeft="@dimen/dimen_size_20"
-                            android:inputType="text" />
+                            android:ems="14"
+                            android:inputType="text"
+                            android:textColor="@color/black" />
                     </TableRow>
 
                     <TableRow

@@ -306,7 +306,7 @@
         <activity android:name=".PlanItemDetailActivity" />
         <activity android:name=".StockProductMainActivity" />
         <activity
-            android:name=".task.TaskViewActivity"
+            android:name=".task.TaskDetailActivity"
             android:label="@string/title_activity_task_view" />
         <activity
             android:name=".commonactivity.InputBoxActivity"

@@ -427,11 +427,11 @@ public class LoginActivity extends BaseActivity {
 //                setResult(1, resultIntent);
 //                finish();
 
-                try {
-                    EncryptDecryptUtil.encode("89123456");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    EncryptDecryptUtil.encode("89123456");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
                 UserSingleton.get().setHRID(wsResult.getID().intValue());
                 UserSingleton.get().setHRName(nameEditText.getText().toString());
                 SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());

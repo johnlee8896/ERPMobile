@@ -107,7 +107,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_product_scan_code_box_in_layout);
         //保存所有已扫过的boxID，去重复判断
-        String boxIDListString = SPSingleton.get().getString(SPDefine.KEY_code_box_id_List);
+//        String boxIDListString = SPSingleton.get().getString(SPDefine.KEY_code_box_id_List);
         Type type = new TypeToken<ArrayList<Integer>>() {
         }.getType();
 //        boxIDList = JsonUtil.parseJsonToObject(boxIDListString,type);

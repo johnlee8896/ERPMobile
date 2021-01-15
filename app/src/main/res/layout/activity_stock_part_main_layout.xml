@@ -420,21 +420,22 @@
                         android:textSize="18sp" />
 
                     <!--<ImageView-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--android:visibility="visible"-->
-                    <!--app:srcCompat="@drawable/ic_settings_remote_black_24dp" />-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center_vertical"-->
+                        <!--android:visibility="visible"-->
+                        <!--app:srcCompat="@drawable/ic_settings_remote_black_24dp" />-->
 
                     <!--<Button-->
-                    <!--android:layout_width="100dp"-->
-                    <!--android:layout_height="60dp"-->
-                    <!--android:layout_gravity="left"-->
-                    <!--android:background="@drawable/squarebutton"-->
-                    <!--android:text=""-->
-                    <!--android:textColor="#ffffff"-->
-                    <!--android:textSize="14sp"-->
-                    <!--android:visibility="visible" />-->
+                        <!--android:id="@+id/btn_zaizhipin_checkInv"-->
+                        <!--android:layout_width="100dp"-->
+                        <!--android:layout_height="60dp"-->
+                        <!--android:layout_gravity="left"-->
+                        <!--android:background="@drawable/squarebutton"-->
+                        <!--android:text="在制品盘点"-->
+                        <!--android:textColor="#ffffff"-->
+                        <!--android:textSize="14sp"-->
+                        <!--android:visibility="visible" />-->
                 </TableRow>
 
                 <TableRow
@@ -461,6 +462,7 @@
                         app:useCompatPadding="false" />
                 </TableRow>
                 >
+
             </TableLayout>
 
 

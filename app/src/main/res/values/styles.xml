@@ -123,4 +123,41 @@
         <item name="android:background">@color/divide_line_color</item>
     </style>
 
+
+
+    <style name="style_home_bottom_navigation_item">
+        <item name="android:layout_height">55dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="app_image_width">25dp</item>
+        <item name="app_image_height">25dp</item>
+        <item name="app_scale_type">FIT_CENTER</item>
+        <item name="app_text_color">@drawable/selector_text_color_home_bottom_navigation</item>
+        <item name="app_text_size">14sp</item>
+        <item name="app_text_margin_image_size">1dp</item>
+        <item name="android:gravity">center</item>
+        <item name="app_child_view_margin_start">5dp</item>
+        <item name="app_parent_orientation">IMAGE_TOP_TEXT_BOTTOM</item>
+        <item name="android:foreground">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+
+    <!--我的页面item的布局样式-->
+    <style name="style_tab_mine_item">
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:background">@drawable/selector_item_click_bg_gray</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="app_text_color">@color/color_666666</item>
+        <item name="app_text_size">16sp</item>
+        <item name="app_text_margin_image_size">16sp</item>
+        <item name="app_scale_type">FIT_CENTER</item>
+
+        <item name="app_parent_orientation">IMAGE_LEFT_TEXT_RIGHT</item>
+        <item name="app_image_height">60dp</item>
+        <item name="app_image_width">22dp</item>
+        <item name="android:foreground">?android:attr/selectableItemBackgroundBorderless</item>
+
+    </style>
 </resources>

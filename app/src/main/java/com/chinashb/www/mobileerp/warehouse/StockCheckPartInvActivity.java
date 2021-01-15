@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,14 +20,19 @@ import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.PanDianItemBean;
+import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.StringUtils;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.SwitchPanDianTypeDialog;
 import com.chinashb.www.mobileerp.widget.TitleLayoutManagerView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -69,6 +75,9 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private Button btnCal;
     private EditText etRemark;
     private EditText inputEditText;
+    private EditText searchEditText;
+    private Button searchButton;
+    private LinearLayout searchLayout;
 
     private int Ac_Type = 1;
 //    private UserInfoEntity userInfo;
@@ -81,6 +90,14 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private String DQ = "";
     private boolean inventoryFileSelect = false;
     private boolean istHasSelect = false;
+    private boolean fromZaiZhiPin;
+    private SwitchPanDianTypeDialog panDianTypeDialog;
+    private int pandianType = 1;
+    private PanDianItemBean panDianItemBean;
+    private EditText storeAreaEditText;
+    private EditText manuLotEditText;
+    private String storeArea;
+    private String manuLotNO;
 
     public StockCheckPartInvActivity() {
     }
@@ -113,6 +130,33 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private void getExtras() {
         Intent who = getIntent();
         Ac_Type = (Integer) who.getIntExtra("Ac_Type", 1);
+        fromZaiZhiPin = who.getBooleanExtra(IntentConstant.Intent_Extra_check_from_zaizhipin, false);
+        if (fromZaiZhiPin) {
+//            btnScanIst.setVisibility(View.GONE);
+            searchLayout.setVisibility(View.VISIBLE);
+            tvIst.setVisibility(View.GONE);
+            tvManuLotno.setVisibility(View.GONE);
+            storeAreaEditText.setVisibility(View.VISIBLE);
+            manuLotEditText.setVisibility(View.VISIBLE);
+            if (panDianTypeDialog == null) {
+                panDianTypeDialog = new SwitchPanDianTypeDialog(StockCheckPartInvActivity.this);
+                panDianTypeDialog.show();
+                panDianTypeDialog.setOnViewClickListener(new OnViewClickListener() {
+                    @Override public <T> void onClickAction(View v, String tag, T t) {
+                        if (t instanceof Integer) {
+                            pandianType = (Integer) t;
+                            if (pandianType == 1) {
+                                Ac_Type = 14;
+                            } else if (pandianType == 2) {
+                                Ac_Type = 13;
+                            }
+                        }
+                        panDianTypeDialog.dismiss();
+
+                    }
+                });
+            }
+        }
     }
 
     void bindView() {
@@ -138,6 +182,14 @@ public class StockCheckPartInvActivity extends BaseActivity {
         etRemark = (EditText) findViewById(R.id.et_check_stock_box_remark);
         inputEditText = findViewById(R.id.content_stock_check_part_input_EditeText);
 
+        searchEditText = findViewById(R.id.check_inv_search_editText);
+        searchButton = findViewById(R.id.btn_check_inv_search);
+        searchLayout = findViewById(R.id.check_inv_search_layout);
+
+        storeAreaEditText = findViewById(R.id.et_check_stock_ist);
+        manuLotEditText = findViewById(R.id.et_check_stock_manulotno);
+
+
     }
 
     private void resumestate(Bundle savedInstanceState) {
@@ -159,24 +211,33 @@ public class StockCheckPartInvActivity extends BaseActivity {
                 Intent intent = new Intent(StockCheckPartInvActivity.this, SelectItemActivity.class);
 //                Intent intent = new Intent(StockCheckPartInvActivity.this, CommonSelectItemActivity.class);
                 Integer Bu_ID = UserSingleton.get().getUserInfo().getBu_ID();
-                String W = "Select Distinct Warehouse_ID From Bu_W_Ac " +
-                        "Inner Join Bu_Ac On Bu_W_Ac.Ac_Book_ID=Bu_Ac.Ac_Book_ID " +
-                        "Where Bu_ID=" + Bu_ID + " And Ac_Type = " + Ac_Type;
 
-                String sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20)," +
-                        "Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory " +
-                        "Inner Join (" +
-                        W + ") As W On W.Warehouse_ID=CheckInventory.Warehouse_ID " +
-                        "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type +
-                        " And " +
-//                        "Datediff(day, Insert_Time, Getdate())<30 ";
-                        "Datediff(day, Insert_Time, Getdate())<100 ";
 
 //                String sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20)," +
 //                        "Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory " +
 //                        "Inner Join (" +
 //                        W + ") As W On W.Warehouse_ID=CheckInventory.Warehouse_ID " +
 //                        "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type ;
+                String sql = "";
+                if (Ac_Type == 13 || Ac_Type == 14){
+
+                     sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20),Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory\n" +
+                            " Where Bu_ID=" + Bu_ID + " And  Ac_Type=" + Ac_Type + " And Datediff(day, Insert_Time, Getdate())<100 ";
+                }else if (Ac_Type == 1 || Ac_Type == 2){
+                    String W = "Select Distinct Warehouse_ID From Bu_W_Ac " +
+                            "Inner Join Bu_Ac On Bu_W_Ac.Ac_Book_ID=Bu_Ac.Ac_Book_ID " +
+                            "Where Bu_ID=" + Bu_ID + " And Ac_Type = " + Ac_Type;
+//
+                     sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20) ," +
+                            "Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory " +
+                            "Inner Join (" +
+                            W + ") As W On W.Warehouse_ID=CheckInventory.Warehouse_ID " +
+                            "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type +
+                            " And " +
+//                        "Datediff(day, Insert_Time, Getdate())<30 ";
+                            "Datediff(day, Insert_Time, Getdate())<100 ";
+                }
+
 
                 List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(80, 120, 120, 120));
                 List<String> ColCaption = new ArrayList<String>(Arrays.asList("CI_ID", "盘存名称", "盘存者", "盘存日期"));
@@ -236,27 +297,50 @@ public class StockCheckPartInvActivity extends BaseActivity {
                     Toast.makeText(StockCheckPartInvActivity.this, "请先选择盘点表", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (thePlace == null) {
-                    Toast.makeText(StockCheckPartInvActivity.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (scanitem == null) {
-                    Toast.makeText(StockCheckPartInvActivity.this, "请扫描物料", Toast.LENGTH_LONG).show();
-                    return;
-                }
+//                if (!fromZaiZhiPin) {
+//                    if (thePlace == null) {
+//                        Toast.makeText(StockCheckPartInvActivity.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
+//                        return;
+//                    }
+//                }
+//                if (!fromZaiZhiPin) {
+//                    if (scanitem == null) {
+//                        Toast.makeText(StockCheckPartInvActivity.this, "请扫描物料", Toast.LENGTH_LONG).show();
+//                        return;
+//                    }
+//                    if (is_box_existed(scanitem)) {
+//                        CommonUtil.ShowToast(StockCheckPartInvActivity.this,
+//                                "前面已经提交过", R.mipmap.warning, Toast.LENGTH_SHORT);
+//                        return;
+//                    }
+//                }
 
                 String qty = realQtyTextView.getText().toString();
 
                 if (qty.equals("")) {
+                    ToastUtil.showToastShort("数量为空!");
                     return;
                 }
 
-                if (is_box_existed(scanitem)) {
-                    CommonUtil.ShowToast(StockCheckPartInvActivity.this,
-                            "前面已经提交过", R.mipmap.warning, Toast.LENGTH_SHORT);
-                    return;
-                }
+
+//                if (fromZaiZhiPin){
+//                    if (!StringUtils.isStringValid(etRemark.getText().toString())){
+//                        ToastUtil.showToastShort("在制品盘存需要输入备注!");
+//                        return;
+//                    }
+//                }
+
+//                if (fromZaiZhiPin){
+//                    if (storeArea == null || storeArea.length() == 0){
+//                        ToastUtil.showToastShort("库位位置为空!");
+//                        return;
+//                    }
+//
+//                    if (manuLotNO == null || manuLotNO.length() == 0){
+//                        ToastUtil.showToastShort("生产批次为空!");
+//                        return;
+//                    }
+//                }
 
                 Commit_Result();
 
@@ -317,6 +401,18 @@ public class StockCheckPartInvActivity extends BaseActivity {
             }
         });
 
+        storeAreaEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override public void afterTextChanged(Editable editable) {
+                storeArea = editable.toString();
+            }
+        });
+
+        manuLotEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override public void afterTextChanged(Editable editable) {
+                manuLotNO = editable.toString();
+            }
+        });
+
         realQtyTextView.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
@@ -351,6 +447,49 @@ public class StockCheckPartInvActivity extends BaseActivity {
                 DQ = editable.toString();
 //                parseScanData(editable.toString());
             }
+        });
+
+        searchButton.setOnClickListener(v -> {
+
+            if (!StringUtils.isStringValid(searchEditText.getText().toString())) {
+                ToastUtil.showToastShort("您的搜索内容为为空！");
+                return;
+            }
+            if (!inventoryFileSelect) {
+                ToastUtil.showToastShort("请先选择盘点表！");
+                return;
+            }
+
+            if (!fromZaiZhiPin) {
+                if (thePlace == null) {
+                    //                    Toast.makeText(StockCheckPartInvActivity.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
+                    ToastUtil.showToastLong("请先扫描托盘所在的仓库单元位置条码");
+                    return;
+                }
+            }
+
+            String input = searchEditText.getText().toString();
+//            if (input.contains(" ")){
+//
+//            }else{
+//
+//            }
+//            String whereSql = " and CF_Chinese_Name like '%"+keyWord+"%'";
+            String sql = String.format("Select top 60 Item.Item_ID,Item_Version.IV_ID,Item.Item+' '+Item.Item_Name+' '+isnull(Item.Item_Spec2,'') As Item_Name, Item_Version.Item_Version As Version,Item.Item_Unit_Exchange ,Item.Item_Unit  " +
+                    "From Item Inner Join Item_Version On Item.Item_ID = Item_Version.Item_ID Where Item.Item_Type_id= 1 And Item.Audit=1 and item.item_name like %s", "'%" + input + "%'");
+
+            Intent intent = new Intent(StockCheckPartInvActivity.this, CommonSelectItemActivity.class);
+            List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(50, 100, 100));
+            List<String> ColCaption = new ArrayList<String>(Arrays.asList("Item_ID", "IV_ID", "物料", "版本"));
+
+            String Title = "选择物料";
+            intent.putExtra("Title", Title);
+            intent.putExtra("SQL", sql);
+            intent.putExtra("ColWidthList", (Serializable) ColWith);
+            intent.putExtra("ColCaptionList", (Serializable) ColCaption);
+            intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_PanDina);
+
+            startActivityForResult(intent, 500);
         });
 
 
@@ -418,6 +557,11 @@ public class StockCheckPartInvActivity extends BaseActivity {
         if (requestCode == 200 && resultCode == 1) {
             ActivityResultSelectInventoryFile(data);
             return;
+        } else if (requestCode == 500 && resultCode == 1) {
+            //选择盘点物料，手动搜索
+            panDianItemBean = data.getParcelableExtra("SelectItem");
+            handlePandianItem(panDianItemBean);
+            return;
         }
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
@@ -437,6 +581,41 @@ public class StockCheckPartInvActivity extends BaseActivity {
             // This is important, otherwise the result will not be passed to the fragment
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    private void handlePandianItem(PanDianItemBean panDianItemBean) {
+        tvItemCode.setText("暂无相关条码");
+
+        //// TODO: 2020/12/29  重复的判断
+        DecimalFormat DF = new DecimalFormat("####.####");
+//        tvERPIst.setText(bi.getIstName());
+        tvERPIst.setText("");
+//        if (thePlace.getIst_ID() != bi.getIst_ID() || thePlace.getSub_Ist_ID() != bi.getSub_Ist_ID()) {
+//            tvERPIst.setTextColor(Color.RED);
+//        } else {
+//            tvERPIst.setTextColor(Color.BLACK);
+//        }
+        tvItemName.setText(panDianItemBean.getItem_Name());
+//        tvBoxName.setText(bi.getBoxNameNo());
+//        tvManuLotno.setText(bi.getManuLotNo());
+        if (!ShowERPInv) {
+            tvLeftQty.setVisibility(View.INVISIBLE);
+        } else {
+            tvLeftQty.setVisibility(View.VISIBLE);
+        }
+//        tvLeftQty.setText(DF.format(bi.getQty()));
+//        //realQtyTextView.setText(DF.format(bi.getBoxQty()));
+//        if (bi.getQty() != bi.getBoxQty()) {
+//            tvLeftQty.setTextColor(Color.RED);
+//        } else {
+//            tvLeftQty.setTextColor(Color.BLACK);
+//        }
+
+        etPN.setText(panDianItemBean.getItem_Unit_Exchange() + "");
+        inputEditText.setText("");
+        inputEditText.findFocus();
+
+
     }
 
     static HashMap<String, String> SelectCI;
@@ -558,7 +737,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
     }
 
     private class AsyncGetInvBox extends AsyncTask<String, Void, Void> {
-        BoxItemEntity scanresult;
+        BoxItemEntity boxItemEntity;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -571,14 +750,14 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //                bi = WebServiceUtil.op_Check_Stock_Item_Barcode_V2(scanstring);
 //            }
 
-            if (Ac_Type == 1 ) {
+            if (Ac_Type == 1) {
                 bi = WebServiceUtil.op_Check_Stock_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(), scanstring);
             } else {
                 bi = WebServiceUtil.op_Check_Stock_Item_Barcode_V2(scanstring);
             }
 
 
-            scanresult = bi;
+            boxItemEntity = bi;
 
 
             return null;
@@ -590,14 +769,14 @@ public class StockCheckPartInvActivity extends BaseActivity {
             //tv.setText(fahren + "∞ F");
 
             tvItemCode.setText(scanstring);
-            if (scanresult != null) {
-                if (!scanresult.getResult()) {
-                    Toast.makeText(StockCheckPartInvActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
+            if (boxItemEntity != null) {
+                if (!boxItemEntity.getResult()) {
+                    Toast.makeText(StockCheckPartInvActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
                     inputEditText.setText("");
                     return;
                 }
 
-                BoxItemEntity bi = scanresult;
+                BoxItemEntity bi = boxItemEntity;
                 if (bi.getResult()) {
                     if (is_box_existed(bi)) {
                         CommonUtil.ShowToast(StockCheckPartInvActivity.this,
@@ -616,6 +795,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
                     tvItemName.setText(bi.getItemName());
                     tvBoxName.setText(bi.getBoxNameNo());
                     tvManuLotno.setText(bi.getManuLotNo());
+
                     if (!ShowERPInv) {
                         tvLeftQty.setVisibility(View.INVISIBLE);
                     } else {
@@ -627,6 +807,14 @@ public class StockCheckPartInvActivity extends BaseActivity {
                         tvLeftQty.setTextColor(Color.RED);
                     } else {
                         tvLeftQty.setTextColor(Color.BLACK);
+                    }
+
+                    if (fromZaiZhiPin){
+                        tvLeftQty.setVisibility(View.GONE);
+//                        storeAreaEditText.setVisibility(View.GONE);
+//                        manuLotEditText.setVisibility(View.GONE);
+
+
                     }
                     inputEditText.setText("");
                     inputEditText.findFocus();
@@ -698,9 +886,36 @@ public class StockCheckPartInvActivity extends BaseActivity {
         @Override
 
         protected Void doInBackground(String... params) {
+            if (fromZaiZhiPin) {
+//                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+//                        CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "", thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+//                        0, 0, 0, 0, qty, N, PN, DQ, remark);
+//
+//                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),CI_ID,UserSingleton.get().getUserInfo().getBu_ID(),"",
+//                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),0L,0L,0L,0L,qty,N,PN,DQ,remark);
+                if (thePlace != null && scanitem != null) {
+                    //扫描模式
+                    BoxItemEntity bi = scanitem;
+                    if (Ac_Type == 1) {
+                        //todo  && userInfo.getBu_ID() == 1
+                        ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+                                CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
 
-            BoxItemEntity bi = scanitem;
-            //解决编译通过但报错的问题
+                    } else {
+                        ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
+                                CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
+                    }
+                } else {
+                    //输入模式
+                    ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+                            thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+                }
+
+            } else {
+                BoxItemEntity bi = scanitem;
+                //解决编译通过但报错的问题
 //            String qty = realQtyTextView.getText().toString();
 //            String remark = etRemark.getText().toString();
 //
@@ -709,16 +924,17 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //            String DQ = etDQ.getText().toString();
 
 
-            if (Ac_Type == 1 ) {
-                //todo  && userInfo.getBu_ID() == 1
-                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
-                        CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
-                        bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
+                if (Ac_Type == 1) {
+                    //todo  && userInfo.getBu_ID() == 1
+                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+                            CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
 
-            } else {
-                ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
-                        CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
-                        bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
+                } else {
+                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
+                            CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
+                }
             }
 
 

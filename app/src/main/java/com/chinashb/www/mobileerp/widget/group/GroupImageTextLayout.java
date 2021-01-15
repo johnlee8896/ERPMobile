@@ -139,6 +139,11 @@ public class GroupImageTextLayout extends RelativeLayout {
 
     }
 
+    public void setSelectStatus(boolean isSelected) {
+        textView.setSelected(isSelected);
+        imageView.setSelected(isSelected);
+    }
+
     private void initTextOrientationStyle(int imageWidth, int imageHeight, int textMarginImageSize, int startMargin) {
         LayoutParams textParams = (LayoutParams) textView.getLayoutParams();
         LayoutParams imageParams = (LayoutParams) imageView.getLayoutParams();

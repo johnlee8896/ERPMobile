@@ -22,6 +22,7 @@ public class IntentConstant {
     public static final int Select_Search_From_Select_Department = 0x2;
     public static final int Select_Search_From_Select_ReSearch_Program = 0x3;
     public static final int Select_Search_From_Select_Check_File = 0x4;
+    public static final int Select_Search_From_Select_PanDina = 0x5;
 
     public static final String Intent_continue_put_directly = "continue_put_directly";
     public static String Intent_Extra_mpiWcBean = "intent_mpiWcBean";
@@ -38,6 +39,7 @@ public class IntentConstant {
 
     public static final String Intent_Extra_work_line_from = "Extra_work_line_from";
     public static final String Intent_Extra_logistics_entity = "Extra_logistics_entity";
+    public static final String Intent_Extra_task_bean = "Extra_task_bean";
 
 
     public static final String Intent_Extra_logistics_customer_company_name = "Extra_logistics_customer_company_name";
@@ -52,6 +54,7 @@ public class IntentConstant {
     public static final String Intent_Extra_logistics_select_bean = "Extra_logistics_select_bean";
     public static final String Intent_Extra_logistics_customer_bean = "Extra_logistics_customer_bean";
     public static final String Intent_Extra_supplier_or_self_return_boolean = "Extra_supplier_or_self_return_boolean";
+    public static final String Intent_Extra_check_from_zaizhipin = "Extra_check_from_zaizhipin";
 
 
     public static final String Intent_Extra_logistics_from = "Extra_logistics_from";

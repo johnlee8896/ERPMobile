@@ -15,6 +15,7 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
+import com.chinashb.www.mobileerp.bean.PanDianItemBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
@@ -55,8 +56,8 @@ public class WebServiceUtil {
 //        private static String URL = "http://116.236.97.186:8001/Service.svc";
 
 
-    private static String URL = IP + ":8001/Service.svc";
-//    private static String URL = IP + ":8188/Test_Wss/Service.svc";
+//    private static String URL = IP + ":8001/Service.svc";
+    private static String URL = IP + ":8188/Test_Wss/Service.svc";
 //    private static String URL = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://172.16.1.80:8188/Test_Wss/Service.svc";
@@ -69,8 +70,8 @@ public class WebServiceUtil {
 
 
     //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
-    private static String URL_Internet = IP + ":8001/Service.svc";
-//    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
+//    private static String URL_Internet = IP + ":8001/Service.svc";
+    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
 
 
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
@@ -881,35 +882,42 @@ public class WebServiceUtil {
                 if (!box_item.getResult()) {
                     box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
-                    box_item.setDIII_ID(Long.parseLong(obj2.getProperty("DIII_ID").toString()));
-                    box_item.setSMT_ID(Long.parseLong(obj2.getProperty("SMT_ID").toString()));
-                    box_item.setSMM_ID(Long.parseLong(obj2.getProperty("SMM_ID").toString()));
-                    box_item.setSMLI_ID(Long.parseLong(obj2.getProperty("SMLI_ID").toString()));
-                    box_item.setEntityID(Long.parseLong(obj2.getProperty("EntityID").toString()));
-                    box_item.setEntityName(obj2.getProperty("EntityName").toString());
-                    box_item.setLotID(Long.parseLong(obj2.getProperty("LotID").toString()));
-                    //// TODO: 2019/11/27 这里的lotNo 取的是DII里面的manulotNo
-                    if (obj2.getProperty("LotNo") != null) {
-                        box_item.setLotNo(obj2.getProperty("LotNo").toString());
-                    }
-                    box_item.setItem_ID(Long.parseLong(obj2.getProperty("Item_ID").toString()));
-                    box_item.setIV_ID(Long.parseLong(obj2.getProperty("IV_ID").toString()));
-                    box_item.setItemName(obj2.getProperty("ItemName").toString());
-                    box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
-                    box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
-                    //// TODO: 2020/4/22 这里先去掉，会报illegal property
+                   try{
+                       box_item.setDIII_ID(Long.parseLong(obj2.getProperty("DIII_ID").toString()));
+                       box_item.setSMT_ID(Long.parseLong(obj2.getProperty("SMT_ID").toString()));
+                       box_item.setSMM_ID(Long.parseLong(obj2.getProperty("SMM_ID").toString()));
+                       box_item.setSMLI_ID(Long.parseLong(obj2.getProperty("SMLI_ID").toString()));
+                       box_item.setEntityID(Long.parseLong(obj2.getProperty("EntityID").toString()));
+                       if (obj2.getProperty("EntityName") != null){
+                           box_item.setEntityName(obj2.getProperty("EntityName").toString());
+                       }
+
+                       box_item.setLotID(Long.parseLong(obj2.getProperty("LotID").toString()));
+                       //// TODO: 2019/11/27 这里的lotNo 取的是DII里面的manulotNo
+                       if (obj2.getProperty("LotNo") != null) {
+                           box_item.setLotNo(obj2.getProperty("LotNo").toString());
+                       }
+                       box_item.setItem_ID(Long.parseLong(obj2.getProperty("Item_ID").toString()));
+                       box_item.setIV_ID(Long.parseLong(obj2.getProperty("IV_ID").toString()));
+                       box_item.setItemName(obj2.getProperty("ItemName").toString());
+                       box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
+                       box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
+                       //// TODO: 2020/4/22 这里先去掉，会报illegal property
 //                    obj2.getPropertySafely()
 //                    if (obj2.getProperty("Company_ID") != null) {
 //                        box_item.setCompany_ID(Integer.parseInt(obj2.getProperty("Company_ID").toString()));
 //                    }
-                     Object tempObject = obj2.getPropertySafely("Company_ID");
-                    if (tempObject != null && !TextUtils.isEmpty(tempObject.toString()) && !TextUtils.equals(tempObject.toString(),"null")) {
-                        box_item.setCompany_ID(Integer.parseInt(obj2.getProperty("Company_ID").toString()));
-                    }
-                    box_item.setBuName(obj2.getProperty("BuName").toString());
-                    box_item.setBoxName(obj2.getProperty("BoxName").toString());
-                    box_item.setBoxNo(obj2.getProperty("BoxNo").toString());
-                    box_item.setIstName(obj2.getProperty("IstName").toString());
+                       Object tempObject = obj2.getPropertySafely("Company_ID");
+                       if (tempObject != null && !TextUtils.isEmpty(tempObject.toString()) && !TextUtils.equals(tempObject.toString(),"null")) {
+                           box_item.setCompany_ID(Integer.parseInt(obj2.getProperty("Company_ID").toString()));
+                       }
+                       box_item.setBuName(obj2.getProperty("BuName").toString());
+                       box_item.setBoxName(obj2.getProperty("BoxName").toString());
+                       box_item.setBoxNo(obj2.getProperty("BoxNo").toString());
+                       box_item.setIstName(obj2.getProperty("IstName").toString());
+                   }catch(Exception e){
+                       e.printStackTrace();
+                   }
 
                 }
 
@@ -1016,6 +1024,7 @@ public class WebServiceUtil {
     //将物料入相应的库,零部件账
     public static WsResult op_Commit_DS_Item_Income_To_Warehouse(BoxItemEntity box_item) {
         String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse";
+        System.out.println("=======================================  op_Commit_DS_Item_Income_To_Warehouse");
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
         propertyInfo.setName("SenderID");
@@ -1027,18 +1036,21 @@ public class WebServiceUtil {
         PropertyInfo propertyInfo2 = new PropertyInfo();
         propertyInfo2.setName("DIII_ID");
         propertyInfo2.setValue(box_item.getDIII_ID());
+        System.out.println("======================================= diii_id =  " + box_item.getDIII_ID());
         propertyInfo2.setType(Long.class);
         propertyInfos.add(propertyInfo2);
 
         PropertyInfo propertyInfo3 = new PropertyInfo();
         propertyInfo3.setName("Ist_ID");
         propertyInfo3.setValue(box_item.getIst_ID());
+        System.out.println("======================================= Ist_ID =  " + box_item.getIst_ID());
         propertyInfo3.setType(Long.class);
         propertyInfos.add(propertyInfo3);
 
         PropertyInfo propertyInfo4 = new PropertyInfo();
         propertyInfo4.setName("Sub_Ist_ID");
         propertyInfo4.setValue(box_item.getSub_Ist_ID());
+        System.out.println("======================================= Sub_Ist_ID =  " + box_item.getSub_Ist_ID());
         propertyInfo4.setType(Long.class);
         propertyInfos.add(propertyInfo4);
 
@@ -2414,6 +2426,53 @@ public class WebServiceUtil {
 
         AddPropertyInfo(propertyInfos, "Remark", remark);
 
+        System.out.println("==================================Exer_Name = " + Exer_Name + " ci_id  = " + CI_ID + " bu_id  = " + Bu_ID);
+        System.out.println("==================================X = " + X + " Ist_ID  = " + Ist_ID + " Sub_Ist_ID  = " + Sub_Ist_ID);
+        System.out.println("==================================SMT_ID = " + SMT_ID + " SMM_ID  = " + SMM_ID + " SMLI_ID  = " + SMLI_ID);
+        System.out.println("==================================LotID = " + LotID + " Qty  = " + Qty + " N  = " + N);
+        System.out.println("==================================PN = " + PN + " DQ  = " + DQ + " Remark  = " + remark);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        return getWS_Result(obj);
+
+    }
+
+
+    public static WsResult commit_Self_Product_Pandian(String Exer_Name, int CI_ID, int Bu_ID, String X,
+                                                     Long Ist_ID, Long Sub_Ist_ID, int Item_ID, int IV_ID,
+                                                     Long LotID, String Qty, String N, String PN, String DQ, String remark,String storeArea,String manuLotNo) {
+        String webMethodName = "op_Check_Self_Product_Input_Item";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "Exer_Name", Exer_Name);
+        AddPropertyInfo(propertyInfos, "CI_ID", CI_ID);
+        AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfos, "X", X);
+        AddPropertyInfo(propertyInfos, "Ist_ID", Ist_ID);
+        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", Sub_Ist_ID);
+//        AddPropertyInfo(propertyInfos, "SMT_ID", SMT_ID);
+//        AddPropertyInfo(propertyInfos, "SMM_ID", SMM_ID);
+//        AddPropertyInfo(propertyInfos, "SMLI_ID", SMLI_ID);
+                AddPropertyInfo(propertyInfos, "Item_ID", Item_ID);
+        AddPropertyInfo(propertyInfos, "IV_ID", IV_ID);
+        AddPropertyInfo(propertyInfos, "LotID", LotID);
+        AddPropertyInfo(propertyInfos, "Qty", Qty);
+        AddPropertyInfo(propertyInfos, "N", N);
+        AddPropertyInfo(propertyInfos, "PN", PN);
+        AddPropertyInfo(propertyInfos, "DQ", DQ);
+
+        AddPropertyInfo(propertyInfos, "Remark", remark);
+        AddPropertyInfo(propertyInfos, "storeArea", storeArea);
+        AddPropertyInfo(propertyInfos, "manuLotNo", manuLotNo);
+
+        System.out.println("==================================Exer_Name = " + Exer_Name + " ci_id  = " + CI_ID + " bu_id  = " + Bu_ID);
+        System.out.println("==================================X = " + X + " Ist_ID  = " + Ist_ID + " Sub_Ist_ID  = " + Sub_Ist_ID);
+        System.out.println("==================================Item_ID = " + Item_ID + " IV_ID  = " + IV_ID );
+        System.out.println("==================================LotID = " + LotID + " Qty  = " + Qty + " N  = " + N);
+        System.out.println("==================================PN = " + PN + " DQ  = " + DQ + " Remark  = " + remark + " ");
+        System.out.println("==================================storeArea = " + storeArea + " manuLotNo  = " + manuLotNo );
+
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
 
@@ -2682,6 +2741,7 @@ public class WebServiceUtil {
 
     }
 
+
     public static String getVersionCode() {
 //        http://172.16.2.20:8002/WebService.asmx/ReadApkVersion
         String webMethodName = "ReadApkVersion";
@@ -2746,6 +2806,22 @@ public class WebServiceUtil {
         Type type = new TypeToken<List<DepartmentBean>>() {
         }.getType();
         List<DepartmentBean> list = JsonUtil.parseJsonToObject(resultData, type);
+        //结果
+        return list;
+
+    }
+
+    public static List<PanDianItemBean> getPanDianBeanList(String SQL) {
+        String resultData = getJsonDataBySQL(SQL);
+        if (resultData == null) {
+            return null;
+        }
+        //变成List
+//        List<JsonObject> ojsonObjectList = ConvertJstring2List(resultData);
+//        BUItemBean buItemBean = JsonUtil.parseJsonToObject(resultData, BUItemBean.class);
+        Type type = new TypeToken<List<PanDianItemBean>>() {
+        }.getType();
+        List<PanDianItemBean> list = JsonUtil.parseJsonToObject(resultData, type);
         //结果
         return list;
 

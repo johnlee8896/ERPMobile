@@ -1,8 +1,9 @@
-package com.hwariot.lib.base;
+package com.chinashb.www.mobileerp.fragment;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.chinashb.www.mobileerp.R;
 
 /***
  * @date 创建时间 2018/3/22 13:20

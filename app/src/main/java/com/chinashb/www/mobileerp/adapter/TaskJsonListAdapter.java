@@ -52,7 +52,7 @@ public class TaskJsonListAdapter extends RecyclerView.Adapter<TaskJsonListAdapte
     @Override
     public JsonListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = mLayoutInflater
-                .inflate(R.layout.listview_task, parent, false);
+                .inflate(R.layout.listview_task_layout, parent, false);
 
 
         JsonListViewHolder vh = new JsonListViewHolder(v, mClickListener);

@@ -1,3 +1,15 @@
+2020-12-29
+Version2.0.6  versionCode = 21 更新日志
+
+1、在制品盘点功能开发
+2、其他bug
+
+2020-12-10
+Version2.0.5  versionCode = 20 更新日志
+
+1、成品一些bug修复，库位扫描判断、重复入库判断等
+2、其他bug
+
 2020-10-26
 Version2.0.4  versionCode = 19 更新日志
 

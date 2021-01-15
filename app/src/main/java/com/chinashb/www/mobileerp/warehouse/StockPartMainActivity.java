@@ -51,6 +51,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button supplierReturnGoodsButton ;//供应商退货
     private Button selfProductReturnGoodsButton ;//自制车间退货
     private Button lookQRButton;
+    private Button zaiZhiPinCheckButton;
 
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
@@ -214,7 +215,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         } else if (view == makingProductButton) {
             makingProductCheck();
         } else if (view == partStockCheckButton) {
-            partStockCheck();
+            partStockCheck(false);
         } else if (view == selfProductButton) {
             selfProduct();
         } else if (view == lookQRButton) {
@@ -260,12 +261,13 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private void partStockCheck() {
+    private void partStockCheck(boolean fromZaiZhiPin) {
         if (userInfo == null) {
             Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
             Intent intent = new Intent(StockPartMainActivity.this, StockCheckPartInvActivity.class);
             intent.putExtra("Ac_Type", 1);
+            intent.putExtra(IntentConstant.Intent_Extra_check_from_zaizhipin,fromZaiZhiPin);
             startActivity(intent);
         }
     }
@@ -316,7 +318,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     }
 
     private void makingProductCheck() {
-
+        partStockCheck(true);
     }
 
     private void returnToWC() {
