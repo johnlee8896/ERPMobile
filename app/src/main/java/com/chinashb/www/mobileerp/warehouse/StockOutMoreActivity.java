@@ -374,8 +374,10 @@ public class StockOutMoreActivity extends BaseActivity {
 
             if (bi.getResult() ) {
                 if (!is_box_existed(bi)) {
-                    bi.setSelect(true);
-                    boxItemEntityList.add(bi);
+                    if (bi.getQty() > 0){
+                        bi.setSelect(true);
+                        boxItemEntityList.add(bi);
+                    }
                 } else {
                     bi.setResult(false);
                     bi.setErrorInfo("该包装已经在装载列表中");
@@ -396,12 +398,16 @@ public class StockOutMoreActivity extends BaseActivity {
 
             if (scanresult != null) {
                 if (!scanresult.getResult() ) {
-                    Toast.makeText(StockOutMoreActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
+                    ToastUtil.showToastShort( scanresult.getErrorInfo());
+                }
+                if (scanresult.getQty() < 0){
+                    ToastUtil.showToastShort("投料数量不能为负");
+                }else{
+                    issueMoreItemAdapter = new IssueMoreItemAdapter(StockOutMoreActivity.this, boxItemEntityList);
+                    recyclerView.setAdapter(issueMoreItemAdapter);
                 }
             }
 
-            issueMoreItemAdapter = new IssueMoreItemAdapter(StockOutMoreActivity.this, boxItemEntityList);
-            recyclerView.setAdapter(issueMoreItemAdapter);
 
             //pbScan.setVisibility(View.INVISIBLE);
         }

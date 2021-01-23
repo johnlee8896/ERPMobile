@@ -100,6 +100,11 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--任务创建页面-->
+        <activity
+            android:name=".task.TaskCreateActivity"
+            android:screenOrientation="portrait" />
+
         <!--考勤管理页面-->
         <activity
             android:name=".ProductSaleOutCodeBoxActivity"

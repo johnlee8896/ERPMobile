@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/task_create_title_managerView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="任务创建" />
+
+    <TextView
+        android:id="@+id/task_create_creator_info_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_title_managerView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:gravity="center_vertical"
+        android:text="制定人"
+        android:textSize="@dimen/text_size_16" />
+
+    <TextView
+        android:id="@+id/task_create_creator_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_title_managerView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_toRightOf="@id/task_create_creator_info_textView"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_16"
+        tools:text="李伟锋" />
+
+    <TextView
+        android:id="@+id/task_create_add_creator_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_35"
+        android:layout_below="@id/task_create_title_managerView"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_toRightOf="@id/task_create_creator_textView"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="添加制定人" />
+
+<!--执行部门-->
+    <TextView
+        android:id="@+id/task_create_executor_info_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_creator_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:gravity="center_vertical"
+        android:text="执行部门"
+        android:textSize="@dimen/text_size_16" />
+
+    <TextView
+        android:id="@+id/task_create_executor_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_creator_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_toRightOf="@id/task_create_creator_info_textView"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_16"
+        tools:text="信息部" />
+
+    <TextView
+        android:id="@+id/task_create_add_executor_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_35"
+        android:layout_below="@id/task_create_creator_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_toRightOf="@id/task_create_creator_textView"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="选择执行部门" />
+
+    <!--责任人-->
+    <TextView
+        android:id="@+id/task_create_responder_info_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_executor_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:gravity="center_vertical"
+        android:text="责任人"
+        android:textSize="@dimen/text_size_16" />
+
+    <TextView
+        android:id="@+id/task_create_responder_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_executor_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_toRightOf="@id/task_create_creator_info_textView"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_16"
+        tools:text="信息部" />
+
+    <TextView
+        android:id="@+id/task_create_add_responder_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_35"
+        android:layout_below="@id/task_create_executor_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_toRightOf="@id/task_create_creator_textView"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="选择责任人" />
+    <!--审核人-->
+    <TextView
+        android:id="@+id/task_create_auditor_info_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_responder_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:gravity="center_vertical"
+        android:text="审核人"
+        android:textSize="@dimen/text_size_16" />
+
+    <TextView
+        android:id="@+id/task_create_auditor_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_responder_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_toRightOf="@id/task_create_creator_info_textView"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_16"
+        tools:text="金迦勒" />
+
+    <TextView
+        android:id="@+id/task_create_add_auditor_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_35"
+        android:layout_below="@id/task_create_responder_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_toRightOf="@id/task_create_creator_textView"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="选择审核人" />
+
+    <!--优先级-->
+    <TextView
+        android:id="@+id/task_create_level_info_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_auditor_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:gravity="center_vertical"
+        android:text="优先级"
+        android:textSize="@dimen/text_size_16" />
+
+    <TextView
+        android:id="@+id/task_create_level_textView"
+        android:layout_width="100dp"
+        android:background="@color/color_gray_F9F9F9"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_auditor_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_toRightOf="@id/task_create_creator_info_textView"
+        android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
+        android:gravity="center_vertical"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_16"
+        android:text="普通" />
+    <TextView
+        android:id="@+id/task_create_start_date_button"
+        android:layout_width="@dimen/dimen_size_150"
+        android:layout_height="@dimen/dimen_size_35"
+        android:layout_below="@id/task_create_level_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="任务开始日期" />
+
+    <TextView
+        android:id="@+id/task_create_end_date_button"
+        android:layout_width="@dimen/dimen_size_150"
+        android:layout_height="@dimen/dimen_size_35"
+        android:layout_below="@id/task_create_level_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_toRightOf="@id/task_create_start_date_button"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:gravity="center"
+        android:text="任务开始日期" />
+
+
+
+
+</RelativeLayout>
