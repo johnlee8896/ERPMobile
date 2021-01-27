@@ -214,6 +214,66 @@
         android:text="任务开始日期" />
 
 
+    <TextView
+        android:id="@+id/task_create_title_info_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_start_date_button"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:gravity="center_vertical"
+        android:text="任务标题"
+        android:textSize="@dimen/text_size_16" />
+
+    <EditText
+        android:id="@+id/task_create_title_editText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_title_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="请输入任务标题"
+        android:textSize="@dimen/text_size_16" />
+    <TextView
+        android:id="@+id/task_create_content_info_textView"
+        android:layout_width="100dp"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_title_editText"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:singleLine="false"
+        android:gravity="center_vertical"
+        android:text="任务详细内容"
+        android:textSize="@dimen/text_size_16" />
+
+    <EditText
+        android:id="@+id/task_create_content_editText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_40"
+        android:layout_below="@id/task_create_content_info_textView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="请输入任务详细内容"
+        android:textSize="@dimen/text_size_16" />
+
+
+
+    <TextView
+        android:id="@+id/task_create_commit_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:layout_marginBottom="@dimen/dimen_size_20"
+        android:gravity="center"
+        android:text="提交" />
+
 
 
 </RelativeLayout>
