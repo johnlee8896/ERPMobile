@@ -100,6 +100,11 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--组织架构页面-->
+        <activity
+            android:name=".organization.OrganizationStructActivity"
+            android:screenOrientation="portrait" />
+
         <!--任务创建页面-->
         <activity
             android:name=".task.TaskCreateActivity"

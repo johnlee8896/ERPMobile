@@ -183,6 +183,8 @@ public class WebServiceUtil {
         return null;
     }
 
+//    commitSingleTaskFromMobile(HR_ID As Integer, HR_Name As String, executor As Integer, executorName As String, executor_Dep_ID As Integer, taskEndDate As Date, title As String, content As String)
+
     public static WsResult op_Commit_Work_line_Item_Non_Plan(
             long Item_ID, long IV_ID,
             long LotID, String LotNo,

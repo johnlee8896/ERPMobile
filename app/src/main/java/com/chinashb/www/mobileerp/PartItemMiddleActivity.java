@@ -61,94 +61,96 @@ public class PartItemMiddleActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(List<Item_Lot_Inv> itemLotInvList) {
-            //tv.setText(fahren + "∞ F");
-//            partItemAdapter = new ItemPartLotInvAdapter(StockQueryPartActivity.this, itemLotInvList);
-//            recyclerView.setAdapter(partItemAdapter);
-//            partItemAdapter.setOnItemClickListener(new OnItemClickListener() {
-//                                                       @Override
-//                                                       public void OnItemClick(View view, int position) {
-//                                                           if (itemLotInvList != null) {
-//                                                               EditingLot = itemLotInvList.get(position);
-//                                                               Intent intent = new Intent(StockQueryPartItemActivity.this, InputBoxActivity.class);
-//                                                               intent.putExtra("Title", "输入批次标注，" + EditingLot.getLotNo() + "：");
-//                                                               String originalDescription = "";
-//                                                               if (EditingLot.getLotDescription() != null) {
-//                                                                   originalDescription = EditingLot.getLotDescription();
-//                                                               }
-//                                                               intent.putExtra("OriText", originalDescription);
-//                                                               startActivityForResult(intent, 100);
-//                                                           }
-//
-//                                                       }
-//                                                   }
-//            );
-            //pbScan.setVisibility(View.INVISIBLE);
+
 
             if (itemLotInvList != null && itemLotInvList.size() > 0){
 //                int count = 0;
-                HashMap<String,ArrayList<Item_Lot_Inv>> map = new HashMap<>();
-                List<String> stockNumberList = new ArrayList<>();
-                for (Item_Lot_Inv entity : itemLotInvList){
-                    if (!TextUtils.isEmpty(entity.getIstName())){
-                        String[] strArray = entity.getIstName().split("#");
-                        if (strArray.length > 0 && !strArray[0].contains("#")){
-                            if (!stockNumberList.contains(strArray[0])){
-                                stockNumberList.add(strArray[0]);
-                                ArrayList<Item_Lot_Inv> list = new ArrayList<>();
-                                list.add(entity);
-                                map.put(strArray[0],list);
-
-                            }else{
-                                ArrayList<Item_Lot_Inv> arrayList = map.get(strArray[0]);
-                                if (arrayList != null){
-                                    arrayList.add(entity);
-                                }
-                                map.put(strArray[0],arrayList);
-                            }
-                        }
-                    }
-                }
+                //// TODO: 2021/1/29 // TODO: 2021/1/29 // TODO: 2021/1/29 // TODO: 2021/1/29 这段代码不知道当初作什么用的，之后要详细查一下
+//                HashMap<String,ArrayList<Item_Lot_Inv>> map = new HashMap<>();
+//                List<String> stockNumberList = new ArrayList<>();
+//                for (Item_Lot_Inv entity : itemLotInvList){
+//                    if (!TextUtils.isEmpty(entity.getIstName())){
+//                        String[] strArray = entity.getIstName().split("#");
+//                        if (strArray.length > 0 && !strArray[0].contains("#")){
+//                        //todo  之前的# 好像不对  对于特殊字符的转义如点，要加转义符，android可以用[]
+////                        String[] strArray = entity.getIstName().split("[.]");
+////                        if (strArray.length > 0 && !strArray[0].contains("[.]")){
+//                            if (!stockNumberList.contains(strArray[0])){
+//                                stockNumberList.add(strArray[0]);
+//                                ArrayList<Item_Lot_Inv> list = new ArrayList<>();
+//                                list.add(entity);
+//                                map.put(strArray[0],list);
+//
+//                            }else{
+//                                ArrayList<Item_Lot_Inv> arrayList = map.get(strArray[0]);
+//                                if (arrayList != null){
+//                                    arrayList.add(entity);
+//                                }
+//                                map.put(strArray[0],arrayList);
+//                            }
+//                        }
+//                    }
+//                }
 
 
 //                HashMap<String, ArrayList<Item_Lot_Inv>> map = (HashMap<String, ArrayList<Item_Lot_Inv>>) getIntent().getSerializableExtra(IntentConstant.Intent_Part_middle_map);
-                if (map != null) {
-                    itemLayout.removeAllViews();
-                    for (String mapKey : map.keySet()) {
+//                if (map != null) {
+//                    itemLayout.removeAllViews();
+//                    for (String mapKey : map.keySet()) {
+////                        TextView textView = new TextView(PartItemMiddleActivity.this);
+//                        View view = LayoutInflater.from(PartItemMiddleActivity.this).inflate(R.layout.item_part_middle_show_layout, null);
+//                        TextView textView = view.findViewById(R.id.item_part_middle_textView);
+//                        double count = 0;
+//                        for (Item_Lot_Inv entity : map.get(mapKey)) {
+//                            count += entity.getInvQty();
+//                        }
+//                        textView.setText(String.format("%s库，库存为%s,批次：%s", mapKey, CommonUtil.DecimalFormat(count)
+////                                ,map.get(mapKey).get(0).getLotNo()));
+//                                ,map.get(mapKey).get(0).getManuLotNo()));
+////                        textView.setGravity(Gravity.CENTER);
+////                        textView.setTextSize(30);
+//                        textView.setOnClickListener(v -> {
+//                            Intent intent = new Intent(PartItemMiddleActivity.this, StockQueryPartItemActivity.class);
+////                intent.putExtra("selected_item", (Serializable) );
+//                            intent.putExtra(IntentConstant.Intent_Part_middle_map_list, map.get(mapKey));
+//                            intent.putExtra("selected_item", (Serializable) selected_item);
+//                            startActivityForResult(intent, 100);
+//                        });
+//                        itemLayout.addView(view);
+//                    }
+//                }
+
+
+                itemLayout.removeAllViews();
+                for (Item_Lot_Inv entity : itemLotInvList) {
 //                        TextView textView = new TextView(PartItemMiddleActivity.this);
-                        View view = LayoutInflater.from(PartItemMiddleActivity.this).inflate(R.layout.item_part_middle_show_layout, null);
-                        TextView textView = view.findViewById(R.id.item_part_middle_textView);
-                        double count = 0;
-                        for (Item_Lot_Inv entity : map.get(mapKey)) {
-                            count += entity.getInvQty();
-                        }
-                        textView.setText(String.format("%s库，库存为%s,批次：%s", mapKey, CommonUtil.DecimalFormat(count)
+                    View view = LayoutInflater.from(PartItemMiddleActivity.this).inflate(R.layout.item_part_middle_show_layout, null);
+                    TextView textView = view.findViewById(R.id.item_part_middle_textView);
+                    double count = 0;
+//                    for (Item_Lot_Inv entity : map.get(mapKey)) {
+//                        count += entity.getInvQty();
+//                    }
+                    textView.setText(String.format("%s库，库存为%s,批次：%s", entity.getIstName(),entity.getInvQty()
 //                                ,map.get(mapKey).get(0).getLotNo()));
-                                ,map.get(mapKey).get(0).getManuLotNo()));
+                            ,entity.getLotNo()));
 //                        textView.setGravity(Gravity.CENTER);
 //                        textView.setTextSize(30);
-                        textView.setOnClickListener(v -> {
-                            Intent intent = new Intent(PartItemMiddleActivity.this, StockQueryPartItemActivity.class);
+                    textView.setOnClickListener(v -> {
+                        Intent intent = new Intent(PartItemMiddleActivity.this, StockQueryPartItemActivity.class);
 //                intent.putExtra("selected_item", (Serializable) );
-                            intent.putExtra(IntentConstant.Intent_Part_middle_map_list, map.get(mapKey));
-                            intent.putExtra("selected_item", (Serializable) selected_item);
-                            startActivityForResult(intent, 100);
-                        });
-                        itemLayout.addView(view);
-                    }
+                        ArrayList<Item_Lot_Inv> tempItemLotInvList = new ArrayList<>();
+                        tempItemLotInvList.add(entity);
+//                        intent.putExtra(IntentConstant.Intent_Part_middle_map_list, map.get(mapKey));
+                        intent.putExtra(IntentConstant.Intent_Part_middle_map_list, tempItemLotInvList);
+                        intent.putExtra("selected_item", (Serializable) selected_item);
+                        startActivityForResult(intent, 100);
+                    });
+                    itemLayout.addView(view);
                 }
 
                     //// TODO: 2019/8/9 这里直接执行startActivity会报错,最终查出原因是  Parcel: unable to marshal value com.chinashb.www.mobileerp.basicobject.Item_Lot_Inv@db03312
                 //没有序列化
-//                Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
-//                intent.putExtra(IntentConstant.Intent_Part_middle_map,map);
-//                intent.putExtra("selected_item", (Serializable) selected_item);
-////                startActivityForResult(intent, 100);
-//                startActivity(intent);
 
-
-//                Intent intent = new Intent(StockQueryPartActivity.this, StockQueryPartItemActivity.class);
-//                intent.putExtra("selected_item", (Serializable) selected_item);
-//                startActivityForResult(intent, 100);
             }
         }
 

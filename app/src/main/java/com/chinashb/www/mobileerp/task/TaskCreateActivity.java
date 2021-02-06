@@ -1,5 +1,6 @@
 package com.chinashb.www.mobileerp.task;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -10,6 +11,7 @@ import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.PlanShowListActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.funs.MESWebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.widget.TimePickerManager;
@@ -80,9 +82,13 @@ public class TaskCreateActivity extends BaseActivity implements View.OnClickList
 
     private void commitTask() {
         checkIsOK();
+
     }
 
-    private void checkIsOK() {
+    private boolean checkIsOK() {
+//        String insertTaskSql = String.format("insert into ttask (creater,creater_name,creater_dep_id,creater_dep_name,fromMobile) values ('%s','%s','%s','%s','%s')", UserSingleton.get().getHRID(),
+//                UserSingleton.get().getHRName(),UserSingleton.get().getUserAllInfoEntity().getDepartmentID(),1);
+        return true;
 
     }
 
@@ -110,6 +116,17 @@ public class TaskCreateActivity extends BaseActivity implements View.OnClickList
 //            task.execute();
 
 
+        }
+    }
+
+    private class CommitAsyncTask extends AsyncTask<String,Void,Void>{
+
+        @Override protected Void doInBackground(String... strings) {
+            return null;
+        }
+
+        @Override protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
         }
     }
 }
