@@ -17,7 +17,7 @@ import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-
+import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.adapter.TaskJsonAdapter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
@@ -25,6 +25,7 @@ import com.chinashb.www.mobileerp.bean.TaskBean;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.task.TaskCreateActivity;
 import com.chinashb.www.mobileerp.task.TaskDetailActivity;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
@@ -48,6 +49,7 @@ public class TaskMainNewActivity extends BaseActivity {
     @BindView(R.id.fab_new_task_button) FloatingActionButton fabNewTaskButton;
     @BindView(R.id.rv_task_list) CustomRecyclerView recyclerView;
     @BindView(R.id.task_emptyManager) EmptyLayoutManageView emptyManageView;
+    @BindView(R.id.add_single_task_button) TextView addSingleTaskButton;
     //    public List<Integer> ColWidth;
 //    public List<String> ColCaption;
 //    public List<String> HiddenCol;
@@ -115,6 +117,10 @@ public class TaskMainNewActivity extends BaseActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         tasks_type = 0;
+        addSingleTaskButton.setOnClickListener(v ->{
+            Intent intent = new Intent(TaskMainNewActivity.this, TaskCreateActivity.class);
+            startActivity(intent);
+        });
         LoadTasks();
 
     }

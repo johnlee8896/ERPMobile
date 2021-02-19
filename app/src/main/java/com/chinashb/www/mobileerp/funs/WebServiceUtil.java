@@ -183,8 +183,40 @@ public class WebServiceUtil {
         return null;
     }
 
+
+    //根据标题，内容，创建简易任务
 //    commitSingleTaskFromMobile(HR_ID As Integer, HR_Name As String, executor As Integer, executorName As String, executor_Dep_ID As Integer, taskEndDate As Date, title As String, content As String)
 
+    public static WsResult commitSingleTaskFromMobile(int HR_ID , String HR_Name ,int executor , String executorName ,int executor_Dep_ID ,Date  taskEndDate ,String title, String content ){
+        String webMethodName = "commitSingleTaskFromMobile";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "HR_ID", HR_ID);
+//        AddPropertyInfo(propertyInfos, "HR_ID", UserSingleton.get().getHRID());
+//        AddPropertyInfo(propertyInfos, "HR_Name", UserSingleton.get().getHRName());
+        AddPropertyInfo(propertyInfoList, "HR_Name", HR_Name);
+        AddPropertyInfo(propertyInfoList, "executor", executor);
+        AddPropertyInfo(propertyInfoList, "executorName", executorName);
+        AddPropertyInfo(propertyInfoList, "executor_Dep_ID", executor_Dep_ID);
+        AddPropertyInfo(propertyInfoList, "taskEndDate", taskEndDate);
+        AddPropertyInfo(propertyInfoList, "title", title);
+        AddPropertyInfo(propertyInfoList, "content", content);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
+    }
     public static WsResult op_Commit_Work_line_Item_Non_Plan(
             long Item_ID, long IV_ID,
             long LotID, String LotNo,

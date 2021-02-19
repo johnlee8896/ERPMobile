@@ -12,7 +12,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:app_title_text="任务管理"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp">
+        <TextView
+            android:id="@+id/add_single_task_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_35"
+            android:layout_below="@id/task_create_title_managerView"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:paddingLeft="@dimen/dimen_size_5"
+            android:paddingRight="@dimen/dimen_size_5"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:layout_alignParentRight="true"
+            android:text="创建任务" />
+    </com.chinashb.www.mobileerp.widget.TitleLayoutManagerView>
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_task"

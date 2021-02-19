@@ -10,9 +10,13 @@ import android.widget.TextView;
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.PlanShowListActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.MESWebServiceUtil;
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.widget.TimePickerManager;
 import com.chinashb.www.mobileerp.widget.TitleLayoutManagerView;
@@ -50,8 +54,10 @@ public class TaskCreateActivity extends BaseActivity implements View.OnClickList
     private String startDateString;
     private String endDateString;
     private String currentDate = "";
+    private Date endDate;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_create_layout);
         ButterKnife.bind(this);
         initViews();
@@ -68,6 +74,7 @@ public class TaskCreateActivity extends BaseActivity implements View.OnClickList
     private void setViewsListener() {
       startDateButton.setOnClickListener(this);
       endDateButton.setOnClickListener(this);
+      commitButton.setOnClickListener(this);
     }
 
     private void showTimePickerDialog(String pickType) {
@@ -82,7 +89,8 @@ public class TaskCreateActivity extends BaseActivity implements View.OnClickList
 
     private void commitTask() {
         checkIsOK();
-
+        CommitAsyncTask task = new CommitAsyncTask();
+        task.execute(titleEditText.getText().toString(),contentEditText.getText().toString());
     }
 
     private boolean checkIsOK() {
@@ -113,6 +121,8 @@ public class TaskCreateActivity extends BaseActivity implements View.OnClickList
             endDateString = getText((Date) date);
             endDateButton.setText(getText((Date) date));
             endDateButton.setTextColor(getResources().getColor(R.color.color_blue_528FFF));
+
+            endDate = (Date) date;
 //            task.execute();
 
 
@@ -120,13 +130,24 @@ public class TaskCreateActivity extends BaseActivity implements View.OnClickList
     }
 
     private class CommitAsyncTask extends AsyncTask<String,Void,Void>{
-
+        WsResult result;
         @Override protected Void doInBackground(String... strings) {
+            if (strings.length > 0){
+                String title = strings[0];
+                String content = strings[1];
+             result = WebServiceUtil.commitSingleTaskFromMobile(UserSingleton.get().getHRID(),UserSingleton.get().getHRName(),26009,
+                        "李伟锋",45,endDate,title,content);
+//            return result;
+            }
             return null;
         }
 
         @Override protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            if (result != null && result.getResult()){
+//                ToastUtil.showToastShort("任务提交成功");
+                ToastUtil.showToastShort(result.getErrorInfo());
+            }
         }
     }
 }

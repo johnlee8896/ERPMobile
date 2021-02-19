@@ -11,9 +11,11 @@ import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.TaskMainNewActivity;
 import com.chinashb.www.mobileerp.adapter.TaskJsonAdapter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.TaskBean;
@@ -42,6 +44,7 @@ public class TasksActivity extends BaseActivity {
     @BindView(R.id.fab_new_task_button) FloatingActionButton fabNewTaskButton;
     @BindView(R.id.rv_task_list) CustomRecyclerView recyclerView;
     @BindView(R.id.task_emptyManager) EmptyLayoutManageView emptyManageView;
+    @BindView(R.id.add_single_task_button) TextView addSingleTaskButton;
     //    public List<Integer> ColWidth;
 //    public List<String> ColCaption;
 //    public List<String> HiddenCol;
@@ -109,6 +112,10 @@ public class TasksActivity extends BaseActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         tasks_type = 0;
+        addSingleTaskButton.setOnClickListener(v ->{
+            Intent intent = new Intent(TasksActivity.this, TaskCreateActivity.class);
+            startActivity(intent);
+        });
         LoadTasks();
 
     }
