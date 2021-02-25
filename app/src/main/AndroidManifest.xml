@@ -100,6 +100,11 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--工资查询页面-->
+        <activity
+            android:name=".WageQueryActivity"
+            android:screenOrientation="portrait" />
+
         <!--组织架构页面-->
         <activity
             android:name=".organization.OrganizationStructActivity"

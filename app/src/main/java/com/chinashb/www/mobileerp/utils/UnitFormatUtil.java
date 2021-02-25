@@ -38,6 +38,7 @@ public final class UnitFormatUtil {
     public static  SimpleDateFormat sdf_YMD = new SimpleDateFormat("yyyy-MM-dd");
     public static  SimpleDateFormat sdf_YMD_Chinese = new SimpleDateFormat("yyyy年MM月dd日 ");
     public static  SimpleDateFormat sdf_YMD_NO_Line = new SimpleDateFormat("yyyyMMdd");
+    public static  SimpleDateFormat sdf_YM = new SimpleDateFormat("yyyyMM");
     public static  SimpleDateFormat sdf_MDH = new SimpleDateFormat("MM月dd日 HH点");
 //    public static  SimpleDateFormat sdf_MDHM = new SimpleDateFormat("MM月dd日 HH点MM分");
     //// TODO: 2020/2/11 这里的MM用大写结果不对，必须用小写 大写的MM代表month
@@ -154,6 +155,12 @@ public final class UnitFormatUtil {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(time);
         return sdf_MDHM.format(calendar.getTime());
+    }
+
+    public static String formatTimeYYYYMM(long time) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(time);
+        return sdf_YM.format(calendar.getTime());
     }
 
     public static String formatTimeToDayWithoutLine(long time) {

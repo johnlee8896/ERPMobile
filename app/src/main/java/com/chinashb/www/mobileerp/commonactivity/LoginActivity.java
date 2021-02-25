@@ -434,6 +434,9 @@ public class LoginActivity extends BaseActivity {
 //                }
                 UserSingleton.get().setHRID(wsResult.getID().intValue());
                 UserSingleton.get().setHRName(nameEditText.getText().toString());
+                if (!TextUtils.isEmpty(wsResult.getHR_NO())){
+                    UserSingleton.get().setHRNO(wsResult.getHR_NO());
+                }
                 SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
 
                 MobclickAgent.onEvent(LoginActivity.this, StringConstantUtil.Umeng_event_login);

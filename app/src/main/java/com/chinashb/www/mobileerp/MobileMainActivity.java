@@ -44,6 +44,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private TextView warehouseProductTextView;
     private TextView conversationTextView;
     private TextView foodOrderTextView;
+    private TextView wageQueryTextView;
     private TextView attendanceTextView;
     private TextView taskTextView;
     private TextView planTextView;
@@ -87,6 +88,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         taskTextView = (TextView) findViewById(R.id.main_task_manage_button);
         planTextView = findViewById(R.id.main_plan_button);
         foodOrderTextView = findViewById(R.id.main_food_order_button);
+        wageQueryTextView = findViewById(R.id.main_wage_query_button);
         attendanceTextView = findViewById(R.id.main_attendance_button);
     }
 
@@ -99,6 +101,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         conversationTextView.setOnClickListener(this);
         taskTextView.setOnClickListener(this);
         foodOrderTextView.setOnClickListener(this);
+        wageQueryTextView.setOnClickListener(this);
         attendanceTextView.setOnClickListener(this);
     }
 
@@ -280,6 +283,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             new GetTestService2AsyncTask().execute();
         }else if (view == attendanceTextView){
             Intent intent = new Intent(this,AttendanceActivity.class);
+            startActivity(intent);
+        }else if (view == wageQueryTextView){
+            Intent intent = new Intent(this,WageQueryActivity.class);
             startActivity(intent);
         }
     }

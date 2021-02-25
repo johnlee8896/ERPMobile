@@ -9,6 +9,15 @@ public class WsResult implements Serializable {
     private String ErrorInfo;
     private Long ID;
     private JsonObject jsonObject;
+    private String HR_NO;
+
+    public String getHR_NO() {
+        return HR_NO;
+    }
+
+    public void setHR_NO(String HR_NO) {
+        this.HR_NO = HR_NO;
+    }
 
     public boolean getResult() {
         return result;

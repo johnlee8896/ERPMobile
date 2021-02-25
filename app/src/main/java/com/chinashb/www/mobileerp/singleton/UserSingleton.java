@@ -44,6 +44,15 @@ public class UserSingleton {
 
     private int HRID;
     private String HRName;
+    private String HRNO;
+
+    public String getHRNO() {
+        return HRNO;
+    }
+
+    public void setHRNO(String HRNO) {
+        this.HRNO = HRNO;
+    }
 
     public String getHRName() {
         return HRName;
@@ -87,6 +96,8 @@ public class UserSingleton {
     public UserAllInfoEntity getUserAllInfoEntity() {
         return userAllInfoEntity;
     }
+
+
 
     private static class UserSingletonHelper {
         private static UserSingleton instance = new UserSingleton();

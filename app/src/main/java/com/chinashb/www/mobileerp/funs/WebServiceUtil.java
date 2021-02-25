@@ -183,7 +183,28 @@ public class WebServiceUtil {
         return null;
     }
 
+//    queryWage(HR_NO As String, queryMonth As String)
+    public static WsResult queryWage(String HR_NO,String queryMonth){
+        String webMethodName = "queryWage";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList,"HR_NO",HR_NO);
+        AddPropertyInfo(propertyInfoList,"queryMonth",queryMonth);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
 
+        return null;
+    }
     //根据标题，内容，创建简易任务
 //    commitSingleTaskFromMobile(HR_ID As Integer, HR_Name As String, executor As Integer, executorName As String, executor_Dep_ID As Integer, taskEndDate As Date, title As String, content As String)
 
@@ -3041,6 +3062,7 @@ public class WebServiceUtil {
                     result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
                     result.setID(Long.parseLong(obj2.getProperty("ID").toString()));
+                    result.setHR_NO(obj2.getProperty("HR_NO").toString());
                 }
             }
 

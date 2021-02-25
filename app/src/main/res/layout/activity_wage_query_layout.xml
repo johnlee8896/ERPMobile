@@ -1,11 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_50"
-        app:app_title_text="工资查询页面"></com.chinashb.www.mobileerp.widget.TitleLayoutManagerView>
+    android:layout_height="match_parent">
 
-</LinearLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_50"
+            app:app_title_text="工资查询页面" />
+
+        <TextView
+            android:id="@+id/wage_select_button"
+            android:layout_width="@dimen/dimen_size_150"
+            android:layout_height="@dimen/dimen_size_35"
+            android:layout_below="@id/task_create_level_info_textView"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="选择月份并查询" />
+
+        <TextView
+            android:id="@+id/wage_select_result_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:gravity="center"
+            tools:text="选择查询" />
+
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
