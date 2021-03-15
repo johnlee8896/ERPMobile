@@ -14,9 +14,9 @@ public class UserSingleton {
     public boolean hasSwitchedBu;
     private HashMap<Integer, String> departmentMap;
     private UserAllInfoEntity userAllInfoEntity;
-    private  boolean isCurrentInnerNetLink;
+    private boolean isCurrentInnerNetLink;
 
-    private UserSingleton(){
+    private UserSingleton() {
 
     }
 
@@ -45,6 +45,17 @@ public class UserSingleton {
     private int HRID;
     private String HRName;
     private String HRNO;
+    private String HR_IDCardNO;
+
+    private boolean stockPermit = false;
+
+    public String getHR_IDCardNO() {
+        return HR_IDCardNO;
+    }
+
+    public void setHR_IDCardNO(String HR_IDCardNO) {
+        this.HR_IDCardNO = HR_IDCardNO;
+    }
 
     public String getHRNO() {
         return HRNO;
@@ -56,6 +67,10 @@ public class UserSingleton {
 
     public String getHRName() {
         return HRName;
+    }
+
+    public boolean isStockPermit() {
+        return stockPermit;
     }
 
     public UserSingleton setHRName(String HRName) {
@@ -77,7 +92,7 @@ public class UserSingleton {
         return this;
     }
 
-    public static UserSingleton get(){
+    public static UserSingleton get() {
         return UserSingletonHelper.instance;
     }
 
@@ -97,6 +112,9 @@ public class UserSingleton {
         return userAllInfoEntity;
     }
 
+    public void setStockPermit(boolean b) {
+        stockPermit = b;
+    }
 
 
     private static class UserSingletonHelper {
@@ -120,7 +138,7 @@ public class UserSingleton {
 //
 //    }
 
-    public boolean hasLogin(){
+    public boolean hasLogin() {
         return userInfo != null && userInfo.getHR_ID() > 0;
     }
 

@@ -370,7 +370,9 @@ public class LoginActivity extends BaseActivity {
         String password = passwordEditText.getText().toString();
         if (userName.isEmpty() || password.isEmpty()) {
             ToastUtil.showToastLong("请输入名字/密码");
-        } else {
+        } else if(password .length() < 8){
+            ToastUtil.showToastLong("您的密码不符合至少8位长度的要求，请重置后再试");
+        }else {
 //            String Name = nameEditText.getText().toString();
 //            String password = passwordEditText.getText().toString();
             CheckNameAndPasswordAsyncTask task = new CheckNameAndPasswordAsyncTask();
@@ -434,9 +436,12 @@ public class LoginActivity extends BaseActivity {
 //                }
                 UserSingleton.get().setHRID(wsResult.getID().intValue());
                 UserSingleton.get().setHRName(nameEditText.getText().toString());
-                if (!TextUtils.isEmpty(wsResult.getHR_NO())){
-                    UserSingleton.get().setHRNO(wsResult.getHR_NO());
-                }
+//                if (!TextUtils.isEmpty(wsResult.getHR_NO())){
+//                    UserSingleton.get().setHRNO(wsResult.getHR_NO());
+//                }
+//                if (!TextUtils.isEmpty(wsResult.getHR_IDCardNO())){
+//                    UserSingleton.get().setHR_IDCardNO(wsResult.getHR_IDCardNO());
+//                }
                 SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
 
                 MobclickAgent.onEvent(LoginActivity.this, StringConstantUtil.Umeng_event_login);

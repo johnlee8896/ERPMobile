@@ -17,8 +17,10 @@ import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.bean.PanDianItemBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
+import com.chinashb.www.mobileerp.bean.StockPermittedBean;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.DeviceUtil;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -55,9 +57,20 @@ public class WebServiceUtil {
 //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
 //        private static String URL = "http://116.236.97.186:8001/Service.svc";
 
+    //如果21本地和server切换，只需要改下面四行
+    private static String URL = IP + ":8001/Service.svc";
+    private static String URL_Internet = IP + ":8001/Service.svc";
 
-//    private static String URL = IP + ":8001/Service.svc";
-    private static String URL = IP + ":8188/Test_Wss/Service.svc";
+//    private static String URL = IP + ":8188/Test_Wss/Service.svc";
+//    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
+
+    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+
+
+//    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
+
+
+    //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
 //    private static String URL = "http://180.167.56.250:8100/Test_Wss/Service.svc";
     //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://172.16.1.80:8188/Test_Wss/Service.svc";
@@ -70,13 +83,7 @@ public class WebServiceUtil {
 
 
     //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
-//    private static String URL_Internet = IP + ":8001/Service.svc";
-    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
 
-
-//    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-//    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
 
     private static String SOAP_ACTION = "http://tempuri.org/IService/";
     private static String SOAP_ACTION2 = "http://tempuri.org/IService2/";
@@ -183,12 +190,39 @@ public class WebServiceUtil {
         return null;
     }
 
-//    queryWage(HR_NO As String, queryMonth As String)
-    public static WsResult queryWage(String HR_NO,String queryMonth){
+//    queryWage(HR_NO As String, queryMonth As String)   phoneName As String, phoneMac As String
+    public static WsResult queryWage(String HR_NO,String queryMonth,String IMEI){
         String webMethodName = "queryWage";
         ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
         AddPropertyInfo(propertyInfoList,"HR_NO",HR_NO);
         AddPropertyInfo(propertyInfoList,"queryMonth",queryMonth);
+//        AddPropertyInfo(propertyInfoList,"phoneName","Android");
+//        AddPropertyInfo(propertyInfoList,"phoneMac", IMEI );
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
+    }
+
+    //    queryWage(HR_NO As String, queryMonth As String)   phoneName As String, phoneMac As String
+    public static WsResult queryWageWithRecord(String HR_NO,String queryMonth,String IMEI){
+        String webMethodName = "queryWageWithRecord";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList,"HR_NO",HR_NO);
+        AddPropertyInfo(propertyInfoList,"queryMonth",queryMonth);
+        AddPropertyInfo(propertyInfoList,"phoneName","Android");
+        AddPropertyInfo(propertyInfoList,"phoneMac", IMEI );
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
         if (envelope != null) {
             if (envelope.bodyIn instanceof SoapFault) {
@@ -2834,6 +2868,24 @@ public class WebServiceUtil {
 
     }
 
+    /**
+     * 获取可录入单据的权限的人
+     */
+    public static List<StockPermittedBean> getStockInPermittedHRIDList(String Sql){
+        String resultData = getJsonDataBySQL(Sql);
+        if (resultData == null) {
+            return null;
+        }
+        //变成List
+//        List<JsonObject> ojsonObjectList = ConvertJstring2List(resultData);
+//        BUItemBean buItemBean = JsonUtil.parseJsonToObject(resultData, BUItemBean.class);
+        Type type = new TypeToken<List<StockPermittedBean>>() {
+        }.getType();
+        List<StockPermittedBean> list = JsonUtil.parseJsonToObject(resultData, type);
+        //结果
+        return list;
+    }
+
     public static <T> List<T> getCommonItemBeanList(String SQL, T t) {
         String resultData = getJsonDataBySQL(SQL);
         if (resultData == null) {
@@ -3062,7 +3114,8 @@ public class WebServiceUtil {
                     result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
                 } else {
                     result.setID(Long.parseLong(obj2.getProperty("ID").toString()));
-                    result.setHR_NO(obj2.getProperty("HR_NO").toString());
+//                    result.setHR_NO(obj2.getProperty("HR_NO").toString());
+//                    result.setHR_IDCardNO(obj2.getProperty("HR_IDCard_NO").toString());
                 }
             }
 
@@ -3072,6 +3125,36 @@ public class WebServiceUtil {
         }
         return result;
     }
+
+    public static WsResult getHRIDNO() {
+        String webMethodName = "getHRIDNO";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "HR_ID", UserSingleton.get().getHRID());
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult result = new WsResult();
+        if (obj != null) {
+            int count = obj.getPropertyCount();
+            SoapObject obj2;
+            for (int i = 0; i < count; i++) {
+                obj2 = (SoapObject) obj.getProperty(i);
+                result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                if (!result.getResult()) {
+                    result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                } else {
+                    result.setHR_NO(obj2.getProperty("HR_NO").toString());
+                    result.setHR_IDCardNO(obj2.getProperty("HR_IDCard_NO").toString());
+                }
+            }
+
+        } else {
+            result.setResult(false);
+            result.setErrorInfo("无法访问服务器，请检查网络连接是否正常");
+        }
+        return result;
+    }
+
+
 
     public static WsResult GetSaveFinishedProductCodeDataByMes(String carton) {
         String webMethodName = "GetSaveFinishedProductCodeDataByMes";

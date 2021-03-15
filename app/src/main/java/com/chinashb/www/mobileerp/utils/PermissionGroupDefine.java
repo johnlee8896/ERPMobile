@@ -54,6 +54,10 @@ public class PermissionGroupDefine {
             Manifest.permission.READ_PHONE_STATE,
     };
 
+    public final static String[] PERMISSION_READ_PHONE = {
+            Manifest.permission.READ_PHONE_STATE,
+    };
+
     public final static String[] PERMISSION_LOCATION_AND_WRITE = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,

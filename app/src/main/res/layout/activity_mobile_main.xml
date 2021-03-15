@@ -207,6 +207,7 @@
                 android:layout_marginRight="@dimen/dimen_size_20"
                 android:background="@drawable/shape_conner_blue_button_bg"
                 android:gravity="center"
+                android:visibility="gone"
                 android:text="小食堂订餐" />
 
             <TextView

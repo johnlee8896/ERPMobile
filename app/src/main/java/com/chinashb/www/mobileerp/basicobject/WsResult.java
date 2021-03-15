@@ -10,6 +10,15 @@ public class WsResult implements Serializable {
     private Long ID;
     private JsonObject jsonObject;
     private String HR_NO;
+    private String HR_IDCardNO;
+
+    public String getHR_IDCardNO() {
+        return HR_IDCardNO;
+    }
+
+    public void setHR_IDCardNO(String HR_IDCardNO) {
+        this.HR_IDCardNO = HR_IDCardNO;
+    }
 
     public String getHR_NO() {
         return HR_NO;

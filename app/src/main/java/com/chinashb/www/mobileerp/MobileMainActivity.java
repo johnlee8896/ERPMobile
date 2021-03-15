@@ -7,6 +7,7 @@ import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
+import com.chinashb.www.mobileerp.bean.StockPermittedBean;
 import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.NetWorkReceiver;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
@@ -74,6 +76,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             userNameTextView.setText((UserSingleton.get().getUserInfo() != null ? UserSingleton.get().getUserInfo().getBu_Name() : ""
             ) + ":" + UserSingleton.get().getHRName());
         }
+
+        GetStockPermittedListAsyncTask permittedListAsyncTask = new GetStockPermittedListAsyncTask();
+        permittedListAsyncTask.execute();
 
     }
 
@@ -160,10 +165,10 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (netWorkReceiver == null) {
+//        if (netWorkReceiver == null) {
             unregisterReceiver(netWorkReceiver);
             System.out.println("注销");
-        }
+//        }
     }
 
     @Override
@@ -203,6 +208,8 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         registerReceiver(netWorkReceiver, filter);
     }
 
+
+
     @Override
     public void onClick(View view) {
         if (view == conversationTextView) {
@@ -224,6 +231,12 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         } else if (view == warehousePartTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
+                return;
+            }
+
+//            if (judgeStockPermit()) return;
+            if (!UserSingleton.get().isStockPermit()){
+                ToastUtil.showToastShort("您暂无权限进此页面!");
                 return;
             }
 
@@ -259,6 +272,11 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 ToastUtil.showToastLong("请先登录");
                 return;
             }
+
+            if (!UserSingleton.get().isStockPermit()){
+                ToastUtil.showToastShort("您暂无权限进此页面!");
+                return;
+            }
             Intent intent = new Intent(MobileMainActivity.this, StockProductMainActivity.class);
             startActivity(intent);
             MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_product_management);
@@ -274,6 +292,12 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 ToastUtil.showToastLong("请先登录");
                 return;
             }
+
+            if (!UserSingleton.get().isStockPermit()){
+                ToastUtil.showToastShort("您暂无权限进此页面!");
+                return;
+            }
+
             Intent intent = new Intent(this, PlanManagerActivity.class);
             startActivity(intent);
             MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_plan);
@@ -289,6 +313,16 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             startActivity(intent);
         }
     }
+
+//    private boolean judgeStockPermit() {
+////        if (UserSingleton.get().getUserInfo()  != null  ){
+////            if ( UserSingleton.get().getUserInfo().getBu_Name() == null ||  UserSingleton.get().getUserInfo().getBu_Name().length() == 0){
+//////                ToastUtil.showToastShort("您暂无权限进此页面!");
+////                return true;
+////            }
+////        }
+//        return UserSingleton.get().isStockPermit();
+//    }
 
     private void jumpToStockPartActivity() {
         Intent intent = new Intent(MobileMainActivity.this, StockPartMainActivity.class);
@@ -378,6 +412,36 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 
     }
 
+    private class GetStockPermittedListAsyncTask extends AsyncTask<String, Void, List<StockPermittedBean>> {
+        @Override
+        protected List<StockPermittedBean> doInBackground(String... params) {
+           String sql = "   Select FP.FA_ID, FP.HR_ID, HR.HR_Name ,HR.Leave As Leave,  FM_Scope.Scope_Name , " +
+                   "  Case When FA_Scope_ID=1 Then '胜华波' When FA_Scope_ID=2 Then Company.Company_Chinese_Name When FA_Scope_ID=3 Then CC_Name When FA_Scope_ID=4 Then Bu_Name When FA_Scope_ID=5 Then FP.XIDName Else '未知错误' End As RangeName,  FP.Permit As Permit, FP.Enabled As StartUse  " +
+                   "   From  FM_Permit As FP  Inner Join HR on FP.HR_ID=HR.HR_ID  " +
+                   " Inner Join FM_Scope On FP.FA_Scope_ID = FM_Scope.FS_ID  Left Join Company On XID=Company.Company_ID  " +
+                   " Left Join CC On XID = CC.CC_ID  Left Join Bu On XID=Bu.Bu_ID  Left Join FM_xScope On XScope_ID=FMx_ID  Where FP.Fun_ID=84";
+           List<StockPermittedBean> permittedBeanList = WebServiceUtil.getStockInPermittedHRIDList(sql);
+            return permittedBeanList;
+        }
+
+        @Override
+        protected void onPostExecute(List<StockPermittedBean> beanList) {
+            UserSingleton.get().setStockPermit(false);
+           if (beanList != null){
+               for (StockPermittedBean bean : beanList){
+                   if (bean != null && bean.getHR_ID() == UserSingleton.get().getHRID() && bean.getHR_Name().equals(UserSingleton.get().getHRName()) ){
+                       UserSingleton.get().setStockPermit(true);
+                       break;
+                   }
+               }
+           }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
 
     private class GetTestService2AsyncTask extends AsyncTask<String, Void, Void> {
         private WsResult wsResult;
@@ -408,6 +472,8 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         }
 
     }
+
+
 
 }
 
