@@ -87,7 +87,8 @@ public class WageQueryActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void handleSelectMonth() {
-        verifyAndShow();
+//        verifyAndShow();
+        System.out.println("================================ regetAndshow = " + regetAndshow );
         if (idCardFourEditText.getText() != null && idCardFourEditText.getText().toString().length() == 4) {
             if (!TextUtils.isEmpty(UserSingleton.get().getHR_IDCardNO())){
                 verifyAndShow();
@@ -193,6 +194,7 @@ public class WageQueryActivity extends BaseActivity implements View.OnClickListe
 
         @Override protected void onPostExecute(WsResult result) {
             super.onPostExecute(result);
+            regetAndshow = false;
             if (result != null) {
                 if (result.getResult()) {
                     resultTextView.setText(result.getErrorInfo().replace("\\r\\n", "\n"));
@@ -228,7 +230,7 @@ public class WageQueryActivity extends BaseActivity implements View.OnClickListe
                 }
                 if (regetAndshow){
                     verifyAndShow();
-                    regetAndshow = false;
+//                    regetAndshow = false;
                 }
 
             } else {
