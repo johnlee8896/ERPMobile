@@ -51,7 +51,14 @@ public class WageQueryActivity extends BaseActivity implements View.OnClickListe
 
                     @Override public void onSuccess(String[] permission) {
                         super.onSuccess(permission);
-                        QueryWageAsyncTask task = new QueryWageAsyncTask();
+
+                        //在选择月份之后判断该月份该账号已查询几次，若满5次，不可再查，并给出提示
+
+
+                        //先判断查询次数是否达到5次
+//                        QueryWageAsyncTask task = new QueryWageAsyncTask();
+//                        task.execute((String) t);
+                        GetQueryCountAsyncTask task = new GetQueryCountAsyncTask();
                         task.execute((String) t);
 
                     }
@@ -201,7 +208,51 @@ public class WageQueryActivity extends BaseActivity implements View.OnClickListe
 
 //                    resultTextView.setText(result.getErrorInfo());
                 } else {
-                    ToastUtil.showToastShort(result.getErrorInfo());
+                    ToastUtil.showToastShort("查询失败，原因: " + result.getErrorInfo());
+                }
+            }
+        }
+    }
+
+
+    private class GetQueryCountAsyncTask extends AsyncTask<String, Void, WsResult> {
+        String queryMonth = "";
+        @Override protected WsResult doInBackground(String... strings) {
+            if (strings.length > 0) {
+                queryMonth =  strings[0];
+                if (!TextUtils.isEmpty(UserSingleton.get().getHRNO())) {
+                    WsResult result = WebServiceUtil.queryWageCount(UserSingleton.get().getHRNO(), strings[0]) ;
+                    return result;
+                }
+            }
+            return null;
+        }
+
+        @Override protected void onPostExecute(WsResult result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                if (result.getResult()) {
+                    resultTextView.setText(result.getErrorInfo().replace("\\r\\n", "\n"));
+                    String countInfo =result .getErrorInfo() ;
+                    if (!TextUtils.isEmpty(countInfo)){
+                       try{
+                           int count = Integer .parseInt(countInfo);
+                           if (count >= 5){
+                               ToastUtil.showToastLong("您" + queryMonth + "的工资查询已经达到5次，不可再查！");
+                           }else{
+                               QueryWageAsyncTask task = new QueryWageAsyncTask();
+                               task.execute(queryMonth);
+                           }
+                       }catch(Exception e){
+                           e.printStackTrace();
+                           ToastUtil.showToastShort("查询次数类型转换错误，原因: " + e.getMessage());
+                       }
+
+                    }
+
+//                    resultTextView.setText(result.getErrorInfo());
+                } else {
+                    ToastUtil.showToastShort("查询失败，原因: " + result.getErrorInfo());
                 }
             }
         }

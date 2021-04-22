@@ -58,13 +58,18 @@ public class WebServiceUtil {
 //        private static String URL = "http://116.236.97.186:8001/Service.svc";
 
     //如果21本地和server切换，只需要改下面四行
-    private static String URL = IP + ":8001/Service.svc";
-    private static String URL_Internet = IP + ":8001/Service.svc";
+//    private static String URL = IP + ":8001/Service.svc";
+//    private static String URL_Internet = IP + ":8001/Service.svc";
 
-//    private static String URL = IP + ":8188/Test_Wss/Service.svc";
-//    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
+    private static String URL = IP + ":8188/Test_Wss/Service.svc";
+    private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
+
+
+    private static String URL_QueryWage = IP + ":8188/WageQueryWeb/Service.svc";
+    private static String URL_Internet_QueryWage = IP + ":8188/WageQueryWeb/Service.svc";
 
     private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+    private static String URL_Intranet_Internet_QueryWage = "http://172.16.1.80:8100/WageQueryWeb/Service.svc";
 
 
 //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
@@ -191,13 +196,11 @@ public class WebServiceUtil {
     }
 
 //    queryWage(HR_NO As String, queryMonth As String)   phoneName As String, phoneMac As String
-    public static WsResult queryWage(String HR_NO,String queryMonth,String IMEI){
-        String webMethodName = "queryWage";
+    public static WsResult queryWageCount(String HR_NO,String queryMonth){
+        String webMethodName = "queryWageCount";
         ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
         AddPropertyInfo(propertyInfoList,"HR_NO",HR_NO);
         AddPropertyInfo(propertyInfoList,"queryMonth",queryMonth);
-//        AddPropertyInfo(propertyInfoList,"phoneName","Android");
-//        AddPropertyInfo(propertyInfoList,"phoneMac", IMEI );
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
         if (envelope != null) {
             if (envelope.bodyIn instanceof SoapFault) {
@@ -223,7 +226,8 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfoList,"queryMonth",queryMonth);
         AddPropertyInfo(propertyInfoList,"phoneName","Android");
         AddPropertyInfo(propertyInfoList,"phoneMac", IMEI );
-        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapSerializationEnvelope envelope = invokeSupplierWS_QueryWage(propertyInfoList, webMethodName);
         if (envelope != null) {
             if (envelope.bodyIn instanceof SoapFault) {
                 WsResult result = new WsResult();
@@ -640,6 +644,47 @@ public class WebServiceUtil {
             URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
         }
         HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+        androidHttpTransport.debug = true;
+        try {
+            // Invole web service
+            androidHttpTransport.call(SOAP_ACTION + webMethodName, envelope);
+            // Get the response
+            envelope.getResponse();
+        } catch (Exception e) {
+            e.printStackTrace();
+//			resTxt = "Error occured";
+//            ToastUtil.showToastLong(e.getMessage());
+        }
+        return envelope;
+    }
+
+
+   //专门给工资查询使用，避免因为切换服务器而产生各样问题
+    private static SoapSerializationEnvelope invokeSupplierWS_QueryWage(ArrayList<PropertyInfo> propertyInfoList, String webMethodName) {
+        SoapSerializationEnvelope envelope = null;
+        // Create request
+        SoapObject soapObject = new SoapObject(NAMESPACE, webMethodName);
+        for (PropertyInfo propertyInfo : propertyInfoList) {
+            soapObject.addProperty(propertyInfo);
+        }
+
+        // Create envelope
+        envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envelope.dotNet = true;
+        envelope.bodyOut = soapObject;
+
+        // Set output SOAP object
+        envelope.setOutputSoapObject(soapObject);
+        new MarshalDate().register(envelope);
+
+        // Create HTTP call object
+//        Current_Net_Link = "Intranet";
+        if (UserSingleton.get().isCurrentInnerNetLink() || TextUtils.equals(Current_Net_Link,"Intranet")){
+            // TODO: 2021/4/22  
+            URL = "http://172.16.1.80:8100/WageQueryWeb/Service.svc";
+        }
+//        HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+        HttpTransportSE androidHttpTransport = new HttpTransportSE(URL_QueryWage );
         androidHttpTransport.debug = true;
         try {
             // Invole web service
@@ -3102,28 +3147,47 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfos, "HR_Name", crpName);
         AddPropertyInfo(propertyInfos, "PW", crpPw);
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
-        SoapObject obj = (SoapObject) envelope.bodyIn;
-        WsResult result = new WsResult();
-        if (obj != null) {
-            int count = obj.getPropertyCount();
-            SoapObject obj2;
-            for (int i = 0; i < count; i++) {
-                obj2 = (SoapObject) obj.getProperty(i);
-                result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
-                if (!result.getResult()) {
-                    result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
-                } else {
-                    result.setID(Long.parseLong(obj2.getProperty("ID").toString()));
+
+
+        //20210421 解决 登录闪退的问题
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult result = new WsResult();
+            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            result.setResult(false);
+            return result;
+        } else {
+//            SoapObject obj = (SoapObject) envelope.bodyIn;
+//            WsResult ws_result = Get_WS_Result(obj);
+//            return ws_result;
+
+            SoapObject obj = (SoapObject) envelope.bodyIn;
+            WsResult result = new WsResult();
+            if (obj != null) {
+                int count = obj.getPropertyCount();
+                SoapObject obj2;
+                for (int i = 0; i < count; i++) {
+                    obj2 = (SoapObject) obj.getProperty(i);
+                    result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                    if (!result.getResult()) {
+                        result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                    } else {
+                        result.setID(Long.parseLong(obj2.getProperty("ID").toString()));
 //                    result.setHR_NO(obj2.getProperty("HR_NO").toString());
 //                    result.setHR_IDCardNO(obj2.getProperty("HR_IDCard_NO").toString());
+                    }
                 }
-            }
 
-        } else {
-            result.setResult(false);
-            result.setErrorInfo("无法访问服务器，请检查网络连接是否正常");
+            } else {
+                result.setResult(false);
+                result.setErrorInfo("无法访问服务器，请检查网络连接是否正常");
+            }
+            return result;
         }
-        return result;
+
+
+
+
+//        return null;
     }
 
     public static WsResult getHRIDNO() {
