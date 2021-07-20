@@ -123,7 +123,7 @@ public class SelectMPIWCStepTwoActivity extends BaseActivity {
         @Override
         protected Void doInBackground(String... params) {
 
-            String sql = "Select Wi.WC_ID, Wi.List_No,WC_Name From WC_List_Item As Wi Inner Join P_WC As C On Wi.Wc_ID=C.WC_ID Where Wi.LID= " + selectedWCEntity.getLID() + " Order By Wi.List_No";
+            String sql = "Select Wi.WC_ID, Wi.List_No,WC_Name From WC_List_Item As Wi Inner Join P_WC As C On Wi.Wc_ID=C.WC_ID Where Wi.LID= " + selectedWCEntity.getLID() + " and c.deleted = 0 Order By Wi.List_No";
             WsResult r = WebServiceUtil.getDataTable(sql);
             if (r != null && r.getResult() ) {
                 String js = r.getErrorInfo();

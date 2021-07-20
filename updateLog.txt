@@ -1,3 +1,12 @@
+2021-06-16
+Version2.2.3  versionCode = 27 更新日志
+1、环境问题
+
+2021-06-16
+Version2.2.2  versionCode = 26 更新日志
+1、生产线设置问题
+2、其他bug
+
 2021-04-22
 Version2.2.1  versionCode = 25 更新日志
 1、主要解决手机登录问题

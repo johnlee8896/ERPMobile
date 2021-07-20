@@ -61,6 +61,10 @@ public class WebServiceUtil {
 //    private static String URL = IP + ":8001/Service.svc";
 //    private static String URL_Internet = IP + ":8001/Service.svc";
 
+    //暂时用本地的，但不太可用
+//    private static String URL = IP + ":8002/Service.svc";
+//    private static String URL_Internet = IP + ":8002/Service.svc";
+
     private static String URL = IP + ":8188/Test_Wss/Service.svc";
     private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
 
@@ -1913,7 +1917,6 @@ public class WebServiceUtil {
         propertyInfo.setName("MW_ID");
         propertyInfo.setValue(mw_id);
         propertyInfo.setType(String.class);
-
         propertyInfos.add(propertyInfo);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
