@@ -337,6 +337,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void handleIntoWareHouse() {
+//        防重复，金蝶慢，所以这样处理
+        warehouseInButton.setEnabled(false);
         if (boxItemEntityList.size() > 0) {
             int selectedcount = 0;
             for (int i = 0; i < boxItemEntityList.size(); i++) {
@@ -628,6 +630,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
                     //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
                     CommonUtil.ShowToast(StockInActivity.this, "入库完成", R.mipmap.smiley);
                 }
+                warehouseInButton.setEnabled(true);
 
             }
 

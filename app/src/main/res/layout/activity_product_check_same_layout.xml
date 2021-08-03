@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/product_out_check_same_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="成品出库校验" />
+
+    <EditText
+        android:id="@+id/product_out_check_input_EditText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:layout_marginTop="@dimen/dimen_size_20"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="接收扫描结果"
+        android:paddingLeft="@dimen/dimen_size_20"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14" />
+
+    <Button
+        android:id="@+id/product_out_check_supplier_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_20"
+        android:layout_marginRight="20dp"
+        android:text="扫描客户条码" />
+    <TextView
+        android:id="@+id/product_out_check_supplier_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:paddingLeft="@dimen/dimen_size_20"
+        tools:text = "供应商的产品是"
+        />
+
+    <Button
+        android:id="@+id/product_out_check_shb_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/dimen_size_20"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginRight="20dp"
+        android:text="扫描公司条码" />
+
+
+
+
+</LinearLayout>
+

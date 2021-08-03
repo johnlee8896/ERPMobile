@@ -7,9 +7,9 @@ ext {
             compileSdkVersion: 27,
             minSdkVersion    : 15,
             targetSdkVersion : 27,
-            versionCode      : 27,//before 26,环境问题
+            versionCode      : 28,//before 27,环境问题
 //            versionCode      : 18,//before 20
-            versionName      : "2.2.3",//before 2.2.1
+            versionName      : "2.2.4",//before 2.2.3
 
             supportVersion     : "27.1.0",
     ]

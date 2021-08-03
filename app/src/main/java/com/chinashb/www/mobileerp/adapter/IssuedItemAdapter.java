@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 
@@ -92,6 +91,19 @@ public class IssuedItemAdapter extends RecyclerView.Adapter<IssuedItemAdapter.Is
             tvMoreQty=(TextView)view.findViewById(R.id.tv_moreqty);
 
             itemIDTextView = view.findViewById(R.id.tv_item_id_name_textView);
+
+
+
+//            tvNextLocation.setOnClickListener(v -> {
+//            itemView.setOnClickListener(v -> {
+//                QueryStockDialog queryStockDialog = new QueryStockDialog(tvNextLocation.getContext());
+//
+//                queryStockDialog.show();
+////                queryStockDialog.setOnViewClickListener(onViewClickListener);
+//                queryStockDialog.setTitle("请选择或添加单据号");
+//                queryStockDialog.initiateView(Integer.parseInt(itemIDTextView.getText().toString()));
+////                commonSelectInputDialog.refreshContent(getNOList());
+//            });
 
 
         }

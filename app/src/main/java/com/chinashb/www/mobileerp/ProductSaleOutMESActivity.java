@@ -52,7 +52,7 @@ import butterknife.ButterKnife;
  * @description 成品出库
  */
 
-public class ProductSaleOutActivity extends BaseActivity implements View.OnClickListener {
+public class ProductSaleOutMESActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.product_out_select_plan_button) Button selectPlanButton;
     @BindView(R.id.product_out_order_textView) TextView productNonTrayWcNameTextView;
     //    @BindView(R.id.product_non_tray_scan_button) Button productNonTrayScanButton;
@@ -74,6 +74,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
     @BindView(R.id.product_out_scan_box_item_detail_customRecyclerView) CustomRecyclerView boxItemRecyclerView;
     @BindView(R.id.product_out_sdzh_scan_pallet_out_button) Button scanPalletOutButton;
 
+
     private DeliveryOrderBean deliveryOrderBean;
     private DeliveryOrderAdapter deliveryOrderAdapter;
     private DpOrderDetailAdapter dpOrderDetailAdapter;
@@ -86,7 +87,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
     private DpOrderDetailBean tempDpOrderDetailBean;
     private int boxId = 0;
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_out_layout);
         ButterKnife.bind(this);
@@ -102,7 +104,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
         dpOrderDetailAdapter = new DpOrderDetailAdapter();
         orderDetailRecyclerView.setAdapter(dpOrderDetailAdapter);
         dpOrderDetailAdapter.setOnViewClickListener(new OnViewClickListener() {
-            @Override public <T> void onClickAction(View v, String tag, T t) {
+            @Override
+            public <T> void onClickAction(View v, String tag, T t) {
                 if (t != null) {
                     tempDpOrderDetailBean = (DpOrderDetailBean) t;
                 } else {
@@ -116,7 +119,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
 
     }
 
-    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order) {
             if (data != null) {
@@ -179,16 +183,18 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
         sdzhOutButton.setOnClickListener(this);
         scanBoxOutButton.setOnClickListener(this);
         scanPalletOutButton.setOnClickListener(this);
+
     }
 
-    @Override public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
         if (v == selectPlanButton) {
             Intent intent = new Intent(this, DeliveryOrderActivity.class);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_Out_And_Delivery_Order);
 //            startActivity(intent);
         } else if (v == logisticsButton) {
             Intent intent = new Intent(this, LogisticsManageActivity.class);
-            intent.putExtra(IntentConstant.Intent_Extra_logistics_from,IntentConstant.Intent_Request_Code_Logistics_from_product_sale_out);
+            intent.putExtra(IntentConstant.Intent_Extra_logistics_from, IntentConstant.Intent_Request_Code_Logistics_from_product_sale_out);
             startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_To_Logistics);
         } else if (v == outButton) {
             if (tempDpOrderDetailBean != null) {
@@ -206,7 +212,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
             }
         } else if (v == scanBoxOutButton) {
             new IntentIntegrator(this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-        }else if (v == scanPalletOutButton){
+        } else if (v == scanPalletOutButton) {
             if (deliveryOrderBean != null) {
                 Intent intent = new Intent(this, SDZHScanPalletCodeActivity.class);
                 intent.putExtra(IntentConstant.Intent_Extra_do_delivery_bean, deliveryOrderBean);
@@ -248,7 +254,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
             HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
             outAsyncTask.execute(tempDpOrderDetailBean.getPSID() + "", tempDpOrderDetailBean.getDPIQuantity());
         } else {
-            CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutActivity.this)
+            CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutMESActivity.this)
                     .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
                     .setLeftText("确定");
 
@@ -258,7 +264,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
                 public void onViewClick(Dialog dialog, View v, int tag) {
                     switch (tag) {
                         case CommAlertDialog.TAG_CLICK_LEFT:
-                            CommonUtil.doLogout(ProductSaleOutActivity.this);
+                            CommonUtil.doLogout(ProductSaleOutMESActivity.this);
                             dialog.dismiss();
                             break;
                     }
@@ -275,7 +281,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
     private class HandleProductOutAsyncTask extends AsyncTask<String, Void, Void> {
         private WsResult result;
 
-        @Override protected Void doInBackground(String... strings) {
+        @Override
+        protected Void doInBackground(String... strings) {
 //            long cfID = 0;
             long dpi_id = 0;
 //            2020-01-03T00:00:00
@@ -300,7 +307,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
             return null;
         }
 
-        @Override protected void onPostExecute(Void aVoid) {
+        @Override
+        protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if (result != null) {
                 if (result.getResult()) {
@@ -360,7 +368,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
 
     private class GetMesDataAsyncTask extends AsyncTask<String, Void, String> {
 
-        @Override protected String doInBackground(String... strings) {
+        @Override
+        protected String doInBackground(String... strings) {
             if (strings == null || strings.length == 0) {
                 return null;
             }
@@ -372,7 +381,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
             return result.getErrorInfo();
         }
 
-        @Override protected void onPostExecute(String result) {
+        @Override
+        protected void onPostExecute(String result) {
             super.onPostExecute(result);
             System.out.println("=============================== result = " + result);
             MESDataEntity mesDataEntity = JsonUtil.parseJsonToObject(result, MESDataEntity.class);
@@ -410,7 +420,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
                     HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
                     outAsyncTask.execute(mesInnerDataEntity.getPSID() + "", mesInnerDataEntity.getQty() + "");
                 } else {
-                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutActivity.this)
+                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutMESActivity.this)
                             .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
                             .setLeftText("确定");
 
@@ -420,7 +430,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
                         public void onViewClick(Dialog dialog, View v, int tag) {
                             switch (tag) {
                                 case CommAlertDialog.TAG_CLICK_LEFT:
-                                    CommonUtil.doLogout(ProductSaleOutActivity.this);
+                                    CommonUtil.doLogout(ProductSaleOutMESActivity.this);
                                     dialog.dismiss();
                                     break;
                             }
@@ -482,7 +492,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
 
     private class GetMesDataInfoForSaleOutAsyncTask extends AsyncTask<String, Void, String> {
 
-        @Override protected String doInBackground(String... strings) {
+        @Override
+        protected String doInBackground(String... strings) {
             if (strings == null || strings.length == 0) {
                 return null;
             }
@@ -491,7 +502,8 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
             return result.getErrorInfo();
         }
 
-        @Override protected void onPostExecute(String result) {
+        @Override
+        protected void onPostExecute(String result) {
             super.onPostExecute(result);
             System.out.println("=============================== mes data info result = " + result);
             MESDataEntity mesDataEntity = JsonUtil.parseJsonToObject(result, MESDataEntity.class);
@@ -514,7 +526,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
                     HandleProductOutAsyncTask outAsyncTask = new HandleProductOutAsyncTask();
                     outAsyncTask.execute(mesDataInfoForSaleOutBean.getPSID() + "", mesDataInfoForSaleOutBean.getQty() + "");
                 } else {
-                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutActivity.this)
+                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductSaleOutMESActivity.this)
                             .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
                             .setLeftText("确定");
 
@@ -524,7 +536,7 @@ public class ProductSaleOutActivity extends BaseActivity implements View.OnClick
                         public void onViewClick(Dialog dialog, View v, int tag) {
                             switch (tag) {
                                 case CommAlertDialog.TAG_CLICK_LEFT:
-                                    CommonUtil.doLogout(ProductSaleOutActivity.this);
+                                    CommonUtil.doLogout(ProductSaleOutMESActivity.this);
                                     dialog.dismiss();
                                     break;
                             }

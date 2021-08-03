@@ -79,7 +79,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
             //// TODO: 2019/9/6 区分是成品还是零件 
             startActivity(intent);
         } else if (v == saleOutTextView) {
-            Intent intent = new Intent(this, ProductSaleOutActivity.class);
+            Intent intent = new Intent(this, ProductSaleOutMESActivity.class);
             startActivity(intent);
         }else if (v == saleOutCodeBoxTextView) {
             Intent intent = new Intent(this, ProductSaleOutCodeBoxActivity.class);

@@ -480,7 +480,7 @@ public class LogisticsManageActivity extends BaseActivity implements View.OnClic
 //                    ToastUtil.showToastShort("物流信息保存成功！");
 
 
-                    Intent intent = new Intent(LogisticsManageActivity.this, ProductSaleOutActivity.class);
+                    Intent intent = new Intent(LogisticsManageActivity.this, ProductSaleOutMESActivity.class);
 
                     switch (intent_code_logistics_from) {
 //                        case IntentConstant.Intent_Request_Code_Logistics_from_product_sale_out:

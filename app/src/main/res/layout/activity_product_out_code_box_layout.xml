@@ -87,6 +87,15 @@
             android:paddingRight="@dimen/dimen_size_20"
             android:orientation="vertical">
             <Button
+                android:id="@+id/product_out_check_product_same_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:text="产品一致校验" />
+
+            <Button
                 android:id="@+id/product_out_code_box_select_plan_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

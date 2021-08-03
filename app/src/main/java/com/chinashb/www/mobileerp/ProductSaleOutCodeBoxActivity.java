@@ -66,6 +66,7 @@ public class ProductSaleOutCodeBoxActivity extends BaseActivity implements View.
     @BindView(R.id.product_out_code_box_scan_box_out_button) Button scanBoxOutButton;
     @BindView(R.id.product_out_code_box_scan_box_item_detail_customRecyclerView) CustomRecyclerView boxItemRecyclerView;
     @BindView(R.id.product_out_code_box_sdzh_scan_pallet_out_button) Button scanPalletOutButton;
+    @BindView(R.id.product_out_check_product_same_button) Button checkProductSameButton;
 
     private DeliveryOrderBean deliveryOrderBean;
     private DeliveryOrderAdapter deliveryOrderAdapter;
@@ -174,6 +175,7 @@ public class ProductSaleOutCodeBoxActivity extends BaseActivity implements View.
         sdzhOutButton.setOnClickListener(this);
         scanBoxOutButton.setOnClickListener(this);
         scanPalletOutButton.setOnClickListener(this);
+        checkProductSameButton.setOnClickListener(this);
     }
 
     @Override public void onClick(View v) {
@@ -209,6 +211,10 @@ public class ProductSaleOutCodeBoxActivity extends BaseActivity implements View.
             } else {
                 ToastUtil.showToastShort("请先选择发货指令");
             }
+        }else if (v == checkProductSameButton){
+            Intent intent = new Intent(this, ProductCheckSameActivity.class);
+//            startActivityForResult(intent, IntentConstant.Intent_Request_Code_Product_Out_And_Check_Same);
+            startActivity(intent);
         }
     }
 
