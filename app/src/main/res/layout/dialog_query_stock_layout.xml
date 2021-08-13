@@ -4,6 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/shape_white_bg_conner_4dp"
+    android:showDividers="middle"
+    android:divider="@drawable/shape_divide_line_horizontal"
+    android:paddingTop="@dimen/dimen_size_10"
     android:orientation="vertical">
 
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
@@ -150,12 +154,11 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/dialog_query_inv_recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-
+                    android:layout_height="350dp"
+                    android:paddingLeft="@dimen/dimen_size_20"
+                    android:paddingRight="@dimen/dimen_size_10"
                     android:clickable="true"
-                    tools:layout_editor_absoluteX="8dp"
-                    tools:layout_editor_absoluteY="8dp">
+                   >
 
                 </android.support.v7.widget.RecyclerView>
 
@@ -172,5 +175,41 @@
             tools:visibility="visible" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/dialog_remark_bottom_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        >
+
+        <Button
+            android:id="@+id/dialog_remark_confirm_Button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="确定"
+            android:textColor="#333"
+            android:textSize="16sp"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginRight="@dimen/dimen_size_10"
+            />
+
+        <Button
+            android:id="@+id/dialog_remark_cancel_Button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginRight="@dimen/dimen_size_10"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="取消"
+            android:visibility="gone"
+            android:textColor="#333"
+            android:textSize="16sp"
+            />
+    </LinearLayout>
 
 </LinearLayout>

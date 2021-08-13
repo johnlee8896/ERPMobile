@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
+import com.chinashb.www.mobileerp.widget.QueryStockDialog;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -95,15 +96,16 @@ public class IssuedItemAdapter extends RecyclerView.Adapter<IssuedItemAdapter.Is
 
 
 //            tvNextLocation.setOnClickListener(v -> {
-//            itemView.setOnClickListener(v -> {
-//                QueryStockDialog queryStockDialog = new QueryStockDialog(tvNextLocation.getContext());
-//
-//                queryStockDialog.show();
-////                queryStockDialog.setOnViewClickListener(onViewClickListener);
-//                queryStockDialog.setTitle("请选择或添加单据号");
-//                queryStockDialog.initiateView(Integer.parseInt(itemIDTextView.getText().toString()));
-////                commonSelectInputDialog.refreshContent(getNOList());
-//            });
+            itemView.setOnClickListener(v -> {
+//                Activity activity = mconte
+                QueryStockDialog queryStockDialog = new QueryStockDialog(tvNextLocation.getContext());
+
+                queryStockDialog.show();
+//                queryStockDialog.setOnViewClickListener(onViewClickListener);
+                queryStockDialog.setTitle("请选择或添加单据号");
+                queryStockDialog.initiateView(Integer.parseInt(itemIDTextView.getText().toString()));
+//                commonSelectInputDialog.refreshContent(getNOList());
+            });
 
 
         }

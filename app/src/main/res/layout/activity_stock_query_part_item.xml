@@ -23,6 +23,36 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         app:app_title_text="零部件仓库库存查询" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        >
+
+        <Button
+            android:id="@+id/freeze_inv_Button"
+            android:layout_width="140dp"
+            android:layout_height="45dp"
+            android:text="库存冻结"
+            android:textColor="#333"
+            android:textSize="16sp"
+            android:layout_marginLeft="@dimen/dimen_size_100"
+            android:layout_marginRight="@dimen/dimen_size_10"
+            />
+
+        <Button
+            android:id="@+id/unfreeze_inv_Button"
+            android:layout_width="140dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginRight="@dimen/dimen_size_10"
+            android:text="解除冻结"
+            android:textColor="#333"
+            android:textSize="16sp"
+            />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_stock_query_current_item"

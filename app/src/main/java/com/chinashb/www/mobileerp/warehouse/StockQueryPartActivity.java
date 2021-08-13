@@ -24,6 +24,7 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.AppUtil;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
 import com.google.gson.Gson;
@@ -168,7 +169,8 @@ public class StockQueryPartActivity extends BaseActivity {
 //                            task.execute(selected_item.getItem_ID());
                                 Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
                                 intent.putExtra("selected_item", (Serializable) partsEntity);
-                                startActivityForResult(intent, 100);
+                                intent.putExtra("InvQueryMiddleRequestCode",IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
+                                startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
                             }
                         }
                 );

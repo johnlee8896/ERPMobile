@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.basicobject.Item_Lot_Inv;
 import com.chinashb.www.mobileerp.basicobject.PartsEntity;
-import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
@@ -22,7 +20,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -38,12 +35,14 @@ public class PartItemMiddleActivity extends BaseActivity {
     @BindView(R.id.part_middle_item_layout) LinearLayout itemLayout;
 
     private PartsEntity selected_item;
+    private int requestCode = IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_part_item_middle_layout);
         ButterKnife.bind(this);
         selected_item = (PartsEntity) getIntent().getSerializableExtra("selected_item");
+        requestCode = getIntent().getIntExtra("InvQueryMiddleRequestCode",IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
         QueryPartInvItemAsyncTask task = new QueryPartInvItemAsyncTask();
         task.execute(selected_item.getItem_ID());
     }
@@ -143,7 +142,8 @@ public class PartItemMiddleActivity extends BaseActivity {
 //                        intent.putExtra(IntentConstant.Intent_Part_middle_map_list, map.get(mapKey));
                         intent.putExtra(IntentConstant.Intent_Part_middle_map_list, tempItemLotInvList);
                         intent.putExtra("selected_item", (Serializable) selected_item);
-                        startActivityForResult(intent, 100);
+//                        startActivityForResult(intent, 100);
+                        startActivityForResult(intent, requestCode);
                     });
                     itemLayout.addView(view);
                 }

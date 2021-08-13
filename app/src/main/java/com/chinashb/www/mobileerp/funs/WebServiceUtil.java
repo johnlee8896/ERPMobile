@@ -20,7 +20,6 @@ import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.bean.StockPermittedBean;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
-import com.chinashb.www.mobileerp.utils.DeviceUtil;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -2712,13 +2711,34 @@ public class WebServiceUtil {
     }
 
     public static WsResult op_Commit_Freeze_Inv(BoxItemEntity box_item) {
+//        String webMethodName = "op_Commit_Freeze_Inv";
+//        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+//
+////        AddPropertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+//        AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
+//        AddPropertyInfo(propertyInfos, "SMLI_ID", box_item.getSMLI_ID());
+//        AddPropertyInfo(propertyInfos, "SMT_ID", box_item.getSMT_ID());
+//
+//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+//
+//        SoapObject obj = (SoapObject) envelope.bodyIn;
+//
+//        WsResult result = Get_WS_Result(obj);
+//
+//
+//        return result;
+        return op_Commit_Freeze_Inv(box_item.getSMLI_ID(),box_item.getSMT_ID());
+
+    }
+
+    public static WsResult op_Commit_Freeze_Inv(long smli_id,long smt_id) {
         String webMethodName = "op_Commit_Freeze_Inv";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
 //        AddPropertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
         AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
-        AddPropertyInfo(propertyInfos, "SMLI_ID", box_item.getSMLI_ID());
-        AddPropertyInfo(propertyInfos, "SMT_ID", box_item.getSMT_ID());
+        AddPropertyInfo(propertyInfos, "SMLI_ID", smli_id);
+        AddPropertyInfo(propertyInfos, "SMT_ID", smt_id);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
 
@@ -2731,14 +2751,75 @@ public class WebServiceUtil {
 
     }
 
+    public static WsResult op_Commit_Freeze_Inv_By_Lot_Mobile (long lotid){
+        String webMethodName = "op_Commit_Freeze_Inv_By_Lot_Mobile";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        System.out.println("========================= lotid = " + lotid);
+
+//        AddPropertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+        AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
+        AddPropertyInfo(propertyInfos, "LotId", lotid + "");
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        WsResult result = Get_WS_Result(obj);
+
+
+        return result;
+    }
+
     public static WsResult op_Commit_FreezeNot_Inv(BoxItemEntity box_item) {
+//        String webMethodName = "op_Commit_FreezeNot_Inv";
+//        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+//
+////        AddPropertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+//        AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
+//        AddPropertyInfo(propertyInfos, "SMLI_ID", box_item.getSMLI_ID());
+//        AddPropertyInfo(propertyInfos, "SMT_ID", box_item.getSMT_ID());
+//
+//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+//
+//        SoapObject obj = (SoapObject) envelope.bodyIn;
+//
+//        WsResult result = Get_WS_Result(obj);
+//
+//        return result;
+        return op_Commit_FreezeNot_Inv(box_item.getSMLI_ID(),box_item.getSMT_ID());
+
+    }
+
+
+
+    public static WsResult op_Commit_FreezeNot_Inv(long smli_id,long smt_id) {
         String webMethodName = "op_Commit_FreezeNot_Inv";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
 //        AddPropertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
         AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
-        AddPropertyInfo(propertyInfos, "SMLI_ID", box_item.getSMLI_ID());
-        AddPropertyInfo(propertyInfos, "SMT_ID", box_item.getSMT_ID());
+        AddPropertyInfo(propertyInfos, "SMLI_ID", smli_id);
+        AddPropertyInfo(propertyInfos, "SMT_ID", smt_id);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        WsResult result = Get_WS_Result(obj);
+
+        return result;
+
+    }
+
+    public static WsResult op_Commit_FreezeNot_Inv_By_Lot_Mobile(long lotid) {
+        String webMethodName = "op_Commit_FreezeNot_Inv_By_Lot_Mobile";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+//        AddPropertyInfo(propertyInfos, "SenderID", UserInfoEntity.ID);
+        AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
+//        AddPropertyInfo(propertyInfos, "LotID", lotid);
+        //Long型的webservice交互常有问题
+        AddPropertyInfo(propertyInfos, "LotId", lotid );
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
 

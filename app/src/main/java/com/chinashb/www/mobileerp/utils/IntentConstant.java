@@ -79,4 +79,9 @@ public class IntentConstant {
     public static final int Intent_Request_Code_Logistics_from_sdzh = 0X207;
     public static final int Intent_Request_Code_Logistics_from_sdzh_scan_pallet = 0X208;
 
+
+
+    public static final int Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity = 0X209;
+    public static final int Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity = 0X210;
+
 }

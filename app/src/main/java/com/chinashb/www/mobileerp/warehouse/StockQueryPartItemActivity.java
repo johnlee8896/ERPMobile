@@ -4,27 +4,26 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.adapter.ItemPartLotInvAdapter;
+import com.chinashb.www.mobileerp.basicobject.Item_Lot_Inv;
 import com.chinashb.www.mobileerp.basicobject.PartsEntity;
+import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.InputBoxActivity;
 import com.chinashb.www.mobileerp.funs.OnItemClickListener;
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.chinashb.www.mobileerp.adapter.ItemPartLotInvAdapter;
-import com.chinashb.www.mobileerp.basicobject.Item_Lot_Inv;
-import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
-import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -38,9 +37,13 @@ public class StockQueryPartItemActivity extends BaseActivity {
     private PartsEntity selected_item;
     private List<Item_Lot_Inv> itemLotInvList;
     private TextView titleNameTextView;
+    private Button freezeButton;
+    private Button unFreezeButton;
 
     private Item_Lot_Inv EditingLot;
     private String description = "";
+    private int requestCode = IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity;
+    private int lotid;
 
 
     @Override
@@ -50,10 +53,12 @@ public class StockQueryPartItemActivity extends BaseActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_query_product_inv);
         titleNameTextView = (TextView) findViewById(R.id.tv_stock_query_current_item);
+        freezeButton = findViewById(R.id.freeze_inv_Button);
+        unFreezeButton = findViewById(R.id.unfreeze_inv_Button);
         userInfoEntity = UserSingleton.get().getUserInfo();
         Intent intent = getIntent();
 //        selected_item = (PartsEntity) intent.getSerializableExtra("selected_item");
-
+        requestCode = getIntent().getIntExtra("InvQueryMiddleRequestCode",IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
 
 
 
@@ -61,9 +66,19 @@ public class StockQueryPartItemActivity extends BaseActivity {
         initData();
 
         setHomeButton();
+
     }
 
     private void initData() {
+        freezeButton.setOnClickListener(v -> {
+            FreezeBoxAsyncTask freezeBoxAsyncTask = new FreezeBoxAsyncTask();
+            freezeBoxAsyncTask.execute();
+
+        });
+        unFreezeButton.setOnClickListener(v -> {
+            FreezeNotAsyncTask freezeNotAsyncTask = new FreezeNotAsyncTask();
+            freezeNotAsyncTask.execute();
+        });
         itemLotInvList = (List<Item_Lot_Inv>) getIntent().getSerializableExtra(IntentConstant.Intent_Part_middle_map_list);
 
         if (selected_item != null) {
@@ -91,12 +106,15 @@ public class StockQueryPartItemActivity extends BaseActivity {
                                                                originalDescription = EditingLot.getLotDescription();
                                                            }
                                                            intent.putExtra("OriText", originalDescription);
-                                                           startActivityForResult(intent, 100);
+                                                           intent.putExtra("InvQueryMiddleRequestCode",requestCode);
+//                                                           startActivityForResult(intent, 100);
+                                                           startActivityForResult(intent, requestCode);
                                                        }
 
                                                    }
                                                }
         );
+        lotid = itemLotInvList.get(0).getLotID();
     }
 
 
@@ -229,6 +247,91 @@ public class StockQueryPartItemActivity extends BaseActivity {
         }
 
         super.onResume();
+    }
+
+    private class FreezeBoxAsyncTask extends AsyncTask<String, Void, Void> {
+        WsResult wsResult;
+        @Override
+        protected Void doInBackground(String... params) {
+
+//            for (int i = 0; i < boxitemList.size(); i++) {
+//                BoxItemEntity bi = boxitemList.get(i);
+//                WsResult result = WebServiceUtil.op_Commit_Freeze_Inv(bi);
+//                bi.setWs_result(result);
+//                if (result.getResult() ) {
+//                    bi.setFreezeStatus("冻结");
+//                }
+//            }
+            wsResult = WebServiceUtil.op_Commit_Freeze_Inv_By_Lot_Mobile(lotid);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+//            boxitemAdapter.notifyDataSetChanged();
+//            mRecyclerView.setAdapter(boxitemAdapter);
+            if (wsResult.getResult()){
+                ToastUtil.showToastShort("库存冻结成功！");
+            }else{
+                ToastUtil.showToastShort("库存冻结失败！原因是 " + wsResult.getErrorInfo());
+
+            }
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+    private class FreezeNotAsyncTask extends AsyncTask<String, Void, Void> {
+        WsResult wsResult = null;
+        @Override
+        protected Void doInBackground(String... params) {
+
+//            for (int i = 0; i < boxitemList.size(); i++) {
+//                BoxItemEntity bi = boxitemList.get(i);
+//                WsResult result = WebServiceUtil.op_Commit_FreezeNot_Inv(bi);
+//                bi.setWs_result(result);
+//                if (result.getResult() ) {
+//                    bi.setFreezeStatus("正常");
+//                }
+//            }
+            wsResult = WebServiceUtil.op_Commit_FreezeNot_Inv_By_Lot_Mobile(lotid);
+//            bi.setWs_result(result);
+//            if (result.getResult() ) {
+//                bi.setFreezeStatus("正常");
+//            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //tv.setText(fahren + "∞ F");
+//            boxitemAdapter.notifyDataSetChanged();
+//            mRecyclerView.setAdapter(boxitemAdapter);
+            if (wsResult.getResult()){
+                ToastUtil.showToastShort("库存解除冻结成功！");
+            }else{
+                ToastUtil.showToastShort("库存接触冻结失败！原因是 " + wsResult.getErrorInfo());
+
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
     }
 
 

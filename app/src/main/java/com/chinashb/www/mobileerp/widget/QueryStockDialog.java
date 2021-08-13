@@ -1,5 +1,6 @@
 package com.chinashb.www.mobileerp.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.chinashb.www.mobileerp.PartItemMiddleActivity;
@@ -17,6 +19,7 @@ import com.chinashb.www.mobileerp.adapter.PartInvQueryAdapter;
 import com.chinashb.www.mobileerp.basicobject.PartsEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.ScreenUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -39,6 +42,7 @@ public class QueryStockDialog extends BaseDialog {
     @BindView(R.id.dialog_query_inv_recyclerView) RecyclerView recyclerView;
     @BindView(R.id.part_query_data_layout) LinearLayout dataLayout;
     @BindView(R.id.dialog_query_emptyManagerView) EmptyLayoutManageView emptyManagerView;
+    @BindView(R.id.dialog_remark_confirm_Button) Button confirmButton;
 
     private Context context;
 
@@ -61,6 +65,10 @@ public class QueryStockDialog extends BaseDialog {
         partsAdapter = new PartInvQueryAdapter(context, partsEntityList);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));//这里用线性显示 类似于listview
         recyclerView.setAdapter(partsAdapter);
+
+        confirmButton.setOnClickListener(v->{
+            dismiss();
+        });
 
     }
 
@@ -89,7 +97,7 @@ public class QueryStockDialog extends BaseDialog {
         protected Void doInBackground(String... params) {
 //            String keyWord = filterEditText.getText().toString();
             String keyWord = "";
-            if (params.length > 0){
+            if (params.length > 0) {
                 keyWord = params[0];
             }
             String js = WebServiceUtil.getQueryInv(UserSingleton.get().getUserInfo().getBu_ID(), 1, keyWord, 1, 20);
@@ -115,8 +123,11 @@ public class QueryStockDialog extends BaseDialog {
 //                            task.execute(selected_item.getItem_ID());
                                 Intent intent = new Intent(context, PartItemMiddleActivity.class);
                                 intent.putExtra("selected_item", (Serializable) partsEntity);
+                                intent.putExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity);
 //                                context.startActivityForResult(intent, 100);
-                                getOwnerActivity().startActivityForResult(intent, 100);
+                                Activity activity = (Activity) context;
+//                                getOwnerActivity().startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity);
+                                activity.startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity);
                             }
                         }
                 );
