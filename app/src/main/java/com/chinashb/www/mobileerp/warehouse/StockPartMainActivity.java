@@ -16,6 +16,7 @@ import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.BuPlanGoodsActivity;
 import com.chinashb.www.mobileerp.PartWorkLinePutActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.SendGoodsManagerActivity;
 import com.chinashb.www.mobileerp.SupplierOrSelfReturnActivity;
 import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
@@ -28,7 +29,6 @@ import com.google.gson.JsonObject;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.IntConsumer;
 
 public class StockPartMainActivity extends BaseActivity implements View.OnClickListener {
     RecyclerView mRecyclerView;
@@ -50,6 +50,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button buPlanGoodsButton ;//车间要货计划
     private Button supplierReturnGoodsButton ;//供应商退货
     private Button selfProductReturnGoodsButton ;//自制车间退货
+    private Button sendGoodsManageButton ;//发货管理
     private Button lookQRButton;
     private Button zaiZhiPinCheckButton;
 
@@ -82,6 +83,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         buPlanGoodsButton = findViewById(R.id.btn_check_part_plan_goods);
         supplierReturnGoodsButton = findViewById(R.id.btn_return_goods_supplier);
         selfProductReturnGoodsButton = findViewById(R.id.btn_return_goods_self_produce);
+        sendGoodsManageButton = findViewById(R.id.btn_send_goods_manage);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -142,6 +144,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         buPlanGoodsButton.setOnClickListener(this);
         supplierReturnGoodsButton.setOnClickListener(this);
         selfProductReturnGoodsButton.setOnClickListener(this);
+        sendGoodsManageButton.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -237,6 +240,9 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         }else if (view == selfProductReturnGoodsButton){
             Intent intent = new Intent(StockPartMainActivity.this, SupplierOrSelfReturnActivity.class);
             intent.putExtra(IntentConstant.Intent_Extra_supplier_or_self_return_boolean,true);
+            startActivity(intent);
+        }else if (view == sendGoodsManageButton){
+            Intent intent = new Intent(StockPartMainActivity.this, SendGoodsManagerActivity.class);
             startActivity(intent);
         }
     }

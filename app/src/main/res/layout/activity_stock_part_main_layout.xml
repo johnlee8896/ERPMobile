@@ -419,23 +419,23 @@
                         android:textColor="#ffffff"
                         android:textSize="18sp" />
 
-                    <!--<ImageView-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_gravity="center_vertical"-->
-                        <!--android:visibility="visible"-->
-                        <!--app:srcCompat="@drawable/ic_settings_remote_black_24dp" />-->
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/ic_settings_remote_black_24dp" />
 
-                    <!--<Button-->
-                        <!--android:id="@+id/btn_zaizhipin_checkInv"-->
-                        <!--android:layout_width="100dp"-->
-                        <!--android:layout_height="60dp"-->
-                        <!--android:layout_gravity="left"-->
-                        <!--android:background="@drawable/squarebutton"-->
-                        <!--android:text="在制品盘点"-->
-                        <!--android:textColor="#ffffff"-->
-                        <!--android:textSize="14sp"-->
-                        <!--android:visibility="visible" />-->
+                    <Button
+                        android:id="@+id/btn_send_goods_manage"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="发货管理"
+                        android:textColor="#ffffff"
+                        android:textSize="14sp"
+                        android:visibility="visible" />
                 </TableRow>
 
                 <TableRow

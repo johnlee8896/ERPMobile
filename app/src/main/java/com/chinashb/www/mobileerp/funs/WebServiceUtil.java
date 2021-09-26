@@ -2409,7 +2409,8 @@ public class WebServiceUtil {
                     fill_box_item(box_item, obj2);
                     //这个有点特别
                     box_item.setOldIstName(obj2.getProperty("IstName").toString());
-                    box_item.setIstName(""); //'新位置还没设置
+                    //2021-09-14  移库时的建议库位在IstName里存放
+//                    box_item.setIstName(""); //'新位置还没设置
                     box_item.setIst_ID(0);
 
                     /*

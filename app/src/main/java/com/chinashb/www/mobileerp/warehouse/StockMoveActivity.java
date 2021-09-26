@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -14,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
@@ -27,6 +31,7 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -39,7 +44,7 @@ import java.util.List;
 /***
  * 移动库位页面
  */
-public class StockMoveActivity extends BaseActivity {
+public class StockMoveActivity extends BaseActivity implements View.OnClickListener {
     private Button btnAddTray;
     private Button btnScanArea;
     private Button btnWarehouseMove;
@@ -50,6 +55,24 @@ public class StockMoveActivity extends BaseActivity {
     private List<BoxItemEntity> boxitemList;
     private IstPlaceEntity thePlace;
     private String scanstring;
+    private RelativeLayout switchLayout;
+    private Switch stockSwitch;
+    private boolean isOpenSuggestStock = true;
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 0) {
+                ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
+            } else if (msg.what == 1) {
+//                ToastUtil.showToastLong("建议仓库存放:" + boxItemEntity.getIstName());
+                Bundle bundle = msg.getData();
+                if (bundle != null) {
+                    ToastUtil.showToastLong("建议仓库存放:" + bundle.getString("suggest_ist"));
+                }
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +85,8 @@ public class StockMoveActivity extends BaseActivity {
         btnScanArea = (Button) findViewById(R.id.btn_move_scan_new_place);
         btnWarehouseMove = (Button) findViewById(R.id.btn_move_execute);
         inputEditText = findViewById(R.id.stock_move_input_EditeText);
+        stockSwitch = findViewById(R.id.stock_move_suggest_stock_Switch);
+        switchLayout = findViewById(R.id.stock_move_suggest_stock_Layout);
 
         boxitemList = new ArrayList<>();
         if (savedInstanceState != null) {
@@ -120,6 +145,19 @@ public class StockMoveActivity extends BaseActivity {
                     System.out.println("========================扫描结果:" + editable.toString());
                     parseScanResult(editable.toString());
                 }
+            }
+        });
+        switchLayout.setOnClickListener(this);
+        stockSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isChecked = stockSwitch.isChecked();
+                if (isChecked) {
+                    ToastUtil.showToastShort("您已打开建议仓库！");
+                } else {
+                    ToastUtil.showToastShort("您已关闭建议仓库！");
+                }
+                isOpenSuggestStock = isChecked;
             }
         });
 
@@ -225,6 +263,13 @@ public class StockMoveActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onClick(View view) {
+         if (view == switchLayout) {
+            stockSwitch.performClick();
+        }
+    }
+
     private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity boxItemEntity;
         @Override
@@ -233,6 +278,15 @@ public class StockMoveActivity extends BaseActivity {
             boxItemEntity = bi;
             if (bi.getResult() ) {
                 if (!is_box_existed(bi)) {
+                    if (isOpenSuggestStock) {
+//                        ToastUtil.showToastLong("建议仓库存放:" + boxItemEntity.getIstName());
+                        Message message = new Message();
+                        message.what = 1;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("suggest_ist", boxItemEntity.getIstName());
+                        message.setData(bundle);
+                        handler.sendMessage(message);
+                    }
                     bi.setSelect(true);
                     boxitemList.add(bi);
                 } else {
@@ -271,6 +325,11 @@ public class StockMoveActivity extends BaseActivity {
             pbScan.setVisibility(View.INVISIBLE);
             inputEditText.setText("");
             inputEditText.setHint("请继续扫描");
+
+
+
+
+
         }
 
         @Override

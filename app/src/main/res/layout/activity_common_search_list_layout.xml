@@ -31,6 +31,7 @@
             android:text="取消"
             android:textColor="@color/color_333333"
             android:textSize="16sp"/>
+
         <EditText
             android:id="@+id/et_keyword_input"
             android:layout_width="match_parent"
@@ -38,15 +39,15 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/search_action_TextView"
             android:background="@drawable/shape_white_half_transparent_conner"
-            android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
-            android:hint="搜索关键字"
             android:drawableLeft="@mipmap/ic_search_gray"
             android:drawablePadding="@dimen/dimen_size_10"
+            android:hint="搜索关键字"
             android:imeOptions="actionSearch"
-            android:singleLine="true"
             android:paddingLeft="8dp"
+            android:singleLine="true"
             android:textColor="#0A222E"
             android:textColorHint="@color/color_CCCCCC"
+            android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
             android:textSize="16sp" />
 
         <ImageView

@@ -56,6 +56,31 @@
         </LinearLayout>
 
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/stock_move_suggest_stock_Layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="提示建议存放仓库"
+            android:textColor="@color/color_333333"
+            android:textSize="14sp" />
+
+        <Switch
+            android:id="@+id/stock_move_suggest_stock_Switch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:checked="true"
+            android:thumb="@drawable/selector_switch_thumb_style"
+            android:track="@drawable/selector_switch_track_style" />
+
+    </RelativeLayout>
 
     <EditText
         android:id="@+id/stock_move_input_EditeText"

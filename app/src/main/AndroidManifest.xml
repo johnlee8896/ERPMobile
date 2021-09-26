@@ -100,6 +100,11 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--发货管理页面-->
+        <activity
+            android:name=".SendGoodsManagerActivity"
+            android:screenOrientation="portrait" />
+
         <!--成品出库一致性校验页面-->
         <activity
             android:name=".ProductCheckSameActivity"
