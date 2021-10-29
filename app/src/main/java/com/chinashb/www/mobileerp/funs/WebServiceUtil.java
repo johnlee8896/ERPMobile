@@ -17,6 +17,7 @@ import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.bean.PanDianItemBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
+import com.chinashb.www.mobileerp.bean.SendGoodsSearchItemBean;
 import com.chinashb.www.mobileerp.bean.StockPermittedBean;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductItemEntity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
@@ -195,6 +196,128 @@ public class WebServiceUtil {
                 return ws_result;
             }
         }
+        return null;
+    }
+
+//    Public Function op_Insert_Supplier_Income_Box(HR_ID As Integer, HR_Name As String, Company_ID As Integer, Bu_ID As Integer,
+//                                                  Supplier_ID As Integer, Item_ID As Integer, IV_ID As Integer,
+//                                                  LotDate As Date, LotNo As String, ManuLot As String,
+//                                                  IBS_Package_Des As String,
+//                                                  PackageInfo As String,
+//                                                  PackageN As Integer,
+//                                                  DSII_Qty As Decimal,
+//                                                  SMLI As System.Collections.Generic.List(Of Long),
+//    SMM As System.Collections.Generic.List(Of Long),
+//    SMT As System.Collections.Generic.List(Of Long),
+//    Remark As String,
+//    WSS_Case As t_DS_Item_Income_Case.enWSS_Case,
+//    Optional OriDII As t_DS_Item_Income = Nothing,
+//    Optional POI_List As List(Of Long) = Nothing,
+//    Optional MW As t_mpi_wc = Nothing,
+//    Optional WC As t_P_WC = Nothing,
+//    Optional OriLot As t_Lot = Nothing,
+//    Optional OldLotDate As Date = #1/1/1900#) As Long Implements IService.op_Insert_Supplier_Income_Box
+
+//    public static long op_Insert_Supplier_Income_Box(int HR_ID ,String HR_Name , int Company_ID , int Bu_ID ,
+//                                                  int Supplier_ID , int Item_ID , int IV_ID , Date LotDate , String LotNo ,
+//                                                     String ManuLot ,String IBS_Package_Des ,String PackageInfo ,int PackageN ,
+//                                                  double DSII_Qty ,List<Long> SMLI ,List<Long> SMM ,List<Long> SMT ,String Remark ,int WSS_Case) {
+//        String webMethodName = "op_Insert_Supplier_Income_Box";
+//        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+//        AddPropertyInfo(propertyInfoList,"HR_ID",HR_ID);
+//        AddPropertyInfo(propertyInfoList,"HR_Name",HR_Name);
+//        AddPropertyInfo(propertyInfoList,"Company_ID",Company_ID);
+//        AddPropertyInfo(propertyInfoList,"Bu_ID","Bu_ID");
+//        AddPropertyInfo(propertyInfoList,"Supplier_ID", Supplier_ID );
+//
+//        AddPropertyInfo(propertyInfoList,"Item_ID",Item_ID);
+//        AddPropertyInfo(propertyInfoList,"IV_ID",IV_ID);
+//        AddPropertyInfo(propertyInfoList,"LotDate",LotDate);
+//        AddPropertyInfo(propertyInfoList,"LotNo","LotNo");
+//        AddPropertyInfo(propertyInfoList,"ManuLot", ManuLot );
+//
+//        AddPropertyInfo(propertyInfoList,"IBS_Package_Des",IBS_Package_Des);
+//        AddPropertyInfo(propertyInfoList,"PackageInfo",PackageInfo);
+//        AddPropertyInfo(propertyInfoList,"PackageN",PackageN);
+//        AddPropertyInfo(propertyInfoList,"DSII_Qty","DSII_Qty");
+//        AddPropertyInfo(propertyInfoList,"SMLI", SMLI );
+//        AddPropertyInfo(propertyInfoList,"SMM", SMM );
+//        AddPropertyInfo(propertyInfoList,"SMT", SMT );
+//        AddPropertyInfo(propertyInfoList,"Remark", Remark );
+//        AddPropertyInfo(propertyInfoList,"WSS_Case", WSS_Case );
+////        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+//        SoapSerializationEnvelope envelope = invokeSupplierWS_QueryWage(propertyInfoList, webMethodName);
+//        if (envelope != null) {
+//            if (envelope.bodyIn instanceof SoapFault) {
+//                WsResult result = new WsResult();
+//                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+//                result.setResult(false);
+//                return result;
+//            } else {
+//                SoapObject obj = (SoapObject) envelope.bodyIn;
+//                WsResult ws_result = Get_WS_Result(obj);
+//                return ws_result;
+//            }
+//        }
+//
+//        return null;
+//        return 1;
+//    }
+
+
+    public static WsResult commitSendGoods(int companyID,int bu_ID,BoxItemEntity boxItemEntity,
+                                           String Remark ,int WSS_Case){
+//        String dii_date = boxItemEntity.get
+//        boxItemEntity.getCompany_ID()
+        //bu_id决定发生方
+        return op_Insert_Supplier_Income_Box(companyID,bu_ID,boxItemEntity.getItem_ID(),boxItemEntity.getIV_ID(),
+                boxItemEntity.getLotNo(),boxItemEntity.getManuLotNo(),boxItemEntity.getDIII_ID(),Remark,WSS_Case);
+
+//        return op_Insert_Supplier_Income_Box(14,81,42530,172745,"20210923-1","2021-09-23",1202519,"lwf test",3);
+    }
+
+    public static WsResult op_Insert_Supplier_Income_Box(int Company_ID , int Bu_ID ,
+                                                     long Item_ID , long IV_ID ,  String LotNo ,
+                                                     String ManuLot ,long DII_ID ,String Remark ,int WSS_Case) {
+//        String webMethodName = "op_Insert_Supplier_Income_Box";
+        String webMethodName = "op_Insert_Supplier_Income_Box_For_Mobile_Send_Goods";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList,"HR_ID",UserSingleton.get().getHRID());
+        AddPropertyInfo(propertyInfoList,"HR_Name",UserSingleton.get().getHRName());
+        AddPropertyInfo(propertyInfoList,"Company_ID",Company_ID);
+        AddPropertyInfo(propertyInfoList,"Bu_ID",Bu_ID);
+//        AddPropertyInfo(propertyInfoList,"Supplier_ID", Supplier_ID );
+
+        AddPropertyInfo(propertyInfoList,"Item_ID",Item_ID);
+        AddPropertyInfo(propertyInfoList,"IV_ID",IV_ID);
+//        AddPropertyInfo(propertyInfoList,"LotDate",LotDate);
+        AddPropertyInfo(propertyInfoList,"LotNo",LotNo);
+        AddPropertyInfo(propertyInfoList,"ManuLot", ManuLot );
+
+//        AddPropertyInfo(propertyInfoList,"IBS_Package_Des",IBS_Package_Des);
+//        AddPropertyInfo(propertyInfoList,"PackageInfo",PackageInfo);
+//        AddPropertyInfo(propertyInfoList,"PackageN",PackageN);
+//        AddPropertyInfo(propertyInfoList,"DSII_Qty",DSII_Qty);
+        AddPropertyInfo(propertyInfoList,"DII_ID",DII_ID );
+//        AddPropertyInfo(propertyInfoList,"SMLI", SMLI );
+//        AddPropertyInfo(propertyInfoList,"SMM", SMM );
+//        AddPropertyInfo(propertyInfoList,"SMT", SMT );
+        AddPropertyInfo(propertyInfoList,"Remark", Remark );
+        AddPropertyInfo(propertyInfoList,"WSS_Case", WSS_Case );
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
         return null;
     }
 
@@ -1055,6 +1178,78 @@ public class WebServiceUtil {
                    }catch(Exception e){
                        e.printStackTrace();
                    }
+
+                }
+
+                //int DataMemberCount = obj2.getPropertyCount();
+                //for (int j=0; j<DataMemberCount;j++){
+                //result.add(Boolean.parseBoolean(obj2.getProperty(j).toString()));
+                //}
+            }
+
+        }
+
+        return box_item;
+    }
+
+    public static BoxItemEntity check_Mobile_Send_Goods_Barcode(String X) {
+//        String webMethodName = "op_Check_Commit_DS_Item_Income_Barcode";
+        String webMethodName = "check_Mobile_Send_Goods_Barcode";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("X");
+        propertyInfo.setValue(X);
+        propertyInfo.setType(String.class);
+        propertyInfos.add(propertyInfo);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        BoxItemEntity box_item = new BoxItemEntity();
+        if (obj != null) {
+            int count = obj.getPropertyCount();
+            SoapObject obj2;
+            for (int i = 0; i < count; i++) {
+                obj2 = (SoapObject) obj.getProperty(i);
+                box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                if (!box_item.getResult()) {
+                    box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                } else {
+                    try{
+                        box_item.setDIII_ID(Long.parseLong(obj2.getProperty("DIII_ID").toString()));
+                        box_item.setSMT_ID(Long.parseLong(obj2.getProperty("SMT_ID").toString()));
+                        box_item.setSMM_ID(Long.parseLong(obj2.getProperty("SMM_ID").toString()));
+                        box_item.setSMLI_ID(Long.parseLong(obj2.getProperty("SMLI_ID").toString()));
+                        box_item.setEntityID(Long.parseLong(obj2.getProperty("EntityID").toString()));
+                        if (obj2.getProperty("EntityName") != null){
+                            box_item.setEntityName(obj2.getProperty("EntityName").toString());
+                        }
+
+                        box_item.setLotID(Long.parseLong(obj2.getProperty("LotID").toString()));
+                        //// TODO: 2019/11/27 这里的lotNo 取的是DII里面的manulotNo
+                        if (obj2.getProperty("LotNo") != null) {
+                            box_item.setLotNo(obj2.getProperty("LotNo").toString());
+                        }
+                        box_item.setItem_ID(Long.parseLong(obj2.getProperty("Item_ID").toString()));
+                        box_item.setIV_ID(Long.parseLong(obj2.getProperty("IV_ID").toString()));
+                        box_item.setItemName(obj2.getProperty("ItemName").toString());
+                        box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
+                        box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
+                        //// TODO: 2020/4/22 这里先去掉，会报illegal property
+//                    obj2.getPropertySafely()
+//                    if (obj2.getProperty("Company_ID") != null) {
+//                        box_item.setCompany_ID(Integer.parseInt(obj2.getProperty("Company_ID").toString()));
+//                    }
+                        Object tempObject = obj2.getPropertySafely("Company_ID");
+                        if (tempObject != null && !TextUtils.isEmpty(tempObject.toString()) && !TextUtils.equals(tempObject.toString(),"null")) {
+                            box_item.setCompany_ID(Integer.parseInt(obj2.getProperty("Company_ID").toString()));
+                        }
+                        box_item.setBuName(obj2.getProperty("BuName").toString());
+                        box_item.setBoxName(obj2.getProperty("BoxName").toString());
+                        box_item.setBoxNo(obj2.getProperty("BoxNo").toString());
+                        box_item.setIstName(obj2.getProperty("IstName").toString());
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
 
                 }
 
@@ -3059,6 +3254,22 @@ public class WebServiceUtil {
         Type type = new TypeToken<List<PanDianItemBean>>() {
         }.getType();
         List<PanDianItemBean> list = JsonUtil.parseJsonToObject(resultData, type);
+        //结果
+        return list;
+
+    }
+
+    public static List<SendGoodsSearchItemBean> getSendGoodsItemBeanList(String SQL) {
+        String resultData = getJsonDataBySQL(SQL);
+        if (resultData == null) {
+            return null;
+        }
+        //变成List
+//        List<JsonObject> ojsonObjectList = ConvertJstring2List(resultData);
+//        BUItemBean buItemBean = JsonUtil.parseJsonToObject(resultData, BUItemBean.class);
+        Type type = new TypeToken<List<SendGoodsSearchItemBean>>() {
+        }.getType();
+        List<SendGoodsSearchItemBean> list = JsonUtil.parseJsonToObject(resultData, type);
         //结果
         return list;
 

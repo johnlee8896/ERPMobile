@@ -1,378 +1,526 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:background="@color/transparent"
-    android:layout_height="match_parent">
-    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
-        android:id="@+id/send_goods_manage_title_manageView"
+<!--<android.support.v4.widget.NestedScrollView-->
+<!--    xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent">-->
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_50"
-        app:app_title_text="发货管理页面"
-        />
-
-    <LinearLayout
-        android:id="@+id/send_goods_manage_bottom_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_50"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/send_goods_manage_confirm_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/dimen_size_30"
-            android:layout_weight="1"
-            android:layout_marginLeft="@dimen/dimen_size_20"
-            android:layout_marginTop="@dimen/dimen_size_15"
-            android:layout_marginRight="@dimen/dimen_size_20"
-            android:background="@drawable/shape_conner_blue_button_bg"
-            android:gravity="center"
-            android:text="确定" />
-        <TextView
-            android:id="@+id/send_goods_manage_cancel_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minHeight="@dimen/dimen_size_30"
-            android:layout_marginLeft="@dimen/dimen_size_20"
-            android:layout_marginTop="@dimen/dimen_size_15"
-            android:layout_marginRight="@dimen/dimen_size_20"
-            android:background="@drawable/shape_conner_blue_button_bg"
-            android:gravity="center"
-            android:text="取消" />
-    </LinearLayout>
-    <android.support.v4.widget.NestedScrollView
-        android:layout_below="@id/send_goods_manage_title_manageView"
-        android:layout_above="@id/send_goods_manage_bottom_layout"
-        android:layout_width="match_parent"
+        android:background="@color/transparent"
         android:layout_height="match_parent">
-        <LinearLayout
+        <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+            android:id="@+id/send_goods_manage_title_manageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="@dimen/dimen_size_50"
+            app:app_title_text="发货管理页面"
+            />
+
+        <LinearLayout
+            android:id="@+id/send_goods_manage_bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_size_50"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
             <TextView
-                android:text="发货物料"
+                android:id="@+id/send_goods_manage_confirm_button"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dimen_size_10"
-                android:layout_marginLeft="@dimen/dimen_size_20"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:id="@+id/send_goods_manage_select_item_button"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_size_30"
+                android:layout_weight="1"
                 android:layout_marginLeft="@dimen/dimen_size_20"
                 android:layout_marginTop="@dimen/dimen_size_15"
                 android:layout_marginRight="@dimen/dimen_size_20"
                 android:background="@drawable/shape_conner_blue_button_bg"
                 android:gravity="center"
-                android:text="请选择物料" />
-
+                android:text="确定" />
             <TextView
-                android:text="发货物料详细信息"
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dimen_size_10"
-                android:layout_marginLeft="@dimen/dimen_size_20"
-                android:layout_height="wrap_content"/>
-            <LinearLayout
+                android:id="@+id/send_goods_manage_cancel_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_white_conner_8dp_bg"
-                android:orientation="vertical"
-                tools:visibility="visible"
-                android:paddingLeft="@dimen/dimen_size_10">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:minWidth="80dp"
-                        android:text="接收公司"
-                        android:textColor="@color/black" />
-
-                    <TextView
-                        android:id="@+id/send_goods_manage_receive_company_name_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@color/transparent"
-                        android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="@dimen/dimen_size_20"
-                        android:paddingRight="@dimen/dimen_size_10"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_size_14"
-                        tools:text="上海胜华波汽车电器有限公司" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center_vertical"
-                        android:minWidth="80dp"
-                        android:text="接收车间"
-                        android:textColor="@color/black" />
-
-                    <TextView
-                        android:id="@+id/send_goods_manage_receive_bu_name_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center_vertical"
-                        android:background="@color/transparent"
-                        android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="@dimen/dimen_size_20"
-                        android:paddingRight="@dimen/dimen_size_10"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_size_14"
-                        tools:text="座椅电机" />
-                </LinearLayout>
-
-
-            </LinearLayout>
-            <TextView
-                android:text=""
-                android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/dimen_size_20"
+                android:layout_weight="1"
+                android:minHeight="@dimen/dimen_size_30"
                 android:layout_marginLeft="@dimen/dimen_size_20"
-                android:textSize="@dimen/text_size_17"
-                tools:text="Item_ID : 612        IV_ID:56565   名称：插座支架 Item_ID : 612        IV_ID:56565   名称：插座支架"
-                android:layout_height="wrap_content"/>
-
-
-            <LinearLayout
                 android:layout_marginTop="@dimen/dimen_size_15"
-                android:layout_marginLeft="@dimen/dimen_size_20"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:minWidth="80dp"
-                    android:text="发货日期"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:id="@+id/send_goods_manage_out_date_textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/transparent"
-                    android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/dimen_size_20"
-                    android:paddingRight="@dimen/dimen_size_10"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14"
-                    tools:text=" 2021-01-10 " />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_marginTop="@dimen/dimen_size_5"
-                android:layout_marginLeft="@dimen/dimen_size_20"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:minWidth="80dp"
-                    android:text="发货批次"
-                    android:textColor="@color/black" />
-
-                <EditText
-                    android:id="@+id/send_goods_manage_send_lot_editText"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/transparent"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/dimen_size_20"
-                    android:paddingRight="@dimen/dimen_size_10"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14"
-                    tools:text=" 20210906-01 " />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_marginTop="@dimen/dimen_size_5"
-                android:layout_marginLeft="@dimen/dimen_size_20"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:minWidth="80dp"
-                    android:text="生产批次"
-                    android:textColor="@color/black" />
-
-                <EditText
-                    android:id="@+id/send_goods_manage_manu_lot_editText"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/transparent"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/dimen_size_20"
-                    android:paddingRight="@dimen/dimen_size_10"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14"
-                    tools:text=" 20210906-01 " />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_20"
-                android:layout_marginLeft="@dimen/dimen_size_20"
-                android:background="@drawable/shape_white_conner_8dp_bg"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:minWidth="80dp"
-                    android:text="包装清单"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:id="@+id/send_goods_manage_package_textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/transparent"
-                    android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/dimen_size_20"
-                    android:paddingRight="@dimen/dimen_size_10"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14"
-                    tools:text="388一箱" />
-
-
-            </LinearLayout>
-            <LinearLayout
-                android:layout_marginTop="@dimen/dimen_size_5"
-                android:layout_marginLeft="@dimen/dimen_size_20"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:minWidth="80dp"
-                    android:text="整件数"
-                    android:textColor="@color/black" />
-
-                <EditText
-                    android:id="@+id/send_goods_manage_total_box_editText"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/transparent"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/dimen_size_20"
-                    android:paddingRight="@dimen/dimen_size_10"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14"
-                    tools:text=" 300 " />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_marginTop="@dimen/dimen_size_5"
-                android:layout_marginLeft="@dimen/dimen_size_20"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:minWidth="80dp"
-                    android:text="总数"
-                    android:textColor="@color/black" />
-
-                <EditText
-                    android:id="@+id/send_goods_manage_total_number_editText"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/transparent"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/dimen_size_20"
-                    android:paddingRight="@dimen/dimen_size_10"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14"
-                    tools:text=" 1000 " />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_marginTop="@dimen/dimen_size_5"
-                android:layout_marginLeft="@dimen/dimen_size_20"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:minWidth="80dp"
-                    android:text="备注"
-                    android:textColor="@color/black" />
-
-                <EditText
-                    android:id="@+id/send_goods_manage_remark_editText"
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@color/transparent"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/dimen_size_20"
-                    android:paddingRight="@dimen/dimen_size_10"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_size_14"
-                    tools:text=" 300 " />
-            </LinearLayout>
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="取消" />
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+        <android.support.v4.widget.NestedScrollView
+            android:layout_below="@id/send_goods_manage_title_manageView"
+            android:layout_above="@id/send_goods_manage_bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/send_goods_manage_item_detail_textView"
+                    android:text="发货物料"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/dimen_size_10"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_height="wrap_content"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_alignParentRight="true"
+                        android:id="@+id/send_goods_manage_select_item_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="@dimen/dimen_size_20"
+                        android:layout_marginTop="@dimen/dimen_size_15"
+                        android:layout_marginRight="@dimen/dimen_size_20"
+                        android:background="@drawable/shape_conner_blue_button_bg"
+                        android:gravity="center"
+                        android:text="请选择物料" />
+                    <EditText
+                        android:id="@+id/send_goods_manage_et_keyword_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_toLeftOf="@id/send_goods_manage_select_item_button"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/shape_white_half_transparent_conner"
+                        android:drawableLeft="@mipmap/ic_search_gray"
+                        android:drawablePadding="@dimen/dimen_size_10"
+                        android:hint="搜索关键字"
+                        android:imeOptions="actionSearch"
+                        android:paddingLeft="8dp"
+                        android:singleLine="true"
+                        android:textColor="#0A222E"
+                        android:textColorHint="@color/color_CCCCCC"
+                        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+                        android:textSize="16sp" />
+                </RelativeLayout>
+
+
+                <TextView
+                    android:text="发货物料详细信息"
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/dimen_size_10"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_white_conner_8dp_bg"
+                    android:orientation="vertical"
+                    tools:visibility="visible"
+                    android:paddingLeft="@dimen/dimen_size_10">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:minWidth="80dp"
+                            android:text="接收公司"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/send_goods_manage_receive_company_name_textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="@color/transparent"
+                            android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="@dimen/dimen_size_20"
+                            android:paddingRight="@dimen/dimen_size_10"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_size_14"
+                            tools:text="上海胜华波汽车电器有限公司" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:minWidth="80dp"
+                            android:text="接收车间"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/send_goods_manage_receive_bu_name_textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="@color/transparent"
+                            android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="@dimen/dimen_size_20"
+                            android:paddingRight="@dimen/dimen_size_10"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_size_14"
+                            tools:text="座椅电机" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+                <TextView
+                    android:text=""
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/dimen_size_20"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:textSize="@dimen/text_size_17"
+                    tools:text="Item_ID : 612        IV_ID:56565   名称：插座支架 Item_ID : 612        IV_ID:56565   名称：插座支架"
+                    android:layout_height="wrap_content"/>
+
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/dimen_size_15"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:minWidth="80dp"
+                        android:text="发货日期"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/send_goods_manage_out_date_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/transparent"
+                        android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/dimen_size_20"
+                        android:paddingRight="@dimen/dimen_size_10"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_14"
+                        tools:text=" 2021-01-10 " />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:minWidth="80dp"
+                        android:text="发货批次"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/send_goods_manage_send_lot_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/transparent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/dimen_size_20"
+                        android:paddingRight="@dimen/dimen_size_10"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_14"
+                        tools:text=" 20210906-01 " />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:minWidth="80dp"
+                        android:text="生产批次"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/send_goods_manage_manu_lot_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/transparent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/dimen_size_20"
+                        android:paddingRight="@dimen/dimen_size_10"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_14"
+                        tools:text=" 20210906-01 " />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_20"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:background="@drawable/shape_white_conner_8dp_bg"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:minWidth="80dp"
+                        android:text="包装清单"
+                        android:textColor="@color/black" />
+
+                    <TextView
+                        android:id="@+id/send_goods_manage_package_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/transparent"
+                        android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/dimen_size_20"
+                        android:paddingRight="@dimen/dimen_size_10"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_14"
+                        tools:text="388一箱" />
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/send_goods_manage_package_data_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:paddingLeft="20dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="物品"
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="车间"
+                                android:textColor="@color/black" />
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:paddingLeft="20dp"
+                            android:orientation="horizontal">
+
+
+                            <TextView
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+
+                                android:text="批次"
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="数量"
+                                android:textColor="@android:color/holo_green_dark" />
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"
+                            android:paddingLeft="20dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+
+                                android:text="仓位"
+                                android:textColor="@color/black" />
+
+                            <TextView
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_horizontal"
+                                android:text="选择"
+                                android:textColor="@color/black" />
+
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:paddingLeft="20dp"
+                        android:orientation="horizontal">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/send_goods_manage_rv_box_item"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+
+                            android:clickable="true"
+                            tools:layout_editor_absoluteX="8dp"
+                            tools:layout_editor_absoluteY="8dp">
+
+                        </android.support.v7.widget.RecyclerView>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:minWidth="80dp"
+                        android:text="整件数"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/send_goods_manage_total_box_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/transparent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/dimen_size_20"
+                        android:paddingRight="@dimen/dimen_size_10"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_14"
+                        tools:text=" 300 " />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:minWidth="80dp"
+                        android:text="总数"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/send_goods_manage_total_number_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/transparent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/dimen_size_20"
+                        android:paddingRight="@dimen/dimen_size_10"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_14"
+                        tools:text=" 1000 " />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:layout_marginLeft="@dimen/dimen_size_20"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:minWidth="80dp"
+                        android:text="备注"
+                        android:textColor="@color/black" />
+
+                    <EditText
+                        android:id="@+id/send_goods_manage_remark_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/transparent"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/dimen_size_20"
+                        android:paddingRight="@dimen/dimen_size_10"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_size_14"
+                        tools:text=" 300 " />
+                </LinearLayout>
+            </LinearLayout>
+        </android.support.v4.widget.NestedScrollView>
 
 
 
-</RelativeLayout>
+    </RelativeLayout>
+<!--</android.support.v4.widget.NestedScrollView>-->

@@ -16,6 +16,7 @@ public class IntentConstant {
     public static final String Intent_Extra_hr_id = "Extra_hr_id";
     public static final String Intent_Extra_from_name_pwd= "Extra_from_name_pwd";
     public static final String Intent_Extra_to_select_search_from_postition = "Extra_to_select_search_from_postition";
+//    public static final String Intent_Extra_to_select_search_from_send_goods = "Extra_to_select_search_from_send_goods";
 
 
     public static final int Select_Search_From_Select_BU = 0x1;
@@ -23,6 +24,7 @@ public class IntentConstant {
     public static final int Select_Search_From_Select_ReSearch_Program = 0x3;
     public static final int Select_Search_From_Select_Check_File = 0x4;
     public static final int Select_Search_From_Select_PanDina = 0x5;
+    public static final int Select_Search_From_Select_Send_Goods_Item = 0x6;
 
     public static final String Intent_continue_put_directly = "continue_put_directly";
     public static String Intent_Extra_mpiWcBean = "intent_mpiWcBean";

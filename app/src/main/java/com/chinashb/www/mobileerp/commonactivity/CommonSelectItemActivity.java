@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -22,8 +21,8 @@ import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.bean.PanDianItemBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
+import com.chinashb.www.mobileerp.bean.SendGoodsSearchItemBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
-import com.chinashb.www.mobileerp.utils.AppUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -482,6 +481,12 @@ public class CommonSelectItemActivity extends BaseActivity {
                     List<PanDianItemBean> panDianItemBeanList = WebServiceUtil.getPanDianBeanList(SQL);
                     if (panDianItemBeanList != null && panDianItemBeanList.size() > 0) {
                         return panDianItemBeanList;
+                    }
+                    break;
+                case IntentConstant.Select_Search_From_Select_Send_Goods_Item:
+                    List<SendGoodsSearchItemBean> sendGoodsSearchItemBeanList = WebServiceUtil.getSendGoodsItemBeanList(SQL);
+                    if (sendGoodsSearchItemBeanList != null && sendGoodsSearchItemBeanList.size() > 0) {
+                        return sendGoodsSearchItemBeanList;
                     }
                     break;
 //                default:

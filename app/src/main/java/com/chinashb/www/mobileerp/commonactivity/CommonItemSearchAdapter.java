@@ -15,6 +15,7 @@ import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.bean.PanDianItemBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
+import com.chinashb.www.mobileerp.bean.SendGoodsSearchItemBean;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -110,6 +111,18 @@ public class CommonItemSearchAdapter<TY> extends BaseRecycleAdapter<TY, CommonIt
                     secondNameTextView.setText(bean.getIV_ID() + "");
                     thirdNameTextView.setText(bean.getItem_Name() );
                     fourthNameTextView.setText(bean.getVersion());
+                }
+            }else if (t instanceof SendGoodsSearchItemBean){
+                SendGoodsSearchItemBean bean = (SendGoodsSearchItemBean) t;
+                if (bean != null){
+                    firstInfoTextView.setText("Item_ID:");
+                    secondInfoTextView.setText("IV_ID:");
+                    thirdInfoTextView.setText("物料:");
+                    fourthInfoTextView.setText("版本");
+                    firstNameTextView.setText(bean.getItem_ID() + "");
+                    secondNameTextView.setText(bean.getIV_ID() + "");
+                    thirdNameTextView.setText(bean.getItem_Name() );
+                    fourthNameTextView.setText(bean.getItem_Version() + " 图号:" + bean.getItem_DrawNo() );
                 }
             }
         }
