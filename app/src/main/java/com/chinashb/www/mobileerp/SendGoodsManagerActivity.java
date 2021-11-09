@@ -67,6 +67,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.send_goods_manage_item_detail_textView) TextView itemDetailTextView;
     @BindView(R.id.send_goods_manage_rv_box_item) RecyclerView mRecyclerView;
     @BindView(R.id.send_goods_manage_package_data_layout) LinearLayout packageDataLayout;
+    @BindView(R.id.send_goods_manage_scan_item_button) TextView scanItemButton;
 
     private String keyWord = "";
     private String scanContent = "";
@@ -79,12 +80,19 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
     private Date outDate;
     private InBoxItemAdapter boxItemAdapter;
     private List<BoxItemEntity> boxItemEntityList = new ArrayList<>();
+    private boolean isFromPackage = false;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
                 ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
+            }else if (msg.what == 1){
+                Bundle bundle = msg.getData();
+                if (bundle != null){
+                    BoxItemEntity boxItemEntity = (BoxItemEntity) bundle.getSerializable(IntentConstant.Intent_Scan_box_item_Bean);
+                    initItemFromScan(boxItemEntity);
+                }
             }
         }
     };
@@ -127,8 +135,16 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
         }
     }
 
+    private void initItemFromScan(BoxItemEntity bean) {
+//        itemDetailTextView.setText(String.format("Item_ID : %s  IV_ID : %s  名称: %s  图号 ： %s 版本：%s 规格： %s  单位： %s", bean.getItem_ID(), bean.getIV_ID(),
+//                bean.getItem_Name(), bean.getItem_DrawNo(), bean.getItem_Version(), bean.getItem_Spec2(), bean.getItem_Unit()));
+        itemDetailTextView.setText("Item_ID :" + bean.getItem_ID() + " IV_ID:" + bean.getIV_ID() + " 名称: " + bean.getItemName());
+
+    }
+
     private void setViewsListener() {
         selectItemButton.setOnClickListener(this);
+        scanItemButton.setOnClickListener(this);
         confirmButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
         keywordInputEditText.addTextChangedListener(new TextWatcherImpl() {
@@ -261,11 +277,11 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
 
             startActivityForResult(intent, 305);
         } else if (v == confirmButton) {
-            if (companyBean == null){
+            if (companyBean == null) {
                 ToastUtil.showToastShort("未选择接收公司");
                 return;
             }
-            if (buBean == null){
+            if (buBean == null) {
                 ToastUtil.showToastShort("未选择接收车间");
                 return;
             }
@@ -275,11 +291,12 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
             CommitSendGoodsAsyncTask task = new CommitSendGoodsAsyncTask();
             task.execute();
         } else if (v == packageTextView) {
-            if (companyBean == null){
+            isFromPackage = true;
+            if (companyBean == null) {
                 ToastUtil.showToastShort("未选择接收公司");
                 return;
             }
-            if (buBean == null){
+            if (buBean == null) {
                 ToastUtil.showToastShort("未选择接收车间");
                 return;
             }
@@ -297,6 +314,8 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
             }
         } else if (v == outDateTextView) {
             showTimePickerDialog(TimePickerManager.PICK_TYPE_OUT_DATE);
+        }else if (v == scanItemButton){
+            new IntentIntegrator(SendGoodsManagerActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
         }
     }
 
@@ -340,21 +359,35 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
 
             scanBoxItemEntity = boxItemEntity;
             if (boxItemEntity.getResult()) {
+                if (isFromPackage) {
+                    if (boxItemEntity.getCompany_ID() != 0 && boxItemEntity.getCompany_ID() != UserSingleton.get().getUserInfo().getCompany_ID()) {
+                        Message message = new Message();
+                        message.what = 0;
+                        handler.sendMessage(message);
+                        return null;
+                    }
 
-                if (boxItemEntity.getCompany_ID() != 0 && boxItemEntity.getCompany_ID() != UserSingleton.get().getUserInfo().getCompany_ID()) {
+                    if (!is_box_existed(boxItemEntity)) {
+                        boxItemEntity.setSelect(true);
+                        boxItemEntityList.add(boxItemEntity);
+                    } else {
+                        boxItemEntity.setResult(false);
+                        boxItemEntity.setErrorInfo("该包装已经在装载列表中");
+                    }
+
+                } else {
+                    //选择物料，相当于用扫描代码搜索
+//                    initItemFromScan(boxItemEntity);
                     Message message = new Message();
-                    message.what = 0;
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(IntentConstant.Intent_Scan_box_item_Bean,boxItemEntity);
+                    message.what = 1;
+                    message.setData(bundle);
                     handler.sendMessage(message);
                     return null;
                 }
 
-                if (!is_box_existed(boxItemEntity)) {
-                    boxItemEntity.setSelect(true);
-                    boxItemEntityList.add(boxItemEntity);
-                } else {
-                    boxItemEntity.setResult(false);
-                    boxItemEntity.setErrorInfo("该包装已经在装载列表中");
-                }
+
 //
 
             } else {
@@ -391,16 +424,20 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
                 }
             }
 
-            if (judgeBarCodeVerified(scanBoxItemEntity)) {
-                initPackage(scanBoxItemEntity);
-                boxItemAdapter = new InBoxItemAdapter(SendGoodsManagerActivity.this, boxItemEntityList);
-                mRecyclerView.setAdapter(boxItemAdapter);
-                if (packageDataLayout.getVisibility() == View.GONE){
-                    packageDataLayout.setVisibility(View.VISIBLE);
+            if (isFromPackage){
+                if (judgeBarCodeVerified(scanBoxItemEntity)) {
+                    initPackage(scanBoxItemEntity);
+                    boxItemAdapter = new InBoxItemAdapter(SendGoodsManagerActivity.this, boxItemEntityList);
+                    mRecyclerView.setAdapter(boxItemAdapter);
+                    if (packageDataLayout.getVisibility() == View.GONE) {
+                        packageDataLayout.setVisibility(View.VISIBLE);
+                    }
+                    keywordInputEditText.setText("");
+                    keywordInputEditText.setHint("请继续使用扫描枪");
                 }
-                keywordInputEditText.setText("");
-                keywordInputEditText.setHint("请继续使用扫描枪");
+                isFromPackage = false;
             }
+
 
         }
 
@@ -557,8 +594,8 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
 
         @Override
         protected Void doInBackground(String... strings) {
-            if (boxItemEntityList != null && boxItemEntityList.size() > 0){
-                result = WebServiceUtil.commitSendGoods(companyBean.getCompanyId(), buBean.getBuId(),boxItemEntityList.get(0), remark, 3);
+            if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
+                result = WebServiceUtil.commitSendGoods(companyBean.getCompanyId(), buBean.getBuId(), boxItemEntityList.get(0), remark, 3);
             }
             return null;
         }

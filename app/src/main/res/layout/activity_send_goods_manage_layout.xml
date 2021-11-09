@@ -82,11 +82,23 @@
                         android:background="@drawable/shape_conner_blue_button_bg"
                         android:gravity="center"
                         android:text="请选择物料" />
+
+                    <TextView
+                        android:id="@+id/send_goods_manage_scan_item_button"
+                        android:layout_width="wrap_content"
+                        android:layout_toLeftOf="@id/send_goods_manage_select_item_button"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="@dimen/dimen_size_20"
+                        android:layout_marginTop="@dimen/dimen_size_15"
+                        android:layout_marginRight="@dimen/dimen_size_20"
+                        android:background="@drawable/shape_conner_blue_button_bg"
+                        android:gravity="center"
+                        android:text="扫描物料" />
                     <EditText
                         android:id="@+id/send_goods_manage_et_keyword_input"
                         android:layout_width="match_parent"
                         android:layout_height="35dp"
-                        android:layout_toLeftOf="@id/send_goods_manage_select_item_button"
+                        android:layout_toLeftOf="@id/send_goods_manage_scan_item_button"
                         android:layout_centerVertical="true"
                         android:background="@drawable/shape_white_half_transparent_conner"
                         android:drawableLeft="@mipmap/ic_search_gray"
