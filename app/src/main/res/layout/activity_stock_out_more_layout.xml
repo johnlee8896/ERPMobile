@@ -53,6 +53,15 @@
                     android:text="扫描新投料" />
 
                 <Button
+                    android:id="@+id/btn_issue_more_add_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:text="选择出库日期"
+                    />
+
+                <Button
                     android:id="@+id/btn_issue_more_add_extra"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -55,6 +55,15 @@
                 android:text="添加选择备注" />
 
             <Button
+                android:id="@+id/btn_issue_extra_add_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="选择出库日期"
+                />
+
+            <Button
                 android:id="@+id/btn_exe_warehouse_out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

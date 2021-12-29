@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
@@ -232,7 +231,7 @@ public class StockPutActivity extends BaseActivity {
 
     private class AsyncGetMW extends AsyncTask<String, Void, Void> {
         MpiWcBean scanresult;
-        List<PlanInnerDetailEntity> li;
+        List<PlanInnerDetailEntity> planInnerDetailEntityList;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -240,7 +239,7 @@ public class StockPutActivity extends BaseActivity {
             scanresult = mpiWcBean;
             if (mpiWcBean.getResult() ) {
                 StockPutActivity.this.mpiWcBean = mpiWcBean;
-                li = WebServiceUtil.opGetMWIssedItems(mpiWcBean.getMPIWC_ID());
+                planInnerDetailEntityList = WebServiceUtil.opGetMWIssedItems(mpiWcBean.getMPIWC_ID());
             } else {
 
             }
@@ -257,7 +256,7 @@ public class StockPutActivity extends BaseActivity {
                     Toast.makeText(StockPutActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 } else {
                     txtMW.setText(scanresult.getMwName());
-                    IssuedItemList = li;
+                    IssuedItemList = planInnerDetailEntityList;
                     issuedItemAdapter = new IssuedItemAdapter(StockPutActivity.this, IssuedItemList);
                     issuedItemRecyclerView.setAdapter(issuedItemAdapter);
                 }

@@ -50,6 +50,23 @@ public class APPUpgradeManager {
         return new Builder(context);
     }
 
+    public static boolean isApkFile(Context context, String filePath) {
+        String pkg;
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo info = packageManager.getPackageArchiveInfo(filePath, PackageManager.GET_ACTIVITIES);
+            if (info != null) {
+                ApplicationInfo appInfo = info.applicationInfo;
+                pkg = appInfo.packageName;//得到安装包名称       
+            } else {
+                pkg = "";
+            }
+        } catch (Exception e) {
+            pkg = "";
+        }
+        return !TextUtils.isEmpty(pkg);
+    }
+
     public void checkNewVersion(String nameCode) {
         Map<String, String> map = new HashMap<>();
         map.put("app_name", nameCode);
@@ -126,7 +143,7 @@ public class APPUpgradeManager {
         builder.create().show();
     }
 
-    public void showForceUpdateDialog(String updateLog) {
+    public void showForceUpdateDialog(String updateLog, String downloadUrl) {
         VersionBean appBean = new VersionBean();
 //        appBean.setDescription("我就是想更新");
 //        appBean.setDescription("2019-08-09\n" +
@@ -136,7 +153,11 @@ public class APPUpgradeManager {
 //                "2、内网外网切换\n" +
 //                "3、零部件查询分仓库显示统计数量");
         appBean.setDescription(updateLog);
-        appBean.setUrl("http://www.chinashb.com/Download/Shberp.apk");
+        if (!TextUtils.isEmpty(downloadUrl)) {
+            appBean.setUrl(downloadUrl);
+        } else {
+            appBean.setUrl("http://www.chinashb.com/Download/Shberp.apk");
+        }
 //        appBean.setAppName("SHBERP");
 
         showUpdateDialog(appBean, true);
@@ -170,23 +191,6 @@ public class APPUpgradeManager {
                     }
                 });
 
-    }
-
-    public static boolean isApkFile(Context context, String filePath) {
-        String pkg;
-        try {
-            PackageManager packageManager = context.getPackageManager();
-            PackageInfo info = packageManager.getPackageArchiveInfo(filePath, PackageManager.GET_ACTIVITIES);
-            if (info != null) {
-                ApplicationInfo appInfo = info.applicationInfo;
-                pkg = appInfo.packageName;//得到安装包名称       
-            } else {
-                pkg = "";
-            }
-        } catch (Exception e) {
-            pkg = "";
-        }
-        return !TextUtils.isEmpty(pkg);
     }
 
     private String getAPKPath(VersionBean bean) {
@@ -284,7 +288,7 @@ public class APPUpgradeManager {
         installIntent.setDataAndType(apkUri, "application/vnd.android.package-archive");
         builder.context.startActivity(installIntent);
 
-        if (downloadingProgressDialog != null && downloadingProgressDialog.isShowing()){
+        if (downloadingProgressDialog != null && downloadingProgressDialog.isShowing()) {
             downloadingProgressDialog.dismiss();
         }
     }

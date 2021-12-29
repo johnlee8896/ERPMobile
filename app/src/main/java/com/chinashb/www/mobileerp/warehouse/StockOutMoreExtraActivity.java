@@ -31,14 +31,17 @@ import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
+import com.chinashb.www.mobileerp.widget.TimePickerManager;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class StockOutMoreExtraActivity extends BaseActivity {
@@ -50,6 +53,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
     private Button btnAddTray;
     private Button btnRemark;
     private Button btnWarehouseOut;
+    private Button selectDateButton;
 
     private RecyclerView mRecyclerView;
     private EditText inputEditText;
@@ -57,10 +61,13 @@ public class StockOutMoreExtraActivity extends BaseActivity {
 
     private IssueMoreItemAdapter issueMoreItemAdapter;
     private List<BoxItemEntity> newissuelist;
+    private ArrayList<String> scanCodeList = new ArrayList<>();
     private IstPlaceEntity thePlace;
     private String scanstring;
     private String remark = "";
     private CommonSelectInputDialog remarkDialog;
+    private Date outDate;
+    private TimePickerManager timePickerManager;
 
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override public <T> void onClickAction(View v, String tag, T t) {
@@ -88,6 +95,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
         inputEditText = findViewById(R.id.stock_out_more_extra_input_EditeText);
         remarkTextView = findViewById(R.id.stock_out_more_remark_EditText);
         btnWarehouseOut = (Button) findViewById(R.id.btn_exe_warehouse_out);
+        selectDateButton = findViewById(R.id.btn_issue_extra_add_date);
         btnRemark = findViewById(R.id.btn_remark);
 
 
@@ -127,6 +135,10 @@ public class StockOutMoreExtraActivity extends BaseActivity {
             }
             remarkDialog.show();
             remarkDialog.setOnViewClickListener(onViewClickListener);
+        });
+
+        selectDateButton.setOnClickListener(v -> {
+            selectDate();
         });
 
 
@@ -192,6 +204,32 @@ public class StockOutMoreExtraActivity extends BaseActivity {
 
     }
 
+    private void selectDate() {
+        showTimePickerDialog(TimePickerManager.PICK_TYPE_OUT_DATE);
+    }
+
+    private void showTimePickerDialog(String pickType) {
+        if (timePickerManager == null) {
+            timePickerManager = new TimePickerManager(StockOutMoreExtraActivity.this);
+        }
+        if (pickType == TimePickerManager.PICK_TYPE_ARRIVE_DATE || pickType == TimePickerManager.PICK_TYPE_OUT_DATE) {
+            timePickerManager.setShowType(TimePickerManager.PICK_TYPE_YEAR, 3);
+        } else {
+            timePickerManager.setShowType(TimePickerManager.PICK_TYPE_YEAR, 5);
+        }
+        timePickerManager
+                .setOnViewClickListener(new OnViewClickListener() {
+                    @Override
+                    public <T> void onClickAction(View v, String tag, T date) {
+                        if (tag.equals(TimePickerManager.PICK_TYPE_OUT_DATE)) {
+                            selectDateButton.setText(UnitFormatUtil.sdf_YMD_Chinese.format(date));
+                            outDate = (Date) date;
+                        }
+                    }
+                })
+                .showDialog(pickType);
+    }
+
     private void parseScanResult(String result) {
 //        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
@@ -204,6 +242,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
                         scanstring = result;
+                        scanCodeList.add(result);
                         GetIssueMoreExtraBoxAsyncTask task = new GetIssueMoreExtraBoxAsyncTask();
                         task.execute();
                     }
@@ -344,7 +383,10 @@ public class StockOutMoreExtraActivity extends BaseActivity {
             int newissuesize = newissuelist.size();
             while (count < newissuesize && newissuelist.size() > 0) {
                 BoxItemEntity bi = newissuelist.get(0);
-                ws_result = WebServiceUtil.op_Commit_MW_Issue_Extra_Item(themw.getMPIWC_ID(), bi,remark);
+                if (outDate == null){
+                    outDate = new Date() ;
+                }
+                ws_result = WebServiceUtil.op_Commit_MW_Issue_Extra_Item(themw.getMPIWC_ID(), bi,remark,outDate,scanCodeList.size() == newissuesize ? scanCodeList.get(0):"");
 
                 if (ws_result.getResult() ) {
                     newissuelist.remove(bi);
@@ -372,6 +414,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
                     CommonUtil.ShowToast(StockOutMoreExtraActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
                 }
             }
+            scanCodeList.clear();
         }
 
         @Override

@@ -82,6 +82,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     private List<BoxItemEntity> boxItemEntityList = new ArrayList<>();
     private IstPlaceEntity thePlace;
     private String scanContent;
+    private ArrayList<String> scanCodeList = new ArrayList<>();
+    private String scanCode = "";
     private ScanInputDialog inputDialog;
     private RelativeLayout switchLayout;
     private Switch stockSwitch;
@@ -313,6 +315,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
                         scanContent = content;
+                        scanCodeList.add(content);
+                        scanCode = content;
                         GetBoxAsyncTask task = new GetBoxAsyncTask();
                         task.execute();
                     }
@@ -593,7 +597,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
                         boxItemEntity.getLotNo());
 
 //                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
-                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity);
+                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,scanCodeList.size() == selectedCount ? scanCodeList.get(0):"");
                 if (ws_result.getResult()) {
                     //添加库位与manuLot的关联
 //                    addIstSubIstManuLotRelation(boxItemEntity);
@@ -636,6 +640,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
             boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxItemEntityList);
             mRecyclerView.setAdapter(boxItemAdapter);
+            scanCodeList.clear();
             //pbScan.setVisibility(View.INVISIBLE);
         }
 

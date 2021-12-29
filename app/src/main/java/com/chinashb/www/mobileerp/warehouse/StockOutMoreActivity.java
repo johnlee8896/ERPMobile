@@ -18,10 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
-import com.chinashb.www.mobileerp.PartItemMiddleActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
-import com.chinashb.www.mobileerp.adapter.PartInvQueryAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
@@ -32,12 +30,14 @@ import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
-import com.chinashb.www.mobileerp.utils.AppUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
+import com.chinashb.www.mobileerp.widget.TimePickerManager;
 import com.chinashb.www.mobileerp.widget.TitleLayoutManagerView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -46,23 +46,26 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * 继续投料页面
  */
 
-public class StockOutMoreActivity extends BaseActivity {
+public class StockOutMoreActivity extends BaseActivity implements OnViewClickListener {
 
     private MpiWcBean mpiWcBean;
     private List<PlanInnerDetailEntity> planInnerDetailEntityList;
     private TextView txtMwTitleTextView;
     private Button addTrayButton;
+    private Button selectDateButton;
     private Button btnScanWC;
     private Button btnWarehouseOut;
     private RecyclerView recyclerView;
     private IssueMoreItemAdapter issueMoreItemAdapter;
     private List<BoxItemEntity> boxItemEntityList;
+    private ArrayList<String> scanCodeList = new ArrayList<>();
     private IstPlaceEntity thePlace;
     private String scanedString;
     private ProgressBar pbScan;
@@ -70,6 +73,8 @@ public class StockOutMoreActivity extends BaseActivity {
     private boolean isDirect;
     private TitleLayoutManagerView titleLayoutManagerView;
     private long currentItemId = 0;
+    private TimePickerManager timePickerManager;
+    private Date outDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +86,7 @@ public class StockOutMoreActivity extends BaseActivity {
         addTrayButton = (Button) findViewById(R.id.btn_issue_more_add);
         //btnScanWC = (Button) findViewById(R.id.btn_issue_more_wc);
         btnWarehouseOut = (Button) findViewById(R.id.btn_exe_warehouse_out);
+        selectDateButton = findViewById(R.id.btn_issue_more_add_date);
         titleLayoutManagerView = findViewById(R.id.supply_product_put_titleLayout);
 
         pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
@@ -123,6 +129,10 @@ public class StockOutMoreActivity extends BaseActivity {
 
         });
 
+        selectDateButton.setOnClickListener(v -> {
+            selectDate();
+        });
+
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
             public void afterTextChanged(Editable editable) {
@@ -137,6 +147,26 @@ public class StockOutMoreActivity extends BaseActivity {
             }
         });
 
+        selectDateButton.setText(UnitFormatUtil.formatTimeToDayChinese(System.currentTimeMillis()));
+
+    }
+
+    private void selectDate() {
+        showTimePickerDialog(TimePickerManager.PICK_TYPE_OUT_DATE);
+    }
+
+    private void showTimePickerDialog(String pickType) {
+        if (timePickerManager == null) {
+            timePickerManager = new TimePickerManager(StockOutMoreActivity.this);
+        }
+        if (pickType == TimePickerManager.PICK_TYPE_ARRIVE_DATE || pickType == TimePickerManager.PICK_TYPE_OUT_DATE) {
+            timePickerManager.setShowType(TimePickerManager.PICK_TYPE_YEAR, 3);
+        } else {
+            timePickerManager.setShowType(TimePickerManager.PICK_TYPE_YEAR, 5);
+        }
+        timePickerManager
+                .setOnViewClickListener(StockOutMoreActivity.this)
+                .showDialog(pickType);
     }
 
     @Override
@@ -233,11 +263,20 @@ public class StockOutMoreActivity extends BaseActivity {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
                         scanedString = content;
+                        scanCodeList.add(content);
                         GetIssueMoreBoxAsyncTask task = new GetIssueMoreBoxAsyncTask();
                         task.execute();
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public <T> void onClickAction(View v, String tag, T date) {
+        if (tag.equals(TimePickerManager.PICK_TYPE_OUT_DATE)) {
+            selectDateButton.setText(UnitFormatUtil.sdf_YMD_Chinese.format(date));
+            outDate = (Date) date;
         }
     }
 
@@ -509,7 +548,10 @@ public class StockOutMoreActivity extends BaseActivity {
             int size = boxItemEntityList.size();
             while (count < size && boxItemEntityList.size() > 0) {
                 BoxItemEntity bi = boxItemEntityList.get(0);
-                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiWcBean.getMPIWC_ID(), bi);
+                if (outDate == null){
+                    outDate = new Date() ;
+                }
+                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
                 if (ws_result.getResult() ) {
                     boxItemEntityList.remove(bi);
                     updateNeedQty(bi);
@@ -530,6 +572,7 @@ public class StockOutMoreActivity extends BaseActivity {
 
             issueMoreItemAdapter.notifyDataSetChanged();
             recyclerView.setAdapter(issueMoreItemAdapter);
+            scanCodeList.clear();
             pbScan.setVisibility(View.INVISIBLE);
 
             if (ws_result != null) {

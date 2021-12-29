@@ -109,6 +109,14 @@
                 android:layout_marginTop="20dp"
                 android:text="扫描职工码登录" />
 
+            <Button
+                android:id="@+id/main_forget_password_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="20dp"
+                android:text="忘记密码" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

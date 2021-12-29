@@ -61,6 +61,10 @@ public class WebServiceUtil {
 //    private static String URL = IP + ":8001/Service.svc";
 //    private static String URL_Internet = IP + ":8001/Service.svc";
 
+    //更换电脑后8001不可用了，暂时用备用 的8189
+//    private static String URL = IP + ":8189/Test_Wss/Service.svc";
+//    private static String URL_Internet = IP + ":8189/Test_Wss/Service.svc";
+
     //暂时用本地的，但不太可用
 //    private static String URL = IP + ":8002/Service.svc";
 //    private static String URL_Internet = IP + ":8002/Service.svc";
@@ -276,6 +280,29 @@ public class WebServiceUtil {
 //        return op_Insert_Supplier_Income_Box(14,81,42530,172745,"20210923-1","2021-09-23",1202519,"lwf test",3);
     }
 
+    public static WsResult getDownloadUrl() {
+//        String webMethodName = "op_Insert_Supplier_Income_Box";
+        String webMethodName = "getMobileDownloadUrl";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
+    }
+
+
     public static WsResult op_Insert_Supplier_Income_Box(int Company_ID , int Bu_ID ,
                                                      long Item_ID , long IV_ID ,  String LotNo ,
                                                      String ManuLot ,long DII_ID ,String Remark ,int WSS_Case) {
@@ -352,8 +379,8 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfoList,"queryMonth",queryMonth);
         AddPropertyInfo(propertyInfoList,"phoneName","Android");
         AddPropertyInfo(propertyInfoList,"phoneMac", IMEI );
-//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
-        SoapSerializationEnvelope envelope = invokeSupplierWS_QueryWage(propertyInfoList, webMethodName);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+//        SoapSerializationEnvelope envelope = invokeSupplierWS_QueryWage(propertyInfoList, webMethodName);
         if (envelope != null) {
             if (envelope.bodyIn instanceof SoapFault) {
                 WsResult result = new WsResult();
@@ -1354,7 +1381,7 @@ public class WebServiceUtil {
     }
 
     //将物料入相应的库,零部件账
-    public static WsResult op_Commit_DS_Item_Income_To_Warehouse(BoxItemEntity box_item) {
+    public static WsResult op_Commit_DS_Item_Income_To_Warehouse(BoxItemEntity box_item,String scan_code) {
         String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse";
         System.out.println("=======================================  op_Commit_DS_Item_Income_To_Warehouse");
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -1385,6 +1412,34 @@ public class WebServiceUtil {
         System.out.println("======================================= Sub_Ist_ID =  " + box_item.getSub_Ist_ID());
         propertyInfo4.setType(Long.class);
         propertyInfos.add(propertyInfo4);
+
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo5.setName("Bu_ID");
+        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        System.out.println("======================================= Bu_ID =  " + UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo5.setType(Integer.class);
+        propertyInfos.add(propertyInfo5);
+
+        PropertyInfo propertyInfo6 = new PropertyInfo();
+        propertyInfo6.setName("HR_Name");
+        propertyInfo6.setValue(UserSingleton.get().getHRName());
+        System.out.println("======================================= HR_Name =  " + UserSingleton.get().getHRName());
+        propertyInfo6.setType(String.class);
+        propertyInfos.add(propertyInfo6);
+
+        PropertyInfo propertyInfo7 = new PropertyInfo();
+        propertyInfo7.setName("Scan_Code");
+        propertyInfo7.setValue(scan_code);
+        System.out.println("======================================= Scan_Code =  " + scan_code);
+        propertyInfo7.setType(String.class);
+        propertyInfos.add(propertyInfo7);
+
+        PropertyInfo propertyInfo8 = new PropertyInfo();
+        propertyInfo8.setName("Item_ID");
+        propertyInfo8.setValue(box_item.getItem_ID());
+        System.out.println("======================================= Item_ID =  " + box_item.getItem_ID());
+        propertyInfo8.setType(Integer.class);
+        propertyInfos.add(propertyInfo8);
 
         //todo
 //        PropertyInfo propertyInfo5 = new PropertyInfo();
@@ -2372,15 +2427,15 @@ public class WebServiceUtil {
         propertyInfos.add(propertyInfo);
     }
 
-    public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, BoxItemEntity bi) {
+    public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, BoxItemEntity bi,Date outDate,String scan_code) {
         String sqty = String.valueOf(bi.getQty());
 //        WsResult Result = op_Commit_MW_Issue_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
-        WsResult Result = op_Commit_MW_Issue_Item(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
+        WsResult Result = op_Commit_MW_Issue_Item(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty,outDate,scan_code);
 
         return Result;
     }
 
-    public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty) {
+    public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty,Date outDate,String scanCode) {
         String webMethodName = "op_Commit_MW_New_Issue_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -2396,11 +2451,16 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfos, "SMM_ID", SMM_ID);
         AddPropertyInfo(propertyInfos, "SMT_ID", SMT_ID);
         AddPropertyInfo(propertyInfos, "Qty", Qty);
+        AddPropertyInfo(propertyInfos, "AcDate", outDate);
+
+        AddPropertyInfo(propertyInfos, "Scan_Code", scanCode);
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "HR_Name", UserSingleton.get().getHRName());
 
         System.out.println("================ MW_ID = " + MW_ID + " exer = " + Sender + " item_id = " + Item_ID);
         System.out.println("================ IV_ID = " + IV_ID + " LotID = " + LotID + " LotNo = " + LotNo);
         System.out.println("================ Ist_ID = " + Ist_ID + " Sub_Ist_ID = " + Sub_Ist_ID + " SMLI_ID = " + SMLI_ID);
-        System.out.println("================ SMM_ID = " + SMM_ID + " SMT_ID = " + SMT_ID + " Qty = " + Qty);
+        System.out.println("================ SMM_ID = " + SMM_ID + " SMT_ID = " + SMT_ID + " Qty = " + Qty + " acdate = " + outDate);
 
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
@@ -2411,14 +2471,14 @@ public class WebServiceUtil {
         return ws_result;
     }
 
-    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, BoxItemEntity bi, String remark) {
+    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, BoxItemEntity bi, String remark,Date outDate,String scanCode) {
         String sqty = String.valueOf(bi.getQty());
 //        WsResult Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
-        WsResult Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty, remark);
+        WsResult Result = op_Commit_MW_Issue_Extra_Item(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty, remark,outDate,scanCode);
         return Result;
     }
 
-    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty, String remark) {
+    public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty, String remark,Date outDate,String scanCode) {
         String webMethodName = "op_Commit_MW_New_Issue_Extra_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -2435,11 +2495,16 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfos, "SMT_ID", SMT_ID);
         AddPropertyInfo(propertyInfos, "Qty", Qty);
         AddPropertyInfo(propertyInfos, "Remark", remark);
+        AddPropertyInfo(propertyInfos, "AcDate", outDate);
+
+        AddPropertyInfo(propertyInfos, "Scan_Code", scanCode);
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "HR_Name", UserSingleton.get().getHRName());
 
         System.out.println("op_Commit_MW_New_Issue_Extra_Item MW_ID = " + MW_ID + " Exer=" + Sender + " item_id = " + Item_ID + " IV_ID=" + IV_ID);
         System.out.println("op_Commit_MW_New_Issue_Extra_Item LotID = " + LotID + " LotNo=" + LotNo + " Ist_ID=" + Ist_ID);
         System.out.println("op_Commit_MW_New_Issue_Extra_Item Sub_Ist_ID = " + Sub_Ist_ID + " SMLI_ID = " + SMLI_ID + " SMM_ID=" + SMM_ID);
-        System.out.println("op_Commit_MW_New_Issue_Extra_Item SMT_ID = " + SMT_ID + " Qty = " + Qty + " Remark=" + remark);
+        System.out.println("op_Commit_MW_New_Issue_Extra_Item SMT_ID = " + SMT_ID + " Qty = " + Qty + " Remark=" + remark + " acDate = " + outDate.getTime());
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;

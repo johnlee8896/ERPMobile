@@ -7,7 +7,6 @@ import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -79,6 +78,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 
         GetStockPermittedListAsyncTask permittedListAsyncTask = new GetStockPermittedListAsyncTask();
         permittedListAsyncTask.execute();
+//        Date date = new Date() ;
+//
+//        date.setTime(System.currentTimeMillis());
 
     }
 

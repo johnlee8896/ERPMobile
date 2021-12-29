@@ -29,7 +29,6 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.entity.MESInnerDataEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
-import com.chinashb.www.mobileerp.funs.EncryptDecryptUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.SPSingleton;
@@ -313,15 +312,17 @@ public class LoginActivity extends BaseActivity {
 //                    }
 
                     if (getVersionCode(LoginActivity.this) < Integer.parseInt(Version)) {
-                        APPUpgradeManager.with(LoginActivity.this)
-                                .setNeedShowToast(true)
-//                                .setAPIService(APIDefine.SERVICE_BASE)
-//                                .setAPIUrl(APIDefine.API_check_new_version)
-//                                .setAppName(getString(R.string.app_name))
-                                .setApkDownloadedPath(FileUtil.getCachePath())
-//                                .setVersionName(APPUtil.getVersionName()).setVersionCode(APPUtil.getVersionCode() + "")
-//                                .builder().checkNewVersion(APPUpgradeManager.NAME_MaterialsManager);
-                                .builder().showForceUpdateDialog(updateLog);
+//                        APPUpgradeManager.with(LoginActivity.this)
+//                                .setNeedShowToast(true)
+////                                .setAPIService(APIDefine.SERVICE_BASE)
+////                                .setAPIUrl(APIDefine.API_check_new_version)
+////                                .setAppName(getString(R.string.app_name))
+//                                .setApkDownloadedPath(FileUtil.getCachePath())
+////                                .setVersionName(APPUtil.getVersionName()).setVersionCode(APPUtil.getVersionCode() + "")
+////                                .builder().checkNewVersion(APPUpgradeManager.NAME_MaterialsManager);
+//                                .builder().showForceUpdateDialog(updateLog);
+                        GetDownloadUrlTask task = new GetDownloadUrlTask();
+                        task.execute(updateLog);
                     }
 
                 } else {
@@ -509,6 +510,48 @@ public class LoginActivity extends BaseActivity {
                 startActivity(intent);
                 finish();
             }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+    private class GetDownloadUrlTask extends AsyncTask<String, Void, WsResult> {
+        //Image hr_photo;
+        String updateLog = "";
+        @Override
+        protected WsResult doInBackground(String... params) {
+            if (params != null && params.length > 0 ){
+                updateLog = params[0];
+            }
+            WsResult result = WebServiceUtil.getDownloadUrl();
+            return result;
+        }
+
+        @Override
+        protected void onPreExecute() {
+//            scanProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(WsResult result) {
+//
+//            MobclickAgent.onEvent(LoginActivity.this, StringConstantUtil.Umeng_event_scan_hr_login);
+           if (result != null && result.getResult() && !TextUtils.isEmpty(result.getErrorInfo())){
+               APPUpgradeManager.with(LoginActivity.this)
+                       .setNeedShowToast(true)
+//                                .setAPIService(APIDefine.SERVICE_BASE)
+//                                .setAPIUrl(APIDefine.API_check_new_version)
+//                                .setAppName(getString(R.string.app_name))
+                       .setApkDownloadedPath(FileUtil.getCachePath())
+//                                .setVersionName(APPUtil.getVersionName()).setVersionCode(APPUtil.getVersionCode() + "")
+//                                .builder().checkNewVersion(APPUpgradeManager.NAME_MaterialsManager);
+                       .builder().showForceUpdateDialog(updateLog,result.getErrorInfo());
+           }else{
+               ToastUtil.showToastShort("获取下载链接失败！");
+           }
         }
 
         @Override
