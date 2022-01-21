@@ -15,9 +15,18 @@ public class UserSingleton {
     private HashMap<Integer, String> departmentMap;
     private UserAllInfoEntity userAllInfoEntity;
     private boolean isCurrentInnerNetLink;
+    private boolean serverBack;
 
     private UserSingleton() {
 
+    }
+
+    public boolean isServerBack() {
+        return serverBack;
+    }
+
+    public void setServerBack(boolean serverBack) {
+        this.serverBack = serverBack;
     }
 
     public boolean isCurrentInnerNetLink() {

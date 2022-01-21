@@ -72,11 +72,16 @@ public class WebServiceUtil {
     private static String URL = IP + ":8188/Test_Wss/Service.svc";
     private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
 
-
+    private static String URL_BackUp = IP + ":8189/Test_Wss/Service.svc";
+    private static String URL_Internet_BackUp = IP + ":8189/Test_Wss/Service.svc";
+    //
+//    private static String URL_BackUp2 = IP + ":8001/Service.svc";
+//    private static String URL_Internet_BackUp2 = IP + ":8188/Test_Wss/Service.svc";
     private static String URL_QueryWage = IP + ":8188/WageQueryWeb/Service.svc";
     private static String URL_Internet_QueryWage = IP + ":8188/WageQueryWeb/Service.svc";
 
     private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+    private static String URL_Intranet_BackUp = "http://172.16.1.24:8100/Test_Wss/Service.svc";
     private static String URL_Intranet_Internet_QueryWage = "http://172.16.1.80:8100/WageQueryWeb/Service.svc";
 
 
@@ -106,12 +111,14 @@ public class WebServiceUtil {
     //private int
 
     public static void set_net_link_to_intranet() {
-        URL = URL_Intranet;
+//        URL = URL_Intranet;
+        URL = UserSingleton.get().isServerBack() ?  URL_Intranet_BackUp :URL_Intranet;
         Current_Net_Link = "Intranet";
     }
 
     public static void set_net_link_to_internet() {
-        URL = URL_Internet;
+//        URL = URL_Internet;
+        URL = UserSingleton.get().isServerBack() ? URL_Internet_BackUp : URL_Internet;
         Current_Net_Link = "Internet";
     }
 
@@ -791,12 +798,30 @@ public class WebServiceUtil {
         envelope.setOutputSoapObject(soapObject);
         new MarshalDate().register(envelope);
 
-        // Create HTTP call object
-//        Current_Net_Link = "Intranet";
+//        // Create HTTP call object
+////        Current_Net_Link = "Intranet";
+//        if (UserSingleton.get().isCurrentInnerNetLink() || TextUtils.equals(Current_Net_Link,"Intranet")){
+//            URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//        }
+//        HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+
+
+
+        String finalUrl = URL;
         if (UserSingleton.get().isCurrentInnerNetLink() || TextUtils.equals(Current_Net_Link,"Intranet")){
-            URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//            URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//            URL = UserSingleton.get().isServerBack() ? "http://172.16.1.24:8100/Test_Wss/Service.svc" : "http://172.16.1.80:8100/Test_Wss/Service.svc";
+            finalUrl = UserSingleton.get().isServerBack() ? "http://172.16.1.24:8100/Test_Wss/Service.svc" : "http://172.16.1.80:8100/Test_Wss/Service.svc";
+
+        }else{
+            finalUrl = UserSingleton.get().isServerBack()? URL_BackUp : URL;
+
         }
-        HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+//        HttpTransportSE androidHttpTransport = new HttpTransportSE(URL);
+//        HttpTransportSE androidHttpTransport = new HttpTransportSE(UserSingleton.get().isServerBack()? URL_BackUp : URL );
+        HttpTransportSE androidHttpTransport = new HttpTransportSE(finalUrl );
+
+
         androidHttpTransport.debug = true;
         try {
             // Invole web service
@@ -3507,6 +3532,18 @@ public class WebServiceUtil {
         }
         AddPropertyInfo(propertyInfos, "HR_Name", crpName);
         AddPropertyInfo(propertyInfos, "PW", crpPw);
+
+        //记录机器访问的ip服务
+        String finalUrl = URL;
+        if (UserSingleton.get().isCurrentInnerNetLink() || TextUtils.equals(Current_Net_Link,"Intranet")){
+            finalUrl = UserSingleton.get().isServerBack() ? "http://172.16.1.24:8100/Test_Wss/Service.svc" : "http://172.16.1.80:8100/Test_Wss/Service.svc";
+
+        }else{
+            finalUrl = UserSingleton.get().isServerBack()? URL_BackUp : URL;
+
+        }
+        AddPropertyInfo(propertyInfos, "IP_Server_Address", finalUrl);
+
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
 
 

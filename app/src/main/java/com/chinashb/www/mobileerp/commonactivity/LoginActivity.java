@@ -381,6 +381,18 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
+    private void swtichService() {
+//        WebServiceUtil.serverPort = 8189;
+        nameEditText.setText("");
+        passwordEditText.setText("");
+//        ToastUtil.showToastShort("请重新登录");
+        nameEditText.setHint("请重新登录");
+//        UserSingleton.get().setServerPort(8189);
+        UserSingleton.get().setServerBack(true);
+        //对于static变量，如果仅是上面的，则不行
+//        CommonUtil.doLogout(LoginActivity.this);
+    }
+
     private class NetOnCheckedChangeListener implements RadioGroup.OnCheckedChangeListener {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedID) {
@@ -454,6 +466,10 @@ public class LoginActivity extends BaseActivity {
                 finish();
             } else {
                 ToastUtil.showToastLong(wsResult.getErrorInfo());
+                //2021-09-26 因为最近频繁的手机登录异常问题，报“未将对象实例等”，原因servicecontract问题，故切换环境
+                if(wsResult != null && wsResult.getErrorInfo() != null && wsResult.getErrorInfo().contains("对象引用")){
+                    swtichService();
+                }
             }
 //            progressBar.setVisibility(View.INVISIBLE);
             progressDialog.dismiss();
