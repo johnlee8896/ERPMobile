@@ -24,8 +24,6 @@ import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import java.util.List;
 
@@ -108,7 +106,7 @@ public class StockQueryPartItemActivity extends BaseActivity {
                                                            intent.putExtra("OriText", originalDescription);
                                                            intent.putExtra("InvQueryMiddleRequestCode",requestCode);
 //                                                           startActivityForResult(intent, 100);
-                                                           startActivityForResult(intent, requestCode);
+                                                           startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Item_To_InputActivity);
                                                        }
 
                                                    }
@@ -120,17 +118,21 @@ public class StockQueryPartItemActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && resultCode == 1) {
-            String Input = data.getStringExtra("Input");
-            if (Input.isEmpty() || Input.equals("null")) {
-                Input = "";
+//        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+//        if (requestCode == 100 && resultCode == 1) {
+        if (requestCode == IntentConstant.Intent_Request_Code_Inv_Query_Item_To_InputActivity) {
+            if (data != null){
+                String Input = data.getStringExtra("Input");
+                if (Input.isEmpty() || Input.equals("null")) {
+                    Input = "";
+                }
+                if (EditingLot != null) {
+                    description = Input;
+                    AsyncUpdateLotDescription t = new AsyncUpdateLotDescription();
+                    t.execute();
+                }
             }
-            if (EditingLot != null) {
-                description = Input;
-                AsyncUpdateLotDescription t = new AsyncUpdateLotDescription();
-                t.execute();
-            }
+
 
         } else {
             // This is important, otherwise the result will not be passed to the fragment

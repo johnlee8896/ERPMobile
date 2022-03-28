@@ -30,6 +30,7 @@ import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.AppUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
@@ -46,6 +47,7 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -158,6 +160,17 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
     private void showTimePickerDialog(String pickType) {
         if (timePickerManager == null) {
             timePickerManager = new TimePickerManager(StockOutMoreActivity.this);
+            //john 2022-02-28
+            Calendar todayDate = Calendar.getInstance();
+//            calendar.get(Calendar.DATE) == calendar
+//                    .getActualMaximum(Calendar.DAY_OF_MONTH)
+            if (todayDate.get(Calendar .DATE) == todayDate.getActualMaximum(Calendar.DAY_OF_MONTH)){
+                Calendar endDate = Calendar.getInstance();
+                endDate.add(Calendar .DAY_OF_YEAR ,1);
+                timePickerManager.setDateRange(todayDate,endDate);
+            }
+
+
         }
         if (pickType == TimePickerManager.PICK_TYPE_ARRIVE_DATE || pickType == TimePickerManager.PICK_TYPE_OUT_DATE) {
             timePickerManager.setShowType(TimePickerManager.PICK_TYPE_YEAR, 3);
@@ -167,6 +180,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         timePickerManager
                 .setOnViewClickListener(StockOutMoreActivity.this)
                 .showDialog(pickType);
+        AppUtil.forceHideInputMethod(StockOutMoreActivity.this);
     }
 
     @Override

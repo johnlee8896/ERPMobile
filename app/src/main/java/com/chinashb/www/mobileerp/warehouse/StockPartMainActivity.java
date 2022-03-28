@@ -22,6 +22,7 @@ import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
+import com.chinashb.www.mobileerp.logistics.StockLogisticsInActivity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.ShbTcpTest;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
@@ -53,6 +54,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button sendGoodsManageButton ;//发货管理
     private Button lookQRButton;
     private Button zaiZhiPinCheckButton;
+    private Button logisticsReceiveButton;
 
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
@@ -84,6 +86,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         supplierReturnGoodsButton = findViewById(R.id.btn_return_goods_supplier);
         selfProductReturnGoodsButton = findViewById(R.id.btn_return_goods_self_produce);
         sendGoodsManageButton = findViewById(R.id.btn_send_goods_manage);
+        logisticsReceiveButton = findViewById(R.id.btn_logistics_receive);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -145,6 +148,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         supplierReturnGoodsButton.setOnClickListener(this);
         selfProductReturnGoodsButton.setOnClickListener(this);
         sendGoodsManageButton.setOnClickListener(this);
+        logisticsReceiveButton.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -243,6 +247,9 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             startActivity(intent);
         }else if (view == sendGoodsManageButton){
             Intent intent = new Intent(StockPartMainActivity.this, SendGoodsManagerActivity.class);
+            startActivity(intent);
+        }else if (view == logisticsReceiveButton){
+            Intent intent = new Intent(StockPartMainActivity.this, StockLogisticsInActivity.class);
             startActivity(intent);
         }
     }

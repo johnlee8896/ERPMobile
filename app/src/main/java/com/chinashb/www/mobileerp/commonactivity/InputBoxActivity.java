@@ -1,7 +1,6 @@
 package com.chinashb.www.mobileerp.commonactivity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 
 public class InputBoxActivity extends BaseActivity {
     TextView tvTitle;
@@ -45,7 +45,8 @@ public class InputBoxActivity extends BaseActivity {
                 String T = etInput.getText().toString();
                 Intent result = new Intent();
                 result.putExtra("Input", T);
-                setResult(1, result);
+//                setResult(1, result);
+                setResult(IntentConstant.Intent_Request_Code_Inv_Query_Item_To_InputActivity, result);
                 finish();
             }
         });

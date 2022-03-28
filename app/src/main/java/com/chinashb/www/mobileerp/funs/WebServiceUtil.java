@@ -1244,6 +1244,79 @@ public class WebServiceUtil {
         return box_item;
     }
 
+
+    //来料接收，扫描物料码
+    public static BoxItemEntity op_Check_Logistics_DS_Item_Income_Barcode(String X) {
+        String webMethodName = "op_Check_Logistics_DS_Item_Income_Barcode";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("X");
+        propertyInfo.setValue(X);
+        propertyInfo.setType(String.class);
+        propertyInfos.add(propertyInfo);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        BoxItemEntity box_item = new BoxItemEntity();
+        if (obj != null) {
+            int count = obj.getPropertyCount();
+            SoapObject obj2;
+            for (int i = 0; i < count; i++) {
+                obj2 = (SoapObject) obj.getProperty(i);
+                box_item.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                if (!box_item.getResult()) {
+                    box_item.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                } else {
+                   try{
+                       box_item.setDIII_ID(Long.parseLong(obj2.getProperty("DIII_ID").toString()));
+                       box_item.setSMT_ID(Long.parseLong(obj2.getProperty("SMT_ID").toString()));
+                       box_item.setSMM_ID(Long.parseLong(obj2.getProperty("SMM_ID").toString()));
+                       box_item.setSMLI_ID(Long.parseLong(obj2.getProperty("SMLI_ID").toString()));
+                       box_item.setEntityID(Long.parseLong(obj2.getProperty("EntityID").toString()));
+                       if (obj2.getProperty("EntityName") != null){
+                           box_item.setEntityName(obj2.getProperty("EntityName").toString());
+                       }
+
+                       box_item.setLotID(Long.parseLong(obj2.getProperty("LotID").toString()));
+                       //// TODO: 2019/11/27 这里的lotNo 取的是DII里面的manulotNo
+                       if (obj2.getProperty("LotNo") != null) {
+                           box_item.setLotNo(obj2.getProperty("LotNo").toString());
+                       }
+                       box_item.setItem_ID(Long.parseLong(obj2.getProperty("Item_ID").toString()));
+                       box_item.setIV_ID(Long.parseLong(obj2.getProperty("IV_ID").toString()));
+                       box_item.setItemName(obj2.getProperty("ItemName").toString());
+                       box_item.setQty(Float.parseFloat(obj2.getProperty("Qty").toString()));
+                       box_item.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
+                       //// TODO: 2020/4/22 这里先去掉，会报illegal property
+//                    obj2.getPropertySafely()
+//                    if (obj2.getProperty("Company_ID") != null) {
+//                        box_item.setCompany_ID(Integer.parseInt(obj2.getProperty("Company_ID").toString()));
+//                    }
+                       Object tempObject = obj2.getPropertySafely("Company_ID");
+                       if (tempObject != null && !TextUtils.isEmpty(tempObject.toString()) && !TextUtils.equals(tempObject.toString(),"null")) {
+                           box_item.setCompany_ID(Integer.parseInt(obj2.getProperty("Company_ID").toString()));
+                       }
+                       box_item.setBuName(obj2.getProperty("BuName").toString());
+                       box_item.setBoxName(obj2.getProperty("BoxName").toString());
+                       box_item.setBoxNo(obj2.getProperty("BoxNo").toString());
+                       box_item.setIstName(obj2.getProperty("IstName").toString());
+                   }catch(Exception e){
+                       e.printStackTrace();
+                   }
+
+                }
+
+                //int DataMemberCount = obj2.getPropertyCount();
+                //for (int j=0; j<DataMemberCount;j++){
+                //result.add(Boolean.parseBoolean(obj2.getProperty(j).toString()));
+                //}
+            }
+
+        }
+
+        return box_item;
+    }
+
     public static BoxItemEntity check_Mobile_Send_Goods_Barcode(String X) {
 //        String webMethodName = "op_Check_Commit_DS_Item_Income_Barcode";
         String webMethodName = "check_Mobile_Send_Goods_Barcode";
@@ -1405,10 +1478,121 @@ public class WebServiceUtil {
         return istPlace;
     }
 
+    //物流接收地址码
+    public static IstPlaceEntity op_Check_Logistics_IST_Barcode(String scanContent) {
+        String webMethodName = "op_Check_Logistics_IST_Barcode";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("X");
+        propertyInfo.setValue(scanContent);
+        propertyInfo.setType(String.class);
+        propertyInfos.add(propertyInfo);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        IstPlaceEntity istPlace = new IstPlaceEntity();
+        if (obj != null) {
+            int count = obj.getPropertyCount();
+            SoapObject obj2;
+            for (int i = 0; i < count; i++) {
+                obj2 = (SoapObject) obj.getProperty(i);
+                istPlace.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+                if (!istPlace.getResult()) {
+                    istPlace.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+                } else {
+                    istPlace.setIst_ID(Long.parseLong(obj2.getProperty("Ist_ID").toString()));
+                    istPlace.setSub_Ist_ID(Long.parseLong(obj2.getProperty("Sub_Ist_ID").toString()));
+                    //// TODO: 2019/12/3 IST_Name 是大库对应的数据库字段名，Ist_Name对应的是小区域的？
+                    istPlace.setIstName(obj2.getProperty("IstName").toString());
+                    istPlace.setBu_ID(Integer.parseInt(obj2.getProperty("Bu_ID").toString()));
+                    istPlace.setBuName(obj2.getProperty("BuName").toString());
+                }
+            }
+        }
+        return istPlace;
+    }
+
     //将物料入相应的库,零部件账
     public static WsResult op_Commit_DS_Item_Income_To_Warehouse(BoxItemEntity box_item,String scan_code) {
         String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse";
         System.out.println("=======================================  op_Commit_DS_Item_Income_To_Warehouse");
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("SenderID");
+//        propertyInfo.setValue(UserInfoEntity.ID);
+        propertyInfo.setValue(UserSingleton.get().getHRID());
+        propertyInfo.setType(Integer.class);
+        propertyInfos.add(propertyInfo);
+
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("DIII_ID");
+        propertyInfo2.setValue(box_item.getDIII_ID());
+        System.out.println("======================================= diii_id =  " + box_item.getDIII_ID());
+        propertyInfo2.setType(Long.class);
+        propertyInfos.add(propertyInfo2);
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("Ist_ID");
+        propertyInfo3.setValue(box_item.getIst_ID());
+        System.out.println("======================================= Ist_ID =  " + box_item.getIst_ID());
+        propertyInfo3.setType(Long.class);
+        propertyInfos.add(propertyInfo3);
+
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("Sub_Ist_ID");
+        propertyInfo4.setValue(box_item.getSub_Ist_ID());
+        System.out.println("======================================= Sub_Ist_ID =  " + box_item.getSub_Ist_ID());
+        propertyInfo4.setType(Long.class);
+        propertyInfos.add(propertyInfo4);
+
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo5.setName("Bu_ID");
+        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        System.out.println("======================================= Bu_ID =  " + UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo5.setType(Integer.class);
+        propertyInfos.add(propertyInfo5);
+
+        PropertyInfo propertyInfo6 = new PropertyInfo();
+        propertyInfo6.setName("HR_Name");
+        propertyInfo6.setValue(UserSingleton.get().getHRName());
+        System.out.println("======================================= HR_Name =  " + UserSingleton.get().getHRName());
+        propertyInfo6.setType(String.class);
+        propertyInfos.add(propertyInfo6);
+
+        PropertyInfo propertyInfo7 = new PropertyInfo();
+        propertyInfo7.setName("Scan_Code");
+        propertyInfo7.setValue(scan_code);
+        System.out.println("======================================= Scan_Code =  " + scan_code);
+        propertyInfo7.setType(String.class);
+        propertyInfos.add(propertyInfo7);
+
+        PropertyInfo propertyInfo8 = new PropertyInfo();
+        propertyInfo8.setName("Item_ID");
+        propertyInfo8.setValue(box_item.getItem_ID());
+        System.out.println("======================================= Item_ID =  " + box_item.getItem_ID());
+        propertyInfo8.setType(Integer.class);
+        propertyInfos.add(propertyInfo8);
+
+        //todo
+//        PropertyInfo propertyInfo5 = new PropertyInfo();
+//        propertyInfo4.setName("SQL");
+//        propertyInfo4.setValue(sql );
+//        propertyInfo4.setType(String.class);
+//        propertyInfos.add(propertyInfo5);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult ws_result = Get_WS_Result(obj);
+        return ws_result;
+
+    }
+
+
+    //将物料入相应的库,零部件账
+    public static WsResult op_Commit_Item_To_Logistics_Warehouse(BoxItemEntity box_item,String scan_code) {
+        String webMethodName = "op_Commit_Item_To_Logistics_Warehouse";
+        System.out.println("=======================================  op_Commit_Item_To_Logistics_Warehouse");
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         PropertyInfo propertyInfo = new PropertyInfo();
         propertyInfo.setName("SenderID");

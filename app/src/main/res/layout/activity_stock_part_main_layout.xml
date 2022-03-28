@@ -445,6 +445,48 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp">
 
+                    <ImageView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_logistics_receive"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="物流来料接收"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="invisible"
+                        app:srcCompat="@drawable/ic_settings_remote_black_24dp" />
+
+                    <Button
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="发货管理"
+                        android:textColor="#ffffff"
+                        android:textSize="14sp"
+                        android:visibility="invisible" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
                     <ProgressBar
                         android:id="@+id/pb_scan_progressbar"
                         android:layout_width="wrap_content"
