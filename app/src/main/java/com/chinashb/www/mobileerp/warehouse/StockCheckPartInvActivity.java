@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,7 +77,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private EditText inputEditText;
     private EditText searchEditText;
     private Button searchButton;
-    private LinearLayout searchLayout;
+    private RelativeLayout searchLayout;
 
     private int Ac_Type = 1;
 //    private UserInfoEntity userInfo;
@@ -91,13 +91,15 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private boolean inventoryFileSelect = false;
     private boolean istHasSelect = false;
     private boolean fromZaiZhiPin;
+    private boolean fromSelfProduct;
     private SwitchPanDianTypeDialog panDianTypeDialog;
     private int pandianType = 1;
     private PanDianItemBean panDianItemBean;
     private EditText storeAreaEditText;
     private EditText manuLotEditText;
-    private String storeArea;
-    private String manuLotNO;
+    private String storeArea = "";
+    private String manuLotNO = "";
+    private boolean hasScannItem = false;
 
     public StockCheckPartInvActivity() {
     }
@@ -115,7 +117,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
         getExtras();
 //        userInfo = UserSingleton.get().getUserInfo();
         saveditems = new ArrayList<>();
-        resumestate(savedInstanceState);
+//        resumestate(savedInstanceState);
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +133,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
         Intent who = getIntent();
         Ac_Type = (Integer) who.getIntExtra("Ac_Type", 1);
         fromZaiZhiPin = who.getBooleanExtra(IntentConstant.Intent_Extra_check_from_zaizhipin, false);
+        fromSelfProduct = who.getBooleanExtra(IntentConstant.Intent_Extra_check_self_product, false);
         if (fromZaiZhiPin) {
 //            btnScanIst.setVisibility(View.GONE);
             searchLayout.setVisibility(View.VISIBLE);
@@ -155,6 +158,11 @@ public class StockCheckPartInvActivity extends BaseActivity {
 
                     }
                 });
+            }
+        }else {
+            //其实这个暂时意义不大，因为共用页面，需要整合
+            if (fromSelfProduct){
+                searchLayout.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -192,17 +200,17 @@ public class StockCheckPartInvActivity extends BaseActivity {
 
     }
 
-    private void resumestate(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            CI_ID = savedInstanceState.getInt("CI_ID");
-            thePlace = (IstPlaceEntity) savedInstanceState.getSerializable("thePlace");
-            scanitem = (BoxItemEntity) savedInstanceState.getSerializable("scanitem");
-            scanstring = savedInstanceState.getString("scanstring");
-            ScanFor = savedInstanceState.getString("ScanFor");
-            saveditems = (List<BoxItemEntity>) savedInstanceState.getSerializable("saveditems");
-            //还需恢复界面数据
-        }
-    }
+//    private void resumestate(Bundle savedInstanceState) {
+//        if (savedInstanceState != null) {
+//            CI_ID = savedInstanceState.getInt("CI_ID");
+//            thePlace = (IstPlaceEntity) savedInstanceState.getSerializable("thePlace");
+//            scanitem = (BoxItemEntity) savedInstanceState.getSerializable("scanitem");
+//            scanstring = savedInstanceState.getString("scanstring");
+//            ScanFor = savedInstanceState.getString("ScanFor");
+//            saveditems = (List<BoxItemEntity>) savedInstanceState.getSerializable("saveditems");
+//            //还需恢复界面数据
+//        }
+//    }
 
     void setButtonClick() {
         btnSelectCheckFile.setOnClickListener(new View.OnClickListener() {
@@ -283,6 +291,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
                     return;
                 }
                 ScanFor = "Item";
+                hasScannItem = true;
                 new IntentIntegrator(StockCheckPartInvActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
             }
@@ -476,7 +485,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //            }
 //            String whereSql = " and CF_Chinese_Name like '%"+keyWord+"%'";
             String sql = String.format("Select top 60 Item.Item_ID,Item_Version.IV_ID,Item.Item+' '+Item.Item_Name+' '+isnull(Item.Item_Spec2,'') As Item_Name, Item_Version.Item_Version As Version,Item.Item_Unit_Exchange ,Item.Item_Unit  " +
-                    "From Item Inner Join Item_Version On Item.Item_ID = Item_Version.Item_ID Where Item.Item_Type_id= 1 And Item.Audit=1 and item.item_name like %s", "'%" + input + "%'");
+                    "From Item Inner Join Item_Version On Item.Item_ID = Item_Version.Item_ID Where   Item.Audit=1 and (item.item like %s or item.item_drawno like %s or item.item_id like %s) ", "'%" + input + "%'", "'%" + input + "%'", "'%" + input + "%'");
 
             Intent intent = new Intent(StockCheckPartInvActivity.this, CommonSelectItemActivity.class);
             List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(50, 100, 100));
@@ -722,19 +731,19 @@ public class StockCheckPartInvActivity extends BaseActivity {
     }
 
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putSerializable("CI_ID", CI_ID);
-        outState.putSerializable("thePlace", (Serializable) thePlace);
-        outState.putSerializable("scanitem", (Serializable) scanitem);
-        outState.putSerializable("scanstring", (Serializable) scanstring);
-        outState.putSerializable("ScanFor", (Serializable) ScanFor);
-
-        outState.putSerializable("saveditems", (Serializable) saveditems);
-
-    }
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        outState.putSerializable("CI_ID", CI_ID);
+//        outState.putSerializable("thePlace", (Serializable) thePlace);
+//        outState.putSerializable("scanitem", (Serializable) scanitem);
+//        outState.putSerializable("scanstring", (Serializable) scanstring);
+//        outState.putSerializable("ScanFor", (Serializable) ScanFor);
+//
+//        outState.putSerializable("saveditems", (Serializable) saveditems);
+//
+//    }
 
     private class AsyncGetInvBox extends AsyncTask<String, Void, Void> {
         BoxItemEntity boxItemEntity;
@@ -893,7 +902,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //
 //                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),CI_ID,UserSingleton.get().getUserInfo().getBu_ID(),"",
 //                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),0L,0L,0L,0L,qty,N,PN,DQ,remark);
-                if (thePlace != null && scanitem != null) {
+                if (thePlace != null && scanitem != null && hasScannItem) {
                     //扫描模式
                     BoxItemEntity bi = scanitem;
                     if (Ac_Type == 1) {
@@ -914,8 +923,11 @@ public class StockCheckPartInvActivity extends BaseActivity {
                 }
 
             } else {
-                BoxItemEntity bi = scanitem;
-                //解决编译通过但报错的问题
+                if (fromSelfProduct){
+                    if (thePlace != null && scanitem != null && hasScannItem) {
+                        BoxItemEntity bi = null;
+                             bi=   scanitem;
+                        //解决编译通过但报错的问题
 //            String qty = realQtyTextView.getText().toString();
 //            String remark = etRemark.getText().toString();
 //
@@ -923,18 +935,32 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //            String PN = etPN.getText().toString();
 //            String DQ = etDQ.getText().toString();
 
+                        if(bi != null ){
 
-                if (Ac_Type == 1) {
-                    //todo  && userInfo.getBu_ID() == 1
-                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
-                            CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
-                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
+                            if (Ac_Type == 1) {
+                                //todo  && userInfo.getBu_ID() == 1
+                                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+                                        CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                        bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
 
-                } else {
-                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
-                            CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
-                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
+                            } else {
+                                ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
+                                        CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                        bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
+                            }
+                        }
+                    }else{
+                        ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+                                thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+
+                    }
+
+
+
+
                 }
+
+
             }
 
 
@@ -961,6 +987,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
 
                 inputEditText.setText("");
                 inputEditText.findFocus();
+                hasScannItem = false;
             } else {
 //                CommonUtil.ShowToast(StockCheckPartInvActivity.this,
 //                        "提交失败" + ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_SHORT);

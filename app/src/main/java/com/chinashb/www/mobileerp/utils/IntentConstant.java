@@ -58,6 +58,7 @@ public class IntentConstant {
     public static final String Intent_Extra_logistics_customer_bean = "Extra_logistics_customer_bean";
     public static final String Intent_Extra_supplier_or_self_return_boolean = "Extra_supplier_or_self_return_boolean";
     public static final String Intent_Extra_check_from_zaizhipin = "Extra_check_from_zaizhipin";
+    public static final String Intent_Extra_check_self_product = "xtra_check_self_product";
 
 
     public static final String Intent_Extra_logistics_from = "Extra_logistics_from";

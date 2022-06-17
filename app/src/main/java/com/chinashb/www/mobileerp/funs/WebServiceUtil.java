@@ -3772,6 +3772,27 @@ public class WebServiceUtil {
 //        return null;
     }
 
+    public static WsResult verifyHRAndRegisterNuclein(int HR_ID,String HR_NO) {
+        String webMethodName = "checkNucleinAndRegister";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "HR_ID", HR_ID);
+        AddPropertyInfo(propertyInfos, "HR_NO", HR_NO);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+        return null;
+    }
+
     public static WsResult getHRIDNO() {
         String webMethodName = "getHRIDNO";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -3910,6 +3931,45 @@ public class WebServiceUtil {
         ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
         AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
         AddPropertyInfo(propertyInfoList, "PS_ID", PS_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapPrimitive response = null;
+        try {
+            response = (SoapPrimitive) envelope.getResponse();
+        } catch (SoapFault soapFault) {
+            soapFault.printStackTrace();
+        }
+        if (response != null) {
+            result = response.toString();
+        }
+        return result;
+    }
+
+    public static String getQueryProductPackInv(int Bu_ID, String filterText) {
+        String result = null;
+        String webMethodName = "op_Query_Product_Inv_Item_Pallet";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfoList, "filterText", filterText);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapPrimitive response = null;
+        try {
+            response = (SoapPrimitive) envelope.getResponse();
+        } catch (SoapFault soapFault) {
+            soapFault.printStackTrace();
+        }
+        if (response != null) {
+            result = response.toString();
+        }
+        return result;
+    }
+
+//    无包装
+    public static String getQueryProductUNPackInv(int Bu_ID, String filterText) {
+        String result = null;
+        String webMethodName = "op_Query_Product_Inv_Item_Not_Pallet";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfoList, "filterText", filterText);
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
         SoapPrimitive response = null;
         try {

@@ -254,11 +254,15 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    /**
+     * 自制成品，与在制品共用一个页面，区别在于type不同
+     */
     private void selfProduct() {
         if (userInfo == null) {
             Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
             Intent intent = new Intent(StockPartMainActivity.this, StockCheckPartInvActivity.class);
+            intent.putExtra(IntentConstant.Intent_Extra_check_self_product,true);
             intent.putExtra("Ac_Type", 2);
 
             startActivity(intent);

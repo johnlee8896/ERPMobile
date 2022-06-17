@@ -51,6 +51,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private TextView planTextView;
     private TextView switchBUTextView;
     private TextView userNameTextView;
+    private TextView nucleinTextView;
     private ImageView avatarImageView;
 
     private NetWorkReceiver netWorkReceiver;
@@ -78,6 +79,12 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 
         GetStockPermittedListAsyncTask permittedListAsyncTask = new GetStockPermittedListAsyncTask();
         permittedListAsyncTask.execute();
+
+        if (UserSingleton.get().getHRID() == 26009 || UserSingleton.get().getHRID() == 21618){
+            nucleinTextView.setVisibility(View.VISIBLE);
+        }else{
+            nucleinTextView.setVisibility(View.GONE);
+        }
 //        Date date = new Date() ;
 //
 //        date.setTime(System.currentTimeMillis());
@@ -97,6 +104,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         foodOrderTextView = findViewById(R.id.main_food_order_button);
         wageQueryTextView = findViewById(R.id.main_wage_query_button);
         attendanceTextView = findViewById(R.id.main_attendance_button);
+        nucleinTextView = findViewById(R.id.main_nuclein_button);
     }
 
     protected void setViewListeners() {
@@ -110,6 +118,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         foodOrderTextView.setOnClickListener(this);
         wageQueryTextView.setOnClickListener(this);
         attendanceTextView.setOnClickListener(this);
+        nucleinTextView.setOnClickListener(this);
     }
 
     private String getSqlBu() {
@@ -312,6 +321,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             startActivity(intent);
         }else if (view == wageQueryTextView){
             Intent intent = new Intent(this,WageQueryActivity.class);
+            startActivity(intent);
+        }else if (view == nucleinTextView){
+            Intent intent = new Intent(this,NucleinCheckActivity.class);
             startActivity(intent);
         }
     }

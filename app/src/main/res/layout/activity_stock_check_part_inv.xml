@@ -82,20 +82,26 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/check_inv_search_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_5"
                     android:orientation="horizontal"
-                    android:visibility="gone">
-
+                    >
+                    <Button
+                        android:id="@+id/btn_check_inv_search"
+                        android:layout_width="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/dimen_size_5"
+                        android:layout_height="wrap_content"
+                        android:text="搜索" />
                     <EditText
                         android:id="@+id/check_inv_search_editText"
                         android:layout_width="wrap_content"
                         android:layout_height="35dp"
                         android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@id/search_action_TextView"
+                        android:layout_toLeftOf="@id/btn_check_inv_search"
                         android:background="@drawable/shape_white_half_transparent_conner"
                         android:drawablePadding="@dimen/dimen_size_10"
                         android:hint="请输入item_id,ps_id,物料名称等进行搜索"
@@ -107,12 +113,8 @@
                         android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
                         android:textSize="16sp" />
 
-                    <Button
-                        android:id="@+id/btn_check_inv_search"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="搜索" />
-                </LinearLayout>
+
+                </RelativeLayout>
 
             </LinearLayout>
 
