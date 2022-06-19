@@ -5,12 +5,14 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -90,7 +92,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private String DQ = "";
     private boolean inventoryFileSelect = false;
     private boolean istHasSelect = false;
-    private boolean fromZaiZhiPin;
+    private boolean fromZaiZhiPin = false;
     private boolean fromSelfProduct;
     private SwitchPanDianTypeDialog panDianTypeDialog;
     private int pandianType = 1;
@@ -100,6 +102,10 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private String storeArea = "";
     private String manuLotNO = "";
     private boolean hasScannItem = false;
+    private boolean fromPart = false;
+    private LinearLayout originalDataLayout;
+    private LinearLayout productSearchLayout;
+    private RecyclerView productSearchRecyclerView;
 
     public StockCheckPartInvActivity() {
     }
@@ -134,6 +140,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
         Ac_Type = (Integer) who.getIntExtra("Ac_Type", 1);
         fromZaiZhiPin = who.getBooleanExtra(IntentConstant.Intent_Extra_check_from_zaizhipin, false);
         fromSelfProduct = who.getBooleanExtra(IntentConstant.Intent_Extra_check_self_product, false);
+        fromPart = who.getBooleanExtra(IntentConstant.Intent_Extra_check_part, false);
         if (fromZaiZhiPin) {
 //            btnScanIst.setVisibility(View.GONE);
             searchLayout.setVisibility(View.VISIBLE);
@@ -163,8 +170,10 @@ public class StockCheckPartInvActivity extends BaseActivity {
             //其实这个暂时意义不大，因为共用页面，需要整合
             if (fromSelfProduct){
                 searchLayout.setVisibility(View.VISIBLE);
+
             }
         }
+        productSearchLayout.setVisibility(View.GONE);
     }
 
     void bindView() {
@@ -196,6 +205,10 @@ public class StockCheckPartInvActivity extends BaseActivity {
 
         storeAreaEditText = findViewById(R.id.et_check_stock_ist);
         manuLotEditText = findViewById(R.id.et_check_stock_manulotno);
+
+        originalDataLayout = findViewById(R.id.check_part_inv_original_data_layout);
+        productSearchLayout = findViewById(R.id.check_part_inv_product_serarch_data_layout);
+        productSearchRecyclerView = findViewById(R.id.check_part_inv_product_search_recyclerView);
 
 
     }
@@ -484,21 +497,43 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //
 //            }
 //            String whereSql = " and CF_Chinese_Name like '%"+keyWord+"%'";
-            String sql = String.format("Select top 60 Item.Item_ID,Item_Version.IV_ID,Item.Item+' '+Item.Item_Name+' '+isnull(Item.Item_Spec2,'') As Item_Name, Item_Version.Item_Version As Version,Item.Item_Unit_Exchange ,Item.Item_Unit  " +
-                    "From Item Inner Join Item_Version On Item.Item_ID = Item_Version.Item_ID Where   Item.Audit=1 and (item.item like %s or item.item_drawno like %s or item.item_id like %s) ", "'%" + input + "%'", "'%" + input + "%'", "'%" + input + "%'");
+            if (fromSelfProduct){
+//                QueryProductStockAsyncTask productStockAsyncTask = new QueryProductStockAsyncTask();
+//                productStockAsyncTask.execute(input);
+                String sql = String.format("Select top 60 Item.Item_ID,Item_Version.IV_ID,product.Product_DrawNO as Item_Name, Item_Version.Item_Version As Version,Item.Item_Unit_Exchange ,Item.Item_Unit ,product.Product_DrawNO " +
+                        "From product inner join Item on product.item_id = item.item_id Inner Join Item_Version On Item.Item_ID = Item_Version.Item_ID Where  (product.Product_DrawNO like %s or product.current_ps like %s or item.item_id like %s) ", "'%" + input + "%'", "'%" + input + "%'", "'%" + input + "%'");
 
-            Intent intent = new Intent(StockCheckPartInvActivity.this, CommonSelectItemActivity.class);
-            List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(50, 100, 100));
-            List<String> ColCaption = new ArrayList<String>(Arrays.asList("Item_ID", "IV_ID", "物料", "版本"));
+                Intent intent = new Intent(StockCheckPartInvActivity.this, CommonSelectItemActivity.class);
+                List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(50, 100, 100));
+                List<String> ColCaption = new ArrayList<String>(Arrays.asList("Item_ID", "IV_ID", "物料", "版本"));
 
-            String Title = "选择物料";
-            intent.putExtra("Title", Title);
-            intent.putExtra("SQL", sql);
-            intent.putExtra("ColWidthList", (Serializable) ColWith);
-            intent.putExtra("ColCaptionList", (Serializable) ColCaption);
-            intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_PanDina);
+                String Title = "选择物料";
+                intent.putExtra("Title", Title);
+                intent.putExtra("SQL", sql);
+                intent.putExtra("ColWidthList", (Serializable) ColWith);
+                intent.putExtra("ColCaptionList", (Serializable) ColCaption);
+                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_PanDina);
 
-            startActivityForResult(intent, 500);
+                startActivityForResult(intent, 500);
+
+            }else{
+
+                String sql = String.format("Select top 60 Item.Item_ID,Item_Version.IV_ID,Item.Item+' '+Item.Item_Name+' '+isnull(Item.Item_Spec2,'') As Item_Name, Item_Version.Item_Version As Version,Item.Item_Unit_Exchange ,Item.Item_Unit  " +
+                        "From Item Inner Join Item_Version On Item.Item_ID = Item_Version.Item_ID Where   Item.Audit=1 and (item.item like %s or item.item_drawno like %s or item.item_id like %s) ", "'%" + input + "%'", "'%" + input + "%'", "'%" + input + "%'");
+
+                Intent intent = new Intent(StockCheckPartInvActivity.this, CommonSelectItemActivity.class);
+                List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(50, 100, 100));
+                List<String> ColCaption = new ArrayList<String>(Arrays.asList("Item_ID", "IV_ID", "物料", "版本"));
+
+                String Title = "选择物料";
+                intent.putExtra("Title", Title);
+                intent.putExtra("SQL", sql);
+                intent.putExtra("ColWidthList", (Serializable) ColWith);
+                intent.putExtra("ColCaptionList", (Serializable) ColCaption);
+                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_PanDina);
+
+                startActivityForResult(intent, 500);
+            }
         });
 
 
@@ -958,6 +993,46 @@ public class StockCheckPartInvActivity extends BaseActivity {
 
 
 
+                }else {
+                    if (fromPart){
+                        if (thePlace != null && scanitem != null && hasScannItem) {
+                            BoxItemEntity bi = null;
+                            bi=   scanitem;
+                            //解决编译通过但报错的问题
+//            String qty = realQtyTextView.getText().toString();
+//            String remark = etRemark.getText().toString();
+//
+//            String N = etN.getText().toString();
+//            String PN = etPN.getText().toString();
+//            String DQ = etDQ.getText().toString();
+
+                            if(bi != null ){
+
+                                if (Ac_Type == 1) {
+                                    //todo  && userInfo.getBu_ID() == 1
+                                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+                                            CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
+
+                                } else {
+                                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
+                                            CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
+                                }
+                            }
+                        }else{
+                            //零件也可以调这个方法
+                            ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+                                    thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+
+                        }
+
+
+
+
+                    }
+
+
                 }
 
 
@@ -1009,6 +1084,63 @@ public class StockCheckPartInvActivity extends BaseActivity {
         }
 
     }
+
+
+//    private AdapterProInv productAdapter;
+//    private List<ProductsEntity> productsEntityList;
+//    private int currentPage = 1;
+//    private class QueryProductStockAsyncTask extends AsyncTask<String, Void, Void> {
+//        //ArrayList<ProductsEntity> us = new ArrayList<ProductsEntity>();
+//
+//        @Override
+//        protected Void doInBackground(String... params) {
+//
+////            String keyWord = etFilter.getText().toString();
+//            String keyWord = params[0];
+//            String js = WebServiceUtil.getQueryInv(UserSingleton.get().getUserInfo().getBu_ID(), 2, keyWord, currentPage, 20);
+//            Gson gson = new Gson();
+//            productsEntityList = gson.fromJson(js, new TypeToken<List<ProductsEntity>>() {
+//            }.getType());
+//
+//            return null;
+//        }
+//
+//
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            //tv.setText(fahren + "∞ F");
+//
+//            productAdapter = new AdapterProInv(StockCheckPartInvActivity.this, productsEntityList);
+//            productSearchRecyclerView.setAdapter(productAdapter);
+//            if (productsEntityList != null && productsEntityList.size() > 0){
+//                originalDataLayout.setVisibility(View.GONE);
+//                productSearchLayout.setVisibility(View.VISIBLE);
+//            }
+//            productAdapter.setOnItemClickListener((view, position) -> {
+////                        if (productsEntityList != null && productsEntityList.size() > 0) {
+////                            Intent intent = new Intent(StockCheckPartInvActivity.this, StockQueryProductItemActivity.class);
+////                            intent.putExtra("selected_item", (Serializable) productsEntityList.get(position));
+////                            startActivityForResult(intent, 100);
+////                        }
+////                    ToastUtil.showToastLong("正在开发！");
+////                PanDianItemBean tempPanDianItemBean = new PanDianItemBean(null);
+//
+//
+//                    }
+//            );
+//            //pbScan.setVisibility(View.INVISIBLE);
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            //pbScan.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Void... values) {
+//        }
+//
+//    }
 
 
 }

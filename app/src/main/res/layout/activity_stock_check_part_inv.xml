@@ -15,6 +15,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
     <!--<include-->
     <!--layout="@layout/content_stock_check_part_inv"-->
@@ -81,7 +82,19 @@
                         android:text="扫描物料" />
 
                 </LinearLayout>
-
+                <EditText
+                    android:id="@+id/content_stock_check_part_input_EditeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_size_60"
+                    android:background="@color/transparent"
+                    android:gravity="center_vertical"
+                    android:hint="接收扫描结果"
+                    android:paddingLeft="@dimen/dimen_size_10"
+                    android:paddingTop="@dimen/dimen_size_15"
+                    android:paddingRight="@dimen/dimen_size_10"
+                    android:textColor="@color/black"
+                    android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+                    android:textSize="@dimen/text_size_14" />
                 <RelativeLayout
                     android:id="@+id/check_inv_search_layout"
                     android:layout_width="match_parent"
@@ -118,21 +131,10 @@
 
             </LinearLayout>
 
-            <EditText
-                android:id="@+id/content_stock_check_part_input_EditeText"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_size_60"
-                android:background="@color/transparent"
-                android:gravity="center_vertical"
-                android:hint="接收扫描结果"
-                android:paddingLeft="@dimen/dimen_size_10"
-                android:paddingTop="@dimen/dimen_size_15"
-                android:paddingRight="@dimen/dimen_size_10"
-                android:textColor="@color/black"
-                android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
-                android:textSize="@dimen/text_size_14" />
+
 
             <LinearLayout
+                android:id="@+id/check_part_inv_original_data_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -468,6 +470,97 @@
 
 
                 </TableLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/check_part_inv_product_serarch_data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="fill">
+
+                    <TextView
+                        android:id="@+id/tv_pro_inv_item_id_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Item_ID"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_pro_inv_ps_id_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="PS_ID"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_pro_inv_abb_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="产品通称"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_pro_inv_name_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="名称"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_pro_inv_partno_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="客户零件号"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_pro_inv_ver_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="版本"
+                        />
+
+
+                    <TextView
+                        android:id="@+id/tv_pro_inv_inv_qty_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="库存"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/check_part_inv_product_search_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+
+                        android:clickable="true"
+                        tools:layout_editor_absoluteX="8dp"
+                        tools:layout_editor_absoluteY="8dp">
+
+                    </android.support.v7.widget.RecyclerView>
+
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

@@ -285,6 +285,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             Intent intent = new Intent(StockPartMainActivity.this, StockCheckPartInvActivity.class);
             intent.putExtra("Ac_Type", 1);
             intent.putExtra(IntentConstant.Intent_Extra_check_from_zaizhipin,fromZaiZhiPin);
+            intent.putExtra(IntentConstant.Intent_Extra_check_part,true);
             startActivity(intent);
         }
     }
