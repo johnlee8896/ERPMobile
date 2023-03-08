@@ -81,6 +81,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
     private InBoxItemAdapter boxItemAdapter;
     private List<BoxItemEntity> boxItemEntityList = new ArrayList<>();
     private boolean isFromPackage = false;
+    private boolean hasScanItemPDA = false;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -152,7 +153,11 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
             public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 keyWord = editable.toString();
-                if (keyWord.startsWith("V") && keyWord.length() > 4) {
+                //john 2022-08-11
+                if (hasScanItemPDA){
+                    isFromPackage = true;
+                }
+                if (keyWord.startsWith("V") && keyWord.length() > 9) {
                     parseContent(keyWord);
                 }
             }
@@ -194,7 +199,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
                         scanContent = content;
-                        GetBoxAsyncTask task = new GetBoxAsyncTask();
+                        GetBoxScanPackageAsyncTask task = new GetBoxScanPackageAsyncTask();
                         task.execute();
                     }
                 }
@@ -277,19 +282,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
 
             startActivityForResult(intent, 305);
         } else if (v == confirmButton) {
-            if (companyBean == null) {
-                ToastUtil.showToastShort("未选择接收公司");
-                return;
-            }
-            if (buBean == null) {
-                ToastUtil.showToastShort("未选择接收车间");
-                return;
-            }
-//            if (companyBean == null || buBean == null){
-//
-//            }
-            CommitSendGoodsAsyncTask task = new CommitSendGoodsAsyncTask();
-            task.execute();
+            handleSendGoods();
         } else if (v == packageTextView) {
             isFromPackage = true;
             if (companyBean == null) {
@@ -317,6 +310,22 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
         }else if (v == scanItemButton){
             new IntentIntegrator(SendGoodsManagerActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
         }
+    }
+
+    private void handleSendGoods() {
+        if (companyBean == null) {
+            ToastUtil.showToastShort("未选择接收公司");
+            return;
+        }
+        if (buBean == null) {
+            ToastUtil.showToastShort("未选择接收车间");
+            return;
+        }
+//            if (companyBean == null || buBean == null){
+//
+//            }
+        CommitSendGoodsAsyncTask task = new CommitSendGoodsAsyncTask();
+        task.execute();
     }
 
     private boolean judgeBarCodeVerified(BoxItemEntity scanBoxItemEntity) {
@@ -348,7 +357,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
         }
     }
 
-    private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
+    private class GetBoxScanPackageAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity scanBoxItemEntity;
 
         @Override
@@ -424,21 +433,32 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
                 }
             }
 
+            if (hasScanItemPDA){
+                initPackInfoAfterScan();
+            }else{
+                hasScanItemPDA = true;
+            }
+
             if (isFromPackage){
                 if (judgeBarCodeVerified(scanBoxItemEntity)) {
-                    initPackage(scanBoxItemEntity);
-                    boxItemAdapter = new InBoxItemAdapter(SendGoodsManagerActivity.this, boxItemEntityList);
-                    mRecyclerView.setAdapter(boxItemAdapter);
-                    if (packageDataLayout.getVisibility() == View.GONE) {
-                        packageDataLayout.setVisibility(View.VISIBLE);
-                    }
-                    keywordInputEditText.setText("");
-                    keywordInputEditText.setHint("请继续使用扫描枪");
+                    initPackInfoAfterScan();
                 }
                 isFromPackage = false;
             }
+            keywordInputEditText.setText("");
 
 
+        }
+
+        private void initPackInfoAfterScan() {
+            initPackage(scanBoxItemEntity);
+            boxItemAdapter = new InBoxItemAdapter(SendGoodsManagerActivity.this, boxItemEntityList);
+            mRecyclerView.setAdapter(boxItemAdapter);
+            if (packageDataLayout.getVisibility() == View.GONE) {
+                packageDataLayout.setVisibility(View.VISIBLE);
+            }
+            keywordInputEditText.setText("");
+            keywordInputEditText.setHint("请继续使用扫描枪");
         }
 
         @Override
@@ -595,7 +615,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
         @Override
         protected Void doInBackground(String... strings) {
             if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
-                result = WebServiceUtil.commitSendGoods(companyBean.getCompanyId(), buBean.getBuId(), boxItemEntityList.get(0), remark, 3);
+                result = WebServiceUtil.commitSendGoods(companyBean.getCompanyId(), buBean.getBuId(), boxItemEntityList.get(0), remark, 3,outDate);
             }
             return null;
         }
@@ -606,6 +626,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
             if (result != null) {
                 if (result.getResult()) {
                     ToastUtil.showToastShort("手机发货成功！");
+
                 } else {
                     ToastUtil.showToastShort("手机发货出错,原因是" + result.getErrorInfo());
                 }
@@ -613,7 +634,17 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
                 ToastUtil.showToastShort("手机发货出错");
             }
 
+
+            itemDetailTextView.setText("");
+            boxItemEntityList.clear();
+            boxItemAdapter = new InBoxItemAdapter(SendGoodsManagerActivity.this, boxItemEntityList);
+            mRecyclerView.setAdapter(boxItemAdapter);
+            totalBoxEditText.setText("");
+            totalNumberEditText.setText("");
             keywordInputEditText.setText("");
+
+            hasScanItemPDA = false;
+
 
         }
     }

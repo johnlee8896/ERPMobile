@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="成品移库(托盘)" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_move_add_tray_pallet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:text="扫描外箱标签" />
+
+            <Button
+                android:id="@+id/btn_move_scan_new_place_pallet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="扫描新库位" />
+
+            <Button
+                android:id="@+id/btn_move_execute_pallet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="执行移库" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/stock_move_suggest_stock_Layout_pallet"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="20dp"
+        android:visibility="gone"
+        android:paddingRight="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="提示建议存放仓库"
+            android:textColor="@color/color_333333"
+            android:textSize="14sp" />
+
+        <Switch
+            android:id="@+id/stock_move_suggest_stock_Switch_pallet"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:checked="true"
+            android:thumb="@drawable/selector_switch_thumb_style"
+            android:track="@drawable/selector_switch_track_style" />
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/stock_move_input_EditText_pallet"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="接收扫描结果"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:gravity="fill">
+
+        <TextView
+            android:id="@+id/tv_item_name_col"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="物品" />
+
+        <TextView
+            android:id="@+id/tv_item_boxno_col"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="托盘" />
+
+        <TextView
+            android:id="@+id/tv_qty_col"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="数量" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:gravity="fill">
+
+        <TextView
+            android:id="@+id/tv_old_ist_col"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="原位置" />
+
+        <TextView
+            android:id="@+id/tv_new_ist_col"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="新位置" />
+
+        <TextView
+            android:id="@+id/tv_move_selected"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:text="选择" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="@dimen/dimen_size_30"
+        android:id="@+id/product_pallet_move_item_info_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dimen_size_20"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:text="物料信息"
+        android:textColor="@color/black" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_move_box_pallet"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:clickable="true"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="8dp">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <ProgressBar
+            android:id="@+id/pb_scan_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

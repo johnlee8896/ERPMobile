@@ -100,6 +100,30 @@
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
 
+        <!--追踪物流信息测试页面-->
+        <activity
+            android:name=".LocationGPSActivity"
+            android:screenOrientation="portrait" />
+
+        <!--追踪物流信息页面-->
+        <activity
+            android:name=".LogisticsTrackingActivity"
+            android:screenOrientation="portrait" />
+
+        <!--成品非托盘入库页面-->
+        <activity
+            android:name=".ProductNotPalletInActivity"
+            android:screenOrientation="portrait" />
+
+        <!--零件扫描入库页面（可选定日期）-->
+        <activity
+            android:name=".warehouse.StockInWithDateActivity"
+            android:screenOrientation="portrait" />
+
+        <!--成品托盘移库页面-->
+        <activity
+            android:name=".MoveProductPalletActivity"
+            android:screenOrientation="portrait" />
         <!--核酸登记页面-->
         <activity
             android:name=".NucleinCheckActivity"
@@ -135,12 +159,12 @@
             android:name=".task.TaskCreateActivity"
             android:screenOrientation="portrait" />
 
-        <!--考勤管理页面-->
+        <!--d成品扫托盘出库-->
         <activity
             android:name=".ProductSaleOutCodeBoxActivity"
             android:screenOrientation="portrait" />
 
-        <!--d成品扫托盘出库-->
+        <!--考勤管理页面-->
         <activity
             android:name=".AttendanceActivity"
             android:screenOrientation="portrait" />
@@ -266,7 +290,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".warehouse.StockMoveActivity"
+            android:name=".warehouse.StockPartMoveActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
         <activity

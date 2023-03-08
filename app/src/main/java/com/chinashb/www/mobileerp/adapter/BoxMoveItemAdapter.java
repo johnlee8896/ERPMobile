@@ -21,12 +21,12 @@ import java.util.List;
  */
 
 
-public class AdapterMoveBoxItem extends RecyclerView.Adapter<AdapterMoveBoxItem.BoxItemViewHolder> {
+public class BoxMoveItemAdapter extends RecyclerView.Adapter<BoxMoveItemAdapter.BoxItemViewHolder> {
     private final LayoutInflater mLayoutInflater;
     private final Context mContext;
     private List<BoxItemEntity>  dataSoure;
 
-    public AdapterMoveBoxItem(Context context, List<BoxItemEntity> Box_ItemList) {
+    public BoxMoveItemAdapter(Context context, List<BoxItemEntity> Box_ItemList) {
         dataSoure = Box_ItemList;
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);

@@ -217,7 +217,6 @@
                 android:layout_marginLeft="@dimen/dimen_size_20"
                 android:layout_marginTop="@dimen/dimen_size_15"
                 android:layout_marginRight="@dimen/dimen_size_20"
-                android:visibility="gone"
                 android:background="@drawable/shape_conner_blue_button_bg"
                 android:gravity="center"
                 android:text="考勤打卡" />

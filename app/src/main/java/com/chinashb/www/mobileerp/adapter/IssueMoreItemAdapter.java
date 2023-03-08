@@ -57,11 +57,13 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
         holder.tvLotNo.setText(Box_Item.getLotNo());
         holder.tvBoxNo.setText(Box_Item.getBoxNameNo());
 
+//        holder.tvSMLRemark.setText(CommonUtil.isNothing2String(Box_Item.getSmlRemark(), ""));
         holder.tvSMLRemark.setText(CommonUtil.isNothing2String(Box_Item.getSmlRemark(), ""));
         holder.tvLotDescription.setText(Box_Item.getLotDescription());
 
         DecimalFormat dfs = new DecimalFormat("####.####");
         holder.etQty.setText(dfs.format(Box_Item.getQty()));
+        holder.qtyTextView.setText(dfs.format(Box_Item.getQty()));
 
         if (Box_Item.getCanNotEdit()){
             holder.etQty.setVisibility(View.GONE);

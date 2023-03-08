@@ -317,7 +317,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 //            startActivity(intent);
             new GetTestService2AsyncTask().execute();
         }else if (view == attendanceTextView){
-            Intent intent = new Intent(this,AttendanceActivity.class);
+//            Intent intent = new Intent(this,AttendanceActivity.class);
+//            Intent intent = new Intent(this,LogisticsTrackingActivity.class);
+            Intent intent = new Intent(this,LocationGPSActivity.class);
             startActivity(intent);
         }else if (view == wageQueryTextView){
             Intent intent = new Intent(this,WageQueryActivity.class);

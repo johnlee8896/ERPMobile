@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:ignore="MissingDefaultResource">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <com.chinashb.www.mobileerp.widget.group.GroupImageTextLayout
+            android:id="@+id/logistics_tracking_location_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:minHeight="30dp"
+            android:paddingLeft="@dimen/dimen_size_10"
+            android:paddingTop="@dimen/dimen_size_5"
+            android:paddingRight="@dimen/dimen_size_10"
+            android:paddingBottom="@dimen/dimen_size_5"
+
+            app:app_image_src="@mipmap/icon_location"
+            app:app_parent_orientation="IMAGE_LEFT_TEXT_RIGHT"
+            app:app_text="明道大厦8号"
+            app:app_text_color="@color/color_333333"
+            app:app_text_gravity="left"
+            app:app_text_margin_image_size="10dp"
+            app:app_text_size="@dimen/text_size_15" />
+
+
+    </LinearLayout>
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50"
+        app:app_is_hide_left_icon="true"
+        app:app_title_text="物流追踪" />
+    >
+
+
+</LinearLayout>

@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.adapter.AdapterMoveBoxItem;
+import com.chinashb.www.mobileerp.adapter.BoxMoveItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
@@ -44,14 +44,14 @@ import java.util.List;
 /***
  * 移动库位页面
  */
-public class StockMoveActivity extends BaseActivity implements View.OnClickListener {
+public class StockPartMoveActivity extends BaseActivity implements View.OnClickListener {
     private Button btnAddTray;
     private Button btnScanArea;
     private Button btnWarehouseMove;
     private EditText inputEditText;
     private RecyclerView mRecyclerView;
     private ProgressBar pbScan;
-    private AdapterMoveBoxItem boxitemAdapter;
+    private BoxMoveItemAdapter boxitemAdapter;
     private List<BoxItemEntity> boxitemList;
     private IstPlaceEntity thePlace;
     private String scanstring;
@@ -77,7 +77,7 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stock_move_layout);
+        setContentView(R.layout.activity_stock_part_move_layout);
 //        tv = (TextView)findViewById(R.id.tv_stock_system_title);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_move_box);
         pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
@@ -92,7 +92,7 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
         if (savedInstanceState != null) {
             boxitemList = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
         }
-        boxitemAdapter = new AdapterMoveBoxItem(StockMoveActivity.this, boxitemList);
+        boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(boxitemAdapter);
         setHomeButton();
@@ -101,9 +101,9 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onClick(View view) {
                 if (boxitemList.size() < 10) {
-                    new IntentIntegrator(StockMoveActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                    new IntentIntegrator(StockPartMoveActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
                 } else {
-                    Toast.makeText(StockMoveActivity.this, "移动清单不超过10个 ", Toast.LENGTH_LONG).show();
+                    Toast.makeText(StockPartMoveActivity.this, "移动清单不超过10个 ", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -115,12 +115,12 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
                 if (boxitemList.size() > 0) {
                     int selectedcount = 0;
                     for (int i = 0; i < boxitemList.size(); i++) {
-                        if (boxitemList.get(i).getSelect() ) {
+                        if (boxitemList.get(i).getSelect()) {
                             selectedcount++;
                         }
                     }
                     if (selectedcount > 0) {
-                        new IntentIntegrator(StockMoveActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                        new IntentIntegrator(StockPartMoveActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
                     }
 
                 }
@@ -136,8 +136,9 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
             }
         });
 
-        inputEditText.addTextChangedListener(new TextWatcherImpl(){
-            @Override public void afterTextChanged(Editable editable) {
+        inputEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+            public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
 //                if (editable.toString().endsWith("\n")){
                 if (editable.toString().length() > 0) {
@@ -163,21 +164,31 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
 
     }
 
+    @Override
+    protected void onResume() {
+//设置为屏幕
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+        super.onResume();
+    }
+
     private void handleMoveStockArea() {
         if (boxitemList.size() > 0) {
             int selectedcount = 0;
             for (int i = 0; i < boxitemList.size(); i++) {
-                if (boxitemList.get(i).getSelect() ) {
+                if (boxitemList.get(i).getSelect()) {
                     selectedcount++;
                 }
             }
             if (selectedcount > 0) {
-                if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+                if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
 
                     AsyncExeWarehouseMove task = new AsyncExeWarehouseMove();
                     task.execute();
-                }else{
-                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockMoveActivity.this)
+                } else {
+                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockPartMoveActivity.this)
                             .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
                             .setLeftText("确定");
 
@@ -187,7 +198,7 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
                         public void onViewClick(Dialog dialog, View v, int tag) {
                             switch (tag) {
                                 case CommAlertDialog.TAG_CLICK_LEFT:
-                                    CommonUtil.doLogout(StockMoveActivity.this);
+                                    CommonUtil.doLogout(StockPartMoveActivity.this);
                                     dialog.dismiss();
                                     break;
                             }
@@ -228,7 +239,6 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -255,7 +265,7 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
                 //不要重复启动扫码
                 //new IntentIntegrator(StockMoveActivity.this).initiateScan();
             } else {
-               parseScanResult(result.getContents());
+                parseScanResult(result.getContents());
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
@@ -265,18 +275,27 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-         if (view == switchLayout) {
+        if (view == switchLayout) {
             stockSwitch.performClick();
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable("BoxItemList", (Serializable) boxitemList);
+
+    }
+
     private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity boxItemEntity;
+
         @Override
         protected Void doInBackground(String... params) {
             BoxItemEntity bi = WebServiceUtil.op_Check_Commit_Move_Item_Barcode(scanstring);
             boxItemEntity = bi;
-            if (bi.getResult() ) {
+            if (bi.getResult()) {
                 if (!is_box_existed(bi)) {
                     if (isOpenSuggestStock) {
 //                        ToastUtil.showToastLong("建议仓库存放:" + boxItemEntity.getIstName());
@@ -301,6 +320,31 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
             return null;
         }
 
+        @Override
+        protected void onPreExecute() {
+            pbScan.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //tv.setText(fahren + "∞ F");
+            if (boxItemEntity != null) {
+                if (!boxItemEntity.getResult()) {
+                    Toast.makeText(StockPartMoveActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                }
+            }
+            mRecyclerView.setAdapter(boxitemAdapter);
+            pbScan.setVisibility(View.INVISIBLE);
+            inputEditText.setText("");
+            inputEditText.setHint("请继续扫描");
+
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
         protected boolean is_box_existed(BoxItemEntity box_item) {
             boolean result = false;
             if (boxitemList != null) {
@@ -313,23 +357,27 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
             return result;
         }
 
+    }
+
+    private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
-        protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");
-            if (boxItemEntity != null) {
-                if (!boxItemEntity.getResult() ) {
-                    Toast.makeText(StockMoveActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+        protected Void doInBackground(String... params) {
+            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
+            if (bi.getResult()) {
+                thePlace = bi;
+                if (bi.getResult()) {
+                    for (int i = 0; i < boxitemList.size(); i++) {
+                        if (boxitemList.get(i).getSelect()) {
+                            boxitemList.get(i).setIstName(bi.getIstName());
+                            boxitemList.get(i).setIst_ID(bi.getIst_ID());
+                            boxitemList.get(i).setSub_Ist_ID(bi.getSub_Ist_ID());
+                        }
+                    }
                 }
+            } else {
+                Toast.makeText(StockPartMoveActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
             }
-            mRecyclerView.setAdapter(boxitemAdapter);
-            pbScan.setVisibility(View.INVISIBLE);
-            inputEditText.setText("");
-            inputEditText.setHint("请继续扫描");
-
-
-
-
-
+            return null;
         }
 
         @Override
@@ -338,37 +386,9 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-
-    }
-
-
-    private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
-        @Override
-        protected Void doInBackground(String... params) {
-            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
-            if (bi.getResult() ) {
-                thePlace = bi;
-                if (bi.getResult() ) {
-                    for (int i = 0; i < boxitemList.size(); i++) {
-                        if (boxitemList.get(i).getSelect() ) {
-                            boxitemList.get(i).setIstName(bi.getIstName());
-                            boxitemList.get(i).setIst_ID(bi.getIst_ID());
-                            boxitemList.get(i).setSub_Ist_ID(bi.getSub_Ist_ID());
-                        }
-                    }
-                }
-            } else {
-                Toast.makeText(StockMoveActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
-            }
-            return null;
-        }
-
-        @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-            boxitemAdapter = new AdapterMoveBoxItem(StockMoveActivity.this, boxitemList);
+            boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
             mRecyclerView.setAdapter(boxitemAdapter);
             pbScan.setVisibility(View.INVISIBLE);
             inputEditText.setText("");
@@ -377,77 +397,55 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
         }
 
         @Override
-        protected void onPreExecute() {
-            pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
         protected void onProgressUpdate(Void... values) {
         }
 
     }
 
-
-    private class AsyncExeWarehouseMove extends AsyncTask<String, Void, Void> {
+    private class AsyncExeWarehouseMove extends AsyncTask<String, Void, WsResult> {
         Boolean NoNewPlace = false;
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected WsResult doInBackground(String... params) {
 
-            List<BoxItemEntity> SelectList;
-            SelectList = new ArrayList<>();
+//            List<BoxItemEntity> SelectList;
+//            SelectList = new ArrayList<>();
+//
+//            for (int i = 0; i < boxitemList.size(); i++) {
+//                if (boxitemList.get(i).getIst_ID() == 0) {
+//                    NoNewPlace = true;
+//
+//                    return null;
+//                }
+//
+//                if (boxitemList.get(i).getSelect() ) {
+//                    SelectList.add(boxitemList.get(i));
+//                }
+//
+//
+//            }
 
-            for (int i = 0; i < boxitemList.size(); i++) {
-                if (boxitemList.get(i).getIst_ID() == 0) {
-                    NoNewPlace = true;
-
-                    return null;
-                }
-
-                if (boxitemList.get(i).getSelect() ) {
-                    SelectList.add(boxitemList.get(i));
-                }
-
-
-            }
-
-            int count = 0;
-
-            int selectedcount = SelectList.size();
-            while (count < selectedcount && SelectList.size() > 0) {
-                BoxItemEntity bi = SelectList.get(0);
-
-                WsResult result = WebServiceUtil.op_Commit_Move_Item(bi);
-
-                if (result.getResult() ) {
-                    boxitemList.remove(bi);
-
-                    SelectList.remove(bi);
-                } else {
-                    //Toast.makeText(StockMoveActivity.this,result.getErrorInfo(),Toast.LENGTH_LONG).show();
-                }
-
-                count++;
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");
-
-            if (NoNewPlace ) {
-                pbScan.setVisibility(View.INVISIBLE);
-                CommonUtil.ShowToast(StockMoveActivity.this, "还没有扫描新位置", R.mipmap.warning);
-            } else {
-                pbScan.setVisibility(View.INVISIBLE);
-                boxitemAdapter = new AdapterMoveBoxItem(StockMoveActivity.this, boxitemList);
-                mRecyclerView.setAdapter(boxitemAdapter);
-
-                CommonUtil.ShowToast(StockMoveActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
-            }
-
+//            int count = 0;
+//
+//            int selectedcount = SelectList.size();
+//            while (count < selectedcount && SelectList.size() > 0) {
+//                BoxItemEntity bi = SelectList.get(0);
+//
+//                WsResult result = WebServiceUtil.op_Commit_Move_Item(bi);
+//
+//                if (result.getResult() ) {
+//                    boxitemList.remove(bi);
+//
+//                    SelectList.remove(bi);
+//                } else {
+//                    //Toast.makeText(StockMoveActivity.this,result.getErrorInfo(),Toast.LENGTH_LONG).show();
+//                }
+//
+//                count++;
+//            }
+            BoxItemEntity bi = boxitemList.get(0);
+            WsResult result = WebServiceUtil.op_Commit_Move_Item(bi);
+            return result;
         }
 
         @Override
@@ -456,27 +454,35 @@ public class StockMoveActivity extends BaseActivity implements View.OnClickListe
         }
 
         @Override
+        protected void onPostExecute(WsResult result) {
+            //tv.setText(fahren + "∞ F");
+
+//            if (NoNewPlace) {
+//                pbScan.setVisibility(View.INVISIBLE);
+//                CommonUtil.ShowToast(StockMoveActivity.this, "还没有扫描新位置", R.mipmap.warning);
+//            } else {
+//                pbScan.setVisibility(View.INVISIBLE);
+//                boxitemAdapter = new AdapterMoveBoxItem(StockMoveActivity.this, boxitemList);
+//                mRecyclerView.setAdapter(boxitemAdapter);
+//
+//                CommonUtil.ShowToast(StockMoveActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+//            }
+            pbScan.setVisibility(View.INVISIBLE);
+            if (result != null && result.getResult()){
+                CommonUtil.ShowToast(StockPartMoveActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+            }else{
+//                CommonUtil.ShowToast(StockPartMoveActivity.this, "移库失败", R.mipmap.monster_mike, Toast.LENGTH_SHORT);
+                ToastUtil.showToastShort("移库失败：" + result .getErrorInfo());
+            }
+
+                boxitemList.clear();
+                boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
+                mRecyclerView.setAdapter(boxitemAdapter);
+        }
+
+        @Override
         protected void onProgressUpdate(Void... values) {
         }
-
-    }
-
-
-    @Override
-    protected void onResume() {
-//设置为屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-
-        super.onResume();
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putSerializable("BoxItemList", (Serializable) boxitemList);
 
     }
 

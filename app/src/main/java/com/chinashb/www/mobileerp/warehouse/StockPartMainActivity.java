@@ -36,6 +36,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private TextView tvTitle;
     private TextView tvusername;
     private Button scanToStockButton;//扫描入库
+    private Button scanToStockWithDateButton;//扫描入库（可指定日期）
     private Button moveStockAreaButton;//移动库位
     private Button freezeStockButton;//冻结库存
     private Button productSupplyButton;//生产投料
@@ -69,6 +70,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         tvTitle = (TextView) findViewById(R.id.tv_stock_system_title);
 
         scanToStockButton = (Button) findViewById(R.id.btn_scan_to_stock_in);
+        scanToStockWithDateButton = (Button) findViewById(R.id.btn_scan_to_stock_in_set_date);
         productSupplyButton = (Button) findViewById(R.id.btn_product_supply);
         moveStockAreaButton = (Button) findViewById(R.id.btn_move_stock_area);
         freezeStockButton = (Button) findViewById(R.id.btn_freeze_inv);
@@ -131,6 +133,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
 
     private void setViewsListener() {
         scanToStockButton.setOnClickListener(this);
+        scanToStockWithDateButton.setOnClickListener(this);
         productSupplyButton.setOnClickListener(this);
         returnWCButton.setOnClickListener(this);
         departMentInButton.setOnClickListener(this);
@@ -251,6 +254,9 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         }else if (view == logisticsReceiveButton){
             Intent intent = new Intent(StockPartMainActivity.this, StockLogisticsInActivity.class);
             startActivity(intent);
+        }else if (view == scanToStockWithDateButton){
+            Intent intent = new Intent(StockPartMainActivity.this, StockInWithDateActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -330,7 +336,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         if (userInfo == null) {
             Toast.makeText(StockPartMainActivity.this, "请先扫描职工二维码登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockPartMainActivity.this, StockMoveActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockPartMoveActivity.class);
             startActivity(intent);
         }
     }

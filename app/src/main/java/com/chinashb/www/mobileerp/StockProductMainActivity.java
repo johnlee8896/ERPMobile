@@ -37,8 +37,12 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.product_main_sale_out_code_box_textView) TextView saleOutCodeBoxTextView;
     @BindView(R.id.product_main_other_out_textView) TextView otherOutTextView;
     @BindView(R.id.product_main_scan_box_textView) TextView scanBoxInTextView;
+    @BindView(R.id.product_main_move_pallet_textView) TextView movePalletTextView;
+    @BindView(R.id.product_main_move_not_pallet_textView) TextView moveNotPalletTextView;
+    @BindView(R.id.product_main_scan_code_box_in_Not_Pallet_textView) TextView notPalletInTextView;
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_product_main_layout);
         ButterKnife.bind(this);
@@ -57,12 +61,16 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         otherOutTextView.setOnClickListener(this);
         otherInTextView.setOnClickListener(this);
         scanCodeBoxInTextView.setOnClickListener(this);
+        notPalletInTextView.setOnClickListener(this);
         saleOutTextView.setOnClickListener(this);
         saleOutCodeBoxTextView.setOnClickListener(this);
         scanBoxInTextView.setOnClickListener(this);
+        movePalletTextView.setOnClickListener(this);
+        moveNotPalletTextView.setOnClickListener(this);
     }
 
-    @Override public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
         if (v == scanIntoTrayButton) {
 
         } else if (v == scanIntoNonTrayButton) {
@@ -81,19 +89,30 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         } else if (v == saleOutTextView) {
             Intent intent = new Intent(this, ProductSaleOutMESActivity.class);
             startActivity(intent);
-        }else if (v == saleOutCodeBoxTextView) {
+        } else if (v == saleOutCodeBoxTextView) {
             Intent intent = new Intent(this, ProductSaleOutCodeBoxActivity.class);
             startActivity(intent);
-        }else if (v == otherInTextView) {
+        } else if (v == otherInTextView) {
 
-        }  else if (v == scanCodeBoxInTextView) {
+        } else if (v == scanCodeBoxInTextView) {
             Intent intent = new Intent(this, ProductInScanCodeBoxActivity.class);
             startActivity(intent);
-        } else if (v == otherOutTextView) {
+        } else if (v == notPalletInTextView) {
+            Intent intent = new Intent(this, ProductNotPalletInActivity.class);
+            startActivity(intent);
+        }else if (v == otherOutTextView) {
 
-        } else if (v == scanBoxInTextView){
+        } else if (v == scanBoxInTextView) {
 //            Intent intent = new Intent(this,ProductInNonTrayScanOuterBoxActivity.class);
-            Intent intent = new Intent(this,ProductScanBoxInActivity.class);
+            Intent intent = new Intent(this, ProductScanBoxInActivity.class);
+            startActivity(intent);
+        } else if (v == movePalletTextView) {
+//            Intent intent = new Intent(this,ProductInNonTrayScanOuterBoxActivity.class);
+            Intent intent = new Intent(this, MoveProductPalletActivity.class);
+            startActivity(intent);
+        } else if (v == moveNotPalletTextView) {
+//            Intent intent = new Intent(this,ProductInNonTrayScanOuterBoxActivity.class);
+            Intent intent = new Intent(this, ProductScanBoxInActivity.class);
             startActivity(intent);
         }
     }

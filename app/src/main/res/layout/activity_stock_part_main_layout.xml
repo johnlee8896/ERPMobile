@@ -463,21 +463,21 @@
                         android:textSize="18sp" />
 
                     <ImageView
+                        android:id="@+id/imageView_set_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:visibility="invisible"
-                        app:srcCompat="@drawable/ic_settings_remote_black_24dp" />
+                        app:srcCompat="@mipmap/greenhouse" />
 
                     <Button
-                        android:layout_width="100dp"
+                        android:id="@+id/btn_scan_to_stock_in_set_date"
+                        android:layout_width="match_parent"
                         android:layout_height="60dp"
                         android:layout_gravity="left"
                         android:background="@drawable/squarebutton"
-                        android:text="发货管理"
+                        android:text="扫描入库(可指定日期)"
                         android:textColor="#ffffff"
-                        android:textSize="14sp"
-                        android:visibility="invisible" />
+                        android:textSize="15sp" />
                 </TableRow>
 
                 <TableRow
@@ -502,6 +502,8 @@
                         app:backgroundTint="@android:color/background_light"
                         app:srcCompat="@mipmap/smiley"
                         app:useCompatPadding="false" />
+
+
                 </TableRow>
                 >
 

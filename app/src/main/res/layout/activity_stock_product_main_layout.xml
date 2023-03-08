@@ -1,154 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_light"
     android:orientation="vertical">
-    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
-        android:layout_width="match_parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:app_title_text="仓库管理"
-        android:layout_height="50dp"/>
-
-    <TextView
-        android:id="@+id/tv_stock_system_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="仓库管理"
-        />
-
-    <TextView
-        android:id="@+id/product_main_other_in_textView"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="50dp"
-        android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:layout_marginRight="@dimen/dimen_size_20"
-        android:background="@drawable/shape_conner_blue_button_bg"
-        android:gravity="center"
-        android:text="成品入库(其他入库)" />
-
-    <TextView
-        android:id="@+id/product_main_scan_code_box_in_textView"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:layout_marginRight="@dimen/dimen_size_20"
-        android:background="@drawable/shape_conner_blue_button_bg"
-        android:gravity="center"
-        android:text="成品入库(扫托盘标签)" />
-
-    <TextView
-        android:id="@+id/product_main_scan_box_textView"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:layout_marginRight="@dimen/dimen_size_20"
-        android:background="@drawable/shape_conner_blue_button_bg"
-        android:gravity="center"
-        android:text="成品入库(扫描MES箱号)" />
-
-    <TextView
-        android:id="@+id/product_main_sale_out_textView"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:layout_marginRight="@dimen/dimen_size_20"
-        android:background="@drawable/shape_conner_blue_button_bg"
-        android:gravity="center"
-        android:text="成品出库(销售)MES及三点照合" />
-
-    <TextView
-        android:id="@+id/product_main_sale_out_code_box_textView"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:layout_marginRight="@dimen/dimen_size_20"
-        android:background="@drawable/shape_conner_blue_button_bg"
-        android:gravity="center"
-        android:text="成品出库(扫托盘标签)" />
-
-    <TextView
-        android:id="@+id/product_main_other_out_textView"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="@dimen/dimen_size_20"
-        android:layout_marginTop="@dimen/dimen_size_15"
-        android:layout_marginRight="@dimen/dimen_size_20"
-        android:visibility="gone"
-        android:background="@drawable/shape_conner_blue_button_bg"
-        android:gravity="center"
-        android:text="成品出库(非销售,其他出库)" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dimen_size_10"
-        android:visibility="gone"
+        android:background="@android:color/background_light"
         android:orientation="vertical">
+        <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+            android:layout_width="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:app_title_text="仓库管理"
+            android:layout_height="50dp"/>
 
+        <TextView
+            android:id="@+id/tv_stock_system_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="仓库管理"
+            />
 
-        <TableLayout
+        <TextView
+            android:id="@+id/product_main_other_in_textView"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品入库(其他入库)" />
+
+        <TextView
+            android:id="@+id/product_main_scan_code_box_in_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品入库(扫托盘标签)" />
+
+        <TextView
+            android:id="@+id/product_main_scan_code_box_in_Not_Pallet_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品入库(非托盘)" />
+
+        <TextView
+            android:id="@+id/product_main_scan_box_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品入库(扫描MES箱号)"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/product_main_sale_out_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:visibility="gone"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品出库(销售)MES及三点照合" />
+
+        <TextView
+            android:id="@+id/product_main_sale_out_code_box_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品出库(扫托盘标签)" />
+
+        <TextView
+            android:id="@+id/product_main_move_pallet_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品移库(托盘)" />
+
+        <TextView
+            android:id="@+id/product_main_move_not_pallet_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品移库(非托盘)" />
+
+        <TextView
+            android:id="@+id/product_main_other_out_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:visibility="gone"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品出库(非销售,其他出库)" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:visibility="gone"
+            android:orientation="vertical">
 
-            android:stretchColumns="1,3">
 
-            <TableRow
+            <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingBottom="5dp"
-                android:paddingLeft="5dp"
-                android:paddingTop="5dp">
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@mipmap/greenhouse" />
+                android:stretchColumns="1,3">
 
-                <Button
-                    android:id="@+id/stock_product_scan_into_tray_Button"
+                <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_gravity="left"
-                    android:background="@drawable/squarebutton"
-                    android:text="扫描(托盘)入库"
-                    android:textColor="#ffffff"
-                    android:textSize="18sp" />
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp">
+
+                    <ImageView
+                        android:id="@+id/imageView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/greenhouse" />
+
+                    <Button
+                        android:id="@+id/stock_product_scan_into_tray_Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="扫描(托盘)入库"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
 
 
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@mipmap/xenogenesis_2" />
+                    <ImageView
+                        android:id="@+id/imageView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
 
-                <Button
-                    android:id="@+id/stock_product_scan_into_non_tray_Button"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:layout_gravity="left"
-                    android:background="@drawable/squarebutton"
-                    android:text="扫描(非托盘)入库"
-                    android:textColor="#ffffff"
-                    android:textSize="18sp" />
+                    <Button
+                        android:id="@+id/stock_product_scan_into_non_tray_Button"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="扫描(非托盘)入库"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
 
-            </TableRow>
+                </TableRow>
 
 
-            <!--<TableRow-->
+                <!--<TableRow-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="match_parent"-->
                 <!--android:paddingBottom="5dp"-->
@@ -156,243 +197,245 @@
                 <!--android:paddingTop="5dp">-->
 
                 <!--<ImageView-->
-                    <!--android:id="@+id/imageView3"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--app:srcCompat="@mipmap/monster_mike" />-->
+                <!--android:id="@+id/imageView3"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--app:srcCompat="@mipmap/monster_mike" />-->
 
                 <!--<Button-->
-                    <!--android:id="@+id/btn_product_return"-->
-                    <!--android:layout_width="100dp"-->
-                    <!--android:layout_height="60dp"-->
-                    <!--android:layout_gravity="left"-->
-                    <!--android:background="@drawable/squarebutton"-->
-                    <!--android:text="返工出库"-->
-                    <!--android:textColor="#ffffff"-->
-                    <!--android:textSize="18sp" />-->
+                <!--android:id="@+id/btn_product_return"-->
+                <!--android:layout_width="100dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:layout_gravity="left"-->
+                <!--android:background="@drawable/squarebutton"-->
+                <!--android:text="返工出库"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="18sp" />-->
 
                 <!--<ImageView-->
-                    <!--android:id="@+id/imageView4"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--app:srcCompat="@mipmap/xmas_4" />-->
+                <!--android:id="@+id/imageView4"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--app:srcCompat="@mipmap/xmas_4" />-->
 
                 <!--<Button-->
-                    <!--android:id="@+id/btn_move_stock_area"-->
-                    <!--android:layout_width="100dp"-->
-                    <!--android:layout_height="60dp"-->
-                    <!--android:layout_gravity="left"-->
-                    <!--android:background="@drawable/squarebutton"-->
-                    <!--android:paddingBottom="5dp"-->
-                    <!--android:text="移动库位"-->
-                    <!--android:textColor="#ffffff"-->
-                    <!--android:textSize="18sp" />-->
-
-            <!--</TableRow>-->
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="5dp"
-                android:paddingLeft="5dp"
-                android:paddingTop="5dp">
-
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@mipmap/monster_yellow" />
-
-                <Button
-                    android:id="@+id/stock_product_send_goods_tray_Button"
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="left"
-                    android:background="@drawable/squarebutton"
-                    android:text="生产发货(托盘)"
-                    android:textColor="#ffffff"
-                    android:textSize="18sp" />
-
-                <ImageView
-                    android:id="@+id/imageView8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@mipmap/monster_blue" />
-
-                <Button
-                    android:id="@+id/stock_product_send_goods_non_tray_Button"
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="left"
-                    android:background="@drawable/squarebutton"
-                    android:text="生产发货(非托盘)"
-                    android:textColor="#ffffff"
-                    android:textSize="18sp" />
-            </TableRow>
-
-            <!--<TableRow-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
+                <!--android:id="@+id/btn_move_stock_area"-->
+                <!--android:layout_width="100dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:layout_gravity="left"-->
+                <!--android:background="@drawable/squarebutton"-->
                 <!--android:paddingBottom="5dp"-->
-                <!--android:paddingLeft="5dp"-->
-                <!--android:paddingTop="5dp">-->
+                <!--android:text="移动库位"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="18sp" />-->
 
-                <!--<ImageView-->
-                    <!--android:id="@+id/imageView5"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--app:srcCompat="@mipmap/folder_1" />-->
+                <!--</TableRow>-->
 
-                <!--<Button-->
-                    <!--android:id="@+id/btn_query_product_inv"-->
-                    <!--android:layout_width="100dp"-->
-                    <!--android:layout_height="60dp"-->
-                    <!--android:layout_gravity="left"-->
-                    <!--android:background="@drawable/squarebutton"-->
-                    <!--android:text="成品库存"-->
-                    <!--android:textColor="#ffffff"-->
-                    <!--android:textSize="18sp" />-->
-
-                <!--<ImageView-->
-                    <!--android:id="@+id/imageView6"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--app:srcCompat="@mipmap/book" />-->
-
-                <!--<Button-->
-                    <!--android:id="@+id/btn_query_part_inv"-->
-                    <!--android:layout_width="100dp"-->
-                    <!--android:layout_height="60dp"-->
-                    <!--android:layout_gravity="left"-->
-                    <!--android:background="@drawable/squarebutton"-->
-                    <!--android:text="零部件库存"-->
-                    <!--android:textColor="#ffffff"-->
-                    <!--android:textSize="14sp" />-->
-            <!--</TableRow>-->
-
-
-            <!--<TableRow-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:paddingBottom="5dp"-->
-                <!--android:paddingLeft="5dp"-->
-                <!--android:paddingTop="5dp">-->
-
-                <!--<ImageView-->
-
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--app:srcCompat="@mipmap/roundbutton4" />-->
-
-                <!--<Button-->
-                    <!--android:id="@+id/btn_check_inv_worksite"-->
-                    <!--android:layout_width="100dp"-->
-                    <!--android:layout_height="60dp"-->
-                    <!--android:layout_gravity="left"-->
-                    <!--android:background="@drawable/squarebutton"-->
-                    <!--android:text="在制品盘存"-->
-                    <!--android:textColor="#ffffff"-->
-                    <!--android:textSize="18sp" />-->
-
-                <!--<ImageView-->
-
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_gravity="center_vertical"-->
-                    <!--app:srcCompat="@mipmap/box_2" />-->
-
-                <!--<Button-->
-                    <!--android:id="@+id/btn_check_part_inv"-->
-                    <!--android:layout_width="100dp"-->
-                    <!--android:layout_height="60dp"-->
-                    <!--android:layout_gravity="left"-->
-                    <!--android:background="@drawable/squarebutton"-->
-                    <!--android:text="@string/part_inv_check"-->
-                    <!--android:textColor="#ffffff"-->
-                    <!--android:textSize="14sp" />-->
-            <!--</TableRow>-->
-
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="5dp"
-                android:paddingLeft="5dp"
-                android:paddingTop="5dp">
-
-                <ImageView
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    app:srcCompat="@mipmap/roundutton2" />
-
-                <Button
-                    android:id="@+id/stock_product_send_goods_command_Button"
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="left"
-                    android:background="@drawable/squarebutton"
-                    android:text="发货指令"
-                    android:textColor="#ffffff"
-                    android:textSize="18sp" />
-
-
-                <ImageView
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:visibility="visible"
-                    app:srcCompat="@mipmap/monster_blue" />
-
-                <Button
-                    android:id="@+id/product_department_in_button"
-                    android:layout_width="100dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="left"
-                    android:background="@drawable/squarebutton"
-                    android:text="部门领料"
-                    android:textColor="#ffffff"
-                    android:textSize="14sp"
-                    android:visibility="visible" />
-            </TableRow>
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="5dp"
-                android:paddingLeft="5dp"
-                android:paddingTop="5dp">
-
-                <ProgressBar
-                    android:id="@+id/pb_scan_progressbar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:visibility="invisible" />
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fab_test_tcp_net"
+                <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    app:backgroundTint="@android:color/background_light"
-                    app:srcCompat="@mipmap/smiley"
-                    app:useCompatPadding="false" />
-            </TableRow>>
-        </TableLayout>
+                    android:layout_height="match_parent"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp">
 
+                    <ImageView
+                        android:id="@+id/imageView7"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/monster_yellow" />
+
+                    <Button
+                        android:id="@+id/stock_product_send_goods_tray_Button"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="生产发货(托盘)"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/imageView8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/monster_blue" />
+
+                    <Button
+                        android:id="@+id/stock_product_send_goods_non_tray_Button"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="生产发货(非托盘)"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+                </TableRow>
+
+                <!--<TableRow-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:paddingBottom="5dp"-->
+                <!--android:paddingLeft="5dp"-->
+                <!--android:paddingTop="5dp">-->
+
+                <!--<ImageView-->
+                <!--android:id="@+id/imageView5"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--app:srcCompat="@mipmap/folder_1" />-->
+
+                <!--<Button-->
+                <!--android:id="@+id/btn_query_product_inv"-->
+                <!--android:layout_width="100dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:layout_gravity="left"-->
+                <!--android:background="@drawable/squarebutton"-->
+                <!--android:text="成品库存"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="18sp" />-->
+
+                <!--<ImageView-->
+                <!--android:id="@+id/imageView6"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--app:srcCompat="@mipmap/book" />-->
+
+                <!--<Button-->
+                <!--android:id="@+id/btn_query_part_inv"-->
+                <!--android:layout_width="100dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:layout_gravity="left"-->
+                <!--android:background="@drawable/squarebutton"-->
+                <!--android:text="零部件库存"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="14sp" />-->
+                <!--</TableRow>-->
+
+
+                <!--<TableRow-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:paddingBottom="5dp"-->
+                <!--android:paddingLeft="5dp"-->
+                <!--android:paddingTop="5dp">-->
+
+                <!--<ImageView-->
+
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--app:srcCompat="@mipmap/roundbutton4" />-->
+
+                <!--<Button-->
+                <!--android:id="@+id/btn_check_inv_worksite"-->
+                <!--android:layout_width="100dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:layout_gravity="left"-->
+                <!--android:background="@drawable/squarebutton"-->
+                <!--android:text="在制品盘存"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="18sp" />-->
+
+                <!--<ImageView-->
+
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_vertical"-->
+                <!--app:srcCompat="@mipmap/box_2" />-->
+
+                <!--<Button-->
+                <!--android:id="@+id/btn_check_part_inv"-->
+                <!--android:layout_width="100dp"-->
+                <!--android:layout_height="60dp"-->
+                <!--android:layout_gravity="left"-->
+                <!--android:background="@drawable/squarebutton"-->
+                <!--android:text="@string/part_inv_check"-->
+                <!--android:textColor="#ffffff"-->
+                <!--android:textSize="14sp" />-->
+                <!--</TableRow>-->
+
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp">
+
+                    <ImageView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/roundutton2" />
+
+                    <Button
+                        android:id="@+id/stock_product_send_goods_command_Button"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="发货指令"
+                        android:textColor="#ffffff"
+                        android:textSize="18sp" />
+
+
+                    <ImageView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:visibility="visible"
+                        app:srcCompat="@mipmap/monster_blue" />
+
+                    <Button
+                        android:id="@+id/product_department_in_button"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="部门领料"
+                        android:textColor="#ffffff"
+                        android:textSize="14sp"
+                        android:visibility="visible" />
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp">
+
+                    <ProgressBar
+                        android:id="@+id/pb_scan_progressbar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:visibility="invisible" />
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fab_test_tcp_net"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        app:backgroundTint="@android:color/background_light"
+                        app:srcCompat="@mipmap/smiley"
+                        app:useCompatPadding="false" />
+                </TableRow>>
+            </TableLayout>
+
+
+        </LinearLayout>
+
+
+        <!--</LinearLayout>-->
 
     </LinearLayout>
 
-
-    <!--</LinearLayout>-->
-
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>

@@ -46,23 +46,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /***
- * @date 创建时间 2020/10/29 15:05
- * @author 作者: xxblwf
- * @description 扫描ERP程序生成的托盘标签入库，成品
+ * @date 创建时间 2022/7/22 9:43 AM
+ * @author 作者: liweifeng
+ * @description 扫描非托盘 入库
  */
-
-public class ProductInScanCodeBoxActivity extends BaseActivity implements View.OnClickListener {
-    @BindView(R.id.product_in_scan_code_box_scan_button) Button scanBoxButton;
-    @BindView(R.id.product_in_scan_code_box_scan_area_button) Button scanAreaButton;
-    @BindView(R.id.product_in_scan_code_box_warehouse_in_button) Button warehouseInButton;
-    @BindView(R.id.product_in_scan_code_box_input_EditText) EditText inputEditText;
-    @BindView(R.id.product_in_scan_code_box_recyclerView) CustomRecyclerView recyclerView;
-    @BindView(R.id.product_in_scan_code_box_select_wc_button) Button selectWcButton;
-    @BindView(R.id.product_in_scan_code_box_wc_name_textView) TextView wcNameTextView;
-    @BindView(R.id.product_in_scan_code_box_select_NO_button) Button selectNOButton;
-    @BindView(R.id.product_in_scan_code_box_NO_textView) TextView NOTextView;
-    @BindView(R.id.product_in_scan_code_box_item_info_textview) TextView itemInfoTextView;
-    @BindView(R.id.product_in_scan_code_box_ist_info_textview) TextView istInfoTextView;
+public class ProductNotPalletInActivity extends BaseActivity implements View.OnClickListener {
+    @BindView(R.id.product_not_pallet_scan_button) Button scanBoxButton;
+    @BindView(R.id.product_not_pallet_scan_area_button) Button scanAreaButton;
+    @BindView(R.id.product_not_pallet_warehouse_in_button) Button warehouseInButton;
+    @BindView(R.id.product_not_pallet_input_EditText) EditText inputEditText;
+    @BindView(R.id.product_not_pallet_recyclerView) CustomRecyclerView recyclerView;
+    @BindView(R.id.product_not_pallet_select_wc_button) Button selectWcButton;
+    @BindView(R.id.product_not_pallet_wc_name_textView) TextView wcNameTextView;
+    @BindView(R.id.product_not_pallet_select_NO_button) Button selectNOButton;
+    @BindView(R.id.product_not_pallet_NO_textView) TextView NOTextView;
+    @BindView(R.id.product_not_pallet_item_info_textview) TextView itemInfoTextView;
+    @BindView(R.id.product_not_pallet_ist_info_textview) TextView istInfoTextView;
 
     private WcIdNameEntity wcIdNameEntity;
     private String scanContent;
@@ -91,6 +90,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         }
     };
     private String remark;
+    private String recordNO;
     private String listNo;//单据号
     private String lotNO;
     private int boxId;
@@ -102,7 +102,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        setContentView(R.layout.activity_product_scan_code_box_in_layout);
+        setContentView(R.layout.activity_product_not_pallet_in_layout);
         //保存所有已扫过的boxID，去重复判断
 //        String boxIDListString = SPSingleton.get().getString(SPDefine.KEY_code_box_id_List);
         Type type = new TypeToken<ArrayList<Integer>>() {
@@ -190,14 +190,14 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 //                    if (boxIDList.contains(boxId)){
 //                        ToastUtil.showToastShort("该托盘已入库，请勿重复入库！");
 //                    }else{
-                        itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s",qrContent[1],qrContent[3],qrContent[5],qrContent[7]));
-                        inputEditText.setText("");
-                        hasScanItem = true;
+                    itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s",qrContent[1],qrContent[3],qrContent[5],qrContent[7]));
+                    inputEditText.setText("");
+                    hasScanItem = true;
 //                    }
                 } else if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
                     //仓库位置码
                     scanContent = content;
-                    GetProductIstAsyncTask task = new GetProductIstAsyncTask();
+                    ProductNotPalletInActivity.GetProductIstAsyncTask task = new ProductNotPalletInActivity.GetProductIstAsyncTask();
                     task.execute();
                 }
             }
@@ -256,7 +256,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 
     private void handleSelectNO() {
         if (commonSelectInputDialog == null) {
-            commonSelectInputDialog = new CommonSelectInputDialog(ProductInScanCodeBoxActivity.this);
+            commonSelectInputDialog = new CommonSelectInputDialog(ProductNotPalletInActivity.this);
         }
         commonSelectInputDialog.show();
         commonSelectInputDialog.setOnViewClickListener(onViewClickListener);
@@ -426,7 +426,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                 public void onViewClick(Dialog dialog, View v, int tag) {
                     switch (tag) {
                         case CommAlertDialog.TAG_CLICK_LEFT:
-                            CommonUtil.doLogout(ProductInScanCodeBoxActivity.this);
+                            CommonUtil.doLogout(ProductNotPalletInActivity.this);
                             dialog.dismiss();
                             break;
                     }
@@ -492,7 +492,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         @Override
         protected Void doInBackground(String... params) {
 
-            ws_result = WebServiceUtil.op_Product_Manu_In_Pallet(boxId, thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),remark);
+            ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet_Scan_Code_Box(boxId, thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),recordNO,remark);
 
             return null;
         }
@@ -510,12 +510,12 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
             if (ws_result != null) {
                 if (!ws_result.getResult()) {
                     //Toast.makeText(StockInActivity.this,ws_result.getErrorInfo(),Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
+                    CommonUtil.ShowToast(ProductNotPalletInActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
 
                 } else {
                     //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
 //                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
-                    CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, "入库完成", R.mipmap.smiley);
+                    CommonUtil.ShowToast(ProductNotPalletInActivity.this, "入库完成", R.mipmap.smiley);
                     hasScanItem = false;
                     inputEditText.setText("");
                     itemInfoTextView.setText("物料信息");
