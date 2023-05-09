@@ -56,6 +56,8 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button lookQRButton;
     private Button zaiZhiPinCheckButton;
     private Button logisticsReceiveButton;
+    private Button packPackageButton;//编辑拆解包装内容
+    private Button unpackPackageButton;//编辑增加包装内容
 
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
@@ -89,6 +91,8 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         selfProductReturnGoodsButton = findViewById(R.id.btn_return_goods_self_produce);
         sendGoodsManageButton = findViewById(R.id.btn_send_goods_manage);
         logisticsReceiveButton = findViewById(R.id.btn_logistics_receive);
+        packPackageButton = findViewById(R.id.btn_part_package_pack);
+        unpackPackageButton = findViewById(R.id.btn_part_package_unpack);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -152,6 +156,8 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         selfProductReturnGoodsButton.setOnClickListener(this);
         sendGoodsManageButton.setOnClickListener(this);
         logisticsReceiveButton.setOnClickListener(this);
+        packPackageButton.setOnClickListener(this);
+        unpackPackageButton.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -257,6 +263,12 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         }else if (view == scanToStockWithDateButton){
             Intent intent = new Intent(StockPartMainActivity.this, StockInWithDateActivity.class);
             startActivity(intent);
+        }else if (view == packPackageButton){
+            Intent intent = new Intent(StockPartMainActivity.this, PartPackPackageActivity.class);
+            startActivity(intent);
+        }else if (view == unpackPackageButton){
+//            Intent intent = new Intent(StockPartMainActivity.this, StockInWithDateActivity.class);
+//            startActivity(intent);
         }
     }
 

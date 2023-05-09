@@ -135,7 +135,10 @@ public class StockOutMoreExtraActivity extends BaseActivity {
             if (remarkDialog == null){
                 remarkDialog = new CommonSelectInputDialog(StockOutMoreExtraActivity.this);
             }
+//            remarkDialog.setSelectOnly(true);
             remarkDialog.show();
+            //这句必须放在show之后
+            remarkDialog.setSelectOnly(true);
             remarkDialog.setOnViewClickListener(onViewClickListener);
         });
 
@@ -155,9 +158,12 @@ public class StockOutMoreExtraActivity extends BaseActivity {
 
                 if (newissuelist.size() > 0) {
                     if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
-
-                        AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
-                        task.execute();
+                        if (!TextUtils.isEmpty(remark)){
+                            AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
+                            task.execute();
+                        }else{
+                            ToastUtil.showToastShort("额外领料，请选择备注！");
+                        }
                     }else{
                         CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockOutMoreExtraActivity.this)
                                 .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
@@ -398,6 +404,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
                 if (outDate == null){
                     outDate = new Date() ;
                 }
+
                 ws_result = WebServiceUtil.op_Commit_MW_Issue_Extra_Item(themw.getMPIWC_ID(), bi,remark,outDate,scanCodeList.size() == newissuesize ? scanCodeList.get(0):"");
 
                 if (ws_result.getResult() ) {

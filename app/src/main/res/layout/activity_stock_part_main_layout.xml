@@ -487,6 +487,47 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp">
 
+                    <ImageView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_part_package_pack"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="编辑拆解包装内容"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/greenhouse" />
+
+                    <Button
+                        android:id="@+id/btn_part_package_unpack"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="编辑增加包装内容"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
                     <ProgressBar
                         android:id="@+id/pb_scan_progressbar"
                         android:layout_width="wrap_content"

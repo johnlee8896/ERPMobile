@@ -2,32 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
     android:background="@drawable/underline"
-    android:minHeight="40dp">
+    android:minHeight="40dp"
+
+    android:paddingLeft="@dimen/dimen_size_5"
+    android:paddingRight="@dimen/dimen_size_5">
+
+
+
+
 
     <TextView
         android:id="@+id/tv_issue_more_item_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="fill_vertical"
-        android:text="物品" />
+        android:text="pse127000-6012固定轮-z5 s4"
+        android:textColor="@color/black" />
 
     <TextView
         android:id="@+id/tv_issue_more_item_lotno"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="fill_vertical"
-        android:text="批次" />
+        android:text="202304879797989789@托盘128"
+        android:textColor="@color/black" />
 
-    <TextView
+    <EditText
         android:id="@+id/tv_return_item_qty"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="fill_vertical"
-        android:text="数量" />
+        android:text="30007989789@托盘128"
+        android:textColor="@color/black" />
 
 </LinearLayout>

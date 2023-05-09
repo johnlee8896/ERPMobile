@@ -11,7 +11,7 @@ import com.hwariot.lib.APILibAPP;
 
 /***
  *@date 创建时间 2018/5/8 09:52
- *@author 作者: YuLong
+ *@author 作者: liweifeng
  *@description  网络相关的工具类
  */
 public final class NetWorkUtils {

@@ -35,6 +35,7 @@ public class StockQueryPartItemActivity extends BaseActivity {
     private PartsEntity selected_item;
     private List<Item_Lot_Inv> itemLotInvList;
     private TextView titleNameTextView;
+    //john 2023-05-06 先将库存冻结，解冻 关闭
     private Button freezeButton;
     private Button unFreezeButton;
 

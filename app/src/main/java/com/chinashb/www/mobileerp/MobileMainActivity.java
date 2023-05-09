@@ -296,8 +296,11 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 ToastUtil.showToastLong("请先登录");
                 return;
             }
-//            Intent intent = new Intent(MobileMainActivity.this, SelectItemActivity.class);
             jumpToSwitchBuActivity();
+
+//            Intent intent = new Intent(MobileMainActivity.this, ImageManageActivity.class);
+//            startActivity(intent);
+
         } else if (view == planTextView) {
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");

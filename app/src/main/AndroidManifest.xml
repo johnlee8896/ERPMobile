@@ -94,6 +94,7 @@
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".warehouse.WarehouseStockQueryActivity" />
+        <activity android:name=".ImageManageActivity" />
 
         <!--&lt;!&ndash;成品扫箱号入库&ndash;&gt;-->
         <!--<activity-->
@@ -103,6 +104,11 @@
         <!--追踪物流信息测试页面-->
         <activity
             android:name=".LocationGPSActivity"
+            android:screenOrientation="portrait" />
+
+        <!--追踪物流信息测试页面-->
+        <activity
+            android:name=".warehouse.PartPackPackageActivity"
             android:screenOrientation="portrait" />
 
         <!--追踪物流信息页面-->

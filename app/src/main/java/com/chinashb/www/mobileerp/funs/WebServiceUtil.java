@@ -89,6 +89,10 @@ public class WebServiceUtil {
 
 //    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet = "http://172.19.1.26:8100/Service.svc";
+//    private static String URL_Intranet = "http://172.19.1.26:8100/Test_Wss/Service.svc";
+//    private static String URL_Intranet_BackUp = "http://172.16.1.24:8100/Test_Wss/Service.svc";
+
+
     private static String URL_Intranet = "http://172.19.1.26:8100/Test_Wss/Service.svc";
     private static String URL_Intranet_BackUp = "http://172.16.1.24:8100/Test_Wss/Service.svc";
     private static String URL_Intranet_Internet_QueryWage = "http://172.16.1.80:8100/WageQueryWeb/Service.svc";
@@ -3055,16 +3059,18 @@ public class WebServiceUtil {
 
     public static WsResult op_Commit_Return_Item(BoxItemEntity bi) {
 //        WsResult Result = op_Commit_Return_Item(UserInfoEntity.ID, bi.getDIII_ID());
-        WsResult Result = op_Commit_Return_Item(UserSingleton.get().getHRID(), bi.getDIII_ID());
+        String qty = String.valueOf(bi .getQty());
+        WsResult Result = op_Commit_Return_Item(UserSingleton.get().getHRID(), bi.getDIII_ID(),qty);
         return Result;
     }
 
-    public static WsResult op_Commit_Return_Item(int Sender, Long DIII_ID) {
+    public static WsResult op_Commit_Return_Item(int Sender, Long DIII_ID,String qty) {
         String webMethodName = "op_Commit_Return_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
         AddPropertyInfo(propertyInfos, "Exer", Sender);
         AddPropertyInfo(propertyInfos, "DIII_ID", DIII_ID);
+        AddPropertyInfo(propertyInfos, "Qty", qty);
 
 
         WsResult ws_result;
@@ -4025,6 +4031,90 @@ public class WebServiceUtil {
 
 
 //        return null;
+    }
+
+
+    public static boolean op_TopBox_Depack(String SMT_ID, List<Long> chidlBoxIDList,boolean isChildSMM) {
+
+        String webMethodName = "op_TopBox_Depack_SMLi";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "SMT_ID", SMT_ID);
+//        AddPropertyInfo(propertyInfos, "SMLi_ID_List", chidlBoxIDList);
+        AddPropertyInfo(propertyInfos, "SMLi", chidlBoxIDList);
+        if(isChildSMM){
+            webMethodName = "op_TopBox_Depack_SMM";
+            propertyInfos = new ArrayList<>();
+            AddPropertyInfo(propertyInfos, "SMT_ID", SMT_ID);
+//            AddPropertyInfo(propertyInfos, "SMM_ID_List", chidlBoxIDList);
+            AddPropertyInfo(propertyInfos, "SMM_ID", chidlBoxIDList);
+        }
+
+//        //记录机器访问的ip服务
+//        String finalUrl = URL;
+//        if (UserSingleton.get().isCurrentInnerNetLink() || TextUtils.equals(Current_Net_Link,"Intranet")){
+//            finalUrl = UserSingleton.get().isServerBack() ? "http://172.16.1.24:8100/Test_Wss/Service.svc" : "http://172.16.1.80:8100/Test_Wss/Service.svc";
+//
+//        }else{
+//            finalUrl = UserSingleton.get().isServerBack()? URL_BackUp : URL;
+//
+//        }
+//        AddPropertyInfo(propertyInfos, "IP_Server_Address", finalUrl);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+
+
+        SoapPrimitive response = null;
+        try {
+            response = (SoapPrimitive) envelope.getResponse();
+        } catch (SoapFault soapFault) {
+            soapFault.printStackTrace();
+        }
+        if (response != null && TextUtils.equals(response.toString().toLowerCase(),"true")){
+            return true;
+        }else{
+            return false;
+        }
+
+//        //20210421 解决 登录闪退的问题 // TODO: 2023/4/13  这里不能用这些
+//        if (envelope.bodyIn instanceof SoapFault) {
+//            WsResult result = new WsResult();
+//            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+//            result.setResult(false);
+//            return result;
+//        } else {
+////            SoapObject obj = (SoapObject) envelope.bodyIn;
+////            WsResult ws_result = Get_WS_Result(obj);
+////            return ws_result;
+//
+//            SoapObject obj = (SoapObject) envelope.bodyIn;
+//            WsResult result = new WsResult();
+//            if (obj != null) {
+//                int count = obj.getPropertyCount();
+//                SoapObject obj2;
+//                for (int i = 0; i < count; i++) {
+//                    obj2 = (SoapObject) obj.getProperty(i);
+//                    result.setResult(Boolean.parseBoolean(obj2.getProperty("Result").toString()));
+//                    if (!result.getResult()) {
+//                        result.setErrorInfo(obj2.getProperty("ErrorInfo").toString());
+//                    } else {
+//                        result.setID(Long.parseLong(obj2.getProperty("ID").toString()));
+////                    result.setHR_NO(obj2.getProperty("HR_NO").toString());
+////                    result.setHR_IDCardNO(obj2.getProperty("HR_IDCard_NO").toString());
+//                    }
+//                }
+//
+//            } else {
+//                result.setResult(false);
+//                result.setErrorInfo("无法访问服务器，请检查网络连接是否正常");
+//            }
+//            return result;
+//        }
+
+
+
+
+//        return null;
+//        return false;
     }
 
     public static WsResult verifyHRAndRegisterNuclein(int HR_ID,String HR_NO) {

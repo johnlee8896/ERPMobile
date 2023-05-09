@@ -11,13 +11,27 @@
     </string-array>
 
     <!--生产投料中额外领料中常用备注-->
+<!--    <string-array name="select_remark_array">-->
+<!--        <item>辅助材料</item>-->
+<!--        <item>包装材料</item>-->
+<!--        <item>工程更改，优先使用</item>-->
+<!--        <item>拆解件</item>-->
+<!--        <item>前一批物料暂停使用</item>-->
+<!--        <item>项目专用物料</item>-->
+<!--    </string-array>-->
+
     <string-array name="select_remark_array">
-        <item>辅助材料</item>
+        <item>质量原因</item>
+        <item>跟进物料</item>
+        <item>返修品</item>
+        <item>产线配用（返修品）</item>
+        <item>来料少及报废补实物</item>
+        <item>来料多补账</item>
+        <item>物料配用</item>
+        <item>丝杆批次异常</item>
+        <item>提前生产</item>
         <item>包装材料</item>
-        <item>工程更改，优先使用</item>
-        <item>拆解件</item>
-        <item>前一批物料暂停使用</item>
-        <item>项目专用物料</item>
+        <item>双绕线</item>
     </string-array>
 
     <!--物流常用方式-->

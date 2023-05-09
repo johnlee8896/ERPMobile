@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -16,18 +15,17 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
-import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
-import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.ReturnItemAdapter;
+import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
-import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
-
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -112,7 +110,7 @@ public class StockReworkWCActivity extends BaseActivity {
     }
 
     private void parseScanResult(String result) {
-        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
         if (result.contains("/")) {
             String[] qrContent;
@@ -235,6 +233,8 @@ public class StockReworkWCActivity extends BaseActivity {
         protected Void doInBackground(String... params) {
 
             int count = 0;
+            //2023-04-20 数量修改后要保存
+            newissuelist = returnItemAdapter.getDataList();
 
             while (count < 10 && newissuelist.size() > 0) {
                 BoxItemEntity bi = newissuelist.get(0);
