@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--部门领料中常用用途-->
+<!--    <string-array name="select_use_array">-->
+<!--        <item>样品试制</item>-->
+<!--        <item>试验验证</item>-->
+<!--        <item>客户试用</item>-->
+<!--        <item>生产使用</item>-->
+<!--        <item>调试机器</item>-->
+<!--        <item>其他</item>-->
+<!--    </string-array>-->
+    <!--部门领料中常用用途-->
     <string-array name="select_use_array">
         <item>样品试制</item>
-        <item>试验验证</item>
+        <item>技术验证</item>
         <item>客户试用</item>
-        <item>生产使用</item>
+        <item>生产试装</item>
         <item>调试机器</item>
-        <item>其他</item>
     </string-array>
 
     <!--生产投料中额外领料中常用备注-->
@@ -32,6 +40,7 @@
         <item>提前生产</item>
         <item>包装材料</item>
         <item>双绕线</item>
+        <item>自制件未按先进先出入库</item>
     </string-array>
 
     <!--物流常用方式-->

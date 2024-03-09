@@ -183,7 +183,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/dimen_size_20"
         android:paddingRight="@dimen/dimen_size_10"
-        android:text="物料信息"
+        tools:text="物料信息"
         android:textColor="@color/black" />
 
     <TextView

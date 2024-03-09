@@ -3,7 +3,7 @@ package com.chinashb.www.mobileerp.basicobject;
 import java.io.Serializable;
 
 /**
- * Created by Paul on 2017/1/20.
+ * Created by liweifeng on 2017/1/20.
  */
 
 public class UserInfoEntity implements Serializable {

@@ -5,11 +5,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.Gravity;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.chinashb.www.mobileerp.APP;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.ScreenUtil;
+import com.chinashb.www.mobileerp.utils.StringUtils;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +28,9 @@ import butterknife.ButterKnife;
  */
 public class SelectUseDialog extends BaseDialog {
     @BindView(R.id.dialog_select_use_recyclerView) CustomRecyclerView recyclerView;
+    @BindView(R.id.department_input_use_EditText) EditText UseEditText;
+    @BindView(R.id.dialog_use_confirm_Button) Button confirmButton;
+    @BindView(R.id.dialog_usecancel_Button) Button cancelButton;
     private OnViewClickListener onViewClickListener;
     private SelectUseAdapter adapter;
 
@@ -48,9 +55,23 @@ public class SelectUseDialog extends BaseDialog {
         }
         adapter.setData(useList);
 
+        confirmButton.setOnClickListener(v -> {
+            if (!StringUtils.isStringValid(UseEditText.getText().toString())){
+                ToastUtil.showToastShort("您未选择或输入用途！");
+            }else{
+                if (onViewClickListener != null){
+                    onViewClickListener.onClickAction(v,"",UseEditText.getText().toString());
+                }
+            }
+        });
+
+        cancelButton.setOnClickListener(v ->{
+            dismiss();
+        });
+
     }
 
-    public void refreshContent(List<String> stringList){
+    public void refreshContent(List<String> stringList) {
         adapter.setData(stringList);
     }
 

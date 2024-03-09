@@ -101,7 +101,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         }
 
         issueMoreItemAdapter = new IssueMoreItemAdapter(StockOutMoreActivity.this, boxItemEntityList);
-
+        issueMoreItemAdapter.setCanEdit(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         recyclerView.setAdapter(issueMoreItemAdapter);
 
@@ -457,6 +457,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
                     ToastUtil.showToastShort("投料数量不能为负");
                 }else{
                     issueMoreItemAdapter = new IssueMoreItemAdapter(StockOutMoreActivity.this, boxItemEntityList);
+                    issueMoreItemAdapter.setCanEdit(true);
                     recyclerView.setAdapter(issueMoreItemAdapter);
                 }
             }

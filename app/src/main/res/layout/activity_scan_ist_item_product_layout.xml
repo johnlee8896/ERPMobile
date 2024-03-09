@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/stock_in_product_title_layoutManager"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="扫描库位查物料" />
+    <EditText
+        android:id="@+id/scan_ist_product_input_EditText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="接收扫描结果"
+        android:paddingLeft="@dimen/dimen_size_20"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14"
+        />
+    <Button
+        android:id="@+id/scan_ist_product_scan_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="相机扫描库位" />
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/scan_ist_product_recyclerView"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:app_layout_style="list_vertical"
+        app:app_item_decoration_type="ITEM_SPACE"
+        android:scrollbars="vertical"
+        tools:itemCount="10"
+        tools:listitem= "@layout/item_scan_ist_product_item_detail_layout"/>
+
+</LinearLayout>

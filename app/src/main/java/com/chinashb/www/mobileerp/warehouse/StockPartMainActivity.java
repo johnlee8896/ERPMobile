@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.BuPlanGoodsActivity;
 import com.chinashb.www.mobileerp.PartWorkLinePutActivity;
+import com.chinashb.www.mobileerp.PhotoCameraActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.SendGoodsManagerActivity;
 import com.chinashb.www.mobileerp.SupplierOrSelfReturnActivity;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class StockPartMainActivity extends BaseActivity implements View.OnClickListener {
+    public static Bitmap userpic;
     RecyclerView mRecyclerView;
     private TextView tvTitle;
     private TextView tvusername;
@@ -47,23 +49,24 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button selfProductButton;//自制车间成品盘点
     private Button completeProductButton;//成品库存
     private Button partStockInButton;//零部件库存
-    private Button workLineInButton ;//生产线领料
-    private Button innerSaleOutButton ;//集团内销售出库
-    private Button buPlanGoodsButton ;//车间要货计划
-    private Button supplierReturnGoodsButton ;//供应商退货
-    private Button selfProductReturnGoodsButton ;//自制车间退货
-    private Button sendGoodsManageButton ;//发货管理
+    private Button workLineInButton;//生产线领料
+    private Button innerSaleOutButton;//集团内销售出库
+    private Button buPlanGoodsButton;//车间要货计划
+    private Button supplierReturnGoodsButton;//供应商退货
+    private Button selfProductReturnGoodsButton;//自制车间退货
+    private Button sendGoodsManageButton;//发货管理
     private Button lookQRButton;
     private Button zaiZhiPinCheckButton;
     private Button logisticsReceiveButton;
     private Button packPackageButton;//编辑拆解包装内容
-    private Button unpackPackageButton;//编辑增加包装内容
-
+    private Button unpackPackageButton;//编辑拆解包
+    private Button photoCameraButton;//图片上传测试
+    private Button scanIstButton;//扫描库位查看物料
+    private Button findMoveRecordButton;//查询移库记录
+    private Button partAllocateSameCompanyButton;//同公司零件调拨
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
     private UserInfoEntity userInfo;
-    public static Bitmap userpic;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +96,10 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         logisticsReceiveButton = findViewById(R.id.btn_logistics_receive);
         packPackageButton = findViewById(R.id.btn_part_package_pack);
         unpackPackageButton = findViewById(R.id.btn_part_package_unpack);
+        photoCameraButton = findViewById(R.id.btn_photo_camera);
+        scanIstButton = findViewById(R.id.btn_part_scan_ist);
+        findMoveRecordButton = findViewById(R.id.btn_find_move_area);
+        partAllocateSameCompanyButton = findViewById(R.id.btn_part_allocate_inner_company);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -109,6 +116,17 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
 
     }
 
+    @Override
+    protected void onResume() {
+        //设置为竖屏幕
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+
+        super.onResume();
+    }
+
     //获取bu 和最新ac_table和inv_table的对应关系并保存
     private void handleGetBuAcAndInvTable() {
 
@@ -120,7 +138,8 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             QueryAsyncTask query = new QueryAsyncTask();
             query.execute(sql);
             query.setLoadDataCompleteListener(new OnLoadDataListener() {
-                @Override public void loadComplete(List<JsonObject> jsonObjectList) {
+                @Override
+                public void loadComplete(List<JsonObject> jsonObjectList) {
                     if (jsonObjectList != null && jsonObjectList.size() > 0) {
                         HashMap<Integer, String> departmentIDNameMap = new HashMap<>();
                         for (JsonObject jsonObject : jsonObjectList) {
@@ -158,6 +177,10 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         logisticsReceiveButton.setOnClickListener(this);
         packPackageButton.setOnClickListener(this);
         unpackPackageButton.setOnClickListener(this);
+        photoCameraButton.setOnClickListener(this);
+        scanIstButton.setOnClickListener(this);
+        findMoveRecordButton.setOnClickListener(this);
+        partAllocateSameCompanyButton.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -178,7 +201,6 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -196,19 +218,6 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-
-
-    @Override
-    protected void onResume() {
-        //设置为竖屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-
-
-        super.onResume();
-    }
-
 
     @Override
     public void onClick(View view) {
@@ -236,39 +245,51 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             selfProduct();
         } else if (view == lookQRButton) {
 //            scanToStock();
-        }else if (view == workLineInButton){
+        } else if (view == workLineInButton) {
             workLineIn();
-        }else if (view == floatButton) {
+        } else if (view == floatButton) {
             Intent intent = new Intent(StockPartMainActivity.this, ShbTcpTest.class);
             startActivity(intent);
-        }else if (view == innerSaleOutButton){
-            Intent intent = new Intent(StockPartMainActivity.this,InnerSaleOutActivity.class);
+        } else if (view == innerSaleOutButton) {
+            Intent intent = new Intent(StockPartMainActivity.this, InnerSaleOutActivity.class);
             startActivity(intent);
-        }else if (view == buPlanGoodsButton){
+        } else if (view == buPlanGoodsButton) {
             Intent intent = new Intent(StockPartMainActivity.this, BuPlanGoodsActivity.class);
             startActivity(intent);
-        }else if (view == supplierReturnGoodsButton){
+        } else if (view == supplierReturnGoodsButton) {
             Intent intent = new Intent(StockPartMainActivity.this, SupplierOrSelfReturnActivity.class);
             startActivity(intent);
-        }else if (view == selfProductReturnGoodsButton){
+        } else if (view == selfProductReturnGoodsButton) {
             Intent intent = new Intent(StockPartMainActivity.this, SupplierOrSelfReturnActivity.class);
-            intent.putExtra(IntentConstant.Intent_Extra_supplier_or_self_return_boolean,true);
+            intent.putExtra(IntentConstant.Intent_Extra_supplier_or_self_return_boolean, true);
             startActivity(intent);
-        }else if (view == sendGoodsManageButton){
+        } else if (view == sendGoodsManageButton) {
             Intent intent = new Intent(StockPartMainActivity.this, SendGoodsManagerActivity.class);
             startActivity(intent);
-        }else if (view == logisticsReceiveButton){
+        } else if (view == logisticsReceiveButton) {
             Intent intent = new Intent(StockPartMainActivity.this, StockLogisticsInActivity.class);
             startActivity(intent);
-        }else if (view == scanToStockWithDateButton){
+        } else if (view == scanToStockWithDateButton) {
             Intent intent = new Intent(StockPartMainActivity.this, StockInWithDateActivity.class);
             startActivity(intent);
-        }else if (view == packPackageButton){
+        } else if (view == packPackageButton) {
             Intent intent = new Intent(StockPartMainActivity.this, PartPackPackageActivity.class);
             startActivity(intent);
-        }else if (view == unpackPackageButton){
+        } else if (view == unpackPackageButton) {
 //            Intent intent = new Intent(StockPartMainActivity.this, StockInWithDateActivity.class);
 //            startActivity(intent);
+        } else if (view == photoCameraButton) {
+            Intent intent = new Intent(StockPartMainActivity.this, PhotoCameraActivity.class);
+            startActivity(intent);
+        } else if (view == scanIstButton) {
+            Intent intent = new Intent(StockPartMainActivity.this, ScanIstFindItemActivity.class);
+            startActivity(intent);
+        } else if (view == findMoveRecordButton) {
+            Intent intent = new Intent(StockPartMainActivity.this, MoveRecordActivity.class);
+            startActivity(intent);
+        } else if (view == partAllocateSameCompanyButton) {
+            Intent intent = new Intent(StockPartMainActivity.this, PartAllocateTransferInnerCompanyActivity.class);
+            startActivity(intent);
         }
     }
 
@@ -280,7 +301,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
             Intent intent = new Intent(StockPartMainActivity.this, StockCheckPartInvActivity.class);
-            intent.putExtra(IntentConstant.Intent_Extra_check_self_product,true);
+            intent.putExtra(IntentConstant.Intent_Extra_check_self_product, true);
             intent.putExtra("Ac_Type", 2);
 
             startActivity(intent);
@@ -302,8 +323,8 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         } else {
             Intent intent = new Intent(StockPartMainActivity.this, StockCheckPartInvActivity.class);
             intent.putExtra("Ac_Type", 1);
-            intent.putExtra(IntentConstant.Intent_Extra_check_from_zaizhipin,fromZaiZhiPin);
-            intent.putExtra(IntentConstant.Intent_Extra_check_part,true);
+            intent.putExtra(IntentConstant.Intent_Extra_check_from_zaizhipin, fromZaiZhiPin);
+            intent.putExtra(IntentConstant.Intent_Extra_check_part, true);
             startActivity(intent);
         }
     }
@@ -312,8 +333,29 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         if (userInfo == null) {
             Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
+
+//            SelectStorageAreaDialog dialog = new SelectStorageAreaDialog(StockPartMainActivity.this, 1);
+//            dialog.show();
+//            dialog.setOnViewClickListener(new OnViewClickListener() {
+//                @Override
+//                public <T> void onClickAction(View v, String tag, T t) {
+//                    if (t != null) {
+//                        SelectStorageAreaBean bean = (SelectStorageAreaBean) t;
+//                        if (bean != null) {
+//                            Intent intent = new Intent(StockPartMainActivity.this, StockQueryPartActivity.class);
+//                            intent.putExtra(IntentConstant.Intent_Extra_storage_area_bean,bean);
+//                            startActivity(intent);
+//                            if (dialog != null && dialog.isShowing()){
+//                                dialog.dismiss();
+//                            }
+//                        }
+//                    }
+//                }
+//            });
             Intent intent = new Intent(StockPartMainActivity.this, StockQueryPartActivity.class);
+//          intent.putExtra(IntentConstant.Intent_Extra_storage_area_bean,bean);
             startActivity(intent);
+
         }
     }
 

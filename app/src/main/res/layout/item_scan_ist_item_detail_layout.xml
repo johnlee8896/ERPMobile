@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_size_10"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_size_10"
+    android:paddingLeft="@dimen/dimen_size_10"
+    android:paddingRight="@dimen/dimen_size_10"
+    android:paddingBottom="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Item_ID:" />
+
+            <TextView
+                android:id="@+id/item_scan_ist_item_id_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="DX0000" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="名称:" />
+
+            <TextView
+                android:id="@+id/item_scan_ist_item_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                tools:text="A06.A06-01-01" />
+
+        </LinearLayout>
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="@dimen/dimen_size_10"-->
+<!--            android:layout_marginTop="@dimen/dimen_size_5"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:text="型号:" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/item_scan_item_spec_textView"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:layout_marginLeft="@dimen/dimen_size_5"-->
+<!--                tools:text="是" />-->
+
+<!--        </LinearLayout>-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="物料版本:" />
+
+            <TextView
+                android:id="@+id/item_scan_ist_item_version_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="DX0000" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="存储单元:" />
+
+            <TextView
+                android:id="@+id/item_scan_ist_area_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                tools:text="A06.A06-01-01" />
+
+        </LinearLayout>
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--            android:layout_marginTop="@dimen/dimen_size_5"-->
+        <!--            android:orientation="horizontal">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:text="库存:" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/item_scan_stock_number_textView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_marginLeft="@dimen/dimen_size_5"-->
+        <!--                android:textSize="@dimen/text_size_17"-->
+        <!--                android:textColor="@color/color_green_27D346"-->
+        <!--                tools:text="是" />-->
+
+        <!--        </LinearLayout>-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="入库日期:" />
+
+            <TextView
+                android:id="@+id/item_scan_ist_box_in_date_stock_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="21911" />
+
+        </LinearLayout>
+
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--            android:layout_marginTop="@dimen/dimen_size_5"-->
+        <!--            android:orientation="horizontal">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:text="入库批次:" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/item_scan_ist_box_in_stock_lot_textView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--                android:textColor="@color/black"-->
+        <!--                tools:text="21911" />-->
+
+        <!--        </LinearLayout>-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="入库批次:" />
+
+        <TextView
+            android:id="@+id/item_scan_ist_box_in_stock_lot_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:textColor="@color/black"
+            tools:text="21911" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="生产日期:" />
+
+            <TextView
+                android:id="@+id/item_scan_ist_make_date_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="18240" />
+
+        </LinearLayout>
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="@dimen/dimen_size_5"-->
+        <!--            android:orientation="horizontal">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--                android:text="生产批次:" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/item_scan_ist_part_make_lot_textView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--                android:textColor="@color/black"-->
+        <!--                tools:text="532后刮" />-->
+
+        <!--        </LinearLayout>-->
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="生产批次:" />
+
+        <TextView
+            android:id="@+id/item_scan_ist_part_make_lot_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:textColor="@color/black"
+            tools:text="532后刮" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="状态:" />
+
+            <TextView
+                android:id="@+id/item_scan_ist_item_state_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="DX0000" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="在库日期:" />
+
+            <TextView
+                android:id="@+id/item_scan_ist_in_days_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                tools:text="是" />
+
+        </LinearLayout>
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--            android:layout_marginTop="@dimen/dimen_size_5"-->
+        <!--            android:orientation="horizontal">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:text="质保天数:" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/item_scan_stock_can_use_days_textView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--                tools:text="是" />-->
+
+        <!--        </LinearLayout>-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="库存:" />
+
+            <TextView
+                android:id="@+id/item_scan_stock_number_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_5"
+                android:textColor="@color/color_green_27D346"
+                android:textSize="@dimen/text_size_17"
+                tools:text="是" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="质保天数:" />
+
+            <TextView
+                android:id="@+id/item_scan_stock_can_use_days_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                tools:text="是" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="型号:" />
+
+            <TextView
+                android:id="@+id/item_scan_item_spec_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_5"
+                tools:text="是" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

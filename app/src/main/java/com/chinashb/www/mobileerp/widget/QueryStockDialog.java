@@ -123,11 +123,12 @@ public class QueryStockDialog extends BaseDialog {
 //                            task.execute(selected_item.getItem_ID());
                                 Intent intent = new Intent(context, PartItemMiddleActivity.class);
                                 intent.putExtra("selected_item", (Serializable) partsEntity);
-                                intent.putExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity);
+//                                intent.putExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity);
+                                intent.putExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity_From_Issue);
 //                                context.startActivityForResult(intent, 100);
                                 Activity activity = (Activity) context;
 //                                getOwnerActivity().startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity);
-                                activity.startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity);
+                                activity.startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity_From_Issue);
                             }
                         }
                 );

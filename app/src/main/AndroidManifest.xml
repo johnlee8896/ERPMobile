@@ -100,6 +100,43 @@
         <!--<activity-->
             <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
             <!--android:screenOrientation="portrait" />-->
+        <!--成品车间仓出账，滁州出给物控，上海出给装配车间-->
+
+        <!--成品移库(非托盘)页面-->
+        <activity
+            android:name=".MoveProductNotPalletActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".warehouse.BuWarehouseAccountOutActivity"
+            android:screenOrientation="portrait" />
+
+
+        <!--成品车间仓入账，尾数-->
+        <activity
+            android:name=".warehouse.BuWarehouseAccountInActivity"
+            android:screenOrientation="portrait" />
+
+        <!--同公司零件调拨-->
+        <activity
+            android:name=".warehouse.PartAllocateTransferInnerCompanyActivity"
+            android:screenOrientation="portrait" />
+        <!--查看某箱的移库记录-->
+        <activity
+            android:name=".warehouse.MoveRecordActivity"
+            android:screenOrientation="portrait" />
+        <!--成品查找当前库位下的物料-->
+        <activity
+            android:name=".warehouse.ScanIstFindProductActivity"
+            android:screenOrientation="portrait" />
+        <!--查找当前库位下的物料-->
+        <activity
+            android:name=".warehouse.ScanIstFindItemActivity"
+            android:screenOrientation="portrait" />
+        <!--选取或拍照页面-->
+        <activity
+            android:name=".PhotoCameraActivity"
+            android:screenOrientation="portrait" />
 
         <!--追踪物流信息测试页面-->
         <activity

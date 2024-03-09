@@ -1,12 +1,16 @@
 package com.chinashb.www.mobileerp;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,10 +56,49 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private TextView switchBUTextView;
     private TextView userNameTextView;
     private TextView nucleinTextView;
+    private TextView versionTextView;
     private ImageView avatarImageView;
+    private TextView testEnvironmentTextView;
 
     private NetWorkReceiver netWorkReceiver;
     private boolean isFromNamePwdCheck = false;
+
+    /**
+     * 获取当前app version code
+     */
+    public static long getAppVersionCode(Context context) {
+        long appVersionCode = 0;
+        try {
+            PackageInfo packageInfo = context.getApplicationContext()
+                    .getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+//                appVersionCode = packageInfo.versionCode;
+//            } else {
+//                appVersionCode = packageInfo.versionCode;
+//            }
+            appVersionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("", e.getMessage());
+        }
+        return appVersionCode;
+    }
+
+    /**
+     * 获取当前app version name
+     */
+    public static String getAppVersionName(Context context) {
+        String appVersionName = "";
+        try {
+            PackageInfo packageInfo = context.getApplicationContext()
+                    .getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            appVersionName = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("", e.getMessage());
+        }
+        return appVersionName;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +108,12 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         getViewFromXML();
 
         setViewListeners();
+        if (UserSingleton.get().isTestEnvironment()){
+            testEnvironmentTextView.setVisibility(View.VISIBLE);
+        }else{
+            testEnvironmentTextView.setVisibility(View.GONE);
+
+        }
         int HRID = getIntent().getIntExtra(IntentConstant.Intent_Extra_hr_id, -1);
         isFromNamePwdCheck = getIntent().getBooleanExtra(IntentConstant.Intent_Extra_from_name_pwd, false);
         if (isFromNamePwdCheck) {
@@ -80,15 +129,49 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         GetStockPermittedListAsyncTask permittedListAsyncTask = new GetStockPermittedListAsyncTask();
         permittedListAsyncTask.execute();
 
-        if (UserSingleton.get().getHRID() == 26009 || UserSingleton.get().getHRID() == 21618){
+        if (UserSingleton.get().getHRID() == 26009 || UserSingleton.get().getHRID() == 21618) {
             nucleinTextView.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             nucleinTextView.setVisibility(View.GONE);
         }
 //        Date date = new Date() ;
 //
 //        date.setTime(System.currentTimeMillis());
+        initVersion();
+        if (getAppVersionCode(MobileMainActivity.this) < 59 ){
 
+            CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(MobileMainActivity.this)
+                    .setTitle("").setMessage("您当前使用版本非最新版本，请退回登录页面进行升级！")
+                    .setLeftText("确定");
+
+
+            builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                @Override
+                public void onViewClick(Dialog dialog, View v, int tag) {
+                    switch (tag) {
+                        case CommAlertDialog.TAG_CLICK_LEFT:
+                            CommonUtil.doLogout(MobileMainActivity.this);
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            });
+            builder.create().show();
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        //设置为竖屏幕
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+        super.onResume();
+    }
+
+    private void initVersion() {
+        versionTextView.setText("系统版本：" + getAppVersionName(MobileMainActivity.this));
     }
 
     protected void getViewFromXML() {
@@ -105,6 +188,8 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         wageQueryTextView = findViewById(R.id.main_wage_query_button);
         attendanceTextView = findViewById(R.id.main_attendance_button);
         nucleinTextView = findViewById(R.id.main_nuclein_button);
+        versionTextView = findViewById(R.id.main_version_button);
+        testEnvironmentTextView = findViewById(R.id.tv_current_test_environment);
     }
 
     protected void setViewListeners() {
@@ -119,6 +204,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         wageQueryTextView.setOnClickListener(this);
         attendanceTextView.setOnClickListener(this);
         nucleinTextView.setOnClickListener(this);
+        versionTextView.setOnClickListener(this);
     }
 
     private String getSqlBu() {
@@ -174,21 +260,38 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        if (netWorkReceiver == null) {
-            unregisterReceiver(netWorkReceiver);
-            System.out.println("注销");
-//        }
+    public void onBackPressed() {
+        CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(MobileMainActivity.this)
+                .setTitle("").setMessage("确定要退出吗？")
+                .setLeftText("确定").setRightText("取消");
+
+
+        builder.setOnViewClickListener(new OnDialogViewClickListener() {
+            @Override
+            public void onViewClick(Dialog dialog, View v, int tag) {
+                switch (tag) {
+                    case CommAlertDialog.TAG_CLICK_LEFT:
+//                        MobileMainActivity.this.onBackPressed();
+                        dialog.dismiss();
+                        finish();
+                        break;
+                    case CommAlertDialog.TAG_CLICK_RIGHT:
+                        dialog.dismiss();
+                        break;
+                }
+            }
+        });
+        builder.create().show();
+
     }
 
     @Override
-    protected void onResume() {
-        //设置为竖屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-        super.onResume();
+    protected void onDestroy() {
+        super.onDestroy();
+//        if (netWorkReceiver == null) {
+        unregisterReceiver(netWorkReceiver);
+        System.out.println("注销");
+//        }
     }
 
     protected void ActivityResultSelectBu(Intent data) {
@@ -219,7 +322,15 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         registerReceiver(netWorkReceiver, filter);
     }
 
-
+//    private boolean judgeStockPermit() {
+////        if (UserSingleton.get().getUserInfo()  != null  ){
+////            if ( UserSingleton.get().getUserInfo().getBu_Name() == null ||  UserSingleton.get().getUserInfo().getBu_Name().length() == 0){
+//////                ToastUtil.showToastShort("您暂无权限进此页面!");
+////                return true;
+////            }
+////        }
+//        return UserSingleton.get().isStockPermit();
+//    }
 
     @Override
     public void onClick(View view) {
@@ -246,7 +357,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             }
 
 //            if (judgeStockPermit()) return;
-            if (!UserSingleton.get().isStockPermit()){
+            if (!UserSingleton.get().isStockPermit()) {
                 ToastUtil.showToastShort("您暂无权限进此页面!");
                 return;
             }
@@ -284,7 +395,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 return;
             }
 
-            if (!UserSingleton.get().isStockPermit()){
+            if (!UserSingleton.get().isStockPermit()) {
                 ToastUtil.showToastShort("您暂无权限进此页面!");
                 return;
             }
@@ -307,7 +418,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 return;
             }
 
-            if (!UserSingleton.get().isStockPermit()){
+            if (!UserSingleton.get().isStockPermit()) {
                 ToastUtil.showToastShort("您暂无权限进此页面!");
                 return;
             }
@@ -319,29 +430,19 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 //            Intent intent = new Intent(this,FoodOrderActivity.class);
 //            startActivity(intent);
             new GetTestService2AsyncTask().execute();
-        }else if (view == attendanceTextView){
+        } else if (view == attendanceTextView) {
 //            Intent intent = new Intent(this,AttendanceActivity.class);
 //            Intent intent = new Intent(this,LogisticsTrackingActivity.class);
-            Intent intent = new Intent(this,LocationGPSActivity.class);
+            Intent intent = new Intent(this, LocationGPSActivity.class);
             startActivity(intent);
-        }else if (view == wageQueryTextView){
-            Intent intent = new Intent(this,WageQueryActivity.class);
+        } else if (view == wageQueryTextView) {
+            Intent intent = new Intent(this, WageQueryActivity.class);
             startActivity(intent);
-        }else if (view == nucleinTextView){
-            Intent intent = new Intent(this,NucleinCheckActivity.class);
+        } else if (view == nucleinTextView) {
+            Intent intent = new Intent(this, NucleinCheckActivity.class);
             startActivity(intent);
         }
     }
-
-//    private boolean judgeStockPermit() {
-////        if (UserSingleton.get().getUserInfo()  != null  ){
-////            if ( UserSingleton.get().getUserInfo().getBu_Name() == null ||  UserSingleton.get().getUserInfo().getBu_Name().length() == 0){
-//////                ToastUtil.showToastShort("您暂无权限进此页面!");
-////                return true;
-////            }
-////        }
-//        return UserSingleton.get().isStockPermit();
-//    }
 
     private void jumpToStockPartActivity() {
         Intent intent = new Intent(MobileMainActivity.this, StockPartMainActivity.class);
@@ -367,33 +468,6 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_BU);
         startActivityForResult(intent, 200);
         MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_switch_bu);
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(MobileMainActivity.this)
-                .setTitle("").setMessage("确定要退出吗？")
-                .setLeftText("确定").setRightText("取消");
-
-
-        builder.setOnViewClickListener(new OnDialogViewClickListener() {
-            @Override
-            public void onViewClick(Dialog dialog, View v, int tag) {
-                switch (tag) {
-                    case CommAlertDialog.TAG_CLICK_LEFT:
-//                        MobileMainActivity.this.onBackPressed();
-                        dialog.dismiss();
-                        finish();
-                        break;
-                    case CommAlertDialog.TAG_CLICK_RIGHT:
-                        dialog.dismiss();
-                        break;
-                }
-            }
-        });
-        builder.create().show();
-
     }
 
     private class GetHrNameAsyncTask extends AsyncTask<String, Void, Void> {
@@ -434,26 +508,26 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private class GetStockPermittedListAsyncTask extends AsyncTask<String, Void, List<StockPermittedBean>> {
         @Override
         protected List<StockPermittedBean> doInBackground(String... params) {
-           String sql = "   Select FP.FA_ID, FP.HR_ID, HR.HR_Name ,HR.Leave As Leave,  FM_Scope.Scope_Name , " +
-                   "  Case When FA_Scope_ID=1 Then '胜华波' When FA_Scope_ID=2 Then Company.Company_Chinese_Name When FA_Scope_ID=3 Then CC_Name When FA_Scope_ID=4 Then Bu_Name When FA_Scope_ID=5 Then FP.XIDName Else '未知错误' End As RangeName,  FP.Permit As Permit, FP.Enabled As StartUse  " +
-                   "   From  FM_Permit As FP  Inner Join HR on FP.HR_ID=HR.HR_ID  " +
-                   " Inner Join FM_Scope On FP.FA_Scope_ID = FM_Scope.FS_ID  Left Join Company On XID=Company.Company_ID  " +
-                   " Left Join CC On XID = CC.CC_ID  Left Join Bu On XID=Bu.Bu_ID  Left Join FM_xScope On XScope_ID=FMx_ID  Where FP.Fun_ID=84";
-           List<StockPermittedBean> permittedBeanList = WebServiceUtil.getStockInPermittedHRIDList(sql);
+            String sql = "   Select FP.FA_ID, FP.HR_ID, HR.HR_Name ,HR.Leave As Leave,  FM_Scope.Scope_Name , " +
+                    "  Case When FA_Scope_ID=1 Then '胜华波' When FA_Scope_ID=2 Then Company.Company_Chinese_Name When FA_Scope_ID=3 Then CC_Name When FA_Scope_ID=4 Then Bu_Name When FA_Scope_ID=5 Then FP.XIDName Else '未知错误' End As RangeName,  FP.Permit As Permit, FP.Enabled As StartUse  " +
+                    "   From  FM_Permit As FP  Inner Join HR on FP.HR_ID=HR.HR_ID  " +
+                    " Inner Join FM_Scope On FP.FA_Scope_ID = FM_Scope.FS_ID  Left Join Company On XID=Company.Company_ID  " +
+                    " Left Join CC On XID = CC.CC_ID  Left Join Bu On XID=Bu.Bu_ID  Left Join FM_xScope On XScope_ID=FMx_ID  Where FP.Fun_ID=84";
+            List<StockPermittedBean> permittedBeanList = WebServiceUtil.getStockInPermittedHRIDList(sql);
             return permittedBeanList;
         }
 
         @Override
         protected void onPostExecute(List<StockPermittedBean> beanList) {
             UserSingleton.get().setStockPermit(false);
-           if (beanList != null){
-               for (StockPermittedBean bean : beanList){
-                   if (bean != null && bean.getHR_ID() == UserSingleton.get().getHRID() && bean.getHR_Name().equals(UserSingleton.get().getHRName()) ){
-                       UserSingleton.get().setStockPermit(true);
-                       break;
-                   }
-               }
-           }
+            if (beanList != null) {
+                for (StockPermittedBean bean : beanList) {
+                    if (bean != null && bean.getHR_ID() == UserSingleton.get().getHRID() && bean.getHR_Name().equals(UserSingleton.get().getHRName())) {
+                        UserSingleton.get().setStockPermit(true);
+                        break;
+                    }
+                }
+            }
         }
 
         @Override
@@ -491,7 +565,6 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         }
 
     }
-
 
 
 }

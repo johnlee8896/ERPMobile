@@ -129,6 +129,39 @@
             android:gravity="center"
             android:text="成品出库(非销售,其他出库)" />
 
+        <TextView
+            android:id="@+id/product_main_scan_ist_get_item_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="扫描库位查找物料" />
+
+        <TextView
+            android:id="@+id/product_main_bu_warehouse_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="车间仓扫描入库" />
+
+        <TextView
+            android:id="@+id/product_main_bu_warehouse_out_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="车间仓扫描出库" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

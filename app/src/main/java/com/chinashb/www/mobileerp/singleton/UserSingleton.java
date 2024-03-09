@@ -15,19 +15,40 @@ public class UserSingleton {
     private HashMap<Integer, String> departmentMap;
     private UserAllInfoEntity userAllInfoEntity;
     private boolean isCurrentInnerNetLink;
-    private boolean serverBack;
+    //2024-01-04暂时去掉serverback的判断
+//    private boolean serverBack;
+    private boolean testEnvironment;
+    private UserInfoEntity userInfo;
+    private int HRID;
+    private String HRName;
+    private String HRNO;
+    private String HR_IDCardNO;
+    private boolean stockPermit = false;
 
     private UserSingleton() {
 
     }
 
-    public boolean isServerBack() {
-        return serverBack;
+    public static UserSingleton get() {
+        return UserSingletonHelper.instance;
     }
 
-    public void setServerBack(boolean serverBack) {
-        this.serverBack = serverBack;
+    public boolean isTestEnvironment() {
+        return testEnvironment;
     }
+
+    public UserSingleton setTestEnvironment(boolean testEnvironment) {
+        this.testEnvironment = testEnvironment;
+        return this;
+    }
+
+//    public boolean isServerBack() {
+//        return serverBack;
+//    }
+//
+//    public void setServerBack(boolean serverBack) {
+//        this.serverBack = serverBack;
+//    }
 
     public boolean isCurrentInnerNetLink() {
         return isCurrentInnerNetLink;
@@ -45,18 +66,14 @@ public class UserSingleton {
         this.hasSwitchedBu = hasSwitchedBu;
     }
 
-    private UserInfoEntity userInfo;
-
     public UserInfoEntity getUserInfo() {
         return userInfo;
     }
 
-    private int HRID;
-    private String HRName;
-    private String HRNO;
-    private String HR_IDCardNO;
-
-    private boolean stockPermit = false;
+    public UserSingleton setUserInfo(UserInfoEntity userInfo) {
+        this.userInfo = userInfo;
+        return this;
+    }
 
     public String getHR_IDCardNO() {
         return HR_IDCardNO;
@@ -78,13 +95,17 @@ public class UserSingleton {
         return HRName;
     }
 
+    public UserSingleton setHRName(String HRName) {
+        this.HRName = HRName;
+        return this;
+    }
+
     public boolean isStockPermit() {
         return stockPermit;
     }
 
-    public UserSingleton setHRName(String HRName) {
-        this.HRName = HRName;
-        return this;
+    public void setStockPermit(boolean b) {
+        stockPermit = b;
     }
 
     public int getHRID() {
@@ -96,39 +117,24 @@ public class UserSingleton {
         return this;
     }
 
-    public UserSingleton setUserInfo(UserInfoEntity userInfo) {
-        this.userInfo = userInfo;
-        return this;
-    }
-
-    public static UserSingleton get() {
-        return UserSingletonHelper.instance;
+    public HashMap<Integer, String> getDepartmentMap() {
+        return departmentMap;
     }
 
     public void setDepartmentMap(HashMap<Integer, String> departmentIDNameMap) {
         this.departmentMap = departmentIDNameMap;
     }
 
-    public HashMap<Integer, String> getDepartmentMap() {
-        return departmentMap;
+    public UserAllInfoEntity getUserAllInfoEntity() {
+        return userAllInfoEntity;
     }
 
     public void setUserAllInfoEntity(UserAllInfoEntity userAllInfoEntity) {
         this.userAllInfoEntity = userAllInfoEntity;
     }
 
-    public UserAllInfoEntity getUserAllInfoEntity() {
-        return userAllInfoEntity;
-    }
-
-    public void setStockPermit(boolean b) {
-        stockPermit = b;
-    }
-
-
-    private static class UserSingletonHelper {
-        private static UserSingleton instance = new UserSingleton();
-
+    public boolean hasLogin() {
+        return userInfo != null && userInfo.getHR_ID() > 0;
     }
 
 //    public boolean isUserLogin() {
@@ -147,8 +153,9 @@ public class UserSingleton {
 //
 //    }
 
-    public boolean hasLogin() {
-        return userInfo != null && userInfo.getHR_ID() > 0;
+    private static class UserSingletonHelper {
+        private static UserSingleton instance = new UserSingleton();
+
     }
 
 //    protected Boolean isUserLogin() {

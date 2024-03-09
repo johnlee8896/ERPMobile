@@ -42,9 +42,11 @@ import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.StringUtils;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
+import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.chinashb.www.mobileerp.widget.SelectUseDialog;
 import com.google.gson.JsonObject;
@@ -67,6 +69,7 @@ public class StockDepartmentInActivity extends BaseActivity {
     private MpiWcBean themw;
     private TextView txtMw_Title;
     private Button selectDepartmentButton;
+    private Button inputHRNOButton;
     private Button selectResearchProgramButton;
     private Button scanAddTrayButton;
     private Button outStockButton;
@@ -94,12 +97,50 @@ public class StockDepartmentInActivity extends BaseActivity {
     private boolean hasScanHrCode;
     private float originalScanQty;
 
+    private CommonSelectInputDialog hrNODialog;
+
+    private OnViewClickListener onHRNOViewClickListener = new OnViewClickListener() {
+        @Override
+        public <T> void onClickAction(View v, String tag, T t) {
+            if (t != null) {
+                String hrNO = (String) t;
+                if (StringUtils.isStringValid(hrNO)){
+                    GetHrEntityAsyncTask hrEntityAsyncTask = new GetHrEntityAsyncTask();
+                    hrEntityAsyncTask.execute(hrNO);
+                }else {
+                    ToastUtil.showToastShort("工号解析失败！");
+                }
+            }
+            if (hrNODialog != null && hrNODialog.isShowing()) {
+                hrNODialog.dismiss();
+            }
+        }
+    };
+
+    private boolean isCurrentSmallPackage = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bindView(savedInstanceState);
         setHomeButton();
         setButtonListener();
+    }
+
+    @Override
+    protected void onResume() {
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (selectUseDialog != null && selectUseDialog.isShowing()) {
+            selectUseDialog.dismiss();
+        }
     }
 
     private View addView1() {
@@ -166,6 +207,7 @@ public class StockDepartmentInActivity extends BaseActivity {
         scanAddTrayButton = (Button) findViewById(R.id.btn_issue_more_add_extra);
         outStockButton = (Button) findViewById(R.id.btn_exe_warehouse_out);
         scanHRCodeButton = findViewById(R.id.deparment_in_scan_hr_code_button);
+        inputHRNOButton = findViewById(R.id.deparment_in_input_hrno_button);
         selectUseButton = findViewById(R.id.deparment_in_select_use_button);
         useTextView = findViewById(R.id.department_in_use_textView);
         titleTextView = findViewById(R.id.tv_stock_out_dep_title);
@@ -177,6 +219,7 @@ public class StockDepartmentInActivity extends BaseActivity {
 
         issueMoreItemAdapter = new IssueMoreItemAdapter(StockDepartmentInActivity.this, boxItemEntityList);
         issueMoreItemAdapter.showNeedMore = false;
+        issueMoreItemAdapter.setCanEdit(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         recyclerView.setAdapter(issueMoreItemAdapter);
 
@@ -281,11 +324,11 @@ public class StockDepartmentInActivity extends BaseActivity {
 
 
                     //// TODO: 2020/4/21 这里可以与isLogin的公共判断方法合并
-                    if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+                    if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
 
                         WarehouseOutAsyncTask task = new WarehouseOutAsyncTask();
                         task.execute();
-                    }else{
+                    } else {
                         CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockDepartmentInActivity.this)
                                 .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
                                 .setLeftText("确定");
@@ -310,7 +353,8 @@ public class StockDepartmentInActivity extends BaseActivity {
             }
         });
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
+            @Override
+            public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
 //                if (editable.toString().endsWith("\n")) {
                 if (editable.toString().length() > 0) {
@@ -323,6 +367,15 @@ public class StockDepartmentInActivity extends BaseActivity {
         });
 
         selectUseButton.setOnClickListener(v -> {
+
+            if (!hasScanHrCode) {
+                ToastUtil.showToastShort("请先扫描员工ID信息码！");
+                if (selectUseDialog != null && selectUseDialog.isShowing()) {
+                    selectUseDialog.dismiss();
+                }
+                return;
+            }
+
             if (selectUseDialog == null) {
                 selectUseDialog = new SelectUseDialog(StockDepartmentInActivity.this);
             }
@@ -334,17 +387,17 @@ public class StockDepartmentInActivity extends BaseActivity {
 //                        ToastUtil.showToastShort("您已经选择用途了");
 //                        return;
 //                    }
-                    if (hasSelectUse){
+                    if (hasSelectUse) {
                         ToastUtil.showToastShort("您已经选择用途了");
                         return;
                     }
-                    if (!hasScanHrCode) {
-                        ToastUtil.showToastShort("请先扫描员工ID信息码！");
-                        if (selectUseDialog != null && selectUseDialog.isShowing()) {
-                            selectUseDialog.dismiss();
-                        }
-                        return;
-                    }
+//                    if (!hasScanHrCode) {
+//                        ToastUtil.showToastShort("请先扫描员工ID信息码！");
+//                        if (selectUseDialog != null && selectUseDialog.isShowing()) {
+//                            selectUseDialog.dismiss();
+//                        }
+//                        return;
+//                    }
                     ToastUtil.showToastShort("您选择了" + (String) t);
                     useTextView.setText((String) t);
                     description = description + " 用途：" + (String) t;
@@ -358,7 +411,29 @@ public class StockDepartmentInActivity extends BaseActivity {
         });
 
         scanHRCodeButton.setOnClickListener(v -> {
-            startScanHR();
+            if (StringUtils.isStringValid(operatorName)) {
+                ToastUtil.showToastShort("操作员信息已获取，无须再扫描工牌！");
+            } else {
+                startScanHR();
+            }
+        });
+
+        inputHRNOButton.setOnClickListener(v -> {
+            if (StringUtils.isStringValid(operatorName)) {
+                ToastUtil.showToastShort("操作员信息已获取，无须再扫描工牌！");
+            } else {
+                if (hrNODialog == null) {
+                    hrNODialog = new CommonSelectInputDialog(StockDepartmentInActivity.this);
+                }
+//            remarkDialog.setSelectOnly(true);
+                hrNODialog.show();
+                //这句必须放在show之后
+//            remarkDialog.setSelectOnly(true);
+                hrNODialog.setInputOnly(true);
+                hrNODialog.setInputTextHint("请输入工号");
+                hrNODialog.setOnViewClickListener(onHRNOViewClickListener);
+            }
+
         });
     }
 
@@ -397,7 +472,6 @@ public class StockDepartmentInActivity extends BaseActivity {
             }
         });
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -462,8 +536,6 @@ public class StockDepartmentInActivity extends BaseActivity {
         }
     }
 
-    private boolean isCurrentSmallPackage = false;
-
     protected void parseScanResult(String result) {
 //        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
@@ -479,7 +551,7 @@ public class StockDepartmentInActivity extends BaseActivity {
                 String qrTitle = qrContent[0];
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
-                        if (qrTitle.equals("VE") || qrTitle.equals("V9")){
+                        if (qrTitle.equals("VE") || qrTitle.equals("V9")) {
                             isCurrentSmallPackage = true;
                         }
                         //物品条码
@@ -490,6 +562,32 @@ public class StockDepartmentInActivity extends BaseActivity {
                 }
             }
         }
+    }
+
+//    private void handleGetAllUserEntity(int hrId) {
+//        if (UserSingleton.get().getUserAllInfoEntity() == null) {
+//            String sql = "select * from hr where hr_id = " + hrId;
+//            QueryAsyncTask query = new QueryAsyncTask();
+//            query.execute(sql);
+//            query.setLoadDataCompleteListener(new OnLoadDataListener() {
+//                @Override public void loadComplete(List<JsonObject> jsonObjectList) {
+//                    if (jsonObjectList != null && jsonObjectList.size() > 0) {
+//                        //                    JsonObject jsonObject = jsonObjectList.get(0);
+//                        UserAllInfoEntity userAllInfoEntity = JsonUtil.parseJsonToObject(jsonObjectList.get(0).toString(), UserAllInfoEntity.class);
+//                        if (userAllInfoEntity != null) {
+//                            UserSingleton.get().setUserAllInfoEntity(userAllInfoEntity);
+//                        }
+//                    }
+//                }
+//            });
+//        }
+//    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("BoxItemList", (Serializable) boxItemEntityList);
+
     }
 
     private class AsyncGetIssueMoreExtraBox extends AsyncTask<String, Void, Void> {
@@ -505,7 +603,7 @@ public class StockDepartmentInActivity extends BaseActivity {
                     boxItemEntity.setSelect(true);
                     //限制部门领料，只有扫小包装时才能编辑数量
                     boxItemEntity.setCanNotEdit(true);
-                    if (isCurrentSmallPackage){
+                    if (isCurrentSmallPackage) {
                         boxItemEntity.setCanNotEdit(false);
                     }
 
@@ -516,6 +614,28 @@ public class StockDepartmentInActivity extends BaseActivity {
                 }
             }
             return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //tv.setText(fahren + "∞ F");
+            if (boxItemEntity != null) {
+                if (!boxItemEntity.getResult()) {
+                    Toast.makeText(StockDepartmentInActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                }
+            }
+            issueMoreItemAdapter.notifyDataSetChanged();
+//            recyclerView.setAdapter(issueMoreItemAdapter);
+            //pbScan.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
         }
 
         private boolean is_box_existed(BoxItemEntity box_item) {
@@ -540,28 +660,6 @@ public class StockDepartmentInActivity extends BaseActivity {
                 }
             }
             return result;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");
-            if (boxItemEntity != null) {
-                if (!boxItemEntity.getResult()) {
-                    Toast.makeText(StockDepartmentInActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
-                }
-            }
-            issueMoreItemAdapter.notifyDataSetChanged();
-//            recyclerView.setAdapter(issueMoreItemAdapter);
-            //pbScan.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
         }
 
     }
@@ -597,6 +695,11 @@ public class StockDepartmentInActivity extends BaseActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+            pbBackground.setVisibility(View.VISIBLE);
+        }
+
+        @Override
         protected void onPostExecute(Void result) {
             issueMoreItemAdapter.notifyDataSetChanged();
             recyclerView.setAdapter(issueMoreItemAdapter);
@@ -615,34 +718,10 @@ public class StockDepartmentInActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            pbBackground.setVisibility(View.VISIBLE);
-        }
-
-        @Override
         protected void onProgressUpdate(Void... values) {
         }
 
     }
-
-//    private void handleGetAllUserEntity(int hrId) {
-//        if (UserSingleton.get().getUserAllInfoEntity() == null) {
-//            String sql = "select * from hr where hr_id = " + hrId;
-//            QueryAsyncTask query = new QueryAsyncTask();
-//            query.execute(sql);
-//            query.setLoadDataCompleteListener(new OnLoadDataListener() {
-//                @Override public void loadComplete(List<JsonObject> jsonObjectList) {
-//                    if (jsonObjectList != null && jsonObjectList.size() > 0) {
-//                        //                    JsonObject jsonObject = jsonObjectList.get(0);
-//                        UserAllInfoEntity userAllInfoEntity = JsonUtil.parseJsonToObject(jsonObjectList.get(0).toString(), UserAllInfoEntity.class);
-//                        if (userAllInfoEntity != null) {
-//                            UserSingleton.get().setUserAllInfoEntity(userAllInfoEntity);
-//                        }
-//                    }
-//                }
-//            });
-//        }
-//    }
 
     //// TODO: 2019/7/15 这里根存储的可能有出入，可能有问题
     private class GetHrNameAsyncTask extends AsyncTask<String, Void, UserAllInfoEntity> {
@@ -725,26 +804,91 @@ public class StockDepartmentInActivity extends BaseActivity {
 
     }
 
-    @Override
-    protected void onResume() {
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    private class GetHrEntityAsyncTask extends AsyncTask<String, Void, UserAllInfoEntity> {
+        //Image hr_photo;
+        @Override
+        protected UserAllInfoEntity doInBackground(String... params) {
+//            int hrId = Integer.parseInt(params[0]);
+//            if (params == null || params.length == 0){
+//                ToastUtil.showToastShort("参数格式有误!");
+//                return null;
+//            }
+            String hrNO = params[0];
+//            userInfo = WebServiceUtil.getHRName_Bu(userInfo.getHR_ID());
+//            UserInfoEntity userInfoEntity = WebServiceUtil.getHRName_Bu(hrId);
+            //// TODO: 2019/7/15 这里根存储的可能有出入，可能有问题
+//            UserSingleton.get().setHRID(hrId);
+//            UserSingleton.get().setHRName(userInfo.getHR_Name());
+//            UserSingleton.get().setUserInfo(userInfo);
+//            if (userInfo != null) {
+//                Bitmap userPic = CommonUtil.getUserPic(StockDepartmentInActivity.this, userPictureMap, userInfo.getHR_ID());
+//            }
+
+
+//            String sql = "select * from hr where hr_id = " + hrId;
+            String sql = "select * from hr where hr_no = '" + hrNO + "'";
+            List<JsonObject> jsonObjectList;
+            jsonObjectList = WebServiceUtil.getJsonList(sql);
+
+            if (jsonObjectList != null && jsonObjectList.size() > 0) {
+                //                    JsonObject jsonObject = jsonObjectList.get(0);
+                UserAllInfoEntity userAllInfoEntity = JsonUtil.parseJsonToObject(jsonObjectList.get(0).toString(), UserAllInfoEntity.class);
+                if (userAllInfoEntity != null) {
+                    UserSingleton.get().setUserAllInfoEntity(userAllInfoEntity);
+                }
+                return userAllInfoEntity;
+            }
+            return null;
         }
-        super.onResume();
-    }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("BoxItemList", (Serializable) boxItemEntityList);
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (selectUseDialog != null && selectUseDialog.isShowing()) {
-            selectUseDialog.dismiss();
+        @Override
+        protected void onPreExecute() {
+//            scanProgressBar.setVisibility(View.VISIBLE);
         }
+
+        @Override
+        protected void onPostExecute(UserAllInfoEntity userAllInfoEntity) {
+//            if (userInfo != null) {
+////                setTvUserName();
+////                if (pictureBitmap != null) {
+////                    avatarImageView.setImageBitmap(pictureBitmap);
+////                }
+//            } else {
+//                Toast.makeText(LoginActivity.this, "无法访问服务器，请检查网络连接是否正常", Toast.LENGTH_LONG).show();
+//            }
+
+//            scanProgressBar.setVisibility(View.GONE);
+//            if (UserSingleton.get().getUserInfo() != null) {
+//                Intent intent = new Intent(StockDepartmentInActivity.this, MobileMainActivity.class);
+////            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
+//                intent.putExtra(IntentConstant.Intent_Extra_hr_id, UserSingleton.get().getHRID());
+//                startActivity(intent);
+//                finish();
+//            }
+//            titleTextView.setText("操作员：" + UserSingleton.get().getDepartmentMap().get(userInfoEntity) userInfoEntity.getHR_Name());
+            if (userAllInfoEntity != null){
+                String departmentName;
+                if (userAllInfoEntity.getHRDepartment() == null || TextUtils.isEmpty(userAllInfoEntity.getHRDepartment().toString())) {
+                    departmentName = UserSingleton.get().getDepartmentMap().get(userAllInfoEntity.getDepartmentID());
+                } else {
+                    departmentName = userAllInfoEntity.getHRDepartment().toString();
+                }
+                titleTextView.setText("操作员：" + departmentName + "-" + userAllInfoEntity.getHRName());
+                if (departmentBean == null) {
+                    departmentBean = new DepartmentBean();
+                    departmentBean.setDepartmentID(userAllInfoEntity.getDepartmentID());
+                    departmentBean.setDepartmentName(departmentName);
+                }
+                operatorName = userAllInfoEntity.getHRName();
+                description = departmentName + "-" + operatorName + "领料";
+                inputEditText.setText("");
+                hasScanHrCode = true;
+            }else{
+                ToastUtil.showToastShort("输入的工号解析失败！");
+            }
+
+        }
+
+
     }
 }

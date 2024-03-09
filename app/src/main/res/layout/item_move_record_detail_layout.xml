@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_size_10"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_size_10"
+    android:paddingLeft="@dimen/dimen_size_10"
+    android:paddingRight="@dimen/dimen_size_10"
+    android:paddingBottom="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Item_ID:" />
+
+            <TextView
+                android:id="@+id/item_move_record_item_id_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="123456" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="名称:" />
+
+            <TextView
+                android:id="@+id/item_move_record_item_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                tools:text="A06.A06-01-01" />
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="移出库位:" />
+
+            <TextView
+                android:id="@+id/item_move_record_from_ist_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="A07" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="移出单元:" />
+
+            <TextView
+                android:id="@+id/item_move_record_from_sub_ist_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                tools:text="A06.A06-01-01" />
+
+        </LinearLayout>
+
+
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--            android:layout_marginTop="@dimen/dimen_size_5"-->
+        <!--            android:orientation="horizontal">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:text="型号:" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/item_scan_item_spec_textView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_marginLeft="@dimen/dimen_size_5"-->
+        <!--                tools:text="是" />-->
+
+        <!--        </LinearLayout>-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="移到库位:" />
+
+            <TextView
+                android:id="@+id/item_move_record_to_ist_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="A08" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="移到单元:" />
+
+            <TextView
+                android:id="@+id/item_move_record_to_sub_ist_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                tools:text="A06.A06-01-01" />
+
+        </LinearLayout>
+
+
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--            android:layout_marginTop="@dimen/dimen_size_5"-->
+        <!--            android:orientation="horizontal">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:text="库存:" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/item_scan_stock_number_textView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_marginLeft="@dimen/dimen_size_5"-->
+        <!--                android:textSize="@dimen/text_size_17"-->
+        <!--                android:textColor="@color/color_green_27D346"-->
+        <!--                tools:text="是" />-->
+
+        <!--        </LinearLayout>-->
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="移库人:" />
+
+            <TextView
+                android:id="@+id/item_move_record_operator_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="李伟锋" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="移库时间:" />
+
+            <TextView
+                android:id="@+id/item_move_record_date_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="21911" />
+
+        </LinearLayout>
+
+
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--            android:layout_marginTop="@dimen/dimen_size_5"-->
+        <!--            android:orientation="horizontal">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:text="入库批次:" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/item_move_record_box_in_stock_lot_textView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="match_parent"-->
+        <!--                android:layout_marginLeft="@dimen/dimen_size_10"-->
+        <!--                android:textColor="@color/black"-->
+        <!--                tools:text="21911" />-->
+
+        <!--        </LinearLayout>-->
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="车间:" />
+
+            <TextView
+                android:id="@+id/item_move_record_bu_name_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                tools:text="滁州冲制" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="箱码:" />
+
+            <TextView
+                android:id="@+id/item_move_record_box_code_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                tools:text="VG/123" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="移库类型:" />
+
+            <TextView
+                android:id="@+id/item_move_record_box_type_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="大箱" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="移库数量:" />
+
+            <TextView
+                android:id="@+id/item_move_record_qty_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="21911" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="版本:" />
+
+            <TextView
+                android:id="@+id/item_move_record_item_version_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_5"
+                tools:text="是" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

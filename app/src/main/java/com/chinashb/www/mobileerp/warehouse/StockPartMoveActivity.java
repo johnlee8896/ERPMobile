@@ -468,16 +468,16 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
 //                CommonUtil.ShowToast(StockMoveActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
 //            }
             pbScan.setVisibility(View.INVISIBLE);
-            if (result != null && result.getResult()){
+            if (result != null && result.getResult()) {
                 CommonUtil.ShowToast(StockPartMoveActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
-            }else{
+            } else {
 //                CommonUtil.ShowToast(StockPartMoveActivity.this, "移库失败", R.mipmap.monster_mike, Toast.LENGTH_SHORT);
-                ToastUtil.showToastShort("移库失败：" + result .getErrorInfo());
+                ToastUtil.showToastShort("移库失败：" + result.getErrorInfo());
             }
 
-                boxitemList.clear();
-                boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
-                mRecyclerView.setAdapter(boxitemAdapter);
+            boxitemList.clear();
+            boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
+            mRecyclerView.setAdapter(boxitemAdapter);
         }
 
         @Override

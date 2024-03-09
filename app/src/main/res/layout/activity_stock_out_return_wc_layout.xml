@@ -40,6 +40,14 @@
                 android:text="扫描返工出库物料" />
 
             <Button
+                android:id="@+id/btn_add_remark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="备注" />
+
+            <Button
                 android:id="@+id/btn_exe_warehouse_out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -48,7 +56,12 @@
 
         </LinearLayout>
     </LinearLayout>
-
+    <TextView
+        android:id="@+id/tv_remark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="备注"
+        />
     <EditText
         android:id="@+id/stock_out_return_wc_input_EditeText"
         android:layout_width="match_parent"

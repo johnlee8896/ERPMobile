@@ -15,7 +15,6 @@ import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.ItemPartLotInvAdapter;
 import com.chinashb.www.mobileerp.basicobject.Item_Lot_Inv;
-import com.chinashb.www.mobileerp.basicobject.PartsEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.InputBoxActivity;
@@ -32,7 +31,7 @@ public class StockQueryPartItemActivity extends BaseActivity {
     private UserInfoEntity userInfoEntity;
     private RecyclerView recyclerView;
     private ItemPartLotInvAdapter partItemAdapter;
-    private PartsEntity selected_item;
+//    private PartsEntity selected_item;
     private List<Item_Lot_Inv> itemLotInvList;
     private TextView titleNameTextView;
     //john 2023-05-06 先将库存冻结，解冻 关闭
@@ -80,13 +79,13 @@ public class StockQueryPartItemActivity extends BaseActivity {
         });
         itemLotInvList = (List<Item_Lot_Inv>) getIntent().getSerializableExtra(IntentConstant.Intent_Part_middle_map_list);
 
-        if (selected_item != null) {
-            titleNameTextView.setText(String.valueOf(selected_item.getItem_ID()) + " " + selected_item.getItem()
-                    + " " + selected_item.getItem_Name() + " " + selected_item.getItem_Spec2() + " ");
-
-//            QueryPartInvItemAsyncTask queryPartInvItemAsyncTask = new QueryPartInvItemAsyncTask();
-//            queryPartInvItemAsyncTask.execute();
-        }
+//        if (selected_item != null) {
+//            titleNameTextView.setText(String.valueOf(selected_item.getItem_ID()) + " " + selected_item.getItem()
+//                    + " " + selected_item.getItem_Name() + " " + selected_item.getItem_Spec2() + " ");
+//
+////            QueryPartInvItemAsyncTask queryPartInvItemAsyncTask = new QueryPartInvItemAsyncTask();
+////            queryPartInvItemAsyncTask.execute();
+//        }
 
         partItemAdapter = new ItemPartLotInvAdapter(StockQueryPartItemActivity.this, itemLotInvList);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview

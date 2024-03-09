@@ -3,7 +3,7 @@ package com.chinashb.www.mobileerp.basicobject;
 import java.util.Date;
 
 /**
- * Created by Paul on 2017/1/21.
+ * Created by liweifeng on 2017/1/21.
  */
 
 public class MealTypeEntity {

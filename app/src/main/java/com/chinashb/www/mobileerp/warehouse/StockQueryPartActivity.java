@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,16 +22,18 @@ import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.PartInvQueryAdapter;
 import com.chinashb.www.mobileerp.basicobject.PartsEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
+import com.chinashb.www.mobileerp.bean.BigAreaSumBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.AppUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
+import com.chinashb.www.mobileerp.widget.SelectStorageAreaDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,9 +61,10 @@ public class StockQueryPartActivity extends BaseActivity {
     private PartInvQueryAdapter partsAdapter;
     private List<PartsEntity> partsEntityList;//零部件
 
-    private PartsEntity partsEntity;
+//    private PartsEntity partsEntity;
     private int currentPage = 1;
     private String keyWord = "";
+//    private SelectStorageAreaBean storageAreaBean;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +77,7 @@ public class StockQueryPartActivity extends BaseActivity {
 //        btnQuery = (Button) findViewById(R.id.btn_stock_query);
 //        btnQueryNextPage = (Button) findViewById(R.id.btn_stock_query_nextpage);
 //        btnQueryPrePage = (Button) findViewById(R.id.btn_stock_query_prepage);
+//        storageAreaBean = getIntent().getParcelableExtra(IntentConstant.Intent_Extra_storage_area_bean);
 
         user = UserSingleton.get().getUserInfo();
         partsEntityList = new ArrayList<>();
@@ -115,12 +120,23 @@ public class StockQueryPartActivity extends BaseActivity {
             }
         });
 
-        filterEditText.addTextChangedListener(new TextWatcherImpl(){
-            @Override public void afterTextChanged(Editable editable) {
+        filterEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+            public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
                 keyWord = editable.toString();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+//设置为横屏幕
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+        super.onResume();
     }
 
     @Override
@@ -139,57 +155,6 @@ public class StockQueryPartActivity extends BaseActivity {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-    }
-
-    private class AsyncQueryProductInv extends AsyncTask<String, Void, Void> {
-        //ArrayList<PartsEntity> us = new ArrayList<PartsEntity>();
-        @Override
-        protected Void doInBackground(String... params) {
-//            String keyWord = filterEditText.getText().toString();
-            String js = WebServiceUtil.getQueryInv(user.getBu_ID(), 1, keyWord, currentPage, 20);
-            Gson gson = new Gson();
-            partsEntityList = gson.fromJson(js, new TypeToken<List<PartsEntity>>() {
-            }.getType());
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");b
-            if (partsEntityList == null || partsEntityList.size() == 0) {
-                dataLayout.setVisibility(View.GONE);
-                emptyManagerView.setVisibility(View.VISIBLE);
-            }else{
-                partsAdapter = new PartInvQueryAdapter(StockQueryPartActivity.this, partsEntityList);
-                mRecyclerView.setAdapter(partsAdapter);
-                partsAdapter.setOnItemClickListener((view, position) -> {
-                            if (partsEntityList != null) {
-                                partsEntity = partsEntityList.get(position);
-//                            QueryPartInvItemAsyncTask task = new QueryPartInvItemAsyncTask();
-//                            task.execute(selected_item.getItem_ID());
-                                Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
-                                intent.putExtra("selected_item", (Serializable) partsEntity);
-                                intent.putExtra("InvQueryMiddleRequestCode",IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
-                                startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
-                            }
-                        }
-                );
-                dataLayout.setVisibility(View.VISIBLE);
-                emptyManagerView.setVisibility(View.GONE);
-            }
-            AppUtil.forceHideInputMethod(StockQueryPartActivity.this);
-            //pbScan.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-
     }
 
 //    private class QueryPartInvItemAsyncTask extends AsyncTask<Integer, Void, List<Item_Lot_Inv>> {
@@ -278,15 +243,94 @@ public class StockQueryPartActivity extends BaseActivity {
 //
 //    }
 
-
-    @Override
-    protected void onResume() {
-//设置为横屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    private class AsyncQueryProductInv extends AsyncTask<String, Void, Void> {
+        //ArrayList<PartsEntity> us = new ArrayList<PartsEntity>();
+        @Override
+        protected Void doInBackground(String... params) {
+//            String keyWord = filterEditText.getText().toString();
+            String js = WebServiceUtil.getQueryInv(user.getBu_ID(), 1, keyWord, currentPage, 20);
+            Gson gson = new Gson();
+            partsEntityList = gson.fromJson(js, new TypeToken<List<PartsEntity>>() {
+            }.getType());
+            return null;
         }
 
-        super.onResume();
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //tv.setText(fahren + "∞ F");b
+            if (partsEntityList == null || partsEntityList.size() == 0) {
+                dataLayout.setVisibility(View.GONE);
+                emptyManagerView.setVisibility(View.VISIBLE);
+            } else {
+                partsAdapter = new PartInvQueryAdapter(StockQueryPartActivity.this, partsEntityList);
+                mRecyclerView.setAdapter(partsAdapter);
+                partsAdapter.setOnItemClickListener((view, position) -> {
+
+                            //2024-02-28 john增加大区的汇总
+                            if (partsEntityList != null && partsEntityList.size() > 0) {
+                                PartsEntity partsEntity = partsEntityList.get(position);
+                                SelectStorageAreaDialog dialog = new SelectStorageAreaDialog(StockQueryPartActivity.this, partsEntity.getItem_ID());
+                                dialog.show();
+                                dialog.setOnViewClickListener(new OnViewClickListener() {
+                                    @Override
+                                    public <T> void onClickAction(View v, String tag, T t) {
+                                        if (t != null) {
+                                            BigAreaSumBean bean = (BigAreaSumBean) t;
+                                            if (bean != null) {
+//                                            Intent intent = new Intent(StockQueryPartActivity.this, StockQueryPartActivity.class);
+//                                            intent.putExtra(IntentConstant.Intent_Extra_storage_area_bean, bean);
+//                                            startActivity(intent);
+//                                            if (dialog != null && dialog.isShowing()) {
+//                                                dialog.dismiss();
+//                                            }
+
+//                                        if (partsEntityList != null) {
+//                                            StockQueryPartActivity.this.partsEntity = partsEntityList.get(position);
+//                            QueryPartInvItemAsyncTask task = new QueryPartInvItemAsyncTask();
+//                            task.execute(selected_item.getItem_ID());
+                                                Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
+//                                                intent.putExtra("selected_item", (Serializable) partsEntity);
+                                                intent.putExtra("selected_item", (Parcelable) bean);
+                                                intent.putExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
+                                                startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
+                                                if (dialog != null && dialog.isShowing()){
+                                                    dialog.dismiss();
+                                                }
+//                                        }
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+
+
+//                            if (partsEntityList != null) {
+//                                partsEntity = partsEntityList.get(position);
+////                            QueryPartInvItemAsyncTask task = new QueryPartInvItemAsyncTask();
+////                            task.execute(selected_item.getItem_ID());
+//                                Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
+//                                intent.putExtra("selected_item", (Serializable) partsEntity);
+//                                intent.putExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
+//                                startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
+//                            }
+                        }
+                );
+                dataLayout.setVisibility(View.VISIBLE);
+                emptyManagerView.setVisibility(View.GONE);
+            }
+            AppUtil.forceHideInputMethod(StockQueryPartActivity.this);
+            //pbScan.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
     }
 
 

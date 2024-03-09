@@ -79,10 +79,12 @@ public class SelectProductWCListActivity extends BaseActivity {
                 sql = String.format(" Select WC_Id,WC_Name  From P_WC Where Bu_ID=%s", UserSingleton.get().getUserInfo().getBu_ID());
             } else if (work_line_from == IntentConstant.Intent_Extra_work_line_from_part) {
                 //// TODO: 2020/1/9 为便于开发，目前 只支持上海雨刮和安徽雨刮 ，之后的可以扩展
-                if (UserSingleton.get().getUserInfo().getBu_ID() == 3 || UserSingleton.get().getUserInfo().getBu_ID() == 54) {
-                    //注意这里共用entity，与pc上的wc_id不一样
-                    sql = " Select WC_Id,WC_Name  From P_WC Where (Bu_ID=54 Or Bu_ID=3)";
-                }
+//                if (UserSingleton.get().getUserInfo().getBu_ID() == 3 || UserSingleton.get().getUserInfo().getBu_ID() == 54) {
+//                    //注意这里共用entity，与pc上的wc_id不一样
+//                    sql = " Select WC_Id,WC_Name  From P_WC Where (Bu_ID=54 Or Bu_ID=3)";
+//                }
+                //// TODO: 2023/9/8 这里根据车间自动选，省去一些判断
+                sql = " Select WC_Id,WC_Name  From P_WC Where Bu_ID = " + UserSingleton.get().getUserInfo().getBu_ID();
             }
 
             WsResult result = WebServiceUtil.getDataTable(sql);

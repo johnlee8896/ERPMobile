@@ -133,6 +133,7 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
     @Override public void onClick(View v) {
         if (v == selectBuButton) {
             Intent intent = new Intent(InnerSaleOutActivity.this,InnerSaleBuSelectActivity.class);
+            intent.putExtra(IntentConstant.Intent_Extra_to_inner_company_bu_from,IntentConstant.Intent_Request_Code_Sale_Out_to_Bu);
             startActivityForResult(intent,IntentConstant.Intent_Request_Code_Sale_Out_to_Bu);
         } else if (v == remarkButton) {
 

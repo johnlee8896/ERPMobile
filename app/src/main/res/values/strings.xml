@@ -122,4 +122,13 @@
         <item>六</item>
     </string-array>
 
+    <string-array name="test_name_array">
+        <item>余莲方</item>
+        <item>常芙蓉</item>
+        <item>罗力文</item>
+        <item>李伟锋</item>
+        <item>朱宗海</item>
+        <item>刘雷2</item>
+    </string-array>
+
 </resources>

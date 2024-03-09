@@ -17,7 +17,7 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import java.util.List;
 
 /**
- * Created by Caleb on 2018/9/21.
+ * Created by liweifeng on 2019/9/21.移库操作
  */
 
 

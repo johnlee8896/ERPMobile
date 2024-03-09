@@ -29,6 +29,16 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
     private List<BoxItemEntity> boxItemEntityList;
 
     public Boolean showNeedMore = true;
+    private boolean isCanEdit;
+
+    public boolean isCanEdit() {
+        return isCanEdit;
+    }
+
+    public IssueMoreItemAdapter setCanEdit(boolean canEdit) {
+        isCanEdit = canEdit;
+        return this;
+    }
 
     public IssueMoreItemAdapter(Context context, List<BoxItemEntity> boxItemEntityList) {
         this.boxItemEntityList = boxItemEntityList;
@@ -66,6 +76,14 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
         holder.qtyTextView.setText(dfs.format(Box_Item.getQty()));
 
         if (Box_Item.getCanNotEdit()){
+            holder.etQty.setVisibility(View.GONE);
+            holder.qtyTextView.setVisibility(View.VISIBLE);
+        }else{
+            holder.etQty.setVisibility(View.VISIBLE);
+            holder.qtyTextView.setVisibility(View.GONE);
+        }
+
+        if (!isCanEdit()){
             holder.etQty.setVisibility(View.GONE);
             holder.qtyTextView.setVisibility(View.VISIBLE);
         }else{

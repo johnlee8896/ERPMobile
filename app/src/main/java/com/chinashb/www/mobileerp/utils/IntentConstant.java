@@ -62,7 +62,10 @@ public class IntentConstant {
     public static final String Intent_Extra_check_from_zaizhipin = "Extra_check_from_zaizhipin";
     public static final String Intent_Extra_check_self_product = "Extra_check_self_product";
     public static final String Intent_Extra_check_part = "Intent_Extra_check_part";
-
+//    public static final String Intent_Extra_to_inner_company_bu_from_sale_out = "Extra_to_inner_company_bu_from_sale_out";
+//    public static final String Intent_Extra_to_inner_company_bu_from_part_allocate= "Extra_to_inner_company_bu_from_part_allocate";
+    public static final String Intent_Extra_to_inner_company_bu_from= "Extra_to_inner_company_bu_from";
+    public static String Intent_Extra_storage_area_bean = "Extra_storage_area_bean";
 
     public static final String Intent_Extra_logistics_from = "Extra_logistics_from";
 
@@ -80,6 +83,7 @@ public class IntentConstant {
     public static final int Intent_Request_Code_Logistics_Select_to_Logistics = 0X203;
     public static final int Intent_Request_Code_Sale_Out_to_Bu = 0X204;
     public static final int Intent_Request_Code_Logistics_Customer_to_Logistics = 0X205;
+    public static final int Intent_Request_Code_Part_Allocate_Transfer_to_Bu = 0X301;
 
 
     public static final int Intent_Request_Code_Logistics_from_product_sale_out = 0X206;
@@ -89,7 +93,9 @@ public class IntentConstant {
 
 
     public static final int Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity = 0X209;
+    public static final int Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity_From_Issue = 0X219;
     public static final int Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity = 0X210;
     public static final int Intent_Request_Code_Inv_Query_Item_To_InputActivity = 0X211;
+
 
 }

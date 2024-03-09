@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
@@ -23,7 +24,11 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.StringUtils;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -39,13 +44,29 @@ public class StockReworkWCActivity extends BaseActivity {
     private MpiWcBean themw;
     private Button btnAddTray;
     private Button btnWarehouseOut;
+    private Button btnRemark;
     private RecyclerView mRecyclerView;
+    private TextView remarkTextView;
     private EditText inputEditText;
 
     private ReturnItemAdapter returnItemAdapter;
     private List<BoxItemEntity> newissuelist;
     private IstPlaceEntity thePlace;
     private String scanstring;
+    private String remark = "";
+    private CommonSelectInputDialog remarkDialog;
+
+    private OnViewClickListener onRemarkViewClickListener = new OnViewClickListener() {
+        @Override public <T> void onClickAction(View v, String tag, T t) {
+            if (t != null){
+                remark = (String) t;
+                remarkTextView.setText((CharSequence) t);
+            }
+            if (remarkDialog != null && remarkDialog.isShowing()){
+                remarkDialog.dismiss();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +77,8 @@ public class StockReworkWCActivity extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_return_items);
         btnAddTray = (Button) findViewById(R.id.btn_return_item_add_extra);
         btnWarehouseOut = (Button) findViewById(R.id.btn_exe_warehouse_out);
+        btnRemark = (Button) findViewById(R.id.btn_add_remark);
+        remarkTextView = findViewById(R.id.tv_remark);
         inputEditText = findViewById(R.id.stock_out_return_wc_input_EditeText);
 
         newissuelist = new ArrayList<>();
@@ -87,6 +110,10 @@ public class StockReworkWCActivity extends BaseActivity {
         btnWarehouseOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!StringUtils.isStringValid(remark)){
+                    ToastUtil.showToastShort("请添加备注！");
+                    return;
+                }
 
                 if (newissuelist.size() > 0) {
                     StockReworkWCActivity.AsyncExeWarehouseOut task = new StockReworkWCActivity.AsyncExeWarehouseOut();
@@ -105,6 +132,18 @@ public class StockReworkWCActivity extends BaseActivity {
                     parseScanResult(editable.toString());
                 }
             }
+        });
+
+        btnRemark.setOnClickListener(v -> {
+            if (remarkDialog == null){
+                remarkDialog = new CommonSelectInputDialog(StockReworkWCActivity.this);
+            }
+//            remarkDialog.setSelectOnly(true);
+            remarkDialog.show();
+            //这句必须放在show之后
+//            remarkDialog.setSelectOnly(true);
+            remarkDialog.setInputOnly(true);
+            remarkDialog.setOnViewClickListener(onRemarkViewClickListener);
         });
 
     }
@@ -238,7 +277,7 @@ public class StockReworkWCActivity extends BaseActivity {
 
             while (count < 10 && newissuelist.size() > 0) {
                 BoxItemEntity bi = newissuelist.get(0);
-                ws_result = WebServiceUtil.op_Commit_Return_Item(bi);
+                ws_result = WebServiceUtil.op_Commit_Return_Item(bi,remark);
 
 
                 if (ws_result.getResult() ) {

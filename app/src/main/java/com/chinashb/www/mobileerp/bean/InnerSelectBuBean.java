@@ -13,14 +13,65 @@ import com.google.gson.annotations.SerializedName;
 
 public class InnerSelectBuBean implements Parcelable{
 
+    @SerializedName("Bu_ID") private int buID;
     @SerializedName("CF_ID") private int cfID;
     @SerializedName("Company_Chinese_Name") private String companyName;
     @SerializedName("Bu_Name") private String buName;
 
+    public int getBuID() {
+        return buID;
+    }
+
+    public InnerSelectBuBean setBuID(int buID) {
+        this.buID = buID;
+        return this;
+    }
+
+    public int getCfID() {
+        return cfID;
+    }
+
+    public InnerSelectBuBean setCfID(int cfID) {
+        this.cfID = cfID;
+        return this;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public InnerSelectBuBean setCompanyName(String companyName) {
+        this.companyName = companyName;
+        return this;
+    }
+
+    public String getBuName() {
+        return buName;
+    }
+
+    public InnerSelectBuBean setBuName(String buName) {
+        this.buName = buName;
+        return this;
+    }
+
     protected InnerSelectBuBean(Parcel in) {
+        buID = in.readInt();
         cfID = in.readInt();
         companyName = in.readString();
         buName = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(buID);
+        dest.writeInt(cfID);
+        dest.writeString(companyName);
+        dest.writeString(buName);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<InnerSelectBuBean> CREATOR = new Creator<InnerSelectBuBean>() {
@@ -34,38 +85,4 @@ public class InnerSelectBuBean implements Parcelable{
             return new InnerSelectBuBean[size];
         }
     };
-
-    public int getCfID() {
-        return cfID;
-    }
-
-    public void setCfID(int cfID) {
-        this.cfID = cfID;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getBuName() {
-        return buName;
-    }
-
-    public void setBuName(String buName) {
-        this.buName = buName;
-    }
-
-    @Override public int describeContents() {
-        return 0;
-    }
-
-    @Override public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(cfID);
-        dest.writeString(companyName);
-        dest.writeString(buName);
-    }
 }

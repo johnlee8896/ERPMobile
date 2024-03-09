@@ -35,6 +35,17 @@ public class Item_Lot_Inv implements Serializable {
     
     private String LotDescription;
 
+    private float FreezedInv;
+
+    public float getFreezedInv() {
+        return FreezedInv;
+    }
+
+    public Item_Lot_Inv setFreezedInv(float freezedInv) {
+        FreezedInv = freezedInv;
+        return this;
+    }
+
     public void setIV_ID(int IV_ID) {
         this.IV_ID = IV_ID;
     }

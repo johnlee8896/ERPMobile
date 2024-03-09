@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.chinashb.www.mobileerp.utils.FileUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.SPDefine;
 import com.chinashb.www.mobileerp.utils.StringConstantUtil;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
 import com.google.gson.JsonObject;
@@ -55,6 +57,7 @@ public class LoginActivity extends BaseActivity {
     private EditText nameEditText;
     private EditText passwordEditText;
     private Button loginButton;
+    private Button testLoginButton;
     private Button scanHRButton;
 //    private ProgressBar progressBar;
 
@@ -66,7 +69,8 @@ public class LoginActivity extends BaseActivity {
     private RadioGroup netRadioGroup;
     private RadioButton intranetRadioButton;
     private RadioButton internetRadioButton;
-    private Handler handler = new Handler(){
+    private String[] testNameList;
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -83,6 +87,7 @@ public class LoginActivity extends BaseActivity {
         nameEditText = (EditText) findViewById(R.id.et_login_name);
         passwordEditText = (EditText) findViewById(R.id.et_login_password);
         loginButton = (Button) findViewById(R.id.name_sign_in_button);
+        testLoginButton = (Button) findViewById(R.id.name_sign_in_test_button);
         scanHRButton = (Button) findViewById(R.id.main_scan_hr_card_button);
 
         netRadioGroup = (RadioGroup) findViewById(R.id.rg_net_link);
@@ -94,6 +99,9 @@ public class LoginActivity extends BaseActivity {
             internetRadioButton.setChecked(true);
         }
 
+
+        testNameList = getResources().getStringArray(R.array.test_name_array);
+
 //        progressBar = (ProgressBar) findViewById(R.id.login_progress);
         //最新版本检测
         checkErpVersionOk();
@@ -102,6 +110,9 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 checkNamePwd();
+//                if (!UserSingleton.get().isTestEnvironment()) {
+//                    checkNamePwd();
+//                }
 //                new Thread() {
 //                    @Override
 //                    public void run() {
@@ -118,6 +129,31 @@ public class LoginActivity extends BaseActivity {
 
             }
         });
+
+        testLoginButton.setOnClickListener(v -> {
+            UserSingleton.get().setTestEnvironment(true);
+            testCheckNamePwd();
+        });
+
+        nameEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+                super.afterTextChanged(editable);
+                for (String name : testNameList) {
+                    if (name.equals(editable.toString())) {
+                        testLoginButton.setVisibility(View.VISIBLE);
+//                        UserSingleton.get().setTestEnvironment(true);
+                        break;
+                    } else {
+                        testLoginButton.setVisibility(View.GONE);
+//                        UserSingleton.get().setTestEnvironment(false);
+                    }
+
+                }
+
+            }
+        });
+
 
         netRadioGroup.setOnCheckedChangeListener(new NetOnCheckedChangeListener());
 
@@ -171,6 +207,22 @@ public class LoginActivity extends BaseActivity {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         super.onResume();
+    }
+
+    //    测试环境登录
+    private void testCheckNamePwd() {
+        String userName = nameEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+        if (userName.isEmpty() || password.isEmpty()) {
+            ToastUtil.showToastLong("请输入名字/密码");
+        } else if (password.length() < 8) {
+            ToastUtil.showToastLong("您的密码不符合至少8位长度的要求，请重置后再试");
+        } else {
+//            String Name = nameEditText.getText().toString();
+//            String password = passwordEditText.getText().toString();
+            CheckNameAndPasswordAsyncTask task = new CheckNameAndPasswordAsyncTask();
+            task.execute(nameEditText.getText().toString(), passwordEditText.getText().toString());
+        }
     }
 
 //    private int GetApkInfo(Context context, String apkPath) {
@@ -371,9 +423,9 @@ public class LoginActivity extends BaseActivity {
         String password = passwordEditText.getText().toString();
         if (userName.isEmpty() || password.isEmpty()) {
             ToastUtil.showToastLong("请输入名字/密码");
-        } else if(password .length() < 8){
+        } else if (password.length() < 8) {
             ToastUtil.showToastLong("您的密码不符合至少8位长度的要求，请重置后再试");
-        }else {
+        } else {
 //            String Name = nameEditText.getText().toString();
 //            String password = passwordEditText.getText().toString();
             CheckNameAndPasswordAsyncTask task = new CheckNameAndPasswordAsyncTask();
@@ -388,7 +440,7 @@ public class LoginActivity extends BaseActivity {
 //        ToastUtil.showToastShort("请重新登录");
         nameEditText.setHint("请重新登录");
 //        UserSingleton.get().setServerPort(8189);
-        UserSingleton.get().setServerBack(true);
+//        UserSingleton.get().setServerBack(true);
         //对于static变量，如果仅是上面的，则不行
 //        CommonUtil.doLogout(LoginActivity.this);
     }
@@ -419,7 +471,12 @@ public class LoginActivity extends BaseActivity {
             if (params != null && params.length > 1) {
                 String userName = params[0];
                 String password = params[1];
-                wsResult = WebServiceUtil.getTryLogin(userName, password);
+//                wsResult = WebServiceUtil.getTryLogin(userName, password);
+                if (UserSingleton.get().isTestEnvironment()) {
+                    wsResult = WebServiceUtil.getTryLogin_Test(userName, password);
+                } else {
+                    wsResult = WebServiceUtil.getTryLogin(userName, password);
+                }
                 return null;
             }
             return null;
@@ -467,9 +524,11 @@ public class LoginActivity extends BaseActivity {
             } else {
                 ToastUtil.showToastLong(wsResult.getErrorInfo());
                 //2021-09-26 因为最近频繁的手机登录异常问题，报“未将对象实例等”，原因servicecontract问题，故切换环境
-                if(wsResult != null && wsResult.getErrorInfo() != null && wsResult.getErrorInfo().contains("对象引用")){
-                    swtichService();
-                }
+                //2024-01-04 john 这个备用的去掉
+//                if (wsResult != null && wsResult.getErrorInfo() != null && wsResult.getErrorInfo().contains("对象引用")) {
+//                    swtichService();
+//                }
+                UserSingleton.get().setTestEnvironment(false);
             }
 //            progressBar.setVisibility(View.INVISIBLE);
             progressDialog.dismiss();
@@ -537,9 +596,10 @@ public class LoginActivity extends BaseActivity {
     private class GetDownloadUrlTask extends AsyncTask<String, Void, WsResult> {
         //Image hr_photo;
         String updateLog = "";
+
         @Override
         protected WsResult doInBackground(String... params) {
-            if (params != null && params.length > 0 ){
+            if (params != null && params.length > 0) {
                 updateLog = params[0];
             }
             WsResult result = WebServiceUtil.getDownloadUrl();
@@ -555,19 +615,19 @@ public class LoginActivity extends BaseActivity {
         protected void onPostExecute(WsResult result) {
 //
 //            MobclickAgent.onEvent(LoginActivity.this, StringConstantUtil.Umeng_event_scan_hr_login);
-           if (result != null && result.getResult() && !TextUtils.isEmpty(result.getErrorInfo())){
-               APPUpgradeManager.with(LoginActivity.this)
-                       .setNeedShowToast(true)
+            if (result != null && result.getResult() && !TextUtils.isEmpty(result.getErrorInfo())) {
+                APPUpgradeManager.with(LoginActivity.this)
+                        .setNeedShowToast(true)
 //                                .setAPIService(APIDefine.SERVICE_BASE)
 //                                .setAPIUrl(APIDefine.API_check_new_version)
 //                                .setAppName(getString(R.string.app_name))
-                       .setApkDownloadedPath(FileUtil.getCachePath())
+                        .setApkDownloadedPath(FileUtil.getCachePath())
 //                                .setVersionName(APPUtil.getVersionName()).setVersionCode(APPUtil.getVersionCode() + "")
 //                                .builder().checkNewVersion(APPUpgradeManager.NAME_MaterialsManager);
-                       .builder().showForceUpdateDialog(updateLog,result.getErrorInfo());
-           }else{
-               ToastUtil.showToastShort("获取下载链接失败！");
-           }
+                        .builder().showForceUpdateDialog(updateLog, result.getErrorInfo());
+            } else {
+                ToastUtil.showToastShort("获取下载链接失败！");
+            }
         }
 
         @Override

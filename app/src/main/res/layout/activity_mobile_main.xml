@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
@@ -38,6 +39,18 @@
                 android:textColor="@color/color_orange_FF6A00"
                 android:textSize="@dimen/text_size_18"
                 android:text="使用者" />
+
+            <TextView
+                android:id="@+id/tv_current_test_environment"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:visibility="gone"
+                tools:visibility = "visible"
+                android:padding="@dimen/dimen_size_5"
+                android:textColor="@color/color_red_f4333c"
+                android:textSize="@dimen/text_size_20"
+                android:text="当前为测试环境,在此登录下的均为测试环境！！" />
 
             <!--<LinearLayout-->
             <!--android:layout_width="match_parent"-->
@@ -217,6 +230,7 @@
                 android:layout_marginLeft="@dimen/dimen_size_20"
                 android:layout_marginTop="@dimen/dimen_size_15"
                 android:layout_marginRight="@dimen/dimen_size_20"
+                android:visibility="gone"
                 android:background="@drawable/shape_conner_blue_button_bg"
                 android:gravity="center"
                 android:text="考勤打卡" />
@@ -228,9 +242,21 @@
                 android:layout_marginLeft="@dimen/dimen_size_20"
                 android:layout_marginTop="@dimen/dimen_size_15"
                 android:layout_marginRight="@dimen/dimen_size_20"
+                android:visibility="gone"
                 android:background="@drawable/shape_conner_blue_button_bg"
                 android:gravity="center"
                 android:text="核酸检测登记" />
+
+            <TextView
+                android:id="@+id/main_version_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="版本系统" />
 
             <!--<ProgressBar-->
             <!--android:id="@+id/main_scan_progressBar"-->

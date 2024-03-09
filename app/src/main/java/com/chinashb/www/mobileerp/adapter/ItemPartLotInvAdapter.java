@@ -48,19 +48,26 @@ public class ItemPartLotInvAdapter extends RecyclerView.Adapter<ItemPartLotInvAd
 
     @Override
     public void onBindViewHolder(final ProInvViewHolder holder, int position) {
-        final Item_Lot_Inv lot = dataSoure.get(position);
+        final Item_Lot_Inv entity = dataSoure.get(position);
 
-        holder.tvVer.setText(lot.getItem_Version());
-        holder.tvIstName.setText(lot.getIstName());
-        holder.tvLotDate.setText(CommonUtil.DateYMD(lot.getLotDate()));
-        holder.tvLotNo.setText(lot.getLotNo());
-        holder.tvLotID.setText(String.valueOf(lot.getLotID()));
-        holder.tvManuLotNo.setText(lot.getManuLotNo());
-        holder.tvStauts.setText(lot.getLotStatus());
-        holder.tvLotTag.setText(lot.getLotDescription());
+        holder.tvVer.setText(entity.getItem_Version());
+        holder.tvIstName.setText(entity.getIstName());
+        holder.tvLotDate.setText(CommonUtil.DateYMD(entity.getLotDate()));
+        holder.tvLotNo.setText(entity.getLotNo());
+        holder.tvLotID.setText(String.valueOf(entity.getLotID()));
+        holder.tvManuLotNo.setText(entity.getManuLotNo());
+//        holder.tvStauts.setText(lot.getLotStatus());
+        //2024-02-29 john这里的状态要根据冻结判断
+        if (entity.getFreezedInv() > 0){
+            holder.tvStauts.setText(String.format("有冻结，数量为%s",entity.getFreezedInv() + ""));
+        }else{
+            holder.tvStauts.setText("正常使用");
+        }
+//        holder.tvStauts.setText(entity.getLotStatus());
+        holder.tvLotTag.setText(entity.getLotDescription());
 
-        holder.tvInvQty.setText(CommonUtil.DecimalFormat(lot.getInvQty()));
-        if (lot!= null && lot.getLotStatus().equals("正常使用")) {
+        holder.tvInvQty.setText(CommonUtil.DecimalFormat(entity.getInvQty()));
+        if (entity!= null && entity.getLotStatus().equals("正常使用")) {
             holder.tvInvQty.setBackgroundResource(R.drawable.textviewbluebackground);
             holder.tvInvQty.setTextColor(Color.WHITE);
         }

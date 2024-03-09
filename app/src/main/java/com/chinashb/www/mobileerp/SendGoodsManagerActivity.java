@@ -283,6 +283,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
             startActivityForResult(intent, 305);
         } else if (v == confirmButton) {
             handleSendGoods();
+            confirmButton.setEnabled(false);
         } else if (v == packageTextView) {
             isFromPackage = true;
             if (companyBean == null) {
@@ -634,7 +635,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
                 ToastUtil.showToastShort("手机发货出错");
             }
 
-
+            confirmButton.setEnabled(true);
             itemDetailTextView.setText("");
             boxItemEntityList.clear();
             boxItemAdapter = new InBoxItemAdapter(SendGoodsManagerActivity.this, boxItemEntityList);

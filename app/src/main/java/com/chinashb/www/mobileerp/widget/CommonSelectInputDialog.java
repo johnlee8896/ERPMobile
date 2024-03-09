@@ -41,6 +41,7 @@ public class CommonSelectInputDialog<T> extends BaseDialog {
 
     private String title;
     private boolean selectOnly;
+    private boolean inputOnly;
 
     public CommonSelectInputDialog(@NonNull Context context) {
         super(context);
@@ -55,6 +56,17 @@ public class CommonSelectInputDialog<T> extends BaseDialog {
         return this;
     }
 
+    public CommonSelectInputDialog setInputOnly(boolean inputOnly){
+        this.inputOnly = inputOnly;
+        if (inputOnly){
+            recyclerView.setVisibility(View.GONE);
+            titleTextView.setVisibility(View.GONE);
+        }
+        return this;
+
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +77,8 @@ public class CommonSelectInputDialog<T> extends BaseDialog {
         adapter = new SelectUseAdapter();
         recyclerView.setAdapter(adapter);
         setContentList();
+
+
 
         cancelButton.setOnClickListener(v -> {
             dismiss();

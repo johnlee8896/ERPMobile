@@ -34,21 +34,32 @@ public class InnerSaleBuSelectActivity extends BaseActivity {
 
     @BindView(R.id.inner_sale_out_bu_customerRecyclerView) CustomRecyclerView recyclerView;
     private InnerSaleSelectBuAdapter adapter;
+    private int intentRequestFrom ;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inner_sale_bu_select_layout);
         ButterKnife.bind(this);
+        intentRequestFrom = getIntent().getIntExtra(IntentConstant.Intent_Extra_to_inner_company_bu_from,0);
 
         adapter = new InnerSaleSelectBuAdapter();
         adapter.setOnViewClickListener(new OnViewClickListener() {
             @Override public <T> void onClickAction(View v, String tag, T t) {
                 InnerSelectBuBean bean = (InnerSelectBuBean) t;
                 if (bean != null) {
-                    Intent intent = new Intent(InnerSaleBuSelectActivity.this, InnerSaleOutActivity.class);
-                    intent.putExtra(IntentConstant.Intent_Extra_select_bu_bean, bean);
-                    setResult(IntentConstant.Intent_Request_Code_Sale_Out_to_Bu, intent);
-                    finish();
+                    if (intentRequestFrom == IntentConstant.Intent_Request_Code_Sale_Out_to_Bu){
+                        Intent intent = new Intent(InnerSaleBuSelectActivity.this, InnerSaleOutActivity.class);
+                        intent.putExtra(IntentConstant.Intent_Extra_select_bu_bean, bean);
+                        setResult(IntentConstant.Intent_Request_Code_Sale_Out_to_Bu, intent);
+                        finish();
+                    }else if (intentRequestFrom == IntentConstant.Intent_Request_Code_Part_Allocate_Transfer_to_Bu){
+                        Intent intent = new Intent(InnerSaleBuSelectActivity.this, PartAllocateTransferInnerCompanyActivity.class);
+                        intent.putExtra(IntentConstant.Intent_Extra_select_bu_bean, bean);
+                        setResult(IntentConstant.Intent_Request_Code_Part_Allocate_Transfer_to_Bu, intent);
+                        finish();
+                    }
+
+
                 }
             }
         });
@@ -62,16 +73,30 @@ public class InnerSaleBuSelectActivity extends BaseActivity {
 
     }
 
+
     private class GetBuListAsyncTask extends AsyncTask<String, Void, Void> {
         List<InnerSelectBuBean> buBeanList;
 
         @Override
         protected Void doInBackground(String... params) {
-//            String buId = params[0];
-            String sql = String.format("Select CF_ID,Company.Company_Chinese_Name , Bu_Name From Bu  Inner Join [Company]  With (NoLock)  On [Bu].[Company_ID]=[Company].[Company_ID] " +
-                            " Inner Join [Customer_Facility] With (NoLock)  On [Bu].[ID_Customer]=[Customer_Facility].[CF_ID] " +
-                            "Where Bu.Enabled=1 and Bu.is_obsolete=0 and Bu.is_virtual = 0 And Bu.Company_ID<>%s And (Bu.Has_Part_Account=1 Or Bu.Has_Product_WareHouse_Account=1)  And Isnull(Bu.Is_Wujin,0)=0  Order By Bu.Company_ID, Bu.Bu_ID ",
-                    UserSingleton.get().getUserInfo().getBu_ID());
+//            上面是集团内销售的，要不同公司
+//                String buId = params[0];
+            String sql = "";
+            if (intentRequestFrom == IntentConstant.Intent_Request_Code_Sale_Out_to_Bu){
+                 sql = String.format("Select CF_ID,Company.Company_Chinese_Name , Bu_Name From Bu  Inner Join [Company]  With (NoLock)  On [Bu].[Company_ID]=[Company].[Company_ID] " +
+                                " Inner Join [Customer_Facility] With (NoLock)  On [Bu].[ID_Customer]=[Customer_Facility].[CF_ID] " +
+                                "Where Bu.Enabled=1 and Bu.is_obsolete=0 and Bu.is_virtual = 0 And Bu.Company_ID<>%s And (Bu.Has_Part_Account=1 Or Bu.Has_Product_WareHouse_Account=1)  And Isnull(Bu.Is_Wujin,0)=0  Order By Bu.Company_ID, Bu.Bu_ID ",
+                        UserSingleton.get().getUserInfo().getBu_ID());
+            }else if (intentRequestFrom == IntentConstant.Intent_Request_Code_Part_Allocate_Transfer_to_Bu){
+                //2023-07-21 john之前语句有些问题
+//                2023-10-20 john 添加bu_id,直接cf_id 如1301，赋值bu，直接报错
+                 sql = String.format("Select Bu_ID, CF_ID,Company.Company_Chinese_Name , Bu_Name From Bu  Inner Join [Company]  With (NoLock)  On [Bu].[Company_ID]=[Company].[Company_ID] " +
+                                " Inner Join [Customer_Facility] With (NoLock)  On [Bu].[ID_Customer]=[Customer_Facility].[CF_ID] " +
+                                "Where Bu.Enabled=1 and Bu.is_obsolete=0 and Bu.is_virtual = 0 And Bu.Company_ID = %s And (Bu.Has_Part_Account=1 Or Bu.Has_Product_WareHouse_Account=1)   Order By Bu.Company_ID, Bu.Bu_ID ",
+                        UserSingleton.get().getUserInfo().getCompany_ID());
+            }
+
+
             WsResult result = WebServiceUtil.getDataTable(sql);
             if (result != null && result.getResult()) {
                 String jsonData = result.getErrorInfo();

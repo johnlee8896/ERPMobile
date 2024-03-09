@@ -107,6 +107,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
         }
         issueMoreItemAdapter = new IssueMoreItemAdapter(StockOutMoreExtraActivity.this, newissuelist);
         issueMoreItemAdapter.showNeedMore = false;
+        issueMoreItemAdapter.setCanEdit(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(issueMoreItemAdapter);
 

@@ -69,7 +69,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="扫描入库"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:id="@+id/imageView2"
@@ -86,7 +86,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="生产投料"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                 </TableRow>
 
@@ -113,7 +113,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="返工出库"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:id="@+id/imageView4"
@@ -131,7 +131,7 @@
                         android:paddingBottom="5dp"
                         android:text="移动库位"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                 </TableRow>
 
@@ -157,7 +157,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="冻结库存"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:id="@+id/imageView8"
@@ -174,7 +174,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="部门领料"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
                 </TableRow>
 
                 <TableRow
@@ -199,7 +199,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="成品库存"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:id="@+id/imageView6"
@@ -242,7 +242,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="在制品盘存"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
 
@@ -285,7 +285,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="自制成品盘存"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
 
@@ -329,7 +329,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="生产线领料"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
 
@@ -373,7 +373,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="车间要货计划"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
 
@@ -417,7 +417,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="自制车间退货"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -460,7 +460,7 @@
                         android:background="@drawable/squarebutton"
                         android:text="物流来料接收"
                         android:textColor="#ffffff"
-                        android:textSize="18sp" />
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:id="@+id/imageView_set_date"
@@ -479,6 +479,8 @@
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
                 </TableRow>
+
+
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -520,6 +522,92 @@
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
                 </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_photo_camera"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="图片处理"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+
+                    <ImageView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_part_scan_ist"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="扫描库位查物料"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_find_move_area"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="移库查询"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+
+                    <ImageView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_part_allocate_inner_company"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="同公司零件调拨"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+                </TableRow>
+
+
 
                 <TableRow
                     android:layout_width="match_parent"

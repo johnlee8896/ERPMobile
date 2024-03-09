@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountInActivity;
+import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountOutActivity;
+import com.chinashb.www.mobileerp.warehouse.ScanIstFindProductActivity;
 import com.chinashb.www.mobileerp.warehouse.StockDepartmentInActivity;
 
 import butterknife.BindView;
@@ -40,6 +43,9 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.product_main_move_pallet_textView) TextView movePalletTextView;
     @BindView(R.id.product_main_move_not_pallet_textView) TextView moveNotPalletTextView;
     @BindView(R.id.product_main_scan_code_box_in_Not_Pallet_textView) TextView notPalletInTextView;
+    @BindView(R.id.product_main_scan_ist_get_item_textView) TextView scanIstGetItemTextView;
+    @BindView(R.id.product_main_bu_warehouse_textView) TextView buWarehouseInTextView;//车间仓
+    @BindView(R.id.product_main_bu_warehouse_out_textView) TextView buWarehouseOutTextView;//车间仓出库
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +73,9 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         scanBoxInTextView.setOnClickListener(this);
         movePalletTextView.setOnClickListener(this);
         moveNotPalletTextView.setOnClickListener(this);
+        scanIstGetItemTextView.setOnClickListener(this);
+        buWarehouseInTextView.setOnClickListener(this);
+        buWarehouseOutTextView.setOnClickListener(this);
     }
 
     @Override
@@ -100,7 +109,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         } else if (v == notPalletInTextView) {
             Intent intent = new Intent(this, ProductNotPalletInActivity.class);
             startActivity(intent);
-        }else if (v == otherOutTextView) {
+        } else if (v == otherOutTextView) {
 
         } else if (v == scanBoxInTextView) {
 //            Intent intent = new Intent(this,ProductInNonTrayScanOuterBoxActivity.class);
@@ -112,7 +121,18 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
             startActivity(intent);
         } else if (v == moveNotPalletTextView) {
 //            Intent intent = new Intent(this,ProductInNonTrayScanOuterBoxActivity.class);
-            Intent intent = new Intent(this, ProductScanBoxInActivity.class);
+            Intent intent = new Intent(this, MoveProductNotPalletActivity.class);
+            startActivity(intent);
+        } else if (v == scanIstGetItemTextView) {
+//            Intent intent = new Intent(this,ProductInNonTrayScanOuterBoxActivity.class);
+            Intent intent = new Intent(this, ScanIstFindProductActivity.class);
+            startActivity(intent);
+        } else if (v == buWarehouseInTextView) {
+//            Intent intent = new Intent(this,ProductInNonTrayScanOuterBoxActivity.class);
+            Intent intent = new Intent(this, BuWarehouseAccountInActivity.class);
+            startActivity(intent);
+        }else if (v == buWarehouseOutTextView){
+            Intent intent = new Intent(this, BuWarehouseAccountOutActivity.class);
             startActivity(intent);
         }
     }

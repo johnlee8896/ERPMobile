@@ -242,6 +242,11 @@ public class StockCheckPartInvActivity extends BaseActivity {
                 String sql = "";
                 if (Ac_Type == 13 || Ac_Type == 14){
 
+//                    2023-06-25 john 如果是五金，则ac_type只为1
+                    if (Bu_ID == 13 || Bu_ID == 94){
+                        Ac_Type = 1;
+                    }
+
                      sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20),Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory\n" +
                             " Where Bu_ID=" + Bu_ID + " And  Ac_Type=" + Ac_Type + " And Datediff(day, Insert_Time, Getdate())<100 ";
                 }else if (Ac_Type == 1 || Ac_Type == 2){
@@ -714,6 +719,8 @@ public class StockCheckPartInvActivity extends BaseActivity {
                         AsyncGetInvBox task = new AsyncGetInvBox();
                         task.execute();
                     }
+
+
                 }
 
                 if (result.startsWith("/SUB_IST_ID/") || result.startsWith("/IST_ID/")) {
@@ -721,6 +728,14 @@ public class StockCheckPartInvActivity extends BaseActivity {
                     scanstring = result;
                     GetIstAsynctTask task = new GetIstAsynctTask();
                     task.execute();
+                }
+
+                //  2023-06-25 john 五金的特殊解析
+                if (result.startsWith("Item")){
+                    scanstring = result;
+                    AsyncGetItemWujin task = new AsyncGetItemWujin();
+                    task.execute();
+
                 }
             }
         }
@@ -798,6 +813,8 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //                bi = WebServiceUtil.op_Check_Stock_Item_Barcode_V2(scanstring);
 //            }
 
+
+
             if (Ac_Type == 1) {
                 bi = WebServiceUtil.op_Check_Stock_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(), scanstring);
             } else {
@@ -831,6 +848,105 @@ public class StockCheckPartInvActivity extends BaseActivity {
                                 "前面已经扫描过", R.mipmap.warning, Toast.LENGTH_SHORT);
                         return;
                     }
+                    //暂存一下
+                    StockCheckPartInvActivity.this.boxItemEntity = bi;
+                    DecimalFormat DF = new DecimalFormat("####.####");
+                    tvERPIst.setText(bi.getIstName());
+                    if (thePlace.getIst_ID() != bi.getIst_ID() || thePlace.getSub_Ist_ID() != bi.getSub_Ist_ID()) {
+                        tvERPIst.setTextColor(Color.RED);
+                    } else {
+                        tvERPIst.setTextColor(Color.BLACK);
+                    }
+                    tvItemName.setText(bi.getItemName());
+                    tvBoxName.setText(bi.getBoxNameNo());
+                    tvManuLotno.setText(bi.getManuLotNo());
+
+                    if (!ShowERPInv) {
+                        tvLeftQty.setVisibility(View.INVISIBLE);
+                    } else {
+                        tvLeftQty.setVisibility(View.VISIBLE);
+                    }
+                    tvLeftQty.setText(DF.format(bi.getQty()));
+                    //realQtyTextView.setText(DF.format(bi.getBoxQty()));
+                    if (bi.getQty() != bi.getBoxQty()) {
+                        tvLeftQty.setTextColor(Color.RED);
+                    } else {
+                        tvLeftQty.setTextColor(Color.BLACK);
+                    }
+
+                    if (fromZaiZhiPin){
+                        tvLeftQty.setVisibility(View.GONE);
+//                        storeAreaEditText.setVisibility(View.GONE);
+//                        manuLotEditText.setVisibility(View.GONE);
+
+
+                    }
+                    inputEditText.setText("");
+                    inputEditText.findFocus();
+                }
+            }
+
+
+            //pbScan.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+
+    private class AsyncGetItemWujin extends AsyncTask<String, Void, Void> {
+        BoxItemEntity boxItemEntity;
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            BoxItemEntity bi = null;
+
+//            if (Ac_Type == 1) {
+//                bi = WebServiceUtil.op_Check_Stock_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(), scanstring);
+//            } else {
+//                bi = WebServiceUtil.op_Check_Stock_Item_Barcode_V2(scanstring);
+//            }
+            bi = WebServiceUtil.op_Check_Commit_Item_Wujin(scanstring);
+
+
+            boxItemEntity = bi;
+
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //tv.setText(fahren + "∞ F");
+
+            tvItemCode.setText(scanstring);
+            if (boxItemEntity != null) {
+                if (!boxItemEntity.getResult()) {
+                    Toast.makeText(StockCheckPartInvActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                    inputEditText.setText("");
+                    return;
+                }
+
+                BoxItemEntity bi = boxItemEntity;
+                if (bi.getResult()) {
+//                    if (is_box_existed(bi)) {
+//                        CommonUtil.ShowToast(StockCheckPartInvActivity.this,
+//                                "前面已经扫描过", R.mipmap.warning, Toast.LENGTH_SHORT);
+//                        return;
+//                    }
+//                    五金的判断主要是item_id和iv_id
+
+
                     //暂存一下
                     StockCheckPartInvActivity.this.boxItemEntity = bi;
                     DecimalFormat DF = new DecimalFormat("####.####");
@@ -934,79 +1050,48 @@ public class StockCheckPartInvActivity extends BaseActivity {
         @Override
 
         protected Void doInBackground(String... params) {
-            if (fromZaiZhiPin) {
+            int Bu_ID = UserSingleton.get().getUserInfo().getBu_ID();
+            if (Bu_ID == 13 || Bu_ID == 94){
+                if ( boxItemEntity != null ) {
+                    //扫描模式
+                    BoxItemEntity bi = boxItemEntity;
+                    ws_result = WebServiceUtil.op_CheckInventory_Item_Wujin(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+                            thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, bi.getItem_ID(), bi.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+                }
+            }else{
+                if (fromZaiZhiPin) {
 //                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
 //                        CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "", thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
 //                        0, 0, 0, 0, qty, N, PN, DQ, remark);
 //
 //                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),CI_ID,UserSingleton.get().getUserInfo().getBu_ID(),"",
 //                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),0L,0L,0L,0L,qty,N,PN,DQ,remark);
-                if ( boxItemEntity != null ) {
-                    //扫描模式
-                    BoxItemEntity bi = boxItemEntity;
-                    if (Ac_Type == 1) {
-                        //todo  && userInfo.getBu_ID() == 1
-                        ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
-                                CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
-                                bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
-
-                    } else {
-                        ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
-                                CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
-                                bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
-                    }
-                } else {
-                    if (panDianItemBean != null){
-                        //输入模式
-                        ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
-                                thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
-
-                    }
-                   }
-
-            } else {
-                if (fromSelfProduct){
                     if ( boxItemEntity != null ) {
-                        BoxItemEntity bi = null;
-                             bi= boxItemEntity;
-                        //解决编译通过但报错的问题
-//            String qty = realQtyTextView.getText().toString();
-//            String remark = etRemark.getText().toString();
-//
-//            String N = etN.getText().toString();
-//            String PN = etPN.getText().toString();
-//            String DQ = etDQ.getText().toString();
+                        //扫描模式
+                        BoxItemEntity bi = boxItemEntity;
+                        if (Ac_Type == 1) {
+                            //todo  && userInfo.getBu_ID() == 1
+                            ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+                                    CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                    bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
 
-                        if(bi != null && bi.getItem_ID() > 0){
-
-                            if (Ac_Type == 1) {
-                                //todo  && userInfo.getBu_ID() == 1
-                                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
-                                        CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
-                                        bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
-
-                            } else {
-                                ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
-                                        CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
-                                        bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
-                            }
+                        } else {
+                            ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
+                                    CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                    bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
                         }
-                    }else{
+                    } else {
                         if (panDianItemBean != null){
-
+                            //输入模式
                             ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
                                     thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
-                        }
 
+                        }
                     }
 
-
-
-
-                }else {
-                    if (fromPart){
-                        //boxitemEntity就扫描，即相机或pda，而pandianbean是搜索的物料
-                        if ( boxItemEntity != null && panDianItemBean == null  ) {
+                } else {
+                    if (fromSelfProduct){
+                        if ( boxItemEntity != null ) {
                             BoxItemEntity bi = null;
                             bi= boxItemEntity;
                             //解决编译通过但报错的问题
@@ -1019,6 +1104,46 @@ public class StockCheckPartInvActivity extends BaseActivity {
 
                             if(bi != null && bi.getItem_ID() > 0){
 
+                                if (Ac_Type == 1) {
+                                    //todo  && userInfo.getBu_ID() == 1
+                                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+                                            CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
+
+                                } else {
+                                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
+                                            CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
+                                }
+                            }
+                        }else{
+                            if (panDianItemBean != null){
+
+                                ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+                                        thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+                            }
+
+                        }
+
+
+
+
+                    }else {
+                        if (fromPart){
+                            //boxitemEntity就扫描，即相机或pda，而pandianbean是搜索的物料
+                            if ( boxItemEntity != null && panDianItemBean == null  ) {
+                                BoxItemEntity bi = null;
+                                bi= boxItemEntity;
+                                //解决编译通过但报错的问题
+//            String qty = realQtyTextView.getText().toString();
+//            String remark = etRemark.getText().toString();
+//
+//            String N = etN.getText().toString();
+//            String PN = etPN.getText().toString();
+//            String DQ = etDQ.getText().toString();
+
+                                if(bi != null && bi.getItem_ID() > 0){
+
 //                                if (Ac_Type == 1) {
                                     //todo  && userInfo.getBu_ID() == 1
                                     ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
@@ -1030,24 +1155,28 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //                                            CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
 //                                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
 //                                }
+                                }
+                            }else if (panDianItemBean != null){
+                                //零件也可以调这个方法
+                                ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+                                        thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+
                             }
-                        }else if (panDianItemBean != null){
-                            //零件也可以调这个方法
-                            ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
-                                    thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+
+
+
 
                         }
-
-
 
 
                     }
 
 
                 }
-
-
             }
+
+
+
 
 
             return null;

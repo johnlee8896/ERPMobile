@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="350dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/shape_white_bg_conner_4dp"
+    android:divider="@drawable/shape_divide_line_horizontal"
+    android:paddingTop="@dimen/dimen_size_10"
+    android:showDividers="middle">
+
+    <TextView
+        android:id="@+id/dialog_storage_area_title_textView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="物料查询大区数量汇总"
+        android:textColor="#333"
+        android:textSize="18sp"
+        />
+    <LinearLayout
+        android:id="@+id/dialog_storage_area_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:showDividers="middle">
+
+        <Button
+            android:id="@+id/dialog_storage_area_confirm_Button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="确定"
+            android:textColor="#333"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/dialog_storage_area_cancel_Button"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:visibility="gone"
+            android:background="@drawable/selector_comm_click_bg"
+            android:text="取消"
+            android:textColor="#333"
+            android:textSize="16sp" />
+    </LinearLayout>
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/dialog_select_storage_area_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/dialog_storage_area_title_textView"
+        android:layout_above="@id/dialog_storage_area_bottom_layout"
+        app:app_item_decoration_type="ITEM_DIVIDE_LNE"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        tools:listitem="@layout/item_select_storage_area_layout"
+        />
+
+
+
+</RelativeLayout>

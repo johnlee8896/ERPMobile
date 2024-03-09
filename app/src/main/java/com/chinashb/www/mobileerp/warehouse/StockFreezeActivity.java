@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -17,15 +16,14 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.WsResult;
-import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
-import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
-import com.chinashb.www.mobileerp.utils.ToastUtil;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 import com.chinashb.www.mobileerp.adapter.AdapterFreezeBoxItem;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +124,8 @@ public class StockFreezeActivity extends BaseActivity {
     }
 
     private void parseScanResult(String result) {
-        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
+        //// TODO: 2023/9/15 去掉下面这个scanned提示
+//        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
         if (result.contains("/")) {
             String[] qrContent;
