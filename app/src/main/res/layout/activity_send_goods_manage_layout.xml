@@ -529,6 +529,60 @@
                         android:textSize="@dimen/text_size_14"
                         tools:text=" 300 " />
                 </LinearLayout>
+<!--                发货订单界面-->
+                <LinearLayout
+                    android:id="@+id/send_goods_manage_order_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/send_goods_manage_order_textView_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_20"
+                        android:layout_marginLeft="@dimen/dimen_size_20"
+                        android:visibility="gone"
+                        android:background="@drawable/shape_white_conner_8dp_bg"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:gravity="center_vertical"
+                            android:minWidth="80dp"
+                            android:text="客户订单"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_vertical"
+                            android:background="@color/transparent"
+                            android:drawableRight="@mipmap/ic_arrow_right_dark_gray"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="@dimen/dimen_size_20"
+                            android:paddingRight="@dimen/dimen_size_10"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/text_size_14"
+                            tools:text="" />
+
+
+                    </LinearLayout>
+                    <TextView
+                        android:layout_marginTop="@dimen/dimen_size_10"
+                        android:layout_marginLeft="@dimen/dimen_size_10"
+                        android:id="@+id/send_goods_manage_order_info_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="50dp"
+                        android:layout_marginBottom="@dimen/dimen_size_20"
+                        android:layout_gravity="center_vertical"
+                        tools:text="客户订单:12998r0809098,数量：4000"
+                        android:textColor="@color/color_orange_FD910C" />
+
+                </LinearLayout>
+
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 

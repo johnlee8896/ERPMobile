@@ -587,6 +587,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
             int selectedCount = SelectList.size();
             while (count < selectedCount && SelectList.size() > 0) {
                 //todo  这里取的是0，验证多个是否成功
+                //// TODO: 2024/5/8 因为SelectList 之后有remove，故取第0个是可以的，可以连续扫
                 BoxItemEntity boxItemEntity = SelectList.get(0);
 //                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo，SendToWarehouseTime) values (%d,%d,%d,%d,%d,%d,%d,%s,%s)",
                 String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",

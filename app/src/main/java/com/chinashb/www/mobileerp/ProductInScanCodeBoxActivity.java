@@ -24,6 +24,7 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.OnAsyncTaskCompleteListener;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -83,7 +84,16 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
     private List<String> errorBoxResultInfoStringList;
     //标记连续扫描模式
     private boolean isInContinuousModeAndHasPossibleError = false;
-    private boolean isLastScanExecute = false;
+//    private boolean isLastScanExecute = false;
+//    private boolean isCurrentScanInTaskStart = false;
+    private boolean isCurrentScanInTaskEnd= false;
+    private int currentAsyncTaskIndex = 0;
+    private OnAsyncTaskCompleteListener onAsyncTaskCompleteListener = new OnAsyncTaskCompleteListener() {
+        @Override
+        public void onAsyncTaskComplete() {
+
+        }
+    };
 
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override
@@ -105,7 +115,8 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 //    private ArrayList<Integer> boxIDList;
     private boolean hasScanIst = false;
     private String month = "";
-    private int tempBoxID = 0;
+//    private int tempBoxID = 0;
+    private int modifiedMonthBoxID = 0 ;
     private OnViewClickListener onMonthViewClickListener = new OnViewClickListener() {
         @Override
         public <T> void onClickAction(View v, String tag, T t) {
@@ -113,7 +124,9 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                 month = (String) t;
 //                NOTextView.setText((CharSequence) t);
                 //这里是数字1到12
-                handleProductInAfterModifyMonth();
+                if (modifiedMonthBoxID > 0){
+                    handleProductInAfterModifyMonth(modifiedMonthBoxID);
+                }
             }
             if (commonSelectInputDialog != null && commonSelectInputDialog.isShowing()) {
                 commonSelectInputDialog.dismiss();
@@ -215,9 +228,16 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 
     private void parseContent(String content) {
         certainWCSubProductEntity = null;
+
         if (TextUtils.isEmpty(content)) {
             return;
         }
+        if (content.contains("/") && content.length() > 7){
+            GetTransferScanContentAsyncTask transferScanContentAsyncTask = new GetTransferScanContentAsyncTask();
+            transferScanContentAsyncTask.execute(content);
+        }
+
+
         System.out.println("============ scan content = " + content);
         if (content.contains("/")) {
             String[] qrContent;
@@ -250,6 +270,8 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                             boxIDList.add(boxId);
                         }
                     }
+                    GetProductSuggestAreaAsyncTask task = new GetProductSuggestAreaAsyncTask();
+                    task.execute(boxId);
                 } else if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
                     //仓库位置码
                     scanContent = content;
@@ -284,15 +306,11 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         } else if (view == scanAreaButton) {
             handleScanArea();
         } else if (view == warehouseInButton) {
-            handleIntoWareHouse();
-//            wcNameTextView.setText("");
-////            boxItemEntityList = new ArrayList<>()
-//            if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
-//                boxItemEntityList.clear();
-//            }
+//            2024-03-20 john成品扫描串库位的问题很可能是扫了箱标后，直接点了入库按钮，目前先禁掉此手动点击
+//            handleIntoWareHouse();
 
 
-//            getWCList();
+//            handleIntoWareHouse();
 
         } else if (view == selectNOButton) {
             handleSelectNO();
@@ -365,8 +383,17 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
     }
 
     private void handleIntoWareHouse() {
+//        boxIDList = new ArrayList<>();
+//        boxIDList.add(788227);
+//        boxIDList.add(790798);
+//        boxIDList.add(790803);
+//        hasScanIst = true;
+//        thePlace = new IstPlaceEntity();
+
+
+
         if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
-            if (hasScanIst) {
+            if (hasScanIst && (thePlace != null)) {
                 ExeWarehouseProductInCodeBoxAsyncTask task = new ExeWarehouseProductInCodeBoxAsyncTask();
                 task.execute();
             } else {
@@ -453,14 +480,14 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         commonSelectInputDialog.refreshContent(getMonthList());
     }
 
-    private void handleProductInAfterModifyMonth() {
+    private void handleProductInAfterModifyMonth(int boxID) {
         ModifyMonthExeWarehouseProductInCodeBoxAsyncTask task = new ModifyMonthExeWarehouseProductInCodeBoxAsyncTask();
-        task.execute();
+        task.execute(boxID);
     }
 
-    private void handleProductInNeglectMonth() {
+    private void handleProductInNeglectMonth(int boxID) {
         DirectExeWarehouseProductInCodeBoxAsyncTask task = new DirectExeWarehouseProductInCodeBoxAsyncTask();
-        task.execute();
+        task.execute(boxID);
     }
 
     private void handleAllInCorrect() {
@@ -470,6 +497,9 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         itemInfoTextView.setText("物料信息");
         istInfoTextView.setText("入库区域");
         hasScanIst = false;
+        thePlace = null;
+        //2024-03-21 这个是导致扫完第一个库后再扫第二个提示重复入库的问题，因没有重置boxIDList
+        boxIDList.clear();
     }
 
     private class GetWCProductWorkListsAsyncTask extends AsyncTask<String, Void, Void> {
@@ -569,6 +599,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
     private class ExeWarehouseProductInCodeBoxAsyncTask extends AsyncTask<String, Void, Void> {
         //        WsResult ws_result;
         List<WsResult> wsResultList = new ArrayList<>();
+        List<WsResult> errorWSResultList = new ArrayList<>();
 
         @Override
         protected Void doInBackground(String... params) {
@@ -576,11 +607,41 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
             errorBoxIDList.clear();
             errorBoxResultInfoStringList.clear();
 //            ws_result = WebServiceUtil.op_Product_Manu_In_Pallet(boxId, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), remark);
-            //循环中已经执行完了todo
+//            //循环中已经执行完了todo
+//            for (int i = 0; i < boxIDList.size(); i++) {
+//                WsResult ws_result = WebServiceUtil.op_Product_Manu_In_Pallet(boxIDList.get(i), thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), remark);
+//                wsResultList.add(ws_result);
+//            }
+
+            //初始化这个
+
+            isCurrentScanInTaskEnd = false;
+
+            int count = 0;
+            List<Integer> tempBoxIDList = new ArrayList<>();
             for (int i = 0; i < boxIDList.size(); i++) {
-                WsResult ws_result = WebServiceUtil.op_Product_Manu_In_Pallet(boxIDList.get(i), thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), remark);
-                wsResultList.add(ws_result);
+                tempBoxIDList.add(boxIDList.get(i));
             }
+
+            int selectedCount = tempBoxIDList.size();
+            while (count < selectedCount && tempBoxIDList.size() > 0) {
+                //// TODO: 2024/5/8 因为remove，故每次取第0个
+                int scanInBoxID = tempBoxIDList.get(0);
+                WsResult result = WebServiceUtil.op_Product_Manu_In_Pallet(scanInBoxID, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), remark);
+//                WsResult result = WebServiceUtil.op_Product_Manu_In_Pallet(scanInBoxID, 10013, 48248, remark);
+                wsResultList.add(result);
+                if (result.getResult()) {
+                    //// TODO: 2024/5/8  这里会被理解为remove index而非object
+                } else {
+                    errorWSResultList.add(result);
+                }
+                //// TODO: 2024/5/8 不论成功与否都要移除，否则每次执行的都是同一个
+                tempBoxIDList.remove(0);
+                count++;
+            }
+
+
+
 
             return null;
         }
@@ -599,7 +660,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                 WsResult ws_result = null;
                 ws_result = wsResultList.get(0);
 
-                tempBoxID = boxIDList.get(0);
+                int tempBoxID = boxIDList.get(0);
 
                 if (ws_result != null) {
                     if (!ws_result.getResult()) {
@@ -618,12 +679,13 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                                         switch (tag) {
                                             case CommAlertDialog.TAG_CLICK_LEFT:
 //                                            //修改托盘月份
+                                                modifiedMonthBoxID = tempBoxID;
                                                 modifyPalletMonth();
                                                 dialog.dismiss();
                                                 break;
                                             case CommAlertDialog.TAG_CLICK_RIGHT:
 //                                            //直接入库
-                                                handleProductInNeglectMonth();
+                                                handleProductInNeglectMonth(tempBoxID);
                                                 dialog.dismiss();
                                                 break;
                                         }
@@ -656,9 +718,18 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                 } else {
                     //处理有部分错的
                     isInContinuousModeAndHasPossibleError = true;
-                    for (int i = 0; i < wsResultList.size(); i++) {
-                        WsResult wsResult = wsResultList.get(i);
-                        tempBoxID = boxIDList.get(i);
+//                    for (int i = 0; i < wsResultList.size(); i++) {
+//                    int index = 0;
+//                    currentAsyncTaskIndex = index;
+                    currentAsyncTaskIndex = 0;
+                    isCurrentScanInTaskEnd = true;
+//                    while(isCurrentScanInTaskEnd && index < wsResultList.size()){
+                    while(isCurrentScanInTaskEnd && currentAsyncTaskIndex < wsResultList.size()){
+                        isCurrentScanInTaskEnd = false;
+//                        WsResult wsResult = wsResultList.get(index);
+                        WsResult wsResult = wsResultList.get(currentAsyncTaskIndex);
+//                        int tempBoxID = boxIDList.get(index);
+                        int tempBoxID = boxIDList.get(currentAsyncTaskIndex);
                         if (wsResult != null) {
                             if (!wsResult.getResult()) {
                                 errorBoxIDList.add(tempBoxID);
@@ -676,13 +747,13 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                                             public void onViewClick(Dialog dialog, View v, int tag) {
                                                 switch (tag) {
                                                     case CommAlertDialog.TAG_CLICK_LEFT:
-//                                            //修改托盘月份
+//                                                      //修改托盘月份
                                                         modifyPalletMonth();
                                                         dialog.dismiss();
                                                         break;
                                                     case CommAlertDialog.TAG_CLICK_RIGHT:
-//                                            //直接入库
-                                                        handleProductInNeglectMonth();
+//                                                      //直接入库
+                                                        handleProductInNeglectMonth(tempBoxID);
                                                         dialog.dismiss();
                                                         break;
                                                 }
@@ -690,7 +761,10 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                                         });
                                         builder.create().show();
                                     } else {
-                                        CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, wsResult.getErrorInfo(), R.mipmap.warning);
+//                                        CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, wsResult.getErrorInfo(), R.mipmap.warning);
+                                        errorBoxResultInfoStringList.add(errorInfo);
+                                        isCurrentScanInTaskEnd = true;
+                                        currentAsyncTaskIndex++;
                                     }
                                 }
 
@@ -700,17 +774,64 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 //                            }
 
                         }
+//                        index++;
                     }
+//                    for (int i = 0; i < wsResultList.size(); i++) {
+//                        WsResult wsResult = wsResultList.get(i);
+//                        int tempBoxID = boxIDList.get(i);
+//                        if (wsResult != null) {
+//                            if (!wsResult.getResult()) {
+//                                errorBoxIDList.add(tempBoxID);
+//                                String errorInfo = wsResult.getErrorInfo();
+//                                if (!TextUtils.isEmpty(errorInfo)) {
+//                                    if (errorInfo.contains("月份与批次") && errorInfo.contains("不一致")) {
+//                                        CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductInScanCodeBoxActivity.this)
+//                                                .setTitle("").setMessage("当前托盘号月份与批次月份不一致，是否修改月份，点确定为修改，点取消则直接入库！")
+//                                                .setLeftText("确定修改")
+//                                                .setRightText("直接入库");
+//
+//
+//                                        builder.setOnViewClickListener(new OnDialogViewClickListener() {
+//                                            @Override
+//                                            public void onViewClick(Dialog dialog, View v, int tag) {
+//                                                switch (tag) {
+//                                                    case CommAlertDialog.TAG_CLICK_LEFT:
+////                                            //修改托盘月份
+//                                                        modifyPalletMonth();
+//                                                        dialog.dismiss();
+//                                                        break;
+//                                                    case CommAlertDialog.TAG_CLICK_RIGHT:
+////                                            //直接入库
+//                                                        handleProductInNeglectMonth(tempBoxID);
+//                                                        dialog.dismiss();
+//                                                        break;
+//                                                }
+//                                            }
+//                                        });
+//                                        builder.create().show();
+//                                    } else {
+//                                        CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, wsResult.getErrorInfo(), R.mipmap.warning);
+//                                    }
+//                                }
+//
+//                            }//循环里的如果成功就暂不提示
+////                            else {
+////                                handleAllInCorrect();
+////                            }
+//
+//                        }
+//                    }
                 }
             }
 
             //在全部执行完后做一个总结提示
-            if (isInContinuousModeAndHasPossibleError) {
+            //// TODO: 2024/5/10 因为是异步，所以下面的执行也许上面的还没有执行完
+            if (isInContinuousModeAndHasPossibleError && isCurrentScanInTaskEnd) {
                 if (errorBoxIDList != null && errorBoxIDList.size() > 0) {
                     StringBuilder stringBuilder = new StringBuilder();
                     for (int i = 0; i < errorBoxIDList.size(); i++) {
                         if (errorBoxResultInfoStringList.size() > 0) {
-                            stringBuilder.append(String.format("箱号为Box_ID/%d的有入库有错误，错误信息为：", errorBoxIDList.get(i)));
+                            stringBuilder.append(String.format("箱号为VG/%d的入库有错误，错误信息为：", errorBoxIDList.get(i)));
                             stringBuilder.append(errorBoxResultInfoStringList.get(i)).append("\n\n");
                         }
                     }
@@ -732,6 +853,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                                         itemInfoTextView.setText("物料信息\n");
                                         istInfoTextView.setText("入库区域");
                                         hasScanIst = false;
+                                        thePlace = null;
                                         boxIDList.clear();
                                         errorBoxIDList.clear();
                                         errorBoxResultInfoStringList.clear();
@@ -753,13 +875,23 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 
     }
 
-    private class DirectExeWarehouseProductInCodeBoxAsyncTask extends AsyncTask<String, Void, Void> {
+    private class DirectExeWarehouseProductInCodeBoxAsyncTask extends AsyncTask<Integer, Void, Void> {
         WsResult ws_result;
 
+        int tempBoxID = 0;
         @Override
-        protected Void doInBackground(String... params) {
-
-            ws_result = WebServiceUtil.op_Product_Manu_In_Pallet_Neglect_Month(tempBoxID, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), remark);
+        protected Void doInBackground(Integer... params) {
+//            try{
+//
+//            }catch (Exception e){
+//
+//            }
+            if (params.length > 0){
+                tempBoxID = params[0];
+                if (tempBoxID > 0){
+                    ws_result = WebServiceUtil.op_Product_Manu_In_Pallet_Neglect_Month(tempBoxID, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), remark);
+                }
+            }
 
             return null;
         }
@@ -817,6 +949,9 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                     } else {
                         CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
                     }
+                    isCurrentScanInTaskEnd = true;
+                    currentAsyncTaskIndex++;
+
 
                 } else {
 //                    //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
@@ -832,9 +967,15 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                         //持续模式中如果其中一个执行正确，则不给提示，因为最终全部结束后会有整体提示
                         if (errorBoxIDList != null && errorBoxIDList.size() > 0) {
                             //这里默认是remove index
-                            if (errorBoxIDList.contains(tempBoxID)) {
-                                errorBoxIDList.remove((Integer) tempBoxID);
-
+//                            if (errorBoxIDList.contains(tempBoxID)) {
+//                                errorBoxIDList.remove((Integer) tempBoxID);
+//
+//                            }
+                            //// TODO: 2024/5/9 上面的remove容易有问题
+                            for (int i = 0 ; i< errorBoxIDList.size() ;i++){
+                                if (errorBoxIDList.get(i) == tempBoxID){
+                                    errorBoxIDList.remove(i);
+                                }
                             }
                         }
                     } else {
@@ -842,6 +983,8 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                     }
 
                 }
+                isCurrentScanInTaskEnd = true;
+                currentAsyncTaskIndex++;
 
             }
 
@@ -856,12 +999,20 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 
     }
 
-    private class ModifyMonthExeWarehouseProductInCodeBoxAsyncTask extends AsyncTask<String, Void, Void> {
+    private class ModifyMonthExeWarehouseProductInCodeBoxAsyncTask extends AsyncTask<Integer, Void, Void> {
         WsResult ws_result;
+        int tempBoxID = 0;
 
         @Override
-        protected Void doInBackground(String... params) {
-            ws_result = WebServiceUtil.op_Product_Manu_In_Pallet_Modify_Month(tempBoxID, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), remark, month);
+        protected Void doInBackground(Integer... params) {
+            if (params.length > 0){
+                tempBoxID = params[0];
+                modifiedMonthBoxID = params[0];
+                if (tempBoxID > 0){
+                    ws_result = WebServiceUtil.op_Product_Manu_In_Pallet_Modify_Month(tempBoxID, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), remark, month);
+
+                }
+            }
 
             return null;
         }
@@ -903,7 +1054,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                                             break;
                                         case CommAlertDialog.TAG_CLICK_RIGHT:
 //                                            //直接入库
-                                            handleProductInNeglectMonth();
+                                            handleProductInNeglectMonth(modifiedMonthBoxID);
                                             dialog.dismiss();
                                             break;
                                     }
@@ -925,12 +1076,23 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                     if (isInContinuousModeAndHasPossibleError) {
 //                        CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, "入库完成", R.mipmap.smiley);
                         //持续模式中如果其中一个执行正确，则不给提示，因为最终全部结束后会有整体提示
-                        if (errorBoxIDList != null && errorBoxIDList.size() > 0) {
-//                            errorBoxIDList.remove(tempBoxID);
-                            //这里默认是remove index
-                            if (errorBoxIDList.contains(tempBoxID)) {
-                                errorBoxIDList.remove((Integer) tempBoxID);
+//                        if (errorBoxIDList != null && errorBoxIDList.size() > 0) {
+////                            errorBoxIDList.remove(tempBoxID);
+//                            //这里默认是remove index
+////                            if (errorBoxIDList.contains(tempBoxID)) {
+////                                errorBoxIDList.remove((Integer) tempBoxID);
+////
+////                            }
+//
+//                        }
 
+                        if (errorBoxIDList != null && errorBoxIDList.size() > 0) {
+
+                            //// TODO: 2024/5/9 上面的remove容易有问题
+                            for (int i = 0 ; i< errorBoxIDList.size() ;i++){
+                                if (errorBoxIDList.get(i) == tempBoxID){
+                                    errorBoxIDList.remove(i);
+                                }
                             }
                         }
                     } else {
@@ -941,6 +1103,8 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 //                    }
 
                 }
+                isCurrentScanInTaskEnd = true;
+                currentAsyncTaskIndex++;
 
             }
 
@@ -959,4 +1123,51 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 //        super.onDestroy();
 //        SPSingleton.get().putString(SPDefine.KEY_code_box_id_List,JsonUtil.objectToJson(boxIDList));
 //    }
+
+    private class GetProductSuggestAreaAsyncTask extends AsyncTask<Integer,Void,Void>{
+        WsResult ws_result;
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            int boxID = integers[0];
+            ws_result = WebServiceUtil.getProductSuggestAreaName(UserSingleton.get().getUserInfo().getBu_ID(),boxID);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (ws_result != null && ws_result.getResult()){
+                ToastUtil.showToastShort("建议库位:" + ws_result.getErrorInfo());
+            }else{
+                ToastUtil.showToastShort("未能获取建议库位");
+
+            }
+        }
+    }
+
+    private class GetTransferScanContentAsyncTask extends AsyncTask<String,Void,Void>{
+        WsResult ws_result;
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            String content = strings[0];
+            ws_result = WebServiceUtil.getTransferScanContent(UserSingleton.get().getUserInfo().getBu_ID(),UserSingleton.get().getHRID(),content);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (ws_result != null && ws_result.getResult()){
+//                ToastUtil.showToastShort("建议库位:" + ws_result.getErrorInfo());
+                System.out.println("上传成功");
+            }else{
+                System.out.println("上传失败");
+//                ToastUtil.showToastShort("未能获取建议库位");
+
+            }
+        }
+    }
+
 }

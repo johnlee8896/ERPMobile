@@ -6,51 +6,6 @@
 
     <!-- Normal Permissions 不需要运行时注册 -->
     <!-- 获取运营商信息，用于支持提供运营商信息相关的接口 -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission
-        android:name="android.permission.CHANGE_CONFIGURATION"
-        tools:ignore="ProtectedPermissions" />
-
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- 不是SDK需要的权限，是示例中的后台唤醒定位需要的权限 -->
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-
-
-    <!-- 需要运行时注册的权限 -->
-    <!-- 用于进行网络定位 -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- 用于访问GPS定位 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!-- 用于提高GPS定位速度 -->
-    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-
-    <!-- 读取缓存数据 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-
-
-    <!-- 更改设置 -->
-    <uses-permission
-        android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <application
         android:name=".APP"
         android:allowBackup="true"
@@ -62,25 +17,6 @@
         android:theme="@style/AppTheme">
 
         <!-- 设置高德key -->
-        <meta-data
-            android:name="com.amap.api.v2.apikey"
-            android:value="3fad0fcc1e3b88ac5eea405132859b1a" />
-        <!-- 定位需要的服务 -->
-        <service android:name="com.amap.api.location.APSService" />
-
-        <!--这个是为了解决Android7.0以上的升级自动安装的问题-->
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true"
-            tools:replace="android:name,android:authorities,android:exported,android:grantUriPermissions">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"
-                tools:replace="name,android:resource" />
-        </provider>
-
         <activity
             android:name=".commonactivity.LoginActivity"
             android:windowSoftInputMode="adjustResize">
@@ -90,225 +26,241 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- 定位需要的服务 -->
         <activity
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".warehouse.WarehouseStockQueryActivity" />
-        <activity android:name=".ImageManageActivity" />
+
+        <!--专门给成品作盘点使用-->
+        <activity
+            android:name=".ProductCheckInventoryActivity"
+            android:screenOrientation="portrait" />
+        <!--这个是为了解决Android7.0以上的升级自动安装的问题-->
+        <activity
+            android:name=".warehouse.WarehouseStockQueryActivity"
+            android:screenOrientation="portrait" />
+<!--        发货管理中的订单管理页面-->
+        <activity
+            android:name=".GoodsOrderManageActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ImageManageActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MoveProductNotPalletActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".warehouse.BuWarehouseAccountOutActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".warehouse.BuWarehouseAccountInActivity"
+            android:screenOrientation="portrait" />
 
         <!--&lt;!&ndash;成品扫箱号入库&ndash;&gt;-->
         <!--<activity-->
-            <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
-            <!--android:screenOrientation="portrait" />-->
+        <!--android:name=".ProductInNonTrayScanOuterBoxActivity"-->
+        <!--android:screenOrientation="portrait" />-->
         <!--成品车间仓出账，滁州出给物控，上海出给装配车间-->
 
         <!--成品移库(非托盘)页面-->
         <activity
-            android:name=".MoveProductNotPalletActivity"
+            android:name=".warehouse.PartAllocateTransferInnerCompanyActivity"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".warehouse.BuWarehouseAccountOutActivity"
+            android:name=".warehouse.MoveRecordActivity"
             android:screenOrientation="portrait" />
 
 
         <!--成品车间仓入账，尾数-->
         <activity
-            android:name=".warehouse.BuWarehouseAccountInActivity"
+            android:name=".warehouse.ScanIstFindProductActivity"
             android:screenOrientation="portrait" />
 
         <!--同公司零件调拨-->
         <activity
-            android:name=".warehouse.PartAllocateTransferInnerCompanyActivity"
+            android:name=".warehouse.ScanIstFindItemActivity"
             android:screenOrientation="portrait" />
         <!--查看某箱的移库记录-->
         <activity
-            android:name=".warehouse.MoveRecordActivity"
+            android:name=".PhotoCameraActivity"
             android:screenOrientation="portrait" />
         <!--成品查找当前库位下的物料-->
         <activity
-            android:name=".warehouse.ScanIstFindProductActivity"
+            android:name=".LocationGPSActivity"
             android:screenOrientation="portrait" />
         <!--查找当前库位下的物料-->
         <activity
-            android:name=".warehouse.ScanIstFindItemActivity"
-            android:screenOrientation="portrait" />
-        <!--选取或拍照页面-->
-        <activity
-            android:name=".PhotoCameraActivity"
-            android:screenOrientation="portrait" />
-
-        <!--追踪物流信息测试页面-->
-        <activity
-            android:name=".LocationGPSActivity"
-            android:screenOrientation="portrait" />
-
-        <!--追踪物流信息测试页面-->
-        <activity
             android:name=".warehouse.PartPackPackageActivity"
             android:screenOrientation="portrait" />
-
-        <!--追踪物流信息页面-->
+        <!--选取或拍照页面-->
         <activity
             android:name=".LogisticsTrackingActivity"
             android:screenOrientation="portrait" />
 
-        <!--成品非托盘入库页面-->
+        <!--追踪物流信息测试页面-->
         <activity
             android:name=".ProductNotPalletInActivity"
             android:screenOrientation="portrait" />
 
-        <!--零件扫描入库页面（可选定日期）-->
+        <!--追踪物流信息测试页面-->
         <activity
             android:name=".warehouse.StockInWithDateActivity"
             android:screenOrientation="portrait" />
 
-        <!--成品托盘移库页面-->
+        <!--追踪物流信息页面-->
         <activity
             android:name=".MoveProductPalletActivity"
             android:screenOrientation="portrait" />
-        <!--核酸登记页面-->
+
+        <!--成品非托盘入库页面-->
         <activity
             android:name=".NucleinCheckActivity"
             android:screenOrientation="portrait" />
 
-        <!--来料接收页面-->
+        <!--零件扫描入库页面（可选定日期）-->
         <activity
             android:name=".logistics.StockLogisticsInActivity"
             android:screenOrientation="portrait" />
 
-        <!--发货管理页面-->
+        <!--成品托盘移库页面-->
         <activity
             android:name=".SendGoodsManagerActivity"
             android:screenOrientation="portrait" />
-
-        <!--成品出库一致性校验页面-->
+        <!--核酸登记页面-->
         <activity
             android:name=".ProductCheckSameActivity"
             android:screenOrientation="portrait" />
 
-        <!--工资查询页面-->
+        <!--来料接收页面-->
         <activity
             android:name=".WageQueryActivity"
             android:screenOrientation="portrait" />
 
-        <!--组织架构页面-->
+        <!--发货管理页面-->
         <activity
             android:name=".organization.OrganizationStructActivity"
             android:screenOrientation="portrait" />
 
-        <!--任务创建页面-->
+        <!--成品出库一致性校验页面-->
         <activity
             android:name=".task.TaskCreateActivity"
             android:screenOrientation="portrait" />
 
-        <!--d成品扫托盘出库-->
+        <!--工资查询页面-->
         <activity
             android:name=".ProductSaleOutCodeBoxActivity"
             android:screenOrientation="portrait" />
 
-        <!--考勤管理页面-->
+        <!--组织架构页面-->
         <activity
             android:name=".AttendanceActivity"
+            android:screenOrientation="portrait" />
+
+        <!--任务创建页面-->
+        <activity
+            android:name=".ProductInScanCodeBoxActivity"
+            android:screenOrientation="portrait" />
+
+        <!--d成品扫托盘出库-->
+        <activity
+            android:name=".SupplierOrSelfReturnActivity"
+            android:screenOrientation="portrait" />
+
+        <!--考勤管理页面-->
+        <activity
+            android:name=".BuPlanGoodsActivity"
             android:screenOrientation="portrait" />
 
 
         <!--d成品扫托盘入库-->
         <activity
-            android:name=".ProductInScanCodeBoxActivity"
+            android:name=".SDZHScanPalletCodeActivity"
             android:screenOrientation="portrait" />
 
         <!--供应商退货页面-->
         <activity
-            android:name=".SupplierOrSelfReturnActivity"
+            android:name=".SelectCustomerCompanyActivity"
             android:screenOrientation="portrait" />
 
         <!--车间要货计划-->
         <activity
-            android:name=".BuPlanGoodsActivity"
+            android:name=".warehouse.InnerSaleBuSelectActivity"
             android:screenOrientation="portrait" />
 
         <!--三点照合扫托标出库-->
         <activity
-            android:name=".SDZHScanPalletCodeActivity"
+            android:name=".warehouse.InnerSaleOutActivity"
             android:screenOrientation="portrait" />
 
         <!--物流信息页面选 客户公司-->
         <activity
-            android:name=".SelectCustomerCompanyActivity"
+            android:name=".LogisticsSelectActivity"
             android:screenOrientation="portrait" />
 
         <!--集团内部调拨 出库选择车间-->
         <activity
-            android:name=".warehouse.InnerSaleBuSelectActivity"
+            android:name=".SDZHHActivity"
             android:screenOrientation="portrait" />
 
         <!--集团内部调拨 出库给其他车间-->
         <activity
-            android:name=".warehouse.InnerSaleOutActivity"
+            android:name=".ProductScanBoxInActivity"
             android:screenOrientation="portrait" />
 
         <!--物流选择页面-->
         <activity
-            android:name=".LogisticsSelectActivity"
+            android:name=".ProductInNonTraySamePCActivity"
             android:screenOrientation="portrait" />
 
         <!--三点照合 成品出库-->
         <activity
-            android:name=".SDZHHActivity"
-            android:screenOrientation="portrait" />
-
-        <!--成品入库 扫描箱号入库-->
-        <activity
-            android:name=".ProductScanBoxInActivity"
-            android:screenOrientation="portrait" />
-
-        <!--成品入库 操作同PC端-->
-        <activity
-            android:name=".ProductInNonTraySamePCActivity"
-            android:screenOrientation="portrait" />
-
-        <!--生产线领料（零部件、辅助料、退料）页面-->
-        <activity
             android:name=".PartWorkLinePutActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustResize"/>
+            android:windowSoftInputMode="stateVisible|adjustResize" />
 
-        <!--物流管理页面-->
+        <!--成品入库 扫描箱号入库-->
         <activity
             android:name=".LogisticsManageActivity"
             android:screenOrientation="portrait" />
 
-        <!--发货指令页面-->
+        <!--成品入库 操作同PC端-->
         <activity
             android:name=".DeliveryOrderActivity"
             android:screenOrientation="portrait" />
 
-        <!--成品出库页面-->
+        <!--生产线领料（零部件、辅助料、退料）页面-->
         <activity
             android:name=".ProductSaleOutMESActivity"
             android:screenOrientation="portrait" />
 
-        <!--成品产线选择页面-->
+        <!--物流管理页面-->
         <activity
             android:name=".SelectProductWCListActivity"
             android:screenOrientation="portrait" />
 
-        <!--成品（非托盘入库）页面-->
+        <!--发货指令页面-->
         <activity
             android:name=".ProductInNonTrayActivity"
             android:screenOrientation="portrait" />
 
-        <!--订餐页面-->
+        <!--成品出库页面-->
         <activity
             android:name=".FoodOrderActivity"
             android:screenOrientation="portrait" />
+
+        <!--成品产线选择页面-->
         <activity
             android:name=".QRCodeScanActivity"
             android:screenOrientation="portrait" />
+
+        <!--成品（非托盘入库）页面-->
         <activity
             android:name=".warehouse.WarehousePartMainActivity"
             android:label="@string/title_activity_warehouse_part_main" />
+
+        <!--订餐页面-->
         <activity android:name=".PartItemMiddleActivity" />
         <activity
             android:name=".warehouse.StockPartMainActivity"
@@ -317,9 +269,7 @@
             android:name=".warehouse.StockInActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity android:name=".permission.PermissionsUtil" />        <!--<activity-->
-        <!--android:name=".commonactivity.LoginActivity"-->
-        <!--android:screenOrientation="portrait" />-->
+        <activity android:name=".permission.PermissionsUtil" />
         <activity
             android:name=".warehouse.StockPutActivity"
             android:screenOrientation="portrait"
@@ -331,7 +281,9 @@
         <activity
             android:name=".warehouse.StockOutMoreExtraActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize" />        <!--<activity-->
+        <!--android:name=".commonactivity.LoginActivity"-->
+        <!--android:screenOrientation="portrait" />-->
         <activity
             android:name=".warehouse.StockPartMoveActivity"
             android:screenOrientation="portrait"
@@ -387,25 +339,14 @@
         <activity
             android:name=".task.TasksActivity"
             android:label="@string/title_activity_task" />
-
-        <receiver
-            android:name=".commonactivity.NetWorkReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                //检测网络变化的acton
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </receiver>
-
         <activity
             android:name=".talk.MessageManageActivity"
             android:label="@string/title_activity_conversation_contacts" />
         <activity android:name=".PlanManagerActivity" />
         <activity android:name=".PlanShowListActivity" />
+
         <activity android:name=".PlanItemDetailActivity" />
+
         <activity android:name=".StockProductMainActivity" />
         <activity
             android:name=".task.TaskDetailActivity"
@@ -418,7 +359,77 @@
             android:name=".warehouse.StockCheckPartInvActivity"
             android:label="@string/title_activity_stock_check_part_inv"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="3fad0fcc1e3b88ac5eea405132859b1a" />
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:name,android:authorities,android:exported,android:grantUriPermissions">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"
+                tools:replace="name,android:resource" />
+        </provider>
+        <receiver
+            android:name=".commonactivity.NetWorkReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                //检测网络变化的acton
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.amap.api.location.APSService" />
     </application>
+    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
+    <uses-permission
+        android:name="android.permission.CHANGE_CONFIGURATION"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- 不是SDK需要的权限，是示例中的后台唤醒定位需要的权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
+    <!-- 需要运行时注册的权限 -->
+    <!-- 用于进行网络定位 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- 用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 用于提高GPS定位速度 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- 读取缓存数据 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+
+
+    <!-- 更改设置 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <!--升级自动安装需要这个权限-->
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />

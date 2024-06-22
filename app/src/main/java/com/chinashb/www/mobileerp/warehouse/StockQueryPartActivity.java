@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -34,6 +35,7 @@ import com.chinashb.www.mobileerp.widget.SelectStorageAreaDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +63,7 @@ public class StockQueryPartActivity extends BaseActivity {
     private PartInvQueryAdapter partsAdapter;
     private List<PartsEntity> partsEntityList;//零部件
 
-//    private PartsEntity partsEntity;
+    //    private PartsEntity partsEntity;
     private int currentPage = 1;
     private String keyWord = "";
 //    private SelectStorageAreaBean storageAreaBean;
@@ -293,14 +295,27 @@ public class StockQueryPartActivity extends BaseActivity {
 //                                            StockQueryPartActivity.this.partsEntity = partsEntityList.get(position);
 //                            QueryPartInvItemAsyncTask task = new QueryPartInvItemAsyncTask();
 //                            task.execute(selected_item.getItem_ID());
-                                                Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
+
+
+                                                //2024-03-15 john 如果是TBD则回到以前详情模式
+                                                if (TextUtils.isEmpty(bean.getLayoutName()) || bean.getLayoutName().toUpperCase().contains("NULL")) {
+                                                    Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
+                                                    intent.putExtra("selected_item", (Serializable) partsEntity);
+//                                                    intent.putExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
+                                                    intent.putExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity_But_Same_Issue);
+                                                    startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity_But_Same_Issue);
+                                                } else {
+                                                    Intent intent = new Intent(StockQueryPartActivity.this, PartItemMiddleActivity.class);
 //                                                intent.putExtra("selected_item", (Serializable) partsEntity);
-                                                intent.putExtra("selected_item", (Parcelable) bean);
-                                                intent.putExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
-                                                startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
-                                                if (dialog != null && dialog.isShowing()){
+                                                    intent.putExtra("selected_item", (Parcelable) bean);
+                                                    intent.putExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
+                                                    startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
+                                                }
+                                                if (dialog != null && dialog.isShowing()) {
                                                     dialog.dismiss();
                                                 }
+
+
 //                                        }
                                             }
                                         }

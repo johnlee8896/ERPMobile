@@ -42,14 +42,15 @@ public class MoveProductNotPalletActivity extends BaseActivity implements View.O
     private Button btnScanArea;
     private Button btnWarehouseMove;
     private EditText inputEditText;
-    private List<Long> boxitemList;
+    //    private List<Long> boxitemList;
     private IstPlaceEntity thePlace;
     private String scanstring;
     private RelativeLayout switchLayout;
     private Switch stockSwitch;
-    private long boxId;
+    //    private long boxId;
     private TextView itemInfoTextView;
     private boolean hasScanItem;
+    private List<Integer> boxIDList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +64,11 @@ public class MoveProductNotPalletActivity extends BaseActivity implements View.O
         switchLayout = findViewById(R.id.stock_move_suggest_stock_Layout_not_pallet);
         itemInfoTextView = findViewById(R.id.product_not_pallet_move_item_info_textview);
 
-        boxitemList = new ArrayList<>();
-
+        boxIDList = new ArrayList<>();
         btnAddTray.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (boxitemList.size() < 10) {
-                    new IntentIntegrator(MoveProductNotPalletActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-                } else {
-                    Toast.makeText(MoveProductNotPalletActivity.this, "移动清单不超过10个 ", Toast.LENGTH_LONG).show();
-                }
+                new IntentIntegrator(MoveProductNotPalletActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
             }
 
         });
@@ -80,7 +76,7 @@ public class MoveProductNotPalletActivity extends BaseActivity implements View.O
         btnScanArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (hasScanItem && boxitemList.size() > 0) {
+                if (hasScanItem ) {
                     new IntentIntegrator(MoveProductNotPalletActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
                 }
@@ -132,8 +128,12 @@ public class MoveProductNotPalletActivity extends BaseActivity implements View.O
     }
 
     private void handleMoveStockArea() {
-        if (boxitemList.size() > 0) {
-            if (boxId > 0) {
+        //2024-05-28 john在移库前做一操作，判断是否是座椅车间，如果不是给出提示
+        if ((UserSingleton.get().getUserInfo().getBu_ID() != 1) && (UserSingleton.get().getUserInfo().getBu_ID() != 81)){
+            ToastUtil.showToastShort("当前车间非座椅，不可操作非托盘移库！");
+
+        }else{
+            if (boxIDList != null && boxIDList.size() > 0) {
                 if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
 
                     NotPalletWarehouseMoveTask task = new NotPalletWarehouseMoveTask();
@@ -159,6 +159,8 @@ public class MoveProductNotPalletActivity extends BaseActivity implements View.O
                 }
             }
         }
+
+
     }
 
     private void parseScanResult(String content) {
@@ -169,15 +171,43 @@ public class MoveProductNotPalletActivity extends BaseActivity implements View.O
             if (qrContent.length >= 2) {
 
                 if (content.startsWith("Pallet") && qrContent.length == 8) {
-                    boxId = Long.parseLong(qrContent[1]);
-                    itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
-                    inputEditText.setText("");
-                    hasScanItem = true;
-                    if (!boxitemList.contains(boxId)) {
-                        boxitemList.add(boxId);
+//                    boxId = Long.parseLong(qrContent[1]);
+//                    itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
+//                    inputEditText.setText("");
+//                    hasScanItem = true;
+//                    if (!boxitemList.contains(boxId)) {
+//                        boxitemList.add(boxId);
+//                    } else {
+//                        ToastUtil.showToastShort("该托盘已扫过，请勿重复扫描");
+//                    }
+                    int boxId = Integer.parseInt(qrContent[1]);
+                    if (boxIDList.contains(boxId)) {
+                        ToastUtil.showToastShort("该托盘已在列表中，请勿重复扫描！");
                     } else {
-                        ToastUtil.showToastShort("该托盘已扫过，请勿重复扫描");
+
+                        if (boxIDList.size() > 2) {
+                            ToastUtil.showToastShort("成品连续扫描移库一次不超过3托");
+                        } else {
+                            StringBuilder tempBoxInfoSBuilder = new StringBuilder();
+//                            tempBoxInfoSBuilder.append("\n\n");
+                            if (!TextUtils.isEmpty(itemInfoTextView.getText())) {
+                                tempBoxInfoSBuilder.append(itemInfoTextView.getText());
+                            } else {
+                                //  第一行换行
+                                tempBoxInfoSBuilder.append("物料信息\n");
+                            }
+
+                            tempBoxInfoSBuilder.append(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s\n", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
+                            //                        itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
+                            itemInfoTextView.setText(tempBoxInfoSBuilder.toString());
+                            inputEditText.setText("");
+                            hasScanItem = true;
+                            boxIDList.add(boxId);
+                        }
                     }
+                    //添加移库时的建议库位
+                    GetProductMoveNotPalletSuggestAreaAsyncTask task = new GetProductMoveNotPalletSuggestAreaAsyncTask();
+                    task.execute(boxId);
                 } else if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
                     //仓库位置码
                     scanstring = content;
@@ -243,9 +273,8 @@ public class MoveProductNotPalletActivity extends BaseActivity implements View.O
         protected void onPostExecute(Void result) {
 
             handleMoveStockArea();
-            itemInfoTextView.setText("");
-            inputEditText.setText("");
-            inputEditText.setHint("请继续扫描");
+            //// TODO: 2024/5/8 这里不能直接清除数据，如果有错误，则boxidlist.clear，再看错误就index为0报错，因为异步
+//            finishHandleMove();
         }
 
         @Override
@@ -254,12 +283,56 @@ public class MoveProductNotPalletActivity extends BaseActivity implements View.O
 
     }
 
-    private class NotPalletWarehouseMoveTask extends AsyncTask<String, Void, WsResult> {
+    private void finishHandleMove() {
+        itemInfoTextView.setText("");
+        inputEditText.setText("");
+        inputEditText.setHint("请继续扫描");
+        boxIDList.clear();
+    }
 
+    private class NotPalletWarehouseMoveTask extends AsyncTask<String, Void, List<WsResult>> {
+        List<WsResult> wsResultList = new ArrayList<>();
+        List<WsResult> wsErrorResultList = new ArrayList<>();
         @Override
-        protected WsResult doInBackground(String... params) {
-            WsResult result = WebServiceUtil.moveProductNotPalletArea(thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), boxId);
-            return result;
+        protected List<WsResult> doInBackground(String... params) {
+//            WsResult result = WebServiceUtil.moveProductNotPalletArea(thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), boxId);
+//            return result;
+
+            int count = 0;
+            List<Integer> tempBoxIDList = new ArrayList<>();
+            for (int i = 0; i < boxIDList.size(); i++) {
+                tempBoxIDList.add(boxIDList.get(i));
+            }
+
+            int selectedCount = tempBoxIDList.size();
+//            for (int i = 0; i < boxIDList.size(); i++) {
+//                WsResult result = WebServiceUtil.moveProductNotPalletArea(thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), boxIDList.get(i));
+//                wsResultList.add(result);
+//            }
+
+
+            while (count < selectedCount && tempBoxIDList.size() > 0) {
+                //// TODO: 2024/5/8 因为remove，故每次取第0个
+                int moveBoxID = tempBoxIDList.get(0);
+//                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,scanCodeList.size() == selectedCount ? scanCodeList.get(0):"");
+//               WsResult result = WebServiceUtil.moveProductPalletArea(thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), tempBoxIDList.get(count));
+                WsResult result = WebServiceUtil.moveProductNotPalletArea(thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), moveBoxID);
+                wsResultList.add(result);
+                if (result.getResult()) {
+//                    tempBoxIDList.remove(tempBoxIDList.get(count));
+//                    tempBoxIDList.remove(moveBoxID);
+                    //// TODO: 2024/5/8  这里会被理解为remove index而非object
+//                    tempBoxIDList.remove(0);
+                } else {
+                    wsErrorResultList.add(result);
+//                    tempBoxIDList.remove(0);
+                }
+                //// TODO: 2024/5/8 不论成功与否都要移除，否则每次执行的都是同一个
+                tempBoxIDList.remove(0);
+                count++;
+            }
+
+            return wsResultList;
         }
 
         @Override
@@ -267,14 +340,64 @@ public class MoveProductNotPalletActivity extends BaseActivity implements View.O
         }
 
         @Override
-        protected void onPostExecute(WsResult result) {
-            if (result != null) {
-                if (result.getResult()) {
-                    CommonUtil.ShowToast(MoveProductNotPalletActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
-                    boxitemList.clear();
-                } else {
-                    CommonUtil.ShowToast(MoveProductNotPalletActivity.this, "移库失败" + result.getErrorInfo(), R.mipmap.monster_mike, Toast.LENGTH_SHORT);
+        protected void onPostExecute(List<WsResult> resultList) {
+//            if (result != null) {
+//                if (result.getResult()) {
+//                    CommonUtil.ShowToast(MoveProductNotPalletActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+//                    boxitemList.clear();
+//                } else {
+//                    CommonUtil.ShowToast(MoveProductNotPalletActivity.this, "移库失败" + result.getErrorInfo(), R.mipmap.monster_mike, Toast.LENGTH_SHORT);
+//                }
+//            }
+
+            boolean allCorrect = true;
+
+            for (int i = 0; i < wsResultList.size(); i++) {
+                if (!wsResultList.get(i).getResult()) {
+                    allCorrect = false;
+                    break;
                 }
+            }
+            if (allCorrect) {
+//                CommonUtil.ShowToast(MoveProductNotPalletActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+                if (boxIDList != null && boxIDList.size() > 1) {
+
+                    CommonUtil.ShowToast(MoveProductNotPalletActivity.this, "全部移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+                } else {
+                    CommonUtil.ShowToast(MoveProductNotPalletActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+
+                }
+                finishHandleMove();
+            } else {
+                List<Integer> errorBoxIdList = new ArrayList<>();
+                StringBuilder stringBuilder = new StringBuilder();
+//                for (WsResult wsResult : wsResultList){
+                for (int i = 0; i < wsResultList.size(); i++) {
+                    if (!wsResultList.get(i).getResult()) {
+                        errorBoxIdList.add(boxIDList.get(i));
+                        stringBuilder.append(String.format("箱号为:%d,错误原因:%s", boxIDList.get(i), wsResultList.get(i).getErrorInfo()));
+                        stringBuilder.append("\n");
+                    }
+                }
+
+                CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(MoveProductNotPalletActivity.this)
+                        .setTitle("此笔移库信息汇总").setMessage(String.format("此次非托盘移库共执行%d托，其中%d托移库失败，具体信息如下:%s",
+                                boxIDList.size(), errorBoxIdList.size(), stringBuilder.toString()))
+                        .setMiddleText("确定");
+
+
+                builder.setOnViewClickListener((dialog, v, tag) -> {
+                    switch (tag) {
+                        case CommAlertDialog.TAG_CLICK_MIDDLE:
+                            dialog.dismiss();
+//                                        handleAllInCorrect();
+                            finishHandleMove();
+                            break;
+
+                    }
+                });
+                builder.create().show();
+
             }
         }
 
@@ -282,6 +405,28 @@ public class MoveProductNotPalletActivity extends BaseActivity implements View.O
         protected void onProgressUpdate(Void... values) {
         }
 
+    }
+
+    private class GetProductMoveNotPalletSuggestAreaAsyncTask extends AsyncTask<Integer,Void,Void>{
+        WsResult ws_result;
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            int boxID = integers[0];
+            ws_result = WebServiceUtil.getProductSuggestAreaName(UserSingleton.get().getUserInfo().getBu_ID(),boxID);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (ws_result != null && ws_result.getResult()){
+                ToastUtil.showToastShort("建议库位:" + ws_result.getErrorInfo());
+            }else{
+                ToastUtil.showToastShort("未能获取建议库位");
+
+            }
+        }
     }
 
 }

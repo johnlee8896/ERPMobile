@@ -52,6 +52,9 @@ public class PartItemMiddleActivity extends BaseActivity {
         if (requestCode == IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity_From_Issue) {
             selected_itemFromIssue = (PartsEntity) getIntent().getSerializableExtra("selected_item");
             isFromIssue = true;
+        }else if(requestCode == IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity_But_Same_Issue){
+            selected_itemFromIssue = (PartsEntity) getIntent().getSerializableExtra("selected_item");
+            isFromIssue = true;
         } else {
             selected_item = (BigAreaSumBean) getIntent().getParcelableExtra("selected_item");
         }

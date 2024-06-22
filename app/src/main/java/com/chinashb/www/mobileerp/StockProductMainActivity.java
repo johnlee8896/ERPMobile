@@ -46,6 +46,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.product_main_scan_ist_get_item_textView) TextView scanIstGetItemTextView;
     @BindView(R.id.product_main_bu_warehouse_textView) TextView buWarehouseInTextView;//车间仓
     @BindView(R.id.product_main_bu_warehouse_out_textView) TextView buWarehouseOutTextView;//车间仓出库
+    @BindView(R.id.product_main_product_check_inv_textView) TextView productCheckInvTextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         scanIstGetItemTextView.setOnClickListener(this);
         buWarehouseInTextView.setOnClickListener(this);
         buWarehouseOutTextView.setOnClickListener(this);
+        productCheckInvTextView.setOnClickListener(this);
     }
 
     @Override
@@ -131,8 +133,11 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
 //            Intent intent = new Intent(this,ProductInNonTrayScanOuterBoxActivity.class);
             Intent intent = new Intent(this, BuWarehouseAccountInActivity.class);
             startActivity(intent);
-        }else if (v == buWarehouseOutTextView){
+        } else if (v == buWarehouseOutTextView) {
             Intent intent = new Intent(this, BuWarehouseAccountOutActivity.class);
+            startActivity(intent);
+        }else if (v == productCheckInvTextView) {
+            Intent intent = new Intent(this, ProductCheckInventoryActivity.class);
             startActivity(intent);
         }
     }

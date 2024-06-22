@@ -43,9 +43,12 @@ import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,7 +71,9 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.send_goods_manage_rv_box_item) RecyclerView mRecyclerView;
     @BindView(R.id.send_goods_manage_package_data_layout) LinearLayout packageDataLayout;
     @BindView(R.id.send_goods_manage_scan_item_button) TextView scanItemButton;
-
+    @BindView(R.id.send_goods_manage_order_textView_layout) LinearLayout orderTextViewLayout;
+    @BindView(R.id.send_goods_manage_order_info_textView) TextView orderInfoTextView;
+    HashMap<Long, Float> map;
     private String keyWord = "";
     private String scanContent = "";
     private CommonSelectInputDialog commonSelectInputDialog;
@@ -82,30 +87,51 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
     private List<BoxItemEntity> boxItemEntityList = new ArrayList<>();
     private boolean isFromPackage = false;
     private boolean hasScanItemPDA = false;
+    private boolean hasSelectOrder = false;
+    private long IVID = 0;
+    private boolean hasSelectItem;
+    private boolean hasScanItemSelectItem;
+    private boolean getOrderDataValid = false;
+    private boolean shouldSendGoodsByOrder = false;
+    private boolean isCurrentSample = false;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 0) {
                 ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
-            }else if (msg.what == 1){
+            } else if (msg.what == 1) {
                 Bundle bundle = msg.getData();
-                if (bundle != null){
+                if (bundle != null) {
                     BoxItemEntity boxItemEntity = (BoxItemEntity) bundle.getSerializable(IntentConstant.Intent_Scan_box_item_Bean);
                     initItemFromScan(boxItemEntity);
                 }
+            } else if (msg.what == 2){
+                ToastUtil.showToastShort("目前只支持一次发一托！");
             }
         }
     };
+    private boolean startPurchaseOrderMode;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send_goods_manage_layout);
         ButterKnife.bind(this);
+//        getPurchaseOrderMode();
         initViews();
         setViewsListener();
+        getShouldSendGoodsByOrder();
     }
+
+    private void getShouldSendGoodsByOrder() {
+        GetSendGoodsByOrderModeAsyncTask task = new GetSendGoodsByOrderModeAsyncTask();
+        task.execute();
+    }
+
+//    private void getPurchaseOrderMode() {
+//
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -119,6 +145,40 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
                 initItem(bean);
             }
             return;
+        } else if (requestCode == IntentConstant.Intent_Request_Code_Goods_Send_To_Goods_Order_Activity) {
+            //接收发货的订单
+            if (data != null) {
+                getOrderDataValid = data.getBooleanExtra(IntentConstant.Intent_Extra_goods_poi_map_order_boolean, false);
+                String mapListString = data.getStringExtra(IntentConstant.Intent_Extra_goods_poi_map_string);
+                if (!TextUtils.isEmpty(mapListString)) {
+//                 List<HashMap<Integer ,Float>> ;
+//                Type type = new TypeToken<List<HashMap<Integer, Float>>>() {
+                    Type type = new TypeToken<HashMap<Long, Float>>() {
+                    }.getType();
+                    map = JsonUtil.parseJsonToObject(mapListString, type);
+                    if (map != null && map.size() > 0) {
+                        StringBuilder stringBuilder = new StringBuilder();
+////                    for (HashMap<Integer, Float> map : mapList){
+////                        stringBuilder.append(String.format("选取的订单为:%s,此次交付数量为:%f",map.));
+////                    }
+//                    for (int i = 0; i < mapList.size() ; i++){
+//                        HashMap<Integer, Float> map = mapList.get(i);
+//                        stringBuilder.append(String.format("选取的订单为:%s,此次交付数量为:%f",map.keySet()));
+//
+//                    }
+                        Set<Long> keys = map.keySet();
+                        for (Long key : keys) {
+                            if (map.get(key) > 0){
+                                stringBuilder.append(String.format("选取的订单为:%s,此次交付数量为:%.2f\n", key, map.get(key)));
+                            }
+                        }
+                        orderInfoTextView.setText(stringBuilder.toString());
+                    } else {
+                        orderInfoTextView.setText("未选择订单或此次交付数为空!");
+                    }
+                }
+            }
+
         } else {
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
             if (result != null) {
@@ -133,6 +193,8 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
         if (bean != null) {
             itemDetailTextView.setText(String.format("Item_ID : %s  IV_ID : %s  名称: %s  图号 ： %s 版本：%s 规格： %s  单位： %s", bean.getItem_ID(), bean.getIV_ID(),
                     bean.getItem_Name(), bean.getItem_DrawNo(), bean.getItem_Version(), bean.getItem_Spec2(), bean.getItem_Unit()));
+            IVID = bean.getIV_ID();
+            hasSelectItem = true;
         }
     }
 
@@ -140,12 +202,15 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
 //        itemDetailTextView.setText(String.format("Item_ID : %s  IV_ID : %s  名称: %s  图号 ： %s 版本：%s 规格： %s  单位： %s", bean.getItem_ID(), bean.getIV_ID(),
 //                bean.getItem_Name(), bean.getItem_DrawNo(), bean.getItem_Version(), bean.getItem_Spec2(), bean.getItem_Unit()));
         itemDetailTextView.setText("Item_ID :" + bean.getItem_ID() + " IV_ID:" + bean.getIV_ID() + " 名称: " + bean.getItemName());
+        IVID = bean.getIV_ID();
+        hasScanItemSelectItem = true;
 
     }
 
     private void setViewsListener() {
         selectItemButton.setOnClickListener(this);
         scanItemButton.setOnClickListener(this);
+        orderTextViewLayout.setOnClickListener(this);
         confirmButton.setOnClickListener(this);
         cancelButton.setOnClickListener(this);
         keywordInputEditText.addTextChangedListener(new TextWatcherImpl() {
@@ -154,7 +219,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
                 super.afterTextChanged(editable);
                 keyWord = editable.toString();
                 //john 2022-08-11
-                if (hasScanItemPDA){
+                if (hasScanItemPDA) {
                     isFromPackage = true;
                 }
                 if (keyWord.startsWith("V") && keyWord.length() > 9) {
@@ -282,8 +347,39 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
 
             startActivityForResult(intent, 305);
         } else if (v == confirmButton) {
-            handleSendGoods();
-            confirmButton.setEnabled(false);
+            if (shouldSendGoodsByOrder && (!isCurrentSample)) {
+                if (getOrderDataValid) {
+                    //// TODO: 2024/5/22 这里加一判断，如果订单数量不符也不可发，防止输入为0等情况
+                    if (map != null && map.size() > 0) {
+                        float sumQty = 0;
+                        Set<Long> keys = map.keySet();
+                        for (Long key : keys) {
+                            sumQty += map.get(key);
+                        }
+                        if (boxItemEntityList != null && boxItemEntityList.size() > 0){
+                            if (sumQty == boxItemEntityList.get(0).getQty()){
+                                handleSendGoods();
+                                confirmButton.setEnabled(false);
+                            }else{
+                                ToastUtil.showToastShort("订单输入数量与标签数量不符，请重新输入！");
+                            }
+                        }else{
+                            ToastUtil.showToastShort("未扫描发货物料标签！");
+                        }
+
+                    } else {
+                        ToastUtil.showToastShort("订单数量有问题，请重新选择输入订单！");
+
+                    }
+
+                } else {
+                    ToastUtil.showToastShort("请选择发货订单");
+                }
+            } else {
+                handleSendGoods();
+                confirmButton.setEnabled(false);
+            }
+
         } else if (v == packageTextView) {
             isFromPackage = true;
             if (companyBean == null) {
@@ -308,8 +404,29 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
             }
         } else if (v == outDateTextView) {
             showTimePickerDialog(TimePickerManager.PICK_TYPE_OUT_DATE);
-        }else if (v == scanItemButton){
+        } else if (v == scanItemButton) {
             new IntentIntegrator(SendGoodsManagerActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+        } else if (v == orderTextViewLayout) {
+            if (hasSelectItem || hasScanItemSelectItem) {
+//                BoxItemEntity boxItemEntity = boxItemEntityList.get(0);
+                Intent intent = new Intent(SendGoodsManagerActivity.this, GoodsOrderManageActivity.class);
+                if (buBean != null) {
+//                    if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
+                    intent.putExtra(IntentConstant.Intent_Extra_goods_order_to_bu_id, buBean.getBuId());
+                    intent.putExtra(IntentConstant.Intent_Extra_goods_order_iv_id, IVID);
+//                        intent.putExtra(IntentConstant.Intent_Extra_send_goods_box_item_bean, boxItemEntityList.get(0));
+                    startActivityForResult(intent, IntentConstant.Intent_Request_Code_Goods_Send_To_Goods_Order_Activity);
+//                    } else {
+//                        ToastUtil.showToastShort("您还未扫描物料标签，请先扫描！");
+//                    }
+//                    startActivity(intent);
+                } else {
+                    ToastUtil.showToastShort("未选择接收车间！");
+                }
+
+            } else {
+                ToastUtil.showToastShort("请先选择物料！");
+            }
         }
     }
 
@@ -378,8 +495,18 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
                     }
 
                     if (!is_box_existed(boxItemEntity)) {
-                        boxItemEntity.setSelect(true);
-                        boxItemEntityList.add(boxItemEntity);
+                        if (boxItemEntityList.size() > 0){
+//                            ToastUtil.showToastShort("目前只支持一次发一托！");
+
+                            Message message = new Message();
+                            message.what = 2;
+                            handler.sendMessage(message);
+                        }else{
+                            boxItemEntity.setSelect(true);
+                            boxItemEntityList.add(boxItemEntity);
+
+                        }
+
                     } else {
                         boxItemEntity.setResult(false);
                         boxItemEntity.setErrorInfo("该包装已经在装载列表中");
@@ -390,7 +517,7 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
 //                    initItemFromScan(boxItemEntity);
                     Message message = new Message();
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable(IntentConstant.Intent_Scan_box_item_Bean,boxItemEntity);
+                    bundle.putSerializable(IntentConstant.Intent_Scan_box_item_Bean, boxItemEntity);
                     message.what = 1;
                     message.setData(bundle);
                     handler.sendMessage(message);
@@ -407,19 +534,6 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
             return null;
         }
 
-        protected Boolean is_box_existed(BoxItemEntity box_item) {
-            Boolean result = false;
-            if (boxItemEntityList != null) {
-                for (int i = 0; i < boxItemEntityList.size(); i++) {
-                    if (boxItemEntityList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
-                        return true;
-                    }
-                }
-            }
-
-            return result;
-        }
-
         @Override
         protected void onPreExecute() {
             //pbScan.setVisibility(View.VISIBLE);
@@ -434,13 +548,13 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
                 }
             }
 
-            if (hasScanItemPDA){
+            if (hasScanItemPDA) {
                 initPackInfoAfterScan();
-            }else{
+            } else {
                 hasScanItemPDA = true;
             }
 
-            if (isFromPackage){
+            if (isFromPackage) {
                 if (judgeBarCodeVerified(scanBoxItemEntity)) {
                     initPackInfoAfterScan();
                 }
@@ -449,6 +563,23 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
             keywordInputEditText.setText("");
 
 
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+        protected Boolean is_box_existed(BoxItemEntity box_item) {
+            Boolean result = false;
+            if (boxItemEntityList != null) {
+                for (int i = 0; i < boxItemEntityList.size(); i++) {
+                    if (boxItemEntityList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
+                        return true;
+                    }
+                }
+            }
+
+            return result;
         }
 
         private void initPackInfoAfterScan() {
@@ -460,10 +591,6 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
             }
             keywordInputEditText.setText("");
             keywordInputEditText.setHint("请继续使用扫描枪");
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
         }
 
 
@@ -545,6 +672,28 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
                         } else if (t instanceof BuBean) {
                             buBean = (BuBean) t;
                             receiveBuNameTextView.setText(buBean.getBuName());
+//                            2024-05-27 john 如果接收车间为上海样件或滁州样件，则不按订单发货
+                            if (buBean.getBuId() == 72 || buBean.getBuId() == 105){
+                                isCurrentSample = true;
+//                                if (shouldSendGoodsByOrder){
+//                                    orderTextViewLayout.setVisibility(View.GONE);
+//                                }
+//                                shouldSendGoodsByOrder = false;
+
+                            }else{
+                                isCurrentSample = false;
+//                                shouldSendGoodsByOrder = true;
+//                                if (shouldSendGoodsByOrder){
+//                                    orderTextViewLayout.setVisibility(View.VISIBLE);
+//                                }
+                            }
+                            if (shouldSendGoodsByOrder){
+                                if (isCurrentSample){
+                                    orderTextViewLayout.setVisibility(View.GONE);
+                                }else{
+                                    orderTextViewLayout.setVisibility(View.VISIBLE);
+                                }
+                            }
                         }
 //                        else if (t instanceof ReceiverCompanyBean) {
 //                            receiverCompanyBean = (ReceiverCompanyBean) t;
@@ -616,7 +765,23 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
         @Override
         protected Void doInBackground(String... strings) {
             if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
-                result = WebServiceUtil.commitSendGoods(companyBean.getCompanyId(), buBean.getBuId(), boxItemEntityList.get(0), remark, 3,outDate);
+                List<Long> poiList = new ArrayList<>();
+                if (getOrderDataValid){
+                    if (map != null && map.size() > 0) {
+                        Set<Long> keys = map.keySet();
+                        for (Long key : keys) {
+                            /**
+                             * 加上限制，否则会把所有订单传过来
+                             */
+                            if (map.get(key) > 0){
+                                poiList.add(key);
+                            }
+                        }
+
+
+                    }
+                }
+                result = WebServiceUtil.commitSendGoods(companyBean.getCompanyId(), buBean.getBuId(), boxItemEntityList.get(0), remark, 3, outDate,poiList);
             }
             return null;
         }
@@ -645,10 +810,42 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
             keywordInputEditText.setText("");
 
             hasScanItemPDA = false;
+            orderInfoTextView.setText("");
+            //处理订单
+            map = new HashMap<>();
+            getOrderDataValid = false;
 
 
         }
     }
 
+    private class GetSendGoodsByOrderModeAsyncTask extends AsyncTask<Void, Void, Void> {
+        WsResult result;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            result = WebServiceUtil.getShouldStartSelfSendGoods(UserSingleton.get().getUserInfo().getBu_ID());
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (result != null) {
+                if (result.getResult()) {
+                    int startMode = Integer.parseInt(result.getErrorInfo());
+                    if (startMode == 1) {
+                        shouldSendGoodsByOrder = true;
+                        orderTextViewLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        shouldSendGoodsByOrder = false;
+                        orderTextViewLayout.setVisibility(View.GONE);
+                    }
+
+                }
+            }
+
+        }
+    }
 
 }

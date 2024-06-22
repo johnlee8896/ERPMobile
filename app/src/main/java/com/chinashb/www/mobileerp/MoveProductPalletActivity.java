@@ -44,17 +44,13 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
     private Button btnScanArea;
     private Button btnWarehouseMove;
     private EditText inputEditText;
-    //    private RecyclerView mRecyclerView;
-//    private ProgressBar pbScan;
-//    private AdapterMoveBoxItem boxitemAdapter;
-//    private List<BoxItemEntity> boxitemList;
-    private List<Long> boxitemList;
     private IstPlaceEntity thePlace;
     private String scanstring;
     private RelativeLayout switchLayout;
     private Switch stockSwitch;
     private boolean isOpenSuggestStock = true;
-    private long boxId;
+    //    private long boxId;
+    private List<Integer> boxIDList;
     private TextView itemInfoTextView;
     private Handler handler = new Handler() {
         @Override
@@ -87,7 +83,7 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
         switchLayout = findViewById(R.id.stock_move_suggest_stock_Layout_pallet);
         itemInfoTextView = findViewById(R.id.product_pallet_move_item_info_textview);
 
-        boxitemList = new ArrayList<>();
+        boxIDList = new ArrayList<>();
 //        boxitemAdapter = new AdapterMoveBoxItem(MoveProductPalletActivity.this, boxitemList);
 //        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
 //        mRecyclerView.setAdapter(boxitemAdapter);
@@ -95,11 +91,7 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
         btnAddTray.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (boxitemList.size() < 10) {
-                    new IntentIntegrator(MoveProductPalletActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-                } else {
-                    Toast.makeText(MoveProductPalletActivity.this, "移动清单不超过10个 ", Toast.LENGTH_LONG).show();
-                }
+                new IntentIntegrator(MoveProductPalletActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
             }
 
         });
@@ -107,18 +99,8 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
         btnScanArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (hasScanItem && boxitemList.size() > 0) {
-//                    int selectedcount = 0;
-//                    for (int i = 0; i < boxitemList.size(); i++) {
-//                        if (boxitemList.get(i).getSelect()) {
-//                            selectedcount++;
-//                        }
-//                    }
-//                    if (selectedcount > 0) {
-//                        new IntentIntegrator(MoveProductPalletActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-//                    }
+                if (hasScanItem) {
                     new IntentIntegrator(MoveProductPalletActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
-
                 }
 
             }
@@ -171,15 +153,12 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
     }
 
     private void handleMoveStockArea() {
-        if (boxitemList.size() > 0) {
-//            int selectedcount = 0;
-//            for (int i = 0; i < boxitemList.size(); i++) {
-//                if (boxitemList.get(i).getSelect()) {
-//                    selectedcount++;
-//                }
-//            }
-//            if (selectedcount > 0) {
-            if (boxId > 0) {
+        //2024-05-28 john在移库前做一操作，判断是否是座椅车间，如果不是给出提示
+        if ((UserSingleton.get().getUserInfo().getBu_ID() != 1) && (UserSingleton.get().getUserInfo().getBu_ID() != 81)){
+            ToastUtil.showToastShort("当前车间非座椅，不可操作托盘移库！");
+
+        }else{
+            if (boxIDList != null && boxIDList.size() > 0) {
                 if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
 
                     AsyncExeWarehouseMove task = new AsyncExeWarehouseMove();
@@ -205,6 +184,8 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
                 }
             }
         }
+
+
     }
 
     private void parseScanResult(String content) {
@@ -217,19 +198,33 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
             if (qrContent.length >= 2) {
 
                 if (content.startsWith("Pallet") && qrContent.length == 8) {
-                    boxId = Long.parseLong(qrContent[1]);
-//                    if (boxIDList.contains(boxId)){
-//                        ToastUtil.showToastShort("该托盘已入库，请勿重复入库！");
-//                    }else{
-                    itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
-                    inputEditText.setText("");
-                    hasScanItem = true;
-                    if (!boxitemList.contains(boxId)) {
-                        boxitemList.add(boxId);
+                    int boxId = Integer.parseInt(qrContent[1]);
+                    if (boxIDList.contains(boxId)) {
+                        ToastUtil.showToastShort("该托盘已在列表中，请勿重复扫描！");
                     } else {
-                        ToastUtil.showToastShort("该托盘已扫过，请勿重复扫描");
+
+                        if (boxIDList.size() > 2) {
+                            ToastUtil.showToastShort("成品连续扫描移库一次不超过3托");
+                        } else {
+                            StringBuilder tempBoxInfoSBuilder = new StringBuilder();
+//                            tempBoxInfoSBuilder.append("\n\n");
+                            if (!TextUtils.isEmpty(itemInfoTextView.getText())) {
+                                tempBoxInfoSBuilder.append(itemInfoTextView.getText());
+                            } else {
+                                //  第一行换行
+                                tempBoxInfoSBuilder.append("物料信息\n");
+                            }
+
+                            tempBoxInfoSBuilder.append(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s\n", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
+                            //                        itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
+                            itemInfoTextView.setText(tempBoxInfoSBuilder.toString());
+                            inputEditText.setText("");
+                            hasScanItem = true;
+                            boxIDList.add(boxId);
+                        }
                     }
-//                    }
+                    GetProductMoveSuggestAreaAsyncTask task = new GetProductMoveSuggestAreaAsyncTask();
+                    task.execute(boxId);
                 } else if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
                     //仓库位置码
                     scanstring = content;
@@ -273,6 +268,12 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
         }
     }
 
+    private void finishHandleMove() {
+        itemInfoTextView.setText("");
+        inputEditText.setText("");
+        inputEditText.setHint("请继续扫描");
+        boxIDList.clear();
+    }
 
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
         IstPlaceEntity placeEntity;
@@ -282,16 +283,6 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
             placeEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
             thePlace = placeEntity;
             if (placeEntity.getResult()) {
-//                thePlace = placeEntity;
-//                if (placeEntity.getResult()) {
-//                    for (int i = 0; i < boxitemList.size(); i++) {
-//                        if (boxitemList.get(i).getSelect()) {
-//                            boxitemList.get(i).setIstName(placeEntity.getIstName());
-//                            boxitemList.get(i).setIst_ID(placeEntity.getIst_ID());
-//                            boxitemList.get(i).setSub_Ist_ID(placeEntity.getSub_Ist_ID());
-//                        }
-//                    }
-//                }
             } else {
                 Toast.makeText(MoveProductPalletActivity.this, placeEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
             }
@@ -309,9 +300,9 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
 //            mRecyclerView.setAdapter(boxitemAdapter);
 
             handleMoveStockArea();
-            itemInfoTextView.setText("");
-            inputEditText.setText("");
-            inputEditText.setHint("请继续扫描");
+            //// TODO: 2024/5/8 这里不能直接清除数据，如果有错误，则boxidlist.clear，再看错误就index为0报错，因为异步
+//            finishHandleMove();
+//            boxitemList.clear();
         }
 
         @Override
@@ -320,49 +311,103 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
 
     }
 
-    private class AsyncExeWarehouseMove extends AsyncTask<String, Void, WsResult> {
+    private class AsyncExeWarehouseMove extends AsyncTask<String, Void, List<WsResult>> {
+        List<WsResult> wsResultList = new ArrayList<>();
+        List<WsResult> wsErrorResultList = new ArrayList<>();
 
+        //这种循环调用的方式只执行第一个
+//        @Override
+//        protected List<WsResult> doInBackground(String... params) {
+//            System.out.println("========================begin op_Product_Pallet_Move boxIDList.size:=" + boxIDList.size() );
+//
+//            for (int i = 0; i < boxIDList.size(); i++) {
+//            System.out.println("========================in loop  op_Product_Pallet_Move i:=" + i + " boxid = " + boxIDList .get(i)) ;
+//                WsResult result = WebServiceUtil.moveProductPalletArea(thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), boxIDList.get(i));
+//                wsResultList.add(result);
+//            }
+//            return wsResultList;
+//
+//        }
+
+        //参考零件的连续入库
         @Override
-        protected WsResult doInBackground(String... params) {
+        protected List<WsResult> doInBackground(String... params) {
+//            System.out.println("========================begin op_Product_Pallet_Move boxIDList.size:=" + boxIDList.size() );
+//
+//            for (int i = 0; i < boxIDList.size(); i++) {
+//                System.out.println("========================in loop  op_Product_Pallet_Move i:=" + i + " boxid = " + boxIDList .get(i)) ;
+//                WsResult result = WebServiceUtil.moveProductPalletArea(thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), boxIDList.get(i));
+//                wsResultList.add(result);
+//            }
+//            return wsResultList;
 
+
+//            复制零件入库
 //            List<BoxItemEntity> SelectList;
 //            SelectList = new ArrayList<>();
 //
-//            for (int i = 0; i < boxitemList.size(); i++) {
-//                if (boxitemList.get(i).getIst_ID() == 0) {
-//                    NoNewPlace = true;
-//
-//                    return null;
+//            for (int i = 0; i < boxItemEntityList.size(); i++) {
+//                if (boxItemEntityList.get(i).getSelect()) {
+//                    SelectList.add(boxItemEntityList.get(i));
 //                }
-//
-//                if (boxitemList.get(i).getSelect() ) {
-//                    SelectList.add(boxitemList.get(i));
-//                }
-//
-//
 //            }
-
+//
 //            int count = 0;
+//            int selectedCount = SelectList.size();
+//            while (count < selectedCount && SelectList.size() > 0) {
+//                //todo  这里取的是0，验证多个是否成功
+//                BoxItemEntity boxItemEntity = SelectList.get(0);
+////                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo，SendToWarehouseTime) values (%d,%d,%d,%d,%d,%d,%d,%s,%s)",
+//                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",
+//                        boxItemEntity.getIst_ID(), boxItemEntity.getSub_Ist_ID(), boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
+//                        UserSingleton.get().getUserInfo().getCompany_ID(), UserSingleton.get().getUserInfo().getBu_ID(),
+////                        !TextUtils.isEmpty(boxItemEntity.getManuLotNo()) ? boxItemEntity.getManuLotNo() : boxItemEntity.getLotNo());
+////                        boxItemEntity.getLotNo(),UnitFormatUtil.formatTimeToSecond(System.currentTimeMillis()));
+//                        boxItemEntity.getLotNo());
 //
-//            int selectedcount = SelectList.size();
-//            while (count < selectedcount && SelectList.size() > 0) {
-//                BoxItemEntity bi = SelectList.get(0);
-//
-//                WsResult result = WebServiceUtil.op_Commit_Move_Item(bi);
-//
-//                if (result.getResult() ) {
-//                    boxitemList.remove(bi);
-//
-//                    SelectList.remove(bi);
-//                } else {
-//                    //Toast.makeText(StockMoveActivity.this,result.getErrorInfo(),Toast.LENGTH_LONG).show();
+////                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
+//                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,scanCodeList.size() == selectedCount ? scanCodeList.get(0):"");
+//                if (ws_result.getResult()) {
+//                    //添加库位与manuLot的关联
+////                    addIstSubIstManuLotRelation(boxItemEntity);
+//                    boxItemEntityList.remove(boxItemEntity);
+//                    SelectList.remove(boxItemEntity);
 //                }
 //
 //                count++;
 //            }
-//            BoxItemEntity bi = boxitemList.get(0);
-            WsResult result = WebServiceUtil.moveProductPalletArea(thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), boxId);
-            return result;
+
+
+            int count = 0;
+            List<Integer> tempBoxIDList = new ArrayList<>();
+            for (int i = 0; i < boxIDList.size(); i++) {
+                tempBoxIDList.add(boxIDList.get(i));
+            }
+
+            int selectedCount = tempBoxIDList.size();
+            while (count < selectedCount && tempBoxIDList.size() > 0) {
+                //// TODO: 2024/5/8 因为remove，故每次取第0个
+                int moveBoxID = tempBoxIDList.get(0);
+//                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,scanCodeList.size() == selectedCount ? scanCodeList.get(0):"");
+//               WsResult result = WebServiceUtil.moveProductPalletArea(thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), tempBoxIDList.get(count));
+                WsResult result = WebServiceUtil.moveProductPalletArea(thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), moveBoxID);
+                wsResultList.add(result);
+                if (result.getResult()) {
+//                    tempBoxIDList.remove(tempBoxIDList.get(count));
+//                    tempBoxIDList.remove(moveBoxID);
+                    //// TODO: 2024/5/8  这里会被理解为remove index而非object
+//                    tempBoxIDList.remove(0);
+                } else {
+                    wsErrorResultList.add(result);
+//                    tempBoxIDList.remove(0);
+                }
+                //// TODO: 2024/5/8 不论成功与否都要移除，否则每次执行的都是同一个
+                tempBoxIDList.remove(0);
+                count++;
+            }
+
+            return wsResultList;
+
         }
 
         @Override
@@ -370,32 +415,67 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
         }
 
         @Override
-        protected void onPostExecute(WsResult result) {
-            //tv.setText(fahren + "∞ F");
-
-//            if (NoNewPlace) {
-//                pbScan.setVisibility(View.INVISIBLE);
-//                CommonUtil.ShowToast(StockMoveActivity.this, "还没有扫描新位置", R.mipmap.warning);
-//            } else {
-//                pbScan.setVisibility(View.INVISIBLE);
-//                boxitemAdapter = new AdapterMoveBoxItem(StockMoveActivity.this, boxitemList);
-//                mRecyclerView.setAdapter(boxitemAdapter);
-//
-//                CommonUtil.ShowToast(StockMoveActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+        protected void onPostExecute(List<WsResult> resultList) {
+//            if (result != null) {
+//                if (result.getResult()) {
+//                    CommonUtil.ShowToast(MoveProductPalletActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+//                    boxitemList.clear();
+//                } else {
+//                    CommonUtil.ShowToast(MoveProductPalletActivity.this, "移库失败" + result.getErrorInfo(), R.mipmap.monster_mike, Toast.LENGTH_SHORT);
+//                }
 //            }
-            if (result != null) {
-                if (result.getResult()) {
-                    CommonUtil.ShowToast(MoveProductPalletActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
-                    boxitemList.clear();
-                } else {
-                    CommonUtil.ShowToast(MoveProductPalletActivity.this, "移库失败" + result.getErrorInfo(), R.mipmap.monster_mike, Toast.LENGTH_SHORT);
+
+            boolean allCorrect = true;
+            System.out.println("==================wsResultList.size() = " + wsResultList.size());
+            System.out.println("==================wsErrorResultList.size() = " + wsErrorResultList.size());
+            for (int i = 0; i < wsResultList.size(); i++) {
+                System.out.println("==================wsResultList i= " + i + " result =" + wsResultList.get(i).getResult() +
+                        " errorinfo = " + wsResultList.get(i).getErrorInfo());
+                if (!wsResultList.get(i).getResult()) {
+                    allCorrect = false;
+                    break;
                 }
             }
+            if (allCorrect) {
+                if (boxIDList != null && boxIDList.size() > 1) {
+
+                    CommonUtil.ShowToast(MoveProductPalletActivity.this, "全部移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+                } else {
+                    CommonUtil.ShowToast(MoveProductPalletActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+
+                }
+                finishHandleMove();
+            } else {
+                List<Integer> errorBoxIdList = new ArrayList<>();
+                StringBuilder stringBuilder = new StringBuilder();
+//                for (WsResult wsResult : wsResultList){
+                for (int i = 0; i < wsResultList.size(); i++) {
+                    if (!wsResultList.get(i).getResult()) {
+                        errorBoxIdList.add(boxIDList.get(i));
+                        stringBuilder.append(String.format("箱号为:%d,错误原因:%s", boxIDList.get(i), wsResultList.get(i).getErrorInfo()));
+                        stringBuilder.append("\n");
+                    }
+                }
+
+                CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(MoveProductPalletActivity.this)
+                        .setTitle("此笔移库信息汇总").setMessage(String.format("此次移库共执行%d托，其中%d托移库失败，具体信息如下:%s",
+                                boxIDList.size(), errorBoxIdList.size(), stringBuilder.toString()))
+                        .setMiddleText("确定");
 
 
+                builder.setOnViewClickListener((dialog, v, tag) -> {
+                    switch (tag) {
+                        case CommAlertDialog.TAG_CLICK_MIDDLE:
+                            dialog.dismiss();
+//                                        handleAllInCorrect();
+                            finishHandleMove();
+                            break;
 
-//            boxitemAdapter = new AdapterMoveBoxItem(MoveProductPalletActivity.this, boxitemList);
-//            mRecyclerView.setAdapter(boxitemAdapter);
+                    }
+                });
+                builder.create().show();
+
+            }
         }
 
         @Override
@@ -403,6 +483,32 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
         }
 
     }
+
+
+    private class GetProductMoveSuggestAreaAsyncTask extends AsyncTask<Integer,Void,Void>{
+        WsResult ws_result;
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            int boxID = integers[0];
+            ws_result = WebServiceUtil.getProductSuggestAreaName(UserSingleton.get().getUserInfo().getBu_ID(),boxID);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (ws_result != null && ws_result.getResult()){
+                ToastUtil.showToastShort("建议库位:" + ws_result.getErrorInfo());
+            }else{
+                ToastUtil.showToastShort("未能获取建议库位");
+
+            }
+        }
+    }
+
+
+
 
 }
 

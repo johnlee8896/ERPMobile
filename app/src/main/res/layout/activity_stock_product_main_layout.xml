@@ -162,6 +162,17 @@
             android:gravity="center"
             android:text="车间仓扫描出库" />
 
+
+        <TextView
+            android:id="@+id/product_main_product_check_inv_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品盘点" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
