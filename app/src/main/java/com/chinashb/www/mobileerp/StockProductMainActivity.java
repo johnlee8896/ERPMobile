@@ -47,6 +47,8 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.product_main_bu_warehouse_textView) TextView buWarehouseInTextView;//车间仓
     @BindView(R.id.product_main_bu_warehouse_out_textView) TextView buWarehouseOutTextView;//车间仓出库
     @BindView(R.id.product_main_product_check_inv_textView) TextView productCheckInvTextView;
+    @BindView(R.id.product_main_product_manu_pallet_check_inv_textView) TextView productManuPalletCheckInvTextView;//手动托盘标签盘点
+    @BindView(R.id.product_main_product_manu_not_pallet_check_inv_textView) TextView productManuNotPalletCheckInvTextView;//手动非托盘标签盘点
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,6 +80,8 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         buWarehouseInTextView.setOnClickListener(this);
         buWarehouseOutTextView.setOnClickListener(this);
         productCheckInvTextView.setOnClickListener(this);
+        productManuPalletCheckInvTextView.setOnClickListener(this);
+        productManuNotPalletCheckInvTextView.setOnClickListener(this);
     }
 
     @Override
@@ -136,8 +140,14 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         } else if (v == buWarehouseOutTextView) {
             Intent intent = new Intent(this, BuWarehouseAccountOutActivity.class);
             startActivity(intent);
-        }else if (v == productCheckInvTextView) {
+        } else if (v == productCheckInvTextView) {
             Intent intent = new Intent(this, ProductCheckInventoryActivity.class);
+            startActivity(intent);
+        }else if (v == productManuPalletCheckInvTextView) {
+            Intent intent = new Intent(this, ProductCheckInventoryManuPalletActivity.class);
+            startActivity(intent);
+        }else if (v == productManuNotPalletCheckInvTextView) {
+            Intent intent = new Intent(this, ProductCheckInventoryManuPalletNotActivity.class);
             startActivity(intent);
         }
     }

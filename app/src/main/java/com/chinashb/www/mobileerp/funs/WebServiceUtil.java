@@ -494,6 +494,58 @@ public class WebServiceUtil {
 
     }
 
+    //通过扫描成品手工托盘标签获取其ERP存储位置
+    public static WsResult getManuPalletProductIstNameByPalletID(int palletID){
+        String webMethodName = "Get_Product_Manu_Pallet_Ist_Name_By_PalletID";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Pallet_ID", palletID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
+
+    }
+
+    //这个手工非托盘标签，应该是不用获取位置 ，位置信息都为0
+    public static WsResult getManuPalletNotProductIstNameByPalletID(int boxID){
+        String webMethodName = "Get_Product_Ist_Name_By_BoxID";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Box_ID", boxID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
+
+    }
+
 
     public static WsResult op_Insert_Supplier_Income_Box(int Company_ID, int Bu_ID,
                                                          long Item_ID, long IV_ID, String LotNo,
@@ -3894,6 +3946,75 @@ public class WebServiceUtil {
         System.out.println("==================================SMT_ID = " + SMT_ID + " SMM_ID  = " + SMM_ID + " SMLI_ID  = " + SMLI_ID);
         System.out.println("==================================LotID = " + LotID + " Qty  = " + Qty + " N  = " + N);
         System.out.println("==================================PN = " + PN + " DQ  = " + DQ + " Remark  = " + remark);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        return getWS_Result(obj);
+
+    }
+
+    //    手工标签，非托盘的盘点
+    public static WsResult commit_Product_Manu_Pallet_Not_Pandian_ByBox(String Exer_Name, int CI_ID, int Bu_ID, String X,
+                                                                    Long Ist_ID, Long Sub_Ist_ID,  String Qty, String N, String PN, String DQ, String remark, String storeArea, String manuLotNo,int lotID,int psID) {
+        String webMethodName = "op_Check_CheckInventory_Product_Manu_Pallet_Not_ByBox";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "Exer_Name", Exer_Name);
+        AddPropertyInfo(propertyInfos, "CI_ID", CI_ID);
+        AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfos, "X", X);
+        AddPropertyInfo(propertyInfos, "Ist_ID", Ist_ID);
+        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", Sub_Ist_ID);
+
+        AddPropertyInfo(propertyInfos, "Qty", Qty);
+        AddPropertyInfo(propertyInfos, "N", N);
+        AddPropertyInfo(propertyInfos, "PN", PN);
+        AddPropertyInfo(propertyInfos, "DQ", DQ);
+
+        AddPropertyInfo(propertyInfos, "Remark", remark);
+        AddPropertyInfo(propertyInfos, "storeArea", storeArea);
+//        AddPropertyInfo(propertyInfos, "Box_ID", BoxID);
+//        AddPropertyInfo(propertyInfos, "Pallet_ID", palletID);
+        AddPropertyInfo(propertyInfos, "Lot_ID", lotID);
+        AddPropertyInfo(propertyInfos, "PS_ID", psID);
+//        AddPropertyInfo(propertyInfos, "manuLotNo", manuLotNo);
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        return getWS_Result(obj);
+
+    }
+
+//    手工标签，托盘的盘点
+    public static WsResult commit_Product_Manu_Pallet_Pandian_ByBox(String Exer_Name, int CI_ID, int Bu_ID, String X,
+                                                        Long Ist_ID, Long Sub_Ist_ID,  String Qty, String N, String PN, String DQ, String remark, String storeArea, String manuLotNo,int palletID) {
+        String webMethodName = "op_Check_CheckInventory_Product_Manu_Pallet_ByBox";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "Exer_Name", Exer_Name);
+        AddPropertyInfo(propertyInfos, "CI_ID", CI_ID);
+        AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfos, "X", X);
+        AddPropertyInfo(propertyInfos, "Ist_ID", Ist_ID);
+        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", Sub_Ist_ID);
+
+        AddPropertyInfo(propertyInfos, "Qty", Qty);
+        AddPropertyInfo(propertyInfos, "N", N);
+        AddPropertyInfo(propertyInfos, "PN", PN);
+        AddPropertyInfo(propertyInfos, "DQ", DQ);
+
+        AddPropertyInfo(propertyInfos, "Remark", remark);
+        AddPropertyInfo(propertyInfos, "storeArea", storeArea);
+//        AddPropertyInfo(propertyInfos, "Box_ID", BoxID);
+        AddPropertyInfo(propertyInfos, "Pallet_ID", palletID);
+//        AddPropertyInfo(propertyInfos, "manuLotNo", manuLotNo);
+
+        System.out.println("==================================Exer_Name = " + Exer_Name + " ci_id  = " + CI_ID + " bu_id  = " + Bu_ID);
+        System.out.println("==================================X = " + X + " Ist_ID  = " + Ist_ID + " Sub_Ist_ID  = " + Sub_Ist_ID);
+        System.out.println("================================== Qty  = " + Qty + " N  = " + N);
+        System.out.println("==================================PN = " + PN + " DQ  = " + DQ + " Remark  = " + remark + " ");
+        System.out.println("==================================storeArea = " + storeArea + " manuLotNo  = " + manuLotNo + " Pallet_ID  = " + palletID);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;

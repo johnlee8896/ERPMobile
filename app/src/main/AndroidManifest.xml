@@ -31,6 +31,16 @@
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
 
+        <!--专门给成手工托盘标签盘点使用-->
+        <activity
+            android:name=".ProductCheckInventoryManuPalletActivity"
+            android:screenOrientation="portrait" />
+
+        <!--专门给成品手工非托盘标签作盘点使用-->
+        <activity
+            android:name=".ProductCheckInventoryManuPalletNotActivity"
+            android:screenOrientation="portrait" />
+
         <!--专门给成品作盘点使用-->
         <activity
             android:name=".ProductCheckInventoryActivity"

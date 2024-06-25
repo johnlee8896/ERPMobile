@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+                android:id="@+id/product_check_manu_pallet_not_titleLayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:app_title_text="选择盘点文件" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/product_check_manu_pallet_not_input_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_size_60"
+                    android:background="@color/transparent"
+                    android:gravity="center_vertical"
+                    android:hint="接收扫描结果"
+                    android:paddingLeft="@dimen/dimen_size_10"
+                    android:paddingTop="@dimen/dimen_size_15"
+                    android:paddingRight="@dimen/dimen_size_10"
+                    android:textColor="@color/black"
+                    android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+                    android:textSize="@dimen/text_size_14" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/product_check_manu_pallet_not_select_check_Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="选择盘点表" />
+
+                    <Button
+                        android:id="@+id/product_check_manu_pallet_not__scan_ist_Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="扫描位置码" />
+
+                    <Button
+                        android:id="@+id/product_check_manu_pallet_not_add_item_Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="扫描物料" />
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/product_check_manu_pallet_not_search_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/product_check_manu_pallet_not_search_Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/dimen_size_5"
+                        android:text="搜索" />
+
+                    <EditText
+                        android:id="@+id/product_check_manu_pallet_not_search_editText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@id/product_check_manu_pallet_not_search_Button"
+                        android:background="@drawable/shape_white_half_transparent_conner"
+                        android:drawablePadding="@dimen/dimen_size_10"
+                        android:hint="请输入item_id,ps_id,物料名称等进行搜索"
+                        android:imeOptions="actionSearch"
+                        android:paddingLeft="8dp"
+                        android:singleLine="true"
+                        android:textColor="#0A222E"
+                        android:textColorHint="@color/color_CCCCCC"
+                        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+                        android:textSize="16sp" />
+
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/check_product_inv_original_data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:layout_marginRight="@dimen/dimen_size_10"
+                android:orientation="vertical">
+
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="库位单元" />
+                        <TextView
+                            android:id="@+id/product_check_manu_pallet_not_tv_check_stock_ist"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:text="......"
+                            android:textColor="@color/black" />
+
+
+
+
+                    </TableRow>
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="物料条码" />
+
+                        <TextView
+                            android:id="@+id/product_check_manu_pallet_not_tv_check_stock_item_code"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:paddingRight="@dimen/dimen_size_5"
+                            android:text="......"
+                            android:textColor="@color/black" />
+                    </TableRow>
+
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="ERP位置" />
+
+                        <TextView
+                            android:id="@+id/product_check_manu_pallet_not_tv_check_stock_ist_erp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:text="......"
+                            android:textColor="@color/black" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="物料" />
+
+                        <TextView
+                            android:id="@+id/tv_product_check_manu_pallet_notcheck_stock_item_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:text="......"
+                            android:textColor="@color/black" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/textView20"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="生产批次" />
+                        <TextView
+                            android:id="@+id/tv_product_check_manu_pallet_notcheck_stock_manulotno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:text="......"
+                            android:textColor="@color/black" />
+                        <EditText
+                            android:id="@+id/et_product_check_manu_pallet_notcheck_stock_manulotno"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:hint="请输入生产批次"
+                            android:textColor="@color/black"
+                            android:visibility="gone" />
+
+
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="@dimen/dimen_size_150"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="完整件数" />
+                        <EditText
+                            android:id="@+id/et_product_check_manu_pallet_notcheck_stock_box_n"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:inputType="number|numberSigned"
+                            android:text="1"
+                            android:textColor="@color/black" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="每件数量" />
+                        <EditText
+                            android:id="@+id/et_product_check_manu_pallet_notcheck_stock_box_pn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:inputType="number|numberSigned|numberDecimal"
+                            android:textColor="@color/black" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="散件数" />
+                        <EditText
+                            android:id="@+id/et_product_check_manu_pallet_notcheck_stock_box_dq"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:inputType="number|numberSigned|numberDecimal"
+                            android:text=""
+                            android:textColor="@color/black" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+
+                        <Button
+                            android:id="@+id/product_check_manu_pallet_not_btn_check_inv_cal_qty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/dimen_size_20"
+                            android:text="小计" />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:id="@+id/textView10"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="实际盘点" />
+
+                        <TextView
+                            android:id="@+id/et_product_check_manu_pallet_notcheck_stock_box_real_qty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:inputType="number|numberSigned|numberDecimal"
+                            android:textColor="@color/black" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/textView18"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="备注" />
+                        <EditText
+                            android:id="@+id/et_product_check_manu_pallet_notcheck_stock_box_remark"
+                            style="@style/Widget.AppCompat.EditText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:textColor="@color/black" />
+
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/dimen_size_80">
+
+
+                        <Button
+                            android:id="@+id/product_check_manu_pallet_not_btn_affirm_qty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/dimen_size_20"
+                            android:text="提交" />
+
+                    </TableRow>
+
+
+                </TableLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/check_product_inv_product_serarch_data_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="fill">
+
+                    <TextView
+                        android:id="@+id/tv_product_check_manu_pallet_notpro_inv_item_id_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Item_ID" />
+
+                    <TextView
+                        android:id="@+id/tv_product_check_manu_pallet_notpro_inv_ps_id_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="PS_ID" />
+
+                    <TextView
+                        android:id="@+id/tv_product_check_manu_pallet_notpro_inv_abb_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="产品通称" />
+
+                    <TextView
+                        android:id="@+id/tv_product_check_manu_pallet_notpro_inv_name_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="名称" />
+
+                    <TextView
+                        android:id="@+id/tv_product_check_manu_pallet_notpro_inv_productno_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="客户零件号" />
+
+                    <TextView
+                        android:id="@+id/tv_product_check_manu_pallet_notpro_inv_ver_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="版本" />
+
+
+                    <TextView
+                        android:id="@+id/tv_product_check_manu_pallet_notpro_inv_inv_qty_col"
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="库存" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+                        android:id="@+id/product_check_manu_pallet_not_recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+
+                        android:clickable="true"
+                        tools:layout_editor_absoluteX="8dp"
+                        tools:layout_editor_absoluteY="8dp">
+
+                    </com.chinashb.www.mobileerp.widget.CustomRecyclerView>
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>
