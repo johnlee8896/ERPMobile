@@ -584,6 +584,8 @@ public class ProductCheckInventoryActivity extends BaseActivity {
 //                hasScannItemClickButtonForPhoto = false;
                 panDianItemBean = null;
 
+                eachBoxQtyEditText.setText("");
+
             } else {
                 ToastUtil.showToastLong("提交失败" + ws_result.getErrorInfo());
 

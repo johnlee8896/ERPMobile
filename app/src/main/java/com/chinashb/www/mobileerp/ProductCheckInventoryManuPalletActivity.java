@@ -586,6 +586,7 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
                 inputEditText.findFocus();
 //                hasScannItemClickButtonForPhoto = false;
                 panDianItemBean = null;
+                eachBoxQtyEditText.setText("");
 
             } else {
                 ToastUtil.showToastLong("提交失败" + ws_result.getErrorInfo());
