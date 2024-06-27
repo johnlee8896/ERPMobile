@@ -33,6 +33,26 @@
 
         <!--专门给成手工托盘标签盘点使用-->
         <activity
+            android:name=".MoveManuProductPalletActivity"
+            android:screenOrientation="portrait" />
+
+        <!--专门给成手工托盘标签盘点使用-->
+        <activity
+            android:name=".MoveManuProductPalletNotActivity"
+            android:screenOrientation="portrait" />
+
+        <!--专门给成手工托盘标签盘点使用-->
+        <activity
+            android:name=".ProductCodeBoxManagementActivity"
+            android:screenOrientation="portrait" />
+
+        <!--专门给成手工托盘标签盘点使用-->
+        <activity
+            android:name=".ProductManuCodeBoxManagementActivity"
+            android:screenOrientation="portrait" />
+
+        <!--专门给成手工托盘标签盘点使用-->
+        <activity
             android:name=".ProductCheckInventoryManuPalletActivity"
             android:screenOrientation="portrait" />
 

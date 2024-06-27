@@ -352,7 +352,7 @@ public class WebServiceUtil {
         return null;
     }
 
-
+    //正常成品标签托盘 移库
     public static WsResult moveProductPalletArea(long ToIst_ID, long ToSub_Ist_ID, long PalletID) {
         String webMethodName = "op_Product_Pallet_Move";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -377,6 +377,33 @@ public class WebServiceUtil {
         return result;
     }
 
+//    手工补打成品标签托盘 移库
+    public static WsResult moveProductManuPalletArea(long ToIst_ID, long ToSub_Ist_ID, long PalletID) {
+        String webMethodName = "op_Product_Manual_Pallet_Move";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "Company_ID", UserSingleton.get().getUserInfo().getCompany_ID());
+        AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
+        AddPropertyInfo(propertyInfos, "ToIst_ID", ToIst_ID);
+        AddPropertyInfo(propertyInfos, "ToSub_Ist_ID", ToSub_Ist_ID);
+//        AddPropertyInfo(propertyInfos, "Box_ID", PalletID);
+        AddPropertyInfo(propertyInfos, "Pallet_ID", PalletID);
+
+        System.out.println("========================op_Product_Manual_Pallet_Move ToSub_Ist_ID:=" + ToSub_Ist_ID + "  Box_ID=" + PalletID);
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        WsResult result = Get_WS_Result(obj);
+
+
+        return result;
+    }
+
+    //正常成品标签 非托盘 移库
     public static WsResult moveProductNotPalletArea(long ToIst_ID, long ToSub_Ist_ID, long PalletID) {
         String webMethodName = "op_Product_Not_Pallet_Move";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -387,6 +414,33 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfos, "ToIst_ID", ToIst_ID);
         AddPropertyInfo(propertyInfos, "ToSub_Ist_ID", ToSub_Ist_ID);
         AddPropertyInfo(propertyInfos, "Box_ID", PalletID);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        WsResult result = Get_WS_Result(obj);
+
+
+        return result;
+    }
+
+    //手工补打成品标签 非托盘 移库
+//    public static WsResult moveProductManualNotPalletArea(long ToIst_ID, long ToSub_Ist_ID, long psID,long lotID,long fromIstID,long fromSubIstID,int qty) {
+    public static WsResult moveProductManualNotPalletArea(long ToIst_ID, long ToSub_Ist_ID, long psID,long lotID,int qty) {
+        String webMethodName = "op_Product_Manual_Not_Pallet_Move";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "Company_ID", UserSingleton.get().getUserInfo().getCompany_ID());
+        AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
+        AddPropertyInfo(propertyInfos, "ToIst_ID", ToIst_ID);
+        AddPropertyInfo(propertyInfos, "ToSub_Ist_ID", ToSub_Ist_ID);
+        AddPropertyInfo(propertyInfos, "PS_ID", psID);
+        AddPropertyInfo(propertyInfos, "LotID", lotID);
+//        AddPropertyInfo(propertyInfos, "FromIst_ID", fromIstID);
+//        AddPropertyInfo(propertyInfos, "FromSub_Ist_ID", fromSubIstID);
+        AddPropertyInfo(propertyInfos, "Qty", qty);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
 

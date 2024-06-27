@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/background_light"
+        android:orientation="vertical">
+        <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+            android:layout_width="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:app_title_text="成品正常标签操作"
+            android:layout_height="50dp"/>
+
+
+
+        <TextView
+            android:id="@+id/product_main_code_box_scan_code_box_in_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_50"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品入库(扫托盘标签)" />
+
+        <TextView
+            android:id="@+id/product_main_code_box_scan_code_box_in_Not_Pallet_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品入库(非托盘)" />
+
+
+
+
+        <TextView
+            android:id="@+id/product_main_code_box_sale_out_code_box_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品出库(扫托盘标签)" />
+
+        <TextView
+            android:id="@+id/product_main_code_box_move_pallet_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品移库(托盘)" />
+
+        <TextView
+            android:id="@+id/product_main_code_box_move_not_pallet_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品移库(非托盘)" />
+
+
+        <TextView
+            android:id="@+id/product_main_code_box_product_check_inv_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品盘点(原标签)" />
+
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>
