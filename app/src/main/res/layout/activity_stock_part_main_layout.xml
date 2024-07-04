@@ -607,7 +607,46 @@
                         android:textSize="15sp" />
                 </TableRow>
 
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
 
+                    <ImageView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_get_image_from_server"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="获取图片"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+
+<!--                    <ImageView-->
+
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_gravity="center_vertical"-->
+<!--                        app:srcCompat="@mipmap/xenogenesis_2" />-->
+
+<!--                    <Button-->
+<!--                        android:layout_width="100dp"-->
+<!--                        android:layout_height="60dp"-->
+<!--                        android:layout_gravity="left"-->
+<!--                        android:background="@drawable/squarebutton"-->
+<!--                        android:text=""-->
+<!--                        android:textColor="#ffffff"-->
+<!--                        android:textSize="15sp" />-->
+                </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"

@@ -31,6 +31,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.product_main_bu_warehouse_out_textView) TextView buWarehouseOutTextView;//车间仓出库
     @BindView(R.id.product_main_scan_code_box_textView) TextView codeBoxTextView;
     @BindView(R.id.product_main_scan_code_box_manu_textView) TextView codeBoxManuTextView;
+    @BindView(R.id.product_main_product_dp_order_textView) TextView dpOrderTextView;//发货指令查询
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         buWarehouseOutTextView.setOnClickListener(this);
         codeBoxTextView.setOnClickListener(this);
         codeBoxManuTextView.setOnClickListener(this);
+        dpOrderTextView.setOnClickListener(this);
     }
 
     @Override
@@ -62,7 +64,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         } else if (v == saleOutCodeBoxTextView) {
             Intent intent = new Intent(this, ProductSaleOutCodeBoxActivity.class);
             startActivity(intent);
-        }  else if (v == scanBoxInTextView) {
+        } else if (v == scanBoxInTextView) {
             Intent intent = new Intent(this, ProductScanBoxInActivity.class);
             startActivity(intent);
         } else if (v == scanIstGetItemTextView) {
@@ -74,11 +76,14 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         } else if (v == buWarehouseOutTextView) {
             Intent intent = new Intent(this, BuWarehouseAccountOutActivity.class);
             startActivity(intent);
-        } else if (v == codeBoxTextView){
+        } else if (v == codeBoxTextView) {
             Intent intent = new Intent(this, ProductCodeBoxManagementActivity.class);
             startActivity(intent);
-        } else if (v == codeBoxManuTextView){
+        } else if (v == codeBoxManuTextView) {
             Intent intent = new Intent(this, ProductManuCodeBoxManagementActivity.class);
+            startActivity(intent);
+        }else if (v == dpOrderTextView) {
+            Intent intent = new Intent(this, DeliveryOrderActivity.class);
             startActivity(intent);
         }
     }

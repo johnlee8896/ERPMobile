@@ -1496,6 +1496,7 @@ public class WebServiceUtil {
 
 
     //    public static WsResult Upload_Image_From_Mobile(String ImageName, byte[] bytes) {
+//    上传图片到服务器
     public static WsResult Upload_Image_From_Mobile(String ImageName, String uploadString) {
         boolean result = false;
 //        String webMethodName = "Upload_Image_From_Mobile";
@@ -1532,6 +1533,19 @@ public class WebServiceUtil {
         return ws_result;
     }
 
+    //从服务器获取图片
+    public static WsResult Get_Image_From_Server(int boxID) {
+        boolean result = false;
+        String webMethodName = "op_Get_Box_Label_ByBoxID";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "Box_ID", boxID);
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult ws_result = Get_WS_Result(obj);
+        return ws_result;
+    }
 
     public static WsResult Upload_File_From_Mobile(String FileName) {
         boolean result = false;

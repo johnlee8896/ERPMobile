@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.BuPlanGoodsActivity;
+import com.chinashb.www.mobileerp.GetPhotoFromServerActivity;
 import com.chinashb.www.mobileerp.PartWorkLinePutActivity;
 import com.chinashb.www.mobileerp.PhotoCameraActivity;
 import com.chinashb.www.mobileerp.R;
@@ -64,6 +65,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button scanIstButton;//扫描库位查看物料
     private Button findMoveRecordButton;//查询移库记录
     private Button partAllocateSameCompanyButton;//同公司零件调拨
+    private Button getPictureButton;//获取图片，从服务器，为打印作准备
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
     private UserInfoEntity userInfo;
@@ -99,6 +101,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         photoCameraButton = findViewById(R.id.btn_photo_camera);
         scanIstButton = findViewById(R.id.btn_part_scan_ist);
         findMoveRecordButton = findViewById(R.id.btn_find_move_area);
+        getPictureButton = findViewById(R.id.btn_get_image_from_server);
         partAllocateSameCompanyButton = findViewById(R.id.btn_part_allocate_inner_company);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
@@ -181,6 +184,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         scanIstButton.setOnClickListener(this);
         findMoveRecordButton.setOnClickListener(this);
         partAllocateSameCompanyButton.setOnClickListener(this);
+        getPictureButton.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -289,6 +293,9 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             startActivity(intent);
         } else if (view == partAllocateSameCompanyButton) {
             Intent intent = new Intent(StockPartMainActivity.this, PartAllocateTransferInnerCompanyActivity.class);
+            startActivity(intent);
+        } else if (view == getPictureButton){
+            Intent intent = new Intent(StockPartMainActivity.this, GetPhotoFromServerActivity.class);
             startActivity(intent);
         }
     }

@@ -31,6 +31,11 @@
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
 
+        <!--从服务端获取图片，为之后手机打印作准备-->
+        <activity
+            android:name=".GetPhotoFromServerActivity"
+            android:screenOrientation="portrait" />
+
         <!--专门给成手工托盘标签盘点使用-->
         <activity
             android:name=".MoveManuProductPalletActivity"
