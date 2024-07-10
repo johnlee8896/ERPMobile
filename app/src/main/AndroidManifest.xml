@@ -31,9 +31,29 @@
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
 
+        <!--手机操作整托返工-->
+        <activity
+            android:name=".ProductReworkPalletActivity"
+            android:screenOrientation="portrait" />
+
         <!--从服务端获取图片，为之后手机打印作准备-->
         <activity
             android:name=".GetPhotoFromServerActivity"
+            android:screenOrientation="portrait" />
+
+        <!--手机打印页面-->
+        <activity
+            android:name=".printer.MobilePrinterActivity"
+            android:screenOrientation="portrait" />
+
+        <!--打印相关-->
+        <activity
+            android:name=".printer.BTHDiscoveryActivity"
+            android:screenOrientation="portrait" />
+
+        <!--通用的成品盘点页面，将成品托盘，非托盘以及手工补打的成品托盘、非托盘统一放一起，程序判断-->
+        <activity
+            android:name=".ProductCommonCheckInventoryActivity"
             android:screenOrientation="portrait" />
 
         <!--专门给成手工托盘标签盘点使用-->

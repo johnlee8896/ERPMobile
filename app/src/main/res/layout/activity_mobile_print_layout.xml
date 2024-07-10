@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    android:onClick="onBtnConnect"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:id="@+id/textTips"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2.0dip"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="请连接打印机"
+            android:textColor="#000000"
+            android:textSize="16.0sp" />
+
+        <Button
+            android:id="@+id/btnConnect"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1.0"
+            android:onClick="onBtnConnect"
+            android:text="连接" />
+
+        <Button
+            android:id="@+id/btnDisconnect"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1.0"
+            android:onClick="onBtnDisconnect"
+            android:text="断开" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3.0dip"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="打印机语言"
+            android:textColor="#000000"
+            android:textSize="16.0sp" />
+
+
+        <RadioGroup
+            android:id="@+id/languageRadioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/btnCPCL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginTop="3.0dip"
+                android:layout_weight="1.0"
+                android:button="@drawable/radiobutton"
+                android:text="CPCL" />
+
+            <RadioButton
+                android:id="@+id/btnESCPOS"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginTop="3.0dip"
+                android:layout_weight="1.0"
+                android:button="@drawable/radiobutton"
+                android:text="ESCPOS" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnGetPrinterStatus"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1.0"
+            android:onClick="onBtnPrintClick"
+            android:text="打印机连接状态"
+            tools:ignore="ButtonStyle" />
+
+        <Button
+            android:id="@+id/btnConfigurationPrint"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="2dp"
+            android:layout_weight="1.0"
+            android:onClick="onBtnPrintClick"
+            android:text="打印配置页"
+            tools:ignore="ButtonStyle" />
+    </LinearLayout>
+
+    <include layout="@layout/activity_print_function_layout" />
+
+
+</LinearLayout>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:gravity="center_vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:baselineAligned="false"
+        tools:ignore="UselessParent">
+
+        <ScrollView
+            android:scrollbarAlwaysDrawVerticalTrack="false"
+            android:scrollbars="vertical"
+            android:fadingEdge="vertical"
+            android:layout_width="0.0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1.0">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btnPrintText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="onBtnPrintClick"
+                    android:text="@string/print_text"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btnPrint1DBarcode"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="onBtnPrintClick"
+                    android:text="@string/print_1D_barcode"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btnPrint2DBarcode"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="onBtnPrintClick"
+                    android:text="@string/print_2D_barcode"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btnPrintImage"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="onBtnPrintClick"
+                    android:text="@string/print_image"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btnPrintLabel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="onBtnPrintClick"
+                    android:text="@string/print_express"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btnPrintReceipt"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="onBtnPrintClick"
+                    android:text="@string/print_receipt"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:layout_width="142dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/zebra_logo_black"
+                    android:contentDescription="@string/zebra_log_image" />
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+</LinearLayout>

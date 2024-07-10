@@ -4,32 +4,39 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.BaseActivity;
-import com.chinashb.www.mobileerp.BuPlanGoodsActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.adapter.Mpi_WcAdapter;
+import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
+import com.chinashb.www.mobileerp.basicobject.WorkCenter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.OnItemClickListener;
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.StaticVariableUtils;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.chinashb.www.mobileerp.adapter.Mpi_WcAdapter;
-import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
-import com.chinashb.www.mobileerp.basicobject.WorkCenter;
-import com.chinashb.www.mobileerp.funs.OnItemClickListener;
-import com.chinashb.www.mobileerp.funs.WebServiceUtil;
-import com.chinashb.www.mobileerp.funs.CommonUtil;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,6 +60,11 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
     private Button nextSevenButton;
     private TextView txtDay;
     private boolean bu_option_mp_bom = false;
+    private TextView searchTextView;
+    private EditText searchEditText;
+    private ImageView clearImageView;
+
+    private List<MpiWcBean> originalBUDataList;
 
 
     @Override
@@ -67,8 +79,11 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
         nextDayButton = (Button) findViewById(R.id.btn_select_mpi_wc_next_day);
         nextSevenButton = (Button) findViewById(R.id.btn_select_mpi_wc_next_seven_days);
 
+        searchTextView = (TextView) findViewById(R.id.mpi_filter_search_action_TextView);
+        searchEditText = (EditText) findViewById(R.id.mpi_filter_et_keyword_input);
+        clearImageView = (ImageView) findViewById(R.id.mpi_filter_search_clear_input_ImageView);
+
         pbScan = (ProgressBar) findViewById(R.id.progressbar2);
-        setHomeButton();
         Intent intent = getIntent();
         selectWorkCenter = (WorkCenter) intent.getSerializableExtra("wc");
         if (selectWorkCenter != null) {
@@ -117,6 +132,91 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
                 showPlan();
             }
         });
+
+        if (searchTextView != null) {
+            //筛选清单 originalBUDataList
+            searchTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (searchTextView.getText().equals("取消")) {
+                        finish();
+                    } else {
+                        doSearchAction(searchEditText.getText().toString());
+                    }
+                }
+            });
+        }
+
+        searchEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                clearImageView.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
+                searchTextView.setText(s.length() > 0 ? "搜索" : "取消");
+                if (s.length() == 0) {
+//                    adapter.setData(originalBUDataList);
+
+                    adapter = new Mpi_WcAdapter(SelectMPIWCStepThreeActivity.this,originalBUDataList);
+//            adapter.showdeletebutton = showdeletebutton;
+                    selectMWRecyclerView.setLayoutManager(new LinearLayoutManager(SelectMPIWCStepThreeActivity.this));
+                    selectMWRecyclerView.setAdapter(adapter);
+
+                    adapter.setOnItemClickListener(new OnItemClickListener() {
+                                                       @Override
+                                                       public void OnItemClick(View view, int position) {
+                                                           //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
+                                                           if (adapter.getDataList() != null) {
+                                                               selectMpiWcBean = adapter.getDataList().get(position);
+                                                               Intent intent = new Intent();
+                                                               intent.putExtra("mw", selectMpiWcBean);
+                                                               setResult(1, intent);
+                                                               finish();
+                                                           }
+                                                       }
+                                                   }
+                    );
+
+                }
+            }
+        });
+        clearImageView.setOnClickListener(v -> {
+            searchEditText.setText("");
+            searchTextView.setText("取消");
+            adapter = new Mpi_WcAdapter(SelectMPIWCStepThreeActivity.this,originalBUDataList);
+//            adapter.showdeletebutton = showdeletebutton;
+            selectMWRecyclerView.setLayoutManager(new LinearLayoutManager(SelectMPIWCStepThreeActivity.this));
+            selectMWRecyclerView.setAdapter(adapter);
+
+            adapter.setOnItemClickListener(new OnItemClickListener() {
+                                               @Override
+                                               public void OnItemClick(View view, int position) {
+                                                   //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
+                                                   if (adapter.getDataList() != null) {
+                                                       selectMpiWcBean = adapter.getDataList().get(position);
+                                                       Intent intent = new Intent();
+                                                       intent.putExtra("mw", selectMpiWcBean);
+                                                       setResult(1, intent);
+                                                       finish();
+                                                   }
+                                               }
+                                           }
+            );
+        });
+
+        searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    String input = searchEditText.getText().toString();
+                    if (TextUtils.isEmpty(input)) {
+                        ToastUtil.showToastShort("请输入搜索内容");
+                    } else {
+                        doSearchAction(input);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     protected void actionExistedPlans() {
@@ -130,6 +230,80 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
         showMpiList(true);
     }
 
+    private void doSearchAction(String keyWord) {
+        if (originalBUDataList == null) {
+            return;
+        }
+        if (!keyWord.isEmpty()) {
+//            adapter.setData(getFilterList(keyWord));
+            adapter = new Mpi_WcAdapter(SelectMPIWCStepThreeActivity.this, getFilterList(keyWord));
+//            adapter.showdeletebutton = showdeletebutton;
+            selectMWRecyclerView.setLayoutManager(new LinearLayoutManager(SelectMPIWCStepThreeActivity.this));
+            selectMWRecyclerView.setAdapter(adapter);
+//            adapter.getDataList()
+            adapter.setOnItemClickListener(new OnItemClickListener() {
+                                               @Override
+                                               public void OnItemClick(View view, int position) {
+                                                   //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
+                                                   if (adapter.getDataList() != null) {
+                                                       selectMpiWcBean = adapter.getDataList().get(position);
+                                                       Intent intent = new Intent();
+                                                       intent.putExtra("mw", selectMpiWcBean);
+                                                       setResult(1, intent);
+                                                       finish();
+                                                   }
+                                               }
+                                           }
+            );
+        } else {
+            //todo
+//            adapter.setData(originalBUDataList);
+            adapter = new Mpi_WcAdapter(SelectMPIWCStepThreeActivity.this, originalBUDataList);
+//            adapter.showdeletebutton = showdeletebutton;
+            selectMWRecyclerView.setLayoutManager(new LinearLayoutManager(SelectMPIWCStepThreeActivity.this));
+            selectMWRecyclerView.setAdapter(adapter);
+
+            adapter.setOnItemClickListener(new OnItemClickListener() {
+                                               @Override
+                                               public void OnItemClick(View view, int position) {
+                                                   //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
+                                                   if (adapter.getDataList() != null) {
+                                                       selectMpiWcBean = adapter.getDataList().get(position);
+                                                       Intent intent = new Intent();
+                                                       intent.putExtra("mw", selectMpiWcBean);
+                                                       setResult(1, intent);
+                                                       finish();
+                                                   }
+                                               }
+                                           }
+            );
+        }
+    }
+
+    protected List<MpiWcBean> getFilterList(String keyWord) {
+        if (originalBUDataList != null) {
+            if (originalBUDataList != null && originalBUDataList.size() > 0) {
+                Object bean = originalBUDataList.get(0);
+
+                if (bean instanceof MpiWcBean) {
+                    List tempList = new ArrayList<MpiWcBean>();
+                    for (int i = 0; i < originalBUDataList.size(); i++) {
+                        MpiWcBean buItemBean = originalBUDataList.get(i);
+//                        if (buItemBean.getProduct_Chinese_Name().contains(keyWord) || buItemBean.getProduct_PartNo().contains(keyWord)||
+//                                buItemBean.getItem_Name().contains(keyWord)|| String.valueOf(buItemBean.getItem_ID()).contains(keyWord)) {
+//                            tempList.add(buItemBean);
+//                        }
+                        if (buItemBean.getMwName().contains(keyWord)) {
+                            tempList.add(buItemBean);
+                        }
+                    }
+                    return tempList;
+                }
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -141,13 +315,6 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void setHomeButton() {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
 
     protected void showPlan() {
         String dateString;
@@ -223,6 +390,7 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
             adapter.showdeletebutton = showdeletebutton;
             selectMWRecyclerView.setLayoutManager(new LinearLayoutManager(SelectMPIWCStepThreeActivity.this));
             selectMWRecyclerView.setAdapter(adapter);
+            originalBUDataList = StaticVariableUtils.selectMpiWcBeanList;
             adapter.setOnItemClickListener((view, position) -> {
                 //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
                 if (StaticVariableUtils.selectMpiWcBeanList != null) {
@@ -239,15 +407,16 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
             adapter.showdeletebutton = showdeletebutton;
             selectMWRecyclerView.setLayoutManager(new LinearLayoutManager(SelectMPIWCStepThreeActivity.this));
             selectMWRecyclerView.setAdapter(adapter);
+            originalBUDataList = mpiWcBeanList;
             adapter.setOnItemClickListener(new OnItemClickListener() {
                                                @Override
                                                public void OnItemClick(View view, int position) {
                                                    //Toast.makeText(SelectMPIWCStepTwoActivity.this,position+"",Toast.LENGTH_LONG).show();
                                                    if (mpiWcBeanList != null) {
                                                        selectMpiWcBean = mpiWcBeanList.get(position);
-                                                       Intent result = new Intent();
-                                                       result.putExtra("mw", selectMpiWcBean);
-                                                       setResult(1, result);
+                                                       Intent intent = new Intent();
+                                                       intent.putExtra("mw", selectMpiWcBean);
+                                                       setResult(1, intent);
                                                        finish();
                                                    }
                                                }

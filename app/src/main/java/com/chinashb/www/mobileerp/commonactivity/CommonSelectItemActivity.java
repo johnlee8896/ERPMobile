@@ -62,8 +62,8 @@ public class CommonSelectItemActivity extends BaseActivity {
     private ImageView clearImageView;
     private EmptyLayoutManageView emptyLayoutManageView;
 
-    EditText searchEditText;
-    TextView searchTextView;
+    private EditText searchEditText;
+    private TextView searchTextView;
     //    ProgressBar pbBackground;
     private CommProgressDialog progressDialog;
     private String SQL;

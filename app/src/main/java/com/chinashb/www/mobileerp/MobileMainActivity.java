@@ -24,6 +24,7 @@ import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.NetWorkReceiver;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.printer.MobilePrinterActivity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.MessageManageActivity;
 import com.chinashb.www.mobileerp.task.TasksActivity;
@@ -59,6 +60,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private TextView versionTextView;
     private ImageView avatarImageView;
     private TextView testEnvironmentTextView;
+    private TextView printTextView;
 
     private NetWorkReceiver netWorkReceiver;
     private boolean isFromNamePwdCheck = false;
@@ -190,6 +192,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         nucleinTextView = findViewById(R.id.main_nuclein_button);
         versionTextView = findViewById(R.id.main_version_button);
         testEnvironmentTextView = findViewById(R.id.tv_current_test_environment);
+        printTextView = findViewById(R.id.main_print_button);
     }
 
     protected void setViewListeners() {
@@ -205,6 +208,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         attendanceTextView.setOnClickListener(this);
         nucleinTextView.setOnClickListener(this);
         versionTextView.setOnClickListener(this);
+        printTextView.setOnClickListener(this);
     }
 
     private String getSqlBu() {
@@ -440,6 +444,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             startActivity(intent);
         } else if (view == nucleinTextView) {
             Intent intent = new Intent(this, NucleinCheckActivity.class);
+            startActivity(intent);
+        }else if (view == printTextView) {
+            Intent intent = new Intent(this, MobilePrinterActivity.class);
             startActivity(intent);
         }
     }

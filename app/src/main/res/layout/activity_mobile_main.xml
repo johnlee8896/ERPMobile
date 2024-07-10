@@ -248,6 +248,17 @@
                 android:text="核酸检测登记" />
 
             <TextView
+                android:id="@+id/main_print_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="手机打印" />
+
+            <TextView
                 android:id="@+id/main_version_button"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"

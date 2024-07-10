@@ -44,6 +44,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.chinashb.www.mobileerp.funs.CommonUtil.isNothing2String;
 
@@ -520,6 +521,33 @@ public class WebServiceUtil {
         }
 
         return null;
+    }
+
+    //手机操作整托返工 托盘 非托盘
+    public static WsResult reworkWholeProductPallet(int boxID){
+        String webMethodName = "Rework_Whole_Product_Pallet";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Box_ID", boxID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfoList, "HR_ID", UserSingleton.get().getHRID());
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
+
     }
 
     //通过扫描成品箱码获取其ERP存储位置
@@ -2441,47 +2469,62 @@ public class WebServiceUtil {
     public static WsResult op_Product_Manu_In_Pallet(int BoxID,
                                                      long Ist_ID, long Sub_Ist_ID, String Remark) {
 
-        String webMethodName = "op_Product_Manu_In_Pallet";
+//        String webMethodName = "op_Product_Manu_In_Pallet";
+        //// TODO: 2024/7/10 重大改动，成品入库防重复 ,并新增两个字段，传入的uuid RequestID As String, LanguageID As Integer
+        String webMethodName = "op_Product_Manu_In_Pallet_Request";
 //        String webMethodName = "op_Product_Manu_In_Not_Pallet_1";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
-        PropertyInfo propertyInfo1 = new PropertyInfo();
-        propertyInfo1.setName("BoxID");
-        propertyInfo1.setValue(BoxID);
-//        propertyInfo1.setType(Long.class);
-        propertyInfo1.setType(Integer.class);
-        propertyInfos.add(propertyInfo1);
-        System.out.println("================================BoxID = " + BoxID);
+        UUID uuid = UUID.randomUUID();
+        String uuidStr = uuid.toString();
 
+        int LanguageID = 0;
 
-        PropertyInfo propertyInfo2 = new PropertyInfo();
-        propertyInfo2.setName("Ist_ID");
-        propertyInfo2.setValue(Ist_ID);
-        propertyInfo2.setType(Long.class);
-        propertyInfos.add(propertyInfo2);
-        System.out.println("================================Ist_ID = " + Ist_ID);
+        AddPropertyInfo(propertyInfos, "RequestID", uuidStr);
+        AddPropertyInfo(propertyInfos, "LanguageID", LanguageID);
+        AddPropertyInfo(propertyInfos, "BoxID", BoxID);
+        AddPropertyInfo(propertyInfos, "Ist_ID", Ist_ID);
+        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", Sub_Ist_ID);
+        AddPropertyInfo(propertyInfos, "Remark", Remark);
+        AddPropertyInfo(propertyInfos, "Recorder", UserSingleton.get().getUserInfo().getHR_ID());
 
-        PropertyInfo propertyInfo3 = new PropertyInfo();
-        propertyInfo3.setName("Sub_Ist_ID");
-        propertyInfo3.setValue(Sub_Ist_ID);
-        propertyInfo3.setType(Long.class);
-        propertyInfos.add(propertyInfo3);
-        System.out.println("================================Sub_Ist_ID = " + Sub_Ist_ID);
-
-
-        PropertyInfo propertyInfo4 = new PropertyInfo();
-        propertyInfo4.setName("Remark");
-        propertyInfo4.setValue(Remark);
-        propertyInfo4.setType(String.class);
-        propertyInfos.add(propertyInfo4);
-        System.out.println("================================Remark = " + Remark);
-
-        PropertyInfo propertyInfo5 = new PropertyInfo();
-        propertyInfo5.setName("Recorder");
-        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getHR_ID());
-        propertyInfo5.setType(Integer.class);
-        propertyInfos.add(propertyInfo5);
-        System.out.println("================================Recorder = " + UserSingleton.get().getUserInfo().getHR_ID());
+//        PropertyInfo propertyInfo1 = new PropertyInfo();
+//        propertyInfo1.setName("BoxID");
+//        propertyInfo1.setValue(BoxID);
+////        propertyInfo1.setType(Long.class);
+//        propertyInfo1.setType(Integer.class);
+//        propertyInfos.add(propertyInfo1);
+//        System.out.println("================================BoxID = " + BoxID);
+//
+//
+//        PropertyInfo propertyInfo2 = new PropertyInfo();
+//        propertyInfo2.setName("Ist_ID");
+//        propertyInfo2.setValue(Ist_ID);
+//        propertyInfo2.setType(Long.class);
+//        propertyInfos.add(propertyInfo2);
+//        System.out.println("================================Ist_ID = " + Ist_ID);
+//
+//        PropertyInfo propertyInfo3 = new PropertyInfo();
+//        propertyInfo3.setName("Sub_Ist_ID");
+//        propertyInfo3.setValue(Sub_Ist_ID);
+//        propertyInfo3.setType(Long.class);
+//        propertyInfos.add(propertyInfo3);
+//        System.out.println("================================Sub_Ist_ID = " + Sub_Ist_ID);
+//
+//
+//        PropertyInfo propertyInfo4 = new PropertyInfo();
+//        propertyInfo4.setName("Remark");
+//        propertyInfo4.setValue(Remark);
+//        propertyInfo4.setType(String.class);
+//        propertyInfos.add(propertyInfo4);
+//        System.out.println("================================Remark = " + Remark);
+//
+//        PropertyInfo propertyInfo5 = new PropertyInfo();
+//        propertyInfo5.setName("Recorder");
+//        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getHR_ID());
+//        propertyInfo5.setType(Integer.class);
+//        propertyInfos.add(propertyInfo5);
+//        System.out.println("================================Recorder = " + UserSingleton.get().getUserInfo().getHR_ID());
 
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
@@ -2651,60 +2694,75 @@ public class WebServiceUtil {
      */
     public static WsResult op_Product_Manu_In_Pallet_Neglect_Month(int BoxID,
                                                                    long Ist_ID, long Sub_Ist_ID, String Remark) {
-        String webMethodName = "op_Product_Manu_In_Pallet";
-//        String webMethodName = "op_Product_Manu_In_Pallet_Direct";
-//        String webMethodName = "op_Product_Manu_In_Not_Pallet_1";
+        //// TODO: 2024/7/10 成品入库防错
+//        String webMethodName = "op_Product_Manu_In_Pallet";
+        String webMethodName = "op_Product_Manu_In_Pallet_Request";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
-        PropertyInfo propertyInfo1 = new PropertyInfo();
-        propertyInfo1.setName("BoxID");
-        propertyInfo1.setValue(BoxID);
-//        propertyInfo1.setType(Long.class);
-        propertyInfo1.setType(Integer.class);
-        propertyInfos.add(propertyInfo1);
-        System.out.println("================================BoxID = " + BoxID);
+        UUID uuid = UUID.randomUUID();
+        String uuidStr = uuid.toString();
 
+        int LanguageID = 0;
 
-        PropertyInfo propertyInfo2 = new PropertyInfo();
-        propertyInfo2.setName("Ist_ID");
-        propertyInfo2.setValue(Ist_ID);
-        propertyInfo2.setType(Long.class);
-        propertyInfos.add(propertyInfo2);
-        System.out.println("================================Ist_ID = " + Ist_ID);
+        AddPropertyInfo(propertyInfos, "RequestID", uuidStr);
+        AddPropertyInfo(propertyInfos, "LanguageID", LanguageID);
+        AddPropertyInfo(propertyInfos, "BoxID", BoxID);
+        AddPropertyInfo(propertyInfos, "Ist_ID", Ist_ID);
+        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", Sub_Ist_ID);
+        AddPropertyInfo(propertyInfos, "Remark", Remark);
+        AddPropertyInfo(propertyInfos, "Recorder", UserSingleton.get().getUserInfo().getHR_ID());
+        AddPropertyInfo(propertyInfos, "DirectIn", true);
+        AddPropertyInfo(propertyInfos, "Month", "");
 
-        PropertyInfo propertyInfo3 = new PropertyInfo();
-        propertyInfo3.setName("Sub_Ist_ID");
-        propertyInfo3.setValue(Sub_Ist_ID);
-        propertyInfo3.setType(Long.class);
-        propertyInfos.add(propertyInfo3);
-        System.out.println("================================Sub_Ist_ID = " + Sub_Ist_ID);
-
-
-        PropertyInfo propertyInfo4 = new PropertyInfo();
-        propertyInfo4.setName("Remark");
-        propertyInfo4.setValue(Remark);
-        propertyInfo4.setType(String.class);
-        propertyInfos.add(propertyInfo4);
-        System.out.println("================================Remark = " + Remark);
-
-        PropertyInfo propertyInfo5 = new PropertyInfo();
-        propertyInfo5.setName("Recorder");
-        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getHR_ID());
-        propertyInfo5.setType(Integer.class);
-        propertyInfos.add(propertyInfo5);
-        System.out.println("================================Recorder = " + UserSingleton.get().getUserInfo().getHR_ID());
-
-        PropertyInfo propertyInfo6 = new PropertyInfo();
-        propertyInfo6.setName("DirectIn");
-        propertyInfo6.setValue(true);
-        propertyInfo6.setType(Boolean.class);
-        propertyInfos.add(propertyInfo6);
-
-        PropertyInfo propertyInfo7 = new PropertyInfo();
-        propertyInfo7.setName("Month");
-        propertyInfo7.setValue("");
-        propertyInfo7.setType(String.class);
-        propertyInfos.add(propertyInfo7);
+//        PropertyInfo propertyInfo1 = new PropertyInfo();
+//        propertyInfo1.setName("BoxID");
+//        propertyInfo1.setValue(BoxID);
+////        propertyInfo1.setType(Long.class);
+//        propertyInfo1.setType(Integer.class);
+//        propertyInfos.add(propertyInfo1);
+//        System.out.println("================================BoxID = " + BoxID);
+//
+//
+//        PropertyInfo propertyInfo2 = new PropertyInfo();
+//        propertyInfo2.setName("Ist_ID");
+//        propertyInfo2.setValue(Ist_ID);
+//        propertyInfo2.setType(Long.class);
+//        propertyInfos.add(propertyInfo2);
+//        System.out.println("================================Ist_ID = " + Ist_ID);
+//
+//        PropertyInfo propertyInfo3 = new PropertyInfo();
+//        propertyInfo3.setName("Sub_Ist_ID");
+//        propertyInfo3.setValue(Sub_Ist_ID);
+//        propertyInfo3.setType(Long.class);
+//        propertyInfos.add(propertyInfo3);
+//        System.out.println("================================Sub_Ist_ID = " + Sub_Ist_ID);
+//
+//
+//        PropertyInfo propertyInfo4 = new PropertyInfo();
+//        propertyInfo4.setName("Remark");
+//        propertyInfo4.setValue(Remark);
+//        propertyInfo4.setType(String.class);
+//        propertyInfos.add(propertyInfo4);
+//        System.out.println("================================Remark = " + Remark);
+//
+//        PropertyInfo propertyInfo5 = new PropertyInfo();
+//        propertyInfo5.setName("Recorder");
+//        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getHR_ID());
+//        propertyInfo5.setType(Integer.class);
+//        propertyInfos.add(propertyInfo5);
+//        System.out.println("================================Recorder = " + UserSingleton.get().getUserInfo().getHR_ID());
+//
+//        PropertyInfo propertyInfo6 = new PropertyInfo();
+//        propertyInfo6.setName("DirectIn");
+//        propertyInfo6.setValue(true);
+//        propertyInfo6.setType(Boolean.class);
+//        propertyInfos.add(propertyInfo6);
+//
+//        PropertyInfo propertyInfo7 = new PropertyInfo();
+//        propertyInfo7.setName("Month");
+//        propertyInfo7.setValue("");
+//        propertyInfo7.setType(String.class);
+//        propertyInfos.add(propertyInfo7);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         if (envelope != null) {
@@ -2727,60 +2785,75 @@ public class WebServiceUtil {
     public static WsResult op_Product_Manu_In_Pallet_Modify_Month(int BoxID,
                                                                   long Ist_ID, long Sub_Ist_ID, String Remark, String month) {
 
-        String webMethodName = "op_Product_Manu_In_Pallet";
-//        String webMethodName = "op_Product_Manu_In_Pallet_Modify_Month";
-//        String webMethodName = "op_Product_Manu_In_Not_Pallet_1";
+        //// TODO: 2024/7/10 成品入库重复
+//        String webMethodName = "op_Product_Manu_In_Pallet";
+        String webMethodName = "op_Product_Manu_In_Pallet_Request";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
-        PropertyInfo propertyInfo1 = new PropertyInfo();
-        propertyInfo1.setName("BoxID");
-        propertyInfo1.setValue(BoxID);
-//        propertyInfo1.setType(Long.class);
-        propertyInfo1.setType(Integer.class);
-        propertyInfos.add(propertyInfo1);
-        System.out.println("================================BoxID = " + BoxID);
+        UUID uuid = UUID.randomUUID();
+        String uuidStr = uuid.toString();
 
+        int LanguageID = 0;
 
-        PropertyInfo propertyInfo2 = new PropertyInfo();
-        propertyInfo2.setName("Ist_ID");
-        propertyInfo2.setValue(Ist_ID);
-        propertyInfo2.setType(Long.class);
-        propertyInfos.add(propertyInfo2);
-        System.out.println("================================Ist_ID = " + Ist_ID);
+        AddPropertyInfo(propertyInfos, "RequestID", uuidStr);
+        AddPropertyInfo(propertyInfos, "LanguageID", LanguageID);
+        AddPropertyInfo(propertyInfos, "BoxID", BoxID);
+        AddPropertyInfo(propertyInfos, "Ist_ID", Ist_ID);
+        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", Sub_Ist_ID);
+        AddPropertyInfo(propertyInfos, "Remark", Remark);
+        AddPropertyInfo(propertyInfos, "Recorder", UserSingleton.get().getUserInfo().getHR_ID());
+        AddPropertyInfo(propertyInfos, "DirectIn", false);
+        AddPropertyInfo(propertyInfos, "Month", month);
 
-        PropertyInfo propertyInfo3 = new PropertyInfo();
-        propertyInfo3.setName("Sub_Ist_ID");
-        propertyInfo3.setValue(Sub_Ist_ID);
-        propertyInfo3.setType(Long.class);
-        propertyInfos.add(propertyInfo3);
-        System.out.println("================================Sub_Ist_ID = " + Sub_Ist_ID);
-
-
-        PropertyInfo propertyInfo4 = new PropertyInfo();
-        propertyInfo4.setName("Remark");
-        propertyInfo4.setValue(Remark);
-        propertyInfo4.setType(String.class);
-        propertyInfos.add(propertyInfo4);
-        System.out.println("================================Remark = " + Remark);
-
-        PropertyInfo propertyInfo5 = new PropertyInfo();
-        propertyInfo5.setName("Recorder");
-        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getHR_ID());
-        propertyInfo5.setType(Integer.class);
-        propertyInfos.add(propertyInfo5);
-        System.out.println("================================Recorder = " + UserSingleton.get().getUserInfo().getHR_ID());
-
-        PropertyInfo propertyInfo6 = new PropertyInfo();
-        propertyInfo6.setName("DirectIn");
-        propertyInfo6.setValue(false);
-        propertyInfo6.setType(Boolean.class);
-        propertyInfos.add(propertyInfo6);
-
-        PropertyInfo propertyInfo7 = new PropertyInfo();
-        propertyInfo7.setName("Month");
-        propertyInfo7.setValue(month);
-        propertyInfo7.setType(String.class);
-        propertyInfos.add(propertyInfo7);
+//        PropertyInfo propertyInfo1 = new PropertyInfo();
+//        propertyInfo1.setName("BoxID");
+//        propertyInfo1.setValue(BoxID);
+////        propertyInfo1.setType(Long.class);
+//        propertyInfo1.setType(Integer.class);
+//        propertyInfos.add(propertyInfo1);
+//        System.out.println("================================BoxID = " + BoxID);
+//
+//
+//        PropertyInfo propertyInfo2 = new PropertyInfo();
+//        propertyInfo2.setName("Ist_ID");
+//        propertyInfo2.setValue(Ist_ID);
+//        propertyInfo2.setType(Long.class);
+//        propertyInfos.add(propertyInfo2);
+//        System.out.println("================================Ist_ID = " + Ist_ID);
+//
+//        PropertyInfo propertyInfo3 = new PropertyInfo();
+//        propertyInfo3.setName("Sub_Ist_ID");
+//        propertyInfo3.setValue(Sub_Ist_ID);
+//        propertyInfo3.setType(Long.class);
+//        propertyInfos.add(propertyInfo3);
+//        System.out.println("================================Sub_Ist_ID = " + Sub_Ist_ID);
+//
+//
+//        PropertyInfo propertyInfo4 = new PropertyInfo();
+//        propertyInfo4.setName("Remark");
+//        propertyInfo4.setValue(Remark);
+//        propertyInfo4.setType(String.class);
+//        propertyInfos.add(propertyInfo4);
+//        System.out.println("================================Remark = " + Remark);
+//
+//        PropertyInfo propertyInfo5 = new PropertyInfo();
+//        propertyInfo5.setName("Recorder");
+//        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getHR_ID());
+//        propertyInfo5.setType(Integer.class);
+//        propertyInfos.add(propertyInfo5);
+//        System.out.println("================================Recorder = " + UserSingleton.get().getUserInfo().getHR_ID());
+//
+//        PropertyInfo propertyInfo6 = new PropertyInfo();
+//        propertyInfo6.setName("DirectIn");
+//        propertyInfo6.setValue(false);
+//        propertyInfo6.setType(Boolean.class);
+//        propertyInfos.add(propertyInfo6);
+//
+//        PropertyInfo propertyInfo7 = new PropertyInfo();
+//        propertyInfo7.setName("Month");
+//        propertyInfo7.setValue(month);
+//        propertyInfo7.setType(String.class);
+//        propertyInfos.add(propertyInfo7);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         if (envelope != null) {

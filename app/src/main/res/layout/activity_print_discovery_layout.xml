@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/discoveryTextTips"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="left"
+        android:visibility="gone"
+        android:text="@string/paired_printer_list"
+        android:textColor="#000000"
+        android:textSize="16.0sp"
+        tools:ignore="RtlHardcoded" />
+
+    <ListView
+        android:id="@+id/listPrinterDevices"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:layout_weight="1"
+        android:stackFromBottom="false" />
+
+    <Button
+        android:id="@+id/btnBluetoothDiscovery"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:textSize="20sp"
+        android:text="@string/discovery_printer" />
+
+</LinearLayout>

@@ -60,8 +60,17 @@ public class DeliveryOrderAdapter extends BaseRecycleAdapter<DeliveryOrderBean, 
                 if (bean != null) {
                     trackNOTextView.setText(bean.getTrackNo());
                     isTimeAccurateTextView.setText(bean.isSpecificTime() ? "是" : "否");
-                    deliveryTimeTextView.setText(UnitFormatUtil.getFormatDateStringRemoveTYMD(bean.getDeliveryDate()));
-                    arriveTimeTextView.setText(UnitFormatUtil.getFormatDateStringRemoveTYMD(bean.getArriveDate()));
+//                    deliveryTimeTextView.setText(UnitFormatUtil.getFormatDateStringRemoveTYMD(bean.getDeliveryDate()));
+//                    deliveryTimeTextView.setText(UnitFormatUtil.getFormatDateStringRemoveTYMD(bean.getDeliveryDate().substring(6,bean.getDeliveryDate().indexOf("+0800"))));
+                    String tempDateString = UnitFormatUtil.getFormatDateStringRemoveTYMD(bean.getDeliveryDate().substring(6,bean.getDeliveryDate().indexOf("+0800")));
+                    deliveryTimeTextView.setText(UnitFormatUtil.formatTimeToYearHour(Long.parseLong(tempDateString)));
+                    String tempString = bean.getDeliveryDate();
+//                    Date(1720540800000+0800)
+//                    int index = tempString.indexOf("+0800");
+//                    tempString.subSequence(6,index);
+//                    arriveTimeTextView.setText(UnitFormatUtil.getFormatDateStringRemoveTYMD(bean.getArriveDate().substring(6,bean.getArriveDate().indexOf("+0800"))));
+                    tempDateString = UnitFormatUtil.getFormatDateStringRemoveTYMD(bean.getArriveDate().substring(6,bean.getArriveDate().indexOf("+0800")));
+                    arriveTimeTextView.setText(UnitFormatUtil.formatTimeToYearHour(Long.parseLong(tempDateString)));
                     customerTextView.setText(bean.getCFChineseName());
                     receiveMessageTextView.setText(bean.getDesInfo());
                     remarkTextView.setText(bean.getSpecial());

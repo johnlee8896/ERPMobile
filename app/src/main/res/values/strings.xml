@@ -45,6 +45,51 @@
 
 
 
+<!--    打印机相关-->
+    <string name="discovery_printer">查找打印机</string>
+    <string name="paired_printer_list">最近使用打印机列表</string>
+    <string name="print_text">打印文本</string>
+    <string name="print_1D_barcode">打印一维码</string>
+    <string name="print_2D_barcode">打印二维码</string>
+    <string name="print_image">打印图片</string>
+    <string name="print_express">打印快递单</string>
+    <string name="print_receipt">打印小票</string>
+    <string name="zebra_log_image" translatable="false">Zebra logo image</string>
+    <string name="please_connect_printer">请连接打印机</string>
+    <string name="connect">连接</string>
+    <string name="disconnect">断开</string>
+    <string name="printer_language">打印机语言 ：</string>
+    <string name="cpcl_language" translatable="false">CPCL</string>
+    <string name="escpos_language" translatable="false">ESCPOS</string>
+    <string name="printer_status">获取打印机状态</string>
+    <string name="print_configuration">打印配置页</string>
+    <string name="bluetooth_not_support">当前设备不支持蓝牙</string>
+    <string name="scanning">正在扫描，请稍后</string>
+    <string name="select_printer">选择蓝牙打印机</string>
+    <string name="not_find_printer">没有找到蓝牙打印机</string>
+    <string name="discovery_printer_list">查找打印机列表</string>
+    <string name="language_switched_error">打印机正忙, 不能切换</string>
+    <string name="language_switched_to_cpcl">切换打印机语言为CPCL</string>
+    <string name="not_support_cpcl">当前打印机不支持CPCL</string>
+    <string name="language_switched_to_escpos">切换打印机语言为ESCPOS</string>
+    <string name="not_support_escpos">当前打印机不支持ESCPOS</string>
+    <string name="connect_error">连接异常断开，请查找原因</string>
+    <string name="connecting">正在连接，请稍后</string>
+    <string name="connect_success">已连接</string>
+    <string name="connect_failed">连接失败</string>
+    <string name="not_support_printer">不支持当前打印机</string>
+    <string name="disconnecting">正在断开连接，请稍后</string>
+    <string name="printer_error_not_print">打印机异常, 不能打印</string>
+    <string name="printer_ready">就绪</string>
+    <string name="printer_busy">正忙</string>
+    <string name="printer_cover_open">盖打开</string>
+    <string name="printer_media_out">纸用完</string>
+    <string name="printing">正在打印, 请稍后</string>
+    <string name="bluetooth_printer_list">蓝牙打印机列表</string>
+
+
+
+
     <!--日历控件-->
     <string-array name="lunar_first_of_month">
         <item>春节</item>
