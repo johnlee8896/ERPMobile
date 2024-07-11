@@ -13,7 +13,11 @@ public class MyClass {
 //        System.out.print("lotNo = " + lotNo);
 //        System.out.print("qty = " + qty);
         String content = "/HRID/21618/HRNO/201710211";
-        getParsedScannedString(content);
+        String dateContent = "/Date(1720540800000+0800)/";
+//        Date(1720540800000+0800)
+        int index = dateContent.indexOf("+0800");
+        System.out.println(dateContent.substring(5,index));
+//        getParsedScannedString(content);
     }
 
     private static String getParsedString(String code,String part,String nextPart){

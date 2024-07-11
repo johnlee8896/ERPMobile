@@ -552,46 +552,55 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         @Override
         protected Void doInBackground(String... params) {
             IstPlaceEntity istPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanContent);
-            if (istPlaceEntity.getResult()) {
-                thePlace = istPlaceEntity;
-                if (istPlaceEntity.getResult()) {
+            thePlace = istPlaceEntity;
 
-                    if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
-                        boxItemEntityList.get(0).setIstName(istPlaceEntity.getIstName());
-                        boxItemEntityList.get(0).setIst_ID(istPlaceEntity.getIst_ID());
-                        boxItemEntityList.get(0).setSub_Ist_ID(istPlaceEntity.getSub_Ist_ID());
-                    }
-                }
-            } else {
-//                Toast.makeText(StockInActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
-                ToastUtil.showToastLong(istPlaceEntity.getErrorInfo());
-            }
             return null;
         }
 
         @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
         protected void onPostExecute(Void result) {
+
+
+
+            if (thePlace != null ) {
+                if (thePlace.getResult()){
+                    if (boxItemEntityList != null && boxItemEntityList.size() > 0) {
+                        boxItemEntityList.get(0).setIstName(thePlace.getIstName());
+                        boxItemEntityList.get(0).setIst_ID(thePlace.getIst_ID());
+                        boxItemEntityList.get(0).setSub_Ist_ID(thePlace.getSub_Ist_ID());
+                    }
+
+                    hasScanIst = true;
+                    System.out.println("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + "id" + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
+                    istInfoTextView.setText("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + "id" + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
+//            ToastUtil.showToastShort("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
+                    //todo 直接执行入库登帐
+                    handleIntoWareHouse();
+                }else{
+                    ToastUtil.showToastLong(thePlace.getErrorInfo());
+                }
+
+            } else {
+                ToastUtil.showToastShort("地址码获取错误，请重新扫描！");
+            }
             //tv.setText(fahren + "∞ F");
 
-            recyclerView.setAdapter(adapter);
-            //pbScan.setVisibility(View.INVISIBLE);
-            inputEditText.setText("");
-            hasScanIst = true;
-            System.out.println("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + "id" + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
-            istInfoTextView.setText("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + "id" + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
-//            ToastUtil.showToastShort("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
-            //todo 直接执行入库登帐
-            handleIntoWareHouse();
+//            recyclerView.setAdapter(adapter);
+//            //pbScan.setVisibility(View.INVISIBLE);
+//            inputEditText.setText("");
+//            //2024-07-11 john 有报 thePlace.getBuName() 空指针，故加一判断
+//            if (thePlace != null){
+//                hasScanIst = true;
+//                System.out.println("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + "id" + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
+//                istInfoTextView.setText("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + "id" + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
+////            ToastUtil.showToastShort("区域信息 大：" + thePlace.getBuName() + " " + thePlace.getIstName() + " " + thePlace.getIst_ID() + ":" + thePlace.getSub_Ist_ID());
+//                //todo 直接执行入库登帐
+//                handleIntoWareHouse();
+//            }else{
+//                ToastUtil.showToastShort("地址码获取错误，请重新扫描！");
+//            }
 
-        }
 
-        @Override
-        protected void onProgressUpdate(Void... values) {
         }
 
     }

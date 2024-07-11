@@ -282,32 +282,32 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
         protected Void doInBackground(String... params) {
             placeEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
             thePlace = placeEntity;
-            if (placeEntity.getResult()) {
-            } else {
-                Toast.makeText(MoveProductPalletActivity.this, placeEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
-            }
+            //这里toast会闪退，因thread
+//            if (placeEntity.getResult()) {
+//            } else {
+//                Toast.makeText(MoveProductPalletActivity.this, placeEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+//            }
             return null;
         }
 
-        @Override
-        protected void onPreExecute() {
-        }
 
         @Override
         protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");
-//            boxitemAdapter = new AdapterMoveBoxItem(MoveProductPalletActivity.this, boxitemList);
-//            mRecyclerView.setAdapter(boxitemAdapter);
 
-            handleMoveStockArea();
-            //// TODO: 2024/5/8 这里不能直接清除数据，如果有错误，则boxidlist.clear，再看错误就index为0报错，因为异步
-//            finishHandleMove();
-//            boxitemList.clear();
+            if (thePlace != null && thePlace.getResult()) {
+                handleMoveStockArea();
+            } else {
+                if (thePlace != null){
+
+                    Toast.makeText(MoveProductPalletActivity.this, placeEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(MoveProductPalletActivity.this, "获取库位失败！", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
         }
 
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
 
     }
 
