@@ -78,7 +78,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
     private CommonSelectInputDialog commonSelectInputDialog;
     private String currentCartonNo;
     private boolean hasScanItem = false;
-    private String remark;
+    private String remark = "";
     private List<Integer> boxIDList;
     private List<Integer> errorBoxIDList;
     private List<String> errorBoxResultInfoStringList;
@@ -153,6 +153,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         ButterKnife.bind(this);
         setViewsListener();
         initView();
+
     }
 
     private void initView() {
@@ -502,6 +503,17 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         boxIDList.clear();
     }
 
+    private void handleFinishIfError(){
+        hasScanItem = false;
+        inputEditText.setText("");
+        itemInfoTextView.setText("物料信息");
+        istInfoTextView.setText("入库区域");
+        hasScanIst = false;
+        thePlace = null;
+        //2024-03-21 这个是导致扫完第一个库后再扫第二个提示重复入库的问题，因没有重置boxIDList
+        boxIDList.clear();
+    }
+
     private class GetWCProductWorkListsAsyncTask extends AsyncTask<String, Void, Void> {
 
         @Override
@@ -657,11 +669,6 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
 
 
         @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
         protected void onPostExecute(Void result) {
             //这里接收所有的返回值
             //循环中已经执行完了,这里处理所有的返回，不需要再考虑某一个复杂的异步执行问题
@@ -703,6 +710,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                                 builder.create().show();
                             } else {
                                 CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
+                                handleFinishIfError();
                             }
                         }
 
@@ -1073,6 +1081,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                         } else {
                             if (isInContinuousModeAndHasPossibleError) {
                                 errorBoxResultInfoStringList.add(ws_result.getErrorInfo());
+
                             } else {
                                 CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
                             }

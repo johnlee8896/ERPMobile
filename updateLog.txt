@@ -1,3 +1,8 @@
+2024-07-11-v2
+Version2.7.2  versionCode = 93 更新日志
+1、修复成品入库时报错，原因是remark未赋值，而用AddPropertyInfo(propertyInfos, "Remark", Remark);无法判断类型
+2、修复优化其他问题
+
 2024-07-11
 Version2.7.1  versionCode = 92 更新日志
 1、修复成品入库、移库有时库位引起的闪退问题
