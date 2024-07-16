@@ -1,3 +1,9 @@
+2024-07-15
+Version2.7.3  versionCode = 94 更新日志
+1、修复成品整托返工后没有清空输入框的问题
+2、额外领料备注处理
+3、修复优化其他问题
+
 2024-07-11-v2
 Version2.7.2  versionCode = 93 更新日志
 1、修复成品入库时报错，原因是remark未赋值，而用AddPropertyInfo(propertyInfos, "Remark", Remark);无法判断类型

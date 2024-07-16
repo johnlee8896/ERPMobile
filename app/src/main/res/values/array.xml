@@ -36,12 +36,12 @@
         <item>来料少及报废补实物</item>
         <item>来料多补账</item>
         <item>物料配用</item>
-        <item>丝杆批次异常</item>
         <item>提前生产</item>
         <item>包装材料</item>
         <item>双绕线</item>
         <item>自制件未按先进先出入库</item>
     </string-array>
+<!--        <item>丝杆批次异常</item>-->
 
     <!--物流常用方式-->
     <string-array name="select_logistics_type_array">

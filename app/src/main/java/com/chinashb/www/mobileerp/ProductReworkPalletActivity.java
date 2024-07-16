@@ -105,6 +105,8 @@ public class ProductReworkPalletActivity extends BaseActivity {
 
             }
 
+            inputEditText.setText("");
+
 
 
 
