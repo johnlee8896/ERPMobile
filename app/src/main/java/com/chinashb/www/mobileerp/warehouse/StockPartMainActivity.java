@@ -17,6 +17,7 @@ import com.chinashb.www.mobileerp.BuPlanGoodsActivity;
 import com.chinashb.www.mobileerp.GetPhotoFromServerActivity;
 import com.chinashb.www.mobileerp.PartWorkLinePutActivity;
 import com.chinashb.www.mobileerp.PhotoCameraActivity;
+import com.chinashb.www.mobileerp.PickGoodsNewShowActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.SendGoodsManagerActivity;
 import com.chinashb.www.mobileerp.SupplierOrSelfReturnActivity;
@@ -66,6 +67,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button findMoveRecordButton;//查询移库记录
     private Button partAllocateSameCompanyButton;//同公司零件调拨
     private Button getPictureButton;//获取图片，从服务器，为打印作准备
+    private Button pickGoodsButton;//拣货任务，为供货准备
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
     private UserInfoEntity userInfo;
@@ -103,6 +105,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         findMoveRecordButton = findViewById(R.id.btn_find_move_area);
         getPictureButton = findViewById(R.id.btn_get_image_from_server);
         partAllocateSameCompanyButton = findViewById(R.id.btn_part_allocate_inner_company);
+        pickGoodsButton = findViewById(R.id.btn_pick_goods_task);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -185,6 +188,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         findMoveRecordButton.setOnClickListener(this);
         partAllocateSameCompanyButton.setOnClickListener(this);
         getPictureButton.setOnClickListener(this);
+        pickGoodsButton.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -289,13 +293,17 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             Intent intent = new Intent(StockPartMainActivity.this, ScanIstFindItemActivity.class);
             startActivity(intent);
         } else if (view == findMoveRecordButton) {
-            Intent intent = new Intent(StockPartMainActivity.this, MoveRecordActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, PartMoveRecordActivity.class);
             startActivity(intent);
         } else if (view == partAllocateSameCompanyButton) {
             Intent intent = new Intent(StockPartMainActivity.this, PartAllocateTransferInnerCompanyActivity.class);
             startActivity(intent);
         } else if (view == getPictureButton){
             Intent intent = new Intent(StockPartMainActivity.this, GetPhotoFromServerActivity.class);
+            startActivity(intent);
+        }else if (view == pickGoodsButton){
+//            Intent intent = new Intent(StockPartMainActivity.this, PickGoodsActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, PickGoodsNewShowActivity.class);
             startActivity(intent);
         }
     }

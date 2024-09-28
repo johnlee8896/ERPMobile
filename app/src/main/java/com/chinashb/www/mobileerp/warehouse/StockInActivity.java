@@ -408,6 +408,51 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
     }
 
+    private class GetIsAlarmItemAsyncTask extends AsyncTask<String, Void, Void> {
+        WsResult result;
+
+        @Override
+        protected Void doInBackground(String... ids) {
+            if (ids.length > 0){
+                int itemID = Integer.parseInt(ids[0]);
+                result = WebServiceUtil.getIsAlarmItem(UserSingleton.get().getUserInfo().getBu_ID(),itemID);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if (result != null) {
+                if (result.getResult()) {
+                    String  info = result.getErrorInfo();
+                    if (info.contains("紧急物料")) {
+                        CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockInActivity.this)
+                                .setTitle("").setMessage("此物料为紧急物料！")
+                                .setLeftText("确定");
+
+
+                        builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                            @Override
+                            public void onViewClick(Dialog dialog, View v, int tag) {
+                                switch (tag) {
+                                    case CommAlertDialog.TAG_CLICK_LEFT:
+                                        dialog.dismiss();
+                                        break;
+                                }
+                            }
+                        });
+                        builder.create().show();
+                    } else {
+
+                    }
+
+                }
+            }
+
+        }
+    }
+
     private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity scanBoxItemEntity;
 
@@ -510,6 +555,10 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 //                inputDialog.dismiss();
 //            }
             //pbScan.setVisibility(View.INVISIBLE);
+
+            //2024-08-06 john判断物料是否是紧急物料
+            GetIsAlarmItemAsyncTask task = new GetIsAlarmItemAsyncTask();
+            task.execute(scanBoxItemEntity.getItem_ID() + "");
         }
 
         @Override

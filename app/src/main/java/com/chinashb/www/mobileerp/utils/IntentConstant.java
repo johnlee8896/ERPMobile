@@ -17,6 +17,8 @@ public class IntentConstant {
     public static final String Intent_Extra_from_name_pwd= "Extra_from_name_pwd";
     public static final String Intent_Extra_to_select_search_from_postition = "Extra_to_select_search_from_postition";
     public static final String Intent_Extra_to_select_book_shelf = "Intent_Extra_to_select_book_shelf";
+    public static final String Intent_Extra_to_pick_goods_bean= "Intent_Extra_to_pick_goods_bean";
+    public static final String Intent_Extra_to_pick_goods_bean_back= "Intent_Extra_to_pick_goods_bean_back";
 //    public static final String Intent_Extra_to_select_search_from_send_goods = "Extra_to_select_search_from_send_goods";
 
 
@@ -68,6 +70,7 @@ public class IntentConstant {
     public static String Intent_Extra_storage_area_bean = "Extra_storage_area_bean";
 
     public static final String Intent_Extra_logistics_from = "Extra_logistics_from";
+    public static final String Intent_Extra_Send_Goods_Move_from = "Extra_Send_Goods_Move_from";
     public static final String Intent_Extra_send_goods_box_item_bean = "send_goods_box_item_bean ";
 
 
@@ -102,6 +105,7 @@ public class IntentConstant {
     public static final int Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity_But_Same_Issue = 0X210;
     public static final int Intent_Request_Code_Inv_Query_Item_To_InputActivity = 0X211;
     public static final int Intent_Request_Code_Goods_Send_To_Goods_Order_Activity = 0X212;
+    public static final int Intent_Request_Code_Pick_Goods_To_Stock_Move_Activity = 0X213;
 
 
 }

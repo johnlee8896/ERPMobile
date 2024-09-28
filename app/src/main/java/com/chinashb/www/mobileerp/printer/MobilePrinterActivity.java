@@ -22,6 +22,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -54,7 +55,7 @@ public class MobilePrinterActivity extends BaseActivity {
     private final String textStrGB18030 = "中华人民共和国123abAB GB18030";
 
 //    private final int pageWidth = 576;
-    private final int pageWidth = 600;
+    private final int pageWidth = 1600;
 
     private static boolean bOpen = false;
     private static boolean bLanguageCPCL = false;
@@ -76,10 +77,14 @@ public class MobilePrinterActivity extends BaseActivity {
     private Button btnPrint1DBarcode = null;
     private Button btnPrint2DBarcode = null;
     private Button btnPrintImage = null;
+    private Button btnPrintImageZoom = null;
     private Button btnPrintLabel = null;
     private Button btnPrintReceipt = null;
+    private ImageView logoImageView;
+
 
     private ProgressDialog progressDialog = null;
+    private boolean isCurrentPictureZoom = false;
 
     /**
      * 权限请求码
@@ -316,15 +321,17 @@ public class MobilePrinterActivity extends BaseActivity {
         btnPrint1DBarcode   = findViewById(R.id.btnPrint1DBarcode);
         btnPrint2DBarcode   = findViewById(R.id.btnPrint2DBarcode);
         btnPrintImage       = findViewById(R.id.btnPrintImage);
+        btnPrintImageZoom = findViewById(R.id.btnPrintImage_zoom);
         btnPrintLabel       = findViewById(R.id.btnPrintLabel);
         btnPrintReceipt     = findViewById(R.id.btnPrintReceipt);
+        logoImageView = findViewById(R.id.logo_iamgeView);
 
         btnPrintText.setVisibility(View.INVISIBLE);
         btnPrint1DBarcode.setVisibility(View.INVISIBLE);
         btnPrint2DBarcode.setVisibility(View.INVISIBLE);
         btnPrintImage.setVisibility(View.INVISIBLE);
         btnPrintLabel.setVisibility(View.INVISIBLE);
-        btnPrintReceipt.setVisibility(View.GONE);
+        btnPrintReceipt.setVisibility(View.VISIBLE);
 
         checkPermission();
         requestPermission();
@@ -407,7 +414,7 @@ public class MobilePrinterActivity extends BaseActivity {
                 btnPrint2DBarcode.setVisibility(View.INVISIBLE);
                 btnPrintImage.setVisibility(View.INVISIBLE);
                 btnPrintLabel.setVisibility(View.INVISIBLE);
-                btnPrintReceipt.setVisibility(View.GONE);
+                btnPrintReceipt.setVisibility(View.VISIBLE);
             }
         }
     };
@@ -459,7 +466,7 @@ public class MobilePrinterActivity extends BaseActivity {
                                         bLanguageCPCL = true;
                                         bLanguageESCPOS = false;
                                         btnPrintLabel.setVisibility(View.VISIBLE);
-                                        btnPrintReceipt.setVisibility(View.GONE);
+                                        btnPrintReceipt.setVisibility(View.VISIBLE);
                                         languageRadioGroup.check(R.id.btnCPCL);
                                     } else if (strPrinterLanguages.toString().equals("esc_pos")) {
                                         bLanguageCPCL = false;
@@ -536,7 +543,7 @@ public class MobilePrinterActivity extends BaseActivity {
                                 btnPrint2DBarcode.setVisibility(View.INVISIBLE);
                                 btnPrintImage.setVisibility(View.INVISIBLE);
                                 btnPrintLabel.setVisibility(View.INVISIBLE);
-                                btnPrintReceipt.setVisibility(View.GONE);
+                                btnPrintReceipt.setVisibility(View.VISIBLE);
                             }
                         });
 
@@ -830,7 +837,7 @@ public class MobilePrinterActivity extends BaseActivity {
                                 });
 
                                 ZebraPrinter.CPCL_PrinterInit();
-                                ZebraPrinter.CPCL_SetDensity(50);
+                                ZebraPrinter.CPCL_SetDensity(150);
                                 ZebraPrinter.CPCL_SetFont4LineMode("7", 0, 20);
                                 ZebraPrinter.CPCL_SetPageWidth(pageWidth);
                                 ZebraPrinter.CPCL_PrintText4LineMode("--------------------------------\r\n");
@@ -1986,9 +1993,18 @@ public class MobilePrinterActivity extends BaseActivity {
                         break;
 
                     case R.id.btnPrintImage:
-
+                        isCurrentPictureZoom = false;
                         DownloadImageFromServerAsyncTask task = new DownloadImageFromServerAsyncTask();
                         task.execute();
+
+//                        handlePrintPicture();
+                        break;
+
+                    case R.id.btnPrintImage_zoom:
+                        isCurrentPictureZoom = true;
+
+                        DownloadImageFromServerAsyncTask task1 = new DownloadImageFromServerAsyncTask();
+                        task1.execute();
 
 //                        handlePrintPicture();
                         break;
@@ -2023,7 +2039,8 @@ public class MobilePrinterActivity extends BaseActivity {
                 });
 
                 ZebraPrinter.CPCL_PrinterInit();
-                ZebraPrinter.CPCL_SetDensity(0);
+                ZebraPrinter.CPCL_SetDensity(75);
+//                ZebraPrinter.CPCL_SetDensity(150);
                 ZebraPrinter.CPCL_SetFont4LineMode("7", 0, 20);
                 ZebraPrinter.CPCL_SetPageWidth(pageWidth);
 //                ZebraPrinter.CPCL_PrintText4LineMode("--------------------------------\r\n");
@@ -2033,18 +2050,161 @@ public class MobilePrinterActivity extends BaseActivity {
 
                 {
 //                    ZebraPrinter.CPCL_CreateLabel(0, 600, 1);
-                    ZebraPrinter.CPCL_CreateLabel(0, 400, 1);
+                    ZebraPrinter.CPCL_CreateLabel(0, 1000, 1);
                     ZebraPrinter.CPCL_SetPageWidth(pageWidth);
 //                    ZebraPrinter.CPCL_PrintBox(0, 0, pageWidth, 600, 2);
 //                    ZebraPrinter.CPCL_PrintBox(0, 0, pageWidth, 400, 2);
-                    ZebraPrinter.CPCL_PrintBox(100, 100, pageWidth, 400, 2);
+                    //打印方框
+//                    ZebraPrinter.CPCL_PrintBox(100, 100, pageWidth, 400, 2);
                     ZebraPrinter.CPCL_SetAlignment(ZebraPrinter.ALIGNMENT_LEFT);
 
 //                    ZebraPrinter.CPCL_PrintText("7", 0, 10, 10, ZebraPrinter.CPCL_ROTATION0, "PNG Picture Rotation 0");
 //                    ZebraPrinter.CPCL_PrintImage(50, 70, ZebraPrinter.CPCL_ROTATION0, bitmap);
 //                    ZebraPrinter.CPCL_PrintImage(0, 0, ZebraPrinter.CPCL_ROTATION0, bitmap);
-                    ZebraPrinter.CPCL_PrintImage(100, 0, ZebraPrinter.CPCL_ROTATION0, bitmap);
+                    ZebraPrinter.CPCL_PrintImage(0, 0, ZebraPrinter.CPCL_ROTATION0, bitmap);
 
+//                    ZebraPrinter.CPCL_PrintText("7", 0, 10, 590, ZebraPrinter.CPCL_ROTATION90, "PNG Picture Rotation 90");
+//                    ZebraPrinter.CPCL_PrintImage(50, 520, ZebraPrinter.CPCL_ROTATION90, bitmap);
+//
+//                    ZebraPrinter.CPCL_PrintText("7", 0, 344, 590, ZebraPrinter.CPCL_ROTATION180, "PNG Picture Rotation 0");
+//                    ZebraPrinter.CPCL_PrintImage(210, 490, ZebraPrinter.CPCL_ROTATION0, bitmap);
+//
+//                    ZebraPrinter.CPCL_PrintText("7", 0, pageWidth - 14, 100, ZebraPrinter.CPCL_ROTATION270, "PNG Picture Rotation 90");
+//                    ZebraPrinter.CPCL_PrintImage(pageWidth - 124, 280, ZebraPrinter.CPCL_ROTATION90, bitmap);
+
+                    ZebraPrinter.CPCL_PostFeed(80);
+                    ZebraPrinter.CPCL_Print();
+                }
+
+                do {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } while (1 == ZebraPrinter.GetPrinterState());
+
+                runOnUiThread(() -> progressDialog.dismiss());
+
+            } else if (bLanguageESCPOS) {
+
+                // ESCPOS btnPrintImage
+                Log.i(TAG, "onBtnPrinterClick: bLanguageESCPOS");
+
+                runOnUiThread(() -> {
+                    progressDialog = new ProgressDialog(MobilePrinterActivity.this);
+                    progressDialog.setMessage(getString(R.string.printing));
+                    progressDialog.show();
+                });
+
+                ZebraPrinter.ESCPOS_PrinterInit();
+                ZebraPrinter.ESCPOS_SetTextFont(0);
+                ZebraPrinter.ESCPOS_SelectLineMode();
+                ZebraPrinter.ESCPOS_SetAlignment(ZebraPrinter.ALIGNMENT_CENTRE);
+                ZebraPrinter.ESCPOS_PrintLine(pageWidth, 1);
+                ZebraPrinter.ESCPOS_PrintText("ESCPOS PrintImageInLineMode\n");
+                ZebraPrinter.ESCPOS_PrintLine(pageWidth, 1);
+                ZebraPrinter.ESCPOS_SetAlignment(ZebraPrinter.ALIGNMENT_LEFT);
+
+                ZebraPrinter.ESCPOS_SetTextStyle(ZebraPrinter.TEXT_STYLE_REVERSE, 0);
+                ZebraPrinter.ESCPOS_SetTextFont(0);
+                ZebraPrinter.ESCPOS_PrintText("Image\n");
+                ZebraPrinter.ESCPOS_SetTextStyle(ZebraPrinter.TEXT_STYLE_DEFAULT, 0);
+                byte[] tabPositionList = {15, 20};
+                ZebraPrinter.ESCPOS_SetTabPosition(false, tabPositionList);
+
+                ZebraPrinter.ESCPOS_PrintText("ImageType\t:\tPNG\n");
+                ZebraPrinter.ESCPOS_PrintText("vEnlarge\t:\t1\n");
+                ZebraPrinter.ESCPOS_PrintText("hEnlarge\t:\t1\n");
+                ZebraPrinter.ESCPOS_PrintText("Alignment\t:\tleft\n");
+                ZebraPrinter.ESCPOS_SetAlignment(ZebraPrinter.ALIGNMENT_LEFT);
+                ZebraPrinter.ESCPOS_PrintImage(bitmap, 0);
+                ZebraPrinter.ESCPOS_SetAlignment(ZebraPrinter.ALIGNMENT_LEFT);
+                ZebraPrinter.ESCPOS_FeedLines(1);
+
+                ZebraPrinter.ESCPOS_PrintText("ImageType\t:\tPNG\n");
+                ZebraPrinter.ESCPOS_PrintText("vEnlarge\t:\t2\n");
+                ZebraPrinter.ESCPOS_PrintText("hEnlarge\t:\t1\n");
+                ZebraPrinter.ESCPOS_PrintText("Alignment\t:\tcentre\n");
+                ZebraPrinter.ESCPOS_SetAlignment(ZebraPrinter.ALIGNMENT_CENTRE);
+                ZebraPrinter.ESCPOS_PrintImage(bitmap, 1);
+                ZebraPrinter.ESCPOS_SetAlignment(ZebraPrinter.ALIGNMENT_LEFT);
+                ZebraPrinter.ESCPOS_FeedLines(1);
+
+                ZebraPrinter.ESCPOS_PrintText("ImageType\t:\tPNG\n");
+                ZebraPrinter.ESCPOS_PrintText("vEnlarge\t:\t2\n");
+                ZebraPrinter.ESCPOS_PrintText("hEnlarge\t:\t2\n");
+                ZebraPrinter.ESCPOS_PrintText("Alignment\t:\tright\n");
+                ZebraPrinter.ESCPOS_SetAlignment(ZebraPrinter.ALIGNMENT_RIGHT);
+                ZebraPrinter.ESCPOS_PrintImage(bitmap, 3);
+                ZebraPrinter.ESCPOS_SetAlignment(ZebraPrinter.ALIGNMENT_LEFT);
+                ZebraPrinter.ESCPOS_FeedLines(1);
+
+                do {
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } while (1 == ZebraPrinter.GetPrinterState());
+
+                runOnUiThread(() -> progressDialog.dismiss());
+
+            }
+        }
+    }
+
+    private void handlePrintPictureZoom(Bitmap bitmap) {
+        int printerState;
+        Log.i(TAG, "onBtnPrinterClick: btnPrintImage");
+
+        printerState = ZebraPrinter.GetPrinterState();
+        if (2 == printerState || 3 == printerState) {
+            runOnUiThread(() -> Toast.makeText(MobilePrinterActivity.this, R.string.printer_error_not_print, Toast.LENGTH_SHORT).show());
+            return;
+        }
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+//      Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.zebraicon, options);
+
+        if (bOpen) {
+            if (bLanguageCPCL) {
+                // CPCL btnPrintImage
+                Log.i(TAG, "onBtnPrinterClick: bLanguageCPCL");
+
+                runOnUiThread(() -> {
+                    progressDialog = new ProgressDialog(MobilePrinterActivity.this);
+                    progressDialog.setMessage(getString(R.string.printing));
+                    progressDialog.show();
+                });
+
+                ZebraPrinter.CPCL_PrinterInit();
+                ZebraPrinter.CPCL_SetDensity(75);
+
+//                ZebraPrinter.CPCL_SetDensity(150);
+//                ZebraPrinter.CPCL_SetFont4LineMode("7", 0, 20);
+                ZebraPrinter.CPCL_SetPageWidth(pageWidth);
+//                ZebraPrinter.CPCL_PrintText4LineMode("--------------------------------\r\n");
+//                ZebraPrinter.CPCL_SetRelativePosition4LineMode(0, 0);
+//                ZebraPrinter.CPCL_PrintText4LineMode("CPCL PrintImageInLabelMode D:0\r\n");
+//                ZebraPrinter.CPCL_PrintText4LineMode("--------------------------------\r\n");
+
+                {
+//                    ZebraPrinter.CPCL_CreateLabel(0, 600, 1);
+                    ZebraPrinter.CPCL_CreateLabel(0, 1000, 1);
+                    ZebraPrinter.CPCL_SetPageWidth(pageWidth);
+//                    ZebraPrinter.CPCL_PrintBox(0, 0, pageWidth, 600, 2);
+//                    ZebraPrinter.CPCL_PrintBox(0, 0, pageWidth, 400, 2);
+                    //打印方框
+//                    ZebraPrinter.CPCL_PrintBox(100, 100, pageWidth, 400, 2);
+                    ZebraPrinter.CPCL_SetAlignment(ZebraPrinter.ALIGNMENT_LEFT);
+
+//                    ZebraPrinter.CPCL_PrintText("7", 0, 10, 10, ZebraPrinter.CPCL_ROTATION0, "PNG Picture Rotation 0");
+//                    ZebraPrinter.CPCL_PrintImage(50, 70, ZebraPrinter.CPCL_ROTATION0, bitmap);
+//                    ZebraPrinter.CPCL_PrintImage(0, 0, ZebraPrinter.CPCL_ROTATION0, bitmap);
+                    ZebraPrinter.CPCL_PrintImage(0, 0, ZebraPrinter.CPCL_ROTATION0, bitmap);
+                    ZebraPrinter.ESCPOS_PrintImage(bitmap,3);
 //                    ZebraPrinter.CPCL_PrintText("7", 0, 10, 590, ZebraPrinter.CPCL_ROTATION90, "PNG Picture Rotation 90");
 //                    ZebraPrinter.CPCL_PrintImage(50, 520, ZebraPrinter.CPCL_ROTATION90, bitmap);
 //
@@ -2173,7 +2333,13 @@ public class MobilePrinterActivity extends BaseActivity {
         byte[] imageBytes = Base64.decode(imageString, Base64.DEFAULT);
         Bitmap decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
 //        imageView.setImageBitmap(decodedImage);
+        logoImageView.setImageBitmap(decodedImage);
 
-        handlePrintPicture(decodedImage);
+
+        if (isCurrentPictureZoom){
+            handlePrintPictureZoom(decodedImage);
+        }else{
+            handlePrintPicture(decodedImage);
+        }
     }
 }

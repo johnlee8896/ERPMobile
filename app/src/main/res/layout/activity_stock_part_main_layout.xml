@@ -631,21 +631,22 @@
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
 
-<!--                    <ImageView-->
+                    <ImageView
 
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_gravity="center_vertical"-->
-<!--                        app:srcCompat="@mipmap/xenogenesis_2" />-->
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
 
-<!--                    <Button-->
-<!--                        android:layout_width="100dp"-->
-<!--                        android:layout_height="60dp"-->
-<!--                        android:layout_gravity="left"-->
-<!--                        android:background="@drawable/squarebutton"-->
-<!--                        android:text=""-->
-<!--                        android:textColor="#ffffff"-->
-<!--                        android:textSize="15sp" />-->
+                    <Button
+                        android:id="@+id/btn_pick_goods_task"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="拣货任务"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
                 </TableRow>
 
                 <TableRow

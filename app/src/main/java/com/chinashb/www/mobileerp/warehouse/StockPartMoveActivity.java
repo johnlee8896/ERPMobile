@@ -21,15 +21,18 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
+import com.chinashb.www.mobileerp.PickGoodsNewShowActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.BoxMoveItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.PickGoodsBean;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
@@ -58,6 +61,8 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
     private RelativeLayout switchLayout;
     private Switch stockSwitch;
     private boolean isOpenSuggestStock = true;
+    private boolean fromPickGoods ;
+    private PickGoodsBean pickGoodsBean;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -78,6 +83,11 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stock_part_move_layout);
+
+        fromPickGoods = getIntent().getBooleanExtra(IntentConstant.Intent_Extra_Send_Goods_Move_from,false);
+        if (fromPickGoods){
+            pickGoodsBean = getIntent().getParcelableExtra(IntentConstant.Intent_Extra_to_pick_goods_bean);
+        }
 //        tv = (TextView)findViewById(R.id.tv_stock_system_title);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_move_box);
         pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
@@ -281,6 +291,22 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
     }
 
     @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        if (fromPickGoods){
+            Intent intent = new Intent(StockPartMoveActivity.this, PickGoodsNewShowActivity.class);
+            intent.putExtra(IntentConstant.Intent_Extra_to_pick_goods_bean_back,pickGoodsBean);
+//            setResult(IntentConstant.Intent_Request_Code_Pick_Goods_To_Stock_Move_Activity,intent);
+            setResult(-1,intent);
+            finish();
+        }else{
+            super.onBackPressed();
+        }
+//        finish();
+
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -335,6 +361,13 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
             }
             mRecyclerView.setAdapter(boxitemAdapter);
             pbScan.setVisibility(View.INVISIBLE);
+//            2024-08-08 拣货物料判断
+            if (fromPickGoods && (pickGoodsBean != null)){
+                if (boxItemEntity.getItem_ID() != pickGoodsBean.getItemID()){
+                    CommonUtil.ShowToast(StockPartMoveActivity.this, "所选拣货物料与扫描物料不一致！", R.mipmap.monster_mike, Toast.LENGTH_SHORT);
+
+                }
+            }
             inputEditText.setText("");
             inputEditText.setHint("请继续扫描");
 

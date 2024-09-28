@@ -62,6 +62,16 @@
                     android:textSize="20sp" />
 
                 <Button
+                    android:id="@+id/btnPrintImage_zoom"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="onBtnPrintClick"
+                    android:text="打印图片缩放"
+                    android:textSize="20sp" />
+
+<!--                    android:onClick="onBtnPrintClickZoom"-->
+                <Button
                     android:id="@+id/btnPrintLabel"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -80,11 +90,12 @@
                     android:textSize="20sp" />
 
                 <ImageView
-                    android:layout_width="142dp"
-                    android:layout_height="48dp"
+                    android:id="@+id/logo_iamgeView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
-                    android:background="@drawable/zebra_logo_black"
+                    android:src="@drawable/zebra_logo_black"
                     android:contentDescription="@string/zebra_log_image" />
 
             </LinearLayout>

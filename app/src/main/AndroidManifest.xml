@@ -31,6 +31,21 @@
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
 
+        <!--成品移库查询-->
+        <activity
+            android:name=".ProductMoveRecordActivity"
+            android:screenOrientation="portrait" />
+
+        <!--零件拣货任务,新布局，单textview-->
+        <activity
+            android:name=".PickGoodsNewShowActivity"
+            android:screenOrientation="portrait" />
+
+        <!--零件拣货任务-->
+        <activity
+            android:name=".PickGoodsActivity"
+            android:screenOrientation="portrait" />
+
         <!--手机操作整托返工-->
         <activity
             android:name=".ProductReworkPalletActivity"
@@ -124,7 +139,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".warehouse.MoveRecordActivity"
+            android:name=".warehouse.PartMoveRecordActivity"
             android:screenOrientation="portrait" />
 
 

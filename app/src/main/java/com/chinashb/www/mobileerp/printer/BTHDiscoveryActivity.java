@@ -123,8 +123,9 @@ public class BTHDiscoveryActivity extends BaseActivity {
                 if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
                     int bthClassDevice = device.getBluetoothClass().getDeviceClass();
                     int bthClassDeviceMajor = device.getBluetoothClass().getMajorDeviceClass();
-                    if ((BluetoothClass.Device.Major.IMAGING == bthClassDeviceMajor) && 1664 == bthClassDevice)
+                    if ((BluetoothClass.Device.Major.IMAGING == bthClassDeviceMajor) && 1664 == bthClassDevice) {
                         mBTHPrinterDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                    }
                 }
             // 扫描结束
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
@@ -172,8 +173,9 @@ public class BTHDiscoveryActivity extends BaseActivity {
             for (BluetoothDevice device : pairedDevices) {
                 int bthClassDevice = device.getBluetoothClass().getDeviceClass();
                 int bthClassDeviceMajor = device.getBluetoothClass().getMajorDeviceClass();
-                if ((BluetoothClass.Device.Major.IMAGING == bthClassDeviceMajor) && 1664 == bthClassDevice)
+                if ((BluetoothClass.Device.Major.IMAGING == bthClassDeviceMajor) && 1664 == bthClassDevice) {
                     mBTHPrinterDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
+                }
             }
         }
     }

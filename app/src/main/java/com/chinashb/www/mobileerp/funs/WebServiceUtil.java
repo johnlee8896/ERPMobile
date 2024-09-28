@@ -1575,6 +1575,78 @@ public class WebServiceUtil {
         return ws_result;
     }
 
+    //成品移库记录查询
+//    get_Product_Move_Record(Bu_ID As Integer, Box_ID As Integer, HR_ID As Integer)
+    public static WsResult getProductMoveRecord(int boxID) {
+        boolean result = false;
+        String webMethodName = "get_Product_Move_Record";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("Bu_ID");
+        propertyInfo.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo.setType(Integer.class);
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("Box_ID");
+        propertyInfo1.setValue(boxID);
+        propertyInfo1.setType(Integer.class);
+
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("HR_ID");
+        propertyInfo3.setValue(UserSingleton.get().getHRID());
+        propertyInfo3.setType(Integer.class);
+
+        propertyInfos.add(propertyInfo);
+        propertyInfos.add(propertyInfo1);
+        propertyInfos.add(propertyInfo3);
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult ws_result = Get_WS_Result(obj);
+        return ws_result;
+    }
+
+    //拣货任务
+    public static WsResult getPickGoodsData(Date startDate,Date endDate) {
+        boolean result = false;
+        String webMethodName = "Get_Pick_Goods_Data_JsonString";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("Bu_ID");
+        propertyInfo.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo.setType(Integer.class);
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("SD");
+        propertyInfo1.setValue(startDate);
+        propertyInfo1.setType(Date.class);
+
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("ED");
+        propertyInfo2.setValue(endDate);
+        propertyInfo2.setType(Date.class);
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("HR_ID");
+        propertyInfo3.setValue(UserSingleton.get().getHRID());
+        propertyInfo3.setType(Integer.class);
+
+        propertyInfos.add(propertyInfo);
+        propertyInfos.add(propertyInfo1);
+        propertyInfos.add(propertyInfo2);
+        propertyInfos.add(propertyInfo3);
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult ws_result = Get_WS_Result(obj);
+        return ws_result;
+    }
+
     public static WsResult Upload_File_From_Mobile(String FileName) {
         boolean result = false;
 //        String webMethodName = "Upload_Image_From_Mobile";
@@ -1649,6 +1721,8 @@ public class WebServiceUtil {
                         box_item.setBoxName(obj2.getProperty("BoxName").toString());
                         box_item.setBoxNo(obj2.getProperty("BoxNo").toString());
                         box_item.setIstName(obj2.getProperty("IstName").toString());
+                        //2024-08-06判断是否是紧急料,借用这个字段
+//                        box_item.setSmlRemark(obj2.getProperty("SMLRemark").toString()) ;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1994,6 +2068,27 @@ public class WebServiceUtil {
         propertyInfo.setValue(Bu_ID);
         propertyInfo.setType(Integer.class);
         propertyInfos.add(propertyInfo);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult ws_result = Get_WS_Result(obj);
+        return ws_result;
+    }
+
+    public static WsResult getIsAlarmItem(int Bu_ID,int itemID){
+        String webMethodName = "judge_Is_Alarm_Item";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("Bu_ID");
+        propertyInfo.setValue(Bu_ID);
+        propertyInfo.setType(Integer.class);
+        propertyInfos.add(propertyInfo);
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("Item_ID");
+        propertyInfo1.setValue(itemID);
+        propertyInfo1.setType(Integer.class);
+        propertyInfos.add(propertyInfo1);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;

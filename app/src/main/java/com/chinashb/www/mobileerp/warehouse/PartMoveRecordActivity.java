@@ -11,7 +11,7 @@ import android.widget.EditText;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.adapter.MoveRecordAdapter;
+import com.chinashb.www.mobileerp.adapter.PartMoveRecordAdapter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BoxMoveRecordBean;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
@@ -33,15 +33,15 @@ import butterknife.ButterKnife;
 /***
  * @date 创建时间 2023/7/10 10:07 AM
  * @author 作者: liweifeng
- * @description
+ * @description 零件移库查询
  */
-public class MoveRecordActivity extends BaseActivity {
+public class PartMoveRecordActivity extends BaseActivity {
 
 
     @BindView(R.id.move_record_input_EditText) EditText inputEditText;
     @BindView(R.id.move_record_scan_button) Button scanButton;
     @BindView(R.id.move_record_recyclerView) CustomRecyclerView recyclerView;
-    private MoveRecordAdapter adapter;
+    private PartMoveRecordAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class MoveRecordActivity extends BaseActivity {
         setContentView(R.layout.activity_move_record_layout);
         ButterKnife.bind(this);
         scanButton.setOnClickListener(v -> {
-            new IntentIntegrator(MoveRecordActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+            new IntentIntegrator(PartMoveRecordActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
         });
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
@@ -62,7 +62,7 @@ public class MoveRecordActivity extends BaseActivity {
             }
         });
 
-        adapter = new MoveRecordAdapter();
+        adapter = new PartMoveRecordAdapter();
         recyclerView.setAdapter(adapter);
 
     }

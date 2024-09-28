@@ -99,6 +99,9 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
+                if (editable.toString().length() > 0){
+                    parseContent(editable.toString());
+                }
 
             }
         });

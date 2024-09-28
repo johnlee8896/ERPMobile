@@ -15,9 +15,9 @@ import butterknife.ButterKnife;
 /***
  * @date 创建时间 2023/7/12 10:06 AM
  * @author 作者: liweifeng
- * @description
+ * @description 零件移库记录adapter
  */
-public class MoveRecordAdapter extends BaseRecycleAdapter<BoxMoveRecordBean, MoveRecordAdapter.BoxMoveRecordViewHolder> {
+public class PartMoveRecordAdapter extends BaseRecycleAdapter<BoxMoveRecordBean, PartMoveRecordAdapter.BoxMoveRecordViewHolder> {
     @NonNull
     @Override
     public BoxMoveRecordViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
