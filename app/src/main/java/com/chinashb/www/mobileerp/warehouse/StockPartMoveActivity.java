@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -53,7 +52,6 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
     private Button btnWarehouseMove;
     private EditText inputEditText;
     private RecyclerView mRecyclerView;
-    private ProgressBar pbScan;
     private BoxMoveItemAdapter boxitemAdapter;
     private List<BoxItemEntity> boxitemList;
     private IstPlaceEntity thePlace;
@@ -90,7 +88,6 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
         }
 //        tv = (TextView)findViewById(R.id.tv_stock_system_title);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_move_box);
-        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         btnAddTray = (Button) findViewById(R.id.btn_move_add_tray);
         btnScanArea = (Button) findViewById(R.id.btn_move_scan_new_place);
         btnWarehouseMove = (Button) findViewById(R.id.btn_move_execute);
@@ -347,11 +344,6 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
         }
 
         @Override
-        protected void onPreExecute() {
-            pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
             if (boxItemEntity != null) {
@@ -360,7 +352,6 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
                 }
             }
             mRecyclerView.setAdapter(boxitemAdapter);
-            pbScan.setVisibility(View.INVISIBLE);
 //            2024-08-08 拣货物料判断
             if (fromPickGoods && (pickGoodsBean != null)){
                 if (boxItemEntity.getItem_ID() != pickGoodsBean.getItemID()){
@@ -393,10 +384,17 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
     }
 
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
+        private IstPlaceEntity bi;
         @Override
         protected Void doInBackground(String... params) {
-            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
-            if (bi.getResult()) {
+            bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            if ((bi != null) && bi.getResult()) {
                 thePlace = bi;
                 if (bi.getResult()) {
                     for (int i = 0; i < boxitemList.size(); i++) {
@@ -407,31 +405,19 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
                         }
                     }
                 }
+                boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
+                mRecyclerView.setAdapter(boxitemAdapter);
+                inputEditText.setText("");
+                inputEditText.setHint("请继续扫描");
+                handleMoveStockArea();
+
             } else {
                 Toast.makeText(StockPartMoveActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
             }
-            return null;
+
+
         }
 
-        @Override
-        protected void onPreExecute() {
-            pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");
-            boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
-            mRecyclerView.setAdapter(boxitemAdapter);
-            pbScan.setVisibility(View.INVISIBLE);
-            inputEditText.setText("");
-            inputEditText.setHint("请继续扫描");
-            handleMoveStockArea();
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
 
     }
 
@@ -481,10 +467,6 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
             return result;
         }
 
-        @Override
-        protected void onPreExecute() {
-            pbScan.setVisibility(View.VISIBLE);
-        }
 
         @Override
         protected void onPostExecute(WsResult result) {
@@ -500,7 +482,6 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
 //
 //                CommonUtil.ShowToast(StockMoveActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
 //            }
-            pbScan.setVisibility(View.INVISIBLE);
             if (result != null && result.getResult()) {
                 CommonUtil.ShowToast(StockPartMoveActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
             } else {

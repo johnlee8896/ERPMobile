@@ -31,6 +31,16 @@
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
 
+        <!--成品统一盘点成品标签，手工托盘 ，手工非托盘-->
+        <activity
+            android:name=".warehouse.FreezeRecordActivity"
+            android:screenOrientation="portrait" />
+
+        <!--成品统一盘点成品标签，手工托盘 ，手工非托盘-->
+        <activity
+            android:name=".ProductCheckInventoryCommonAllActivity"
+            android:screenOrientation="portrait" />
+
         <!--成品移库查询-->
         <activity
             android:name=".ProductMoveRecordActivity"

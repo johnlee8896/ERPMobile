@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 /***
  * @date 创建时间 2023/7/4 10:28 AM
  * @author 作者: liweifeng
- * @description
+ * @description 扫描库位获取里面物料
  */
 public class ScanIstFindItemActivity extends BaseActivity {
     @BindView(R.id.scan_ist_input_EditText) EditText inputEditText;

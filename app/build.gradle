@@ -106,7 +106,7 @@ android {
 }
 def libs = rootProject.ext.dependencies // 库依赖
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar','*.aar'], dir: 'libs')
 
 
     implementation libs["support_v7"]
@@ -136,7 +136,11 @@ dependencies {
     implementation 'com.jakewharton:butterknife:8.8.1'
 
     //时间选择
-    implementation 'com.contrarywind:Android-PickerView:4.1.6'
+//    implementation 'com.contrarywind:Android-PickerView:4.1.6'
+
+
+//    implementation 'com.contrarywind:Android-PickerView:4.1.8'
+//    implementation 'com.contrarywind:Android-PickerView:4.1.9'
 
 //    implementation  'com.umeng.umsdk:analytics:8.0.0'
 //    implementation  'com.umeng.umsdk:common:2.0.0'

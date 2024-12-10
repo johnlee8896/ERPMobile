@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,11 +38,12 @@ import java.util.HashMap;
 import java.util.List;
 
 /***
- * @date 创建时间 6/25/24 11:06 AM
+ * @date 创建时间 10/19/24 11:01 AM
  * @author 作者: liweifeng
- * @description 专门给成手工托盘标签盘点使用
+ * @description 成品盘点统一，包含托盘标签，及手工补打标签（原包括托盘 ，非托盘 ），原三个，今整合到一个
+ * 这里是从托盘标签复制开始改造
  */
-public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
+public class ProductCheckInventoryCommonAllActivity extends BaseActivity {
     static HashMap<String, String> SelectCI;
     Button btnSelectCheckFile;
     Button btnScanIst;
@@ -81,17 +81,35 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
     private String storeArea = "";
     private String manuLotNO = "";
     private boolean fromSelfProduct;
+    private List<Integer> boxIDList;
+    private int currentBoxID;
+
     private List<Integer> palletIDList;
     private int currentPalletID;
+
+    private int currentPSID;
+    private int currentLotID;
+//    private enum CURRENT_PRODUCT_LABEL{
+//        int CODE_BOX = 0,
+//        int MANU_PALLET = 1,
+//        int MANU_PALLET_NOT = 2
+//
+//    }
+    int CODE_BOX = 0;
+    int MANU_PALLET = 1;
+    int MANU_PALLET_NOT = 2;
+    private int CURRENT_PRODUCT_LABEL = CODE_BOX;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //todo  这个页面还没有统一
-        setContentView(R.layout.activity_product_checkinventory_manu_pallet_layout);
+        setContentView(R.layout.activity_product_checkinventory_layout);
         bindView();
         setButtonClick();
         getExtras();
+        boxIDList = new ArrayList<>();
         palletIDList = new ArrayList<>();
     }
 
@@ -104,30 +122,30 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
     }
 
     void bindView() {
-        btnSelectCheckFile = (Button) findViewById(R.id.product_check_manu_pallet_select_check_Button);
-        btnScanIst = (Button) findViewById(R.id.product_check_manu_pallet__scan_ist_Button);
-        btnScanItem = (Button) findViewById(R.id.product_check_manu_pallet_add_item_Button);
-        btnCommit = (Button) findViewById(R.id.product_check_manu_pallet_btn_affirm_qty);
-        btnCal = (Button) findViewById(R.id.product_check_manu_pallet_btn_check_inv_cal_qty);
-        titleLayoutManagerView = findViewById(R.id.product_check_manu_pallet_titleLayout);
-        tvIst = (TextView) findViewById(R.id.product_check_manu_pallet_tv_check_stock_ist);
+        btnSelectCheckFile = (Button) findViewById(R.id.product_check_select_check_Button);
+        btnScanIst = (Button) findViewById(R.id.product_check__scan_ist_Button);
+        btnScanItem = (Button) findViewById(R.id.product_check_add_item_Button);
+        btnCommit = (Button) findViewById(R.id.product_check_btn_affirm_qty);
+        btnCal = (Button) findViewById(R.id.product_check_btn_check_inv_cal_qty);
+        titleLayoutManagerView = findViewById(R.id.product_check_titleLayout);
+        tvIst = (TextView) findViewById(R.id.product_check_tv_check_stock_ist);
 
-        tvERPIst = (TextView) findViewById(R.id.product_check_manu_pallet_tv_check_stock_ist_erp);
-        tvItemCode = (TextView) findViewById(R.id.product_check_manu_pallet_tv_check_stock_item_code);
-        tvManuLotno = (TextView) findViewById(R.id.tv_product_check_manu_palletcheck_stock_manulotno);
-        tvItemName = (TextView) findViewById(R.id.tv_product_check_manu_palletcheck_stock_item_name);
-        realQtyTextView = (TextView) findViewById(R.id.et_product_check_manu_palletcheck_stock_box_real_qty);
-        totalBoxNOEditText = (EditText) findViewById(R.id.et_product_check_manu_palletcheck_stock_box_n);
-        eachBoxQtyEditText = (EditText) findViewById(R.id.et_product_check_manu_palletcheck_stock_box_pn);
-        singleQtyEditText = (EditText) findViewById(R.id.et_product_check_manu_palletcheck_stock_box_dq);
-        etRemark = (EditText) findViewById(R.id.et_product_check_manu_palletcheck_stock_box_remark);
-        inputEditText = findViewById(R.id.product_check_manu_pallet_input_editText);
+        tvERPIst = (TextView) findViewById(R.id.product_check_tv_check_stock_ist_erp);
+        tvItemCode = (TextView) findViewById(R.id.product_check_tv_check_stock_item_code);
+        tvManuLotno = (TextView) findViewById(R.id.tv_product_checkcheck_stock_manulotno);
+        tvItemName = (TextView) findViewById(R.id.tv_product_checkcheck_stock_item_name);
+        realQtyTextView = (TextView) findViewById(R.id.et_product_checkcheck_stock_box_real_qty);
+        totalBoxNOEditText = (EditText) findViewById(R.id.et_product_checkcheck_stock_box_n);
+        eachBoxQtyEditText = (EditText) findViewById(R.id.et_product_checkcheck_stock_box_pn);
+        singleQtyEditText = (EditText) findViewById(R.id.et_product_checkcheck_stock_box_dq);
+        etRemark = (EditText) findViewById(R.id.et_product_checkcheck_stock_box_remark);
+        inputEditText = findViewById(R.id.product_check_input_editText);
 
-        searchEditText = findViewById(R.id.product_check_manu_pallet_search_editText);
-        searchButton = findViewById(R.id.product_check_manu_pallet_search_Button);
-        searchLayout = findViewById(R.id.product_check_manu_pallet_search_layout);
+        searchEditText = findViewById(R.id.product_check_search_editText);
+        searchButton = findViewById(R.id.product_check_search_Button);
+        searchLayout = findViewById(R.id.product_check_search_layout);
 
-        manuLotEditText = findViewById(R.id.et_product_check_manu_palletcheck_stock_manulotno);
+        manuLotEditText = findViewById(R.id.et_product_checkcheck_stock_manulotno);
 
 
     }
@@ -136,8 +154,8 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
         btnSelectCheckFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ProductCheckInventoryManuPalletActivity.this, SelectItemActivity.class);
-//                Intent intent = new Intent(ProductCheckInventoryManuPalletActivity.this, CommonSelectItemActivity.class);
+                Intent intent = new Intent(ProductCheckInventoryCommonAllActivity.this, SelectItemActivity.class);
+//                Intent intent = new Intent(ProductCheckInventoryCommonAllActivity.this, CommonSelectItemActivity.class);
                 Integer Bu_ID = UserSingleton.get().getUserInfo().getBu_ID();
                 String sql = "";
                 if (Ac_Type == 1 || Ac_Type == 2) {
@@ -178,11 +196,11 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (SelectCI == null) {
-                    Toast.makeText(ProductCheckInventoryManuPalletActivity.this, "请先选择盘点表", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProductCheckInventoryCommonAllActivity.this, "请先选择盘点表", Toast.LENGTH_LONG).show();
                     inputEditText.setText("");
                     return;
                 }
-                new IntentIntegrator(ProductCheckInventoryManuPalletActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                new IntentIntegrator(ProductCheckInventoryCommonAllActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
             }
         });
@@ -197,7 +215,7 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
                     inputEditText.setText("");
                     return;
                 }
-                new IntentIntegrator(ProductCheckInventoryManuPalletActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+                new IntentIntegrator(ProductCheckInventoryCommonAllActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
 
             }
         });
@@ -208,7 +226,7 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (SelectCI == null) {
-                    Toast.makeText(ProductCheckInventoryManuPalletActivity.this, "请先选择盘点表", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ProductCheckInventoryCommonAllActivity.this, "请先选择盘点表", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -218,6 +236,7 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
                     ToastUtil.showToastShort("数量为空!");
                     return;
                 }
+
 
                 Commit_Result();
 
@@ -345,7 +364,7 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
                 String sql = String.format("Select top 60 Item.Item_ID,Item_Version.IV_ID,product.Product_DrawNO as Item_Name, Item_Version.Item_Version As Version,Item.Item_Unit_Exchange ,Item.Item_Unit ,product.Product_DrawNO " +
                         "From product inner join Item on product.item_id = item.item_id Inner Join Item_Version On Item.Item_ID = Item_Version.Item_ID Where  (product.Product_DrawNO like %s or product.current_ps like %s or item.item_id like %s) ", "'%" + input + "%'", "'%" + input + "%'", "'%" + input + "%'");
 
-                Intent intent = new Intent(ProductCheckInventoryManuPalletActivity.this, CommonSelectItemActivity.class);
+                Intent intent = new Intent(ProductCheckInventoryCommonAllActivity.this, CommonSelectItemActivity.class);
                 List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(50, 100, 100));
                 List<String> ColCaption = new ArrayList<String>(Arrays.asList("Item_ID", "IV_ID", "物料", "版本"));
 
@@ -363,7 +382,7 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
                 String sql = String.format("Select top 60 Item.Item_ID,Item_Version.IV_ID,Item.Item+' '+Item.Item_Name+' '+isnull(Item.Item_Spec2,'') As Item_Name, Item_Version.Item_Version As Version,Item.Item_Unit_Exchange ,Item.Item_Unit  " +
                         "From Item Inner Join Item_Version On Item.Item_ID = Item_Version.Item_ID Where   (item.item like %s or item.item_drawno like %s or item.item_id like %s) ", "'%" + input + "%'", "'%" + input + "%'", "'%" + input + "%'");
 
-                Intent intent = new Intent(ProductCheckInventoryManuPalletActivity.this, CommonSelectItemActivity.class);
+                Intent intent = new Intent(ProductCheckInventoryCommonAllActivity.this, CommonSelectItemActivity.class);
                 List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(50, 100, 100));
                 List<String> ColCaption = new ArrayList<String>(Arrays.asList("Item_ID", "IV_ID", "物料", "版本"));
 
@@ -382,19 +401,17 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
     }
 
     protected void Commit_Result() {
-        CommitStockResultAsyncTask task = new CommitStockResultAsyncTask();
-        task.execute();
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
+        if (CURRENT_PRODUCT_LABEL == CODE_BOX){
+            CommitCodeBoxStockResultAsyncTask task = new CommitCodeBoxStockResultAsyncTask();
+            task.execute();
+        }else if (CURRENT_PRODUCT_LABEL == MANU_PALLET){
+            CommitManuPalletStockResultAsyncTask task = new CommitManuPalletStockResultAsyncTask();
+            task.execute();
+        }else if (CURRENT_PRODUCT_LABEL == MANU_PALLET_NOT){
+            CommitManuNotPalletStockResultAsyncTask task = new CommitManuNotPalletStockResultAsyncTask();
+            task.execute();
         }
-        return super.onOptionsItemSelected(item);
+
     }
 
     @Override
@@ -472,11 +489,36 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
                 if (result.startsWith("/SUB_IST_ID/") || result.startsWith("/IST_ID/")) {
                     //仓库位置码
                     scanstring = result;
-                    GetManuPalletIstAsyncTask task = new GetManuPalletIstAsyncTask();
+                    GetIstAsyncTask task = new GetIstAsyncTask();
                     task.execute();
                 }
-                //2024-06-25 john这里只处理成品的扫描
-                if (result.startsWith("OldPallet") && qrContent.length > 8) {
+                //2024-10-19 john这里处理成品的扫描
+                if (result.startsWith("Pallet") && qrContent.length == 8) {
+
+                    if (!istHasSelect) {
+                        ToastUtil.showToastShort("请先扫描库位码！");
+                        inputEditText.setText("");
+                        return;
+                    }
+                    int boxId = Integer.parseInt(qrContent[1]);
+                    if (boxIDList.contains(boxId)) {
+                        ToastUtil.showToastShort("该托盘已在列表中，请勿重复扫描！");
+                    } else {
+                        tvItemName.setText("客户图号： " + qrContent[5]);
+                        tvItemCode.setText("BoxID/" + qrContent[1] + " " + qrContent[3]);
+                        eachBoxQtyEditText.setText(qrContent[7]);
+                        boxIDList.add(boxId);
+                        currentBoxID = boxId;
+                        GetCodeBoxERPIstNameByBoxIDAsyncTask task = new GetCodeBoxERPIstNameByBoxIDAsyncTask();
+                        task.execute();
+
+                        inputEditText.setText("");
+                    }
+                    CURRENT_PRODUCT_LABEL = CODE_BOX ;
+                }
+                //2024-10-19 john这里处理成品的扫描 手工补打标签
+                else if (result.startsWith("OldPallet") && qrContent.length > 8) {
+
                     if (!istHasSelect) {
                         ToastUtil.showToastShort("请先扫描库位码！");
                         inputEditText.setText("");
@@ -496,15 +538,41 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
 
                         inputEditText.setText("");
                     }
+                    CURRENT_PRODUCT_LABEL = MANU_PALLET;
                 }
-                if (result.startsWith("OldNoPallet") && qrContent.length > 8) {
-                    ToastUtil.showToastShort("该标签是非托盘手工，请到非托盘手工界面盘点");
+//                if (result.startsWith("OldNoPallet") && qrContent.length > 8) {
+//                    ToastUtil.showToastShort("该标签是非托盘手工，请到非托盘手工界面盘点");
+//                }
+                else if (result.startsWith("OldNoPallet") && qrContent.length > 8) {
+                    if (!istHasSelect) {
+                        ToastUtil.showToastShort("请先扫描库位码！");
+                        inputEditText.setText("");
+                        return;
+                    }
+//                    int palletID = Integer.parseInt(qrContent[1]);
+//                    if (palletIDList.contains(palletID)) {
+//                        ToastUtil.showToastShort("该托盘已在列表中，请勿重复扫描！");
+//                    } else {
+                    tvItemName.setText("PS_ID： " + qrContent[1]);
+                    tvItemCode.setText("PS_ID/" + qrContent[1] + " LotID:" + qrContent[3] );
+                    eachBoxQtyEditText.setText(qrContent[11]);
+//                    palletIDList.add(palletID);
+//                    currentPalletID = palletID;
+                    currentLotID = Integer.parseInt(qrContent[3]);
+                    currentPSID = Integer.parseInt(qrContent[1]);
+
+//                        GetERPIstNameByBoxIDAsyncTask task = new GetERPIstNameByBoxIDAsyncTask();
+//                        task.execute();
+
+                    inputEditText.setText("");
+//                    }
+                    CURRENT_PRODUCT_LABEL = MANU_PALLET_NOT;
                 }
             }
         }
     }
 
-    private class GetManuPalletIstAsyncTask extends AsyncTask<String, Void, Void> {
+    private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
             IstPlaceEntity istPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
@@ -512,7 +580,7 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
                 thePlace = istPlaceEntity;
                 //清空
             } else {
-                Toast.makeText(ProductCheckInventoryManuPalletActivity.this, istPlaceEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ProductCheckInventoryCommonAllActivity.this, istPlaceEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
 
             }
 
@@ -546,7 +614,64 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
     }
 
 
-    private class CommitStockResultAsyncTask extends AsyncTask<String, Void, Void> {
+    private class CommitCodeBoxStockResultAsyncTask extends AsyncTask<String, Void, Void> {
+        WsResult ws_result;
+
+        @Override
+
+        protected Void doInBackground(String... params) {
+            if (fromSelfProduct) {
+//               ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+//                                thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(),
+//                       0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+                ws_result = WebServiceUtil.commit_Product_Pandian_ByBox(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(),"BoxID/" + currentBoxID ,
+                        thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0,
+                        qty, N, PN, DQ, remark, storeArea, manuLotNO,currentBoxID);
+
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            if (ws_result.getResult()) {
+                CommonUtil.ShowToast(ProductCheckInventoryCommonAllActivity.this,
+                        "提交成功", R.mipmap.smiley, Toast.LENGTH_SHORT);
+
+
+                //Clear Text
+                realQtyTextView.setText("");
+                etRemark.setText("");
+//                tvBoxName.setText("");
+                tvERPIst.setText("");
+                tvItemCode.setText("");
+                tvItemName.setText("");
+//                tvLeftQty.setText("");
+                tvManuLotno.setText("");
+
+                inputEditText.setText("");
+                inputEditText.findFocus();
+//                hasScannItemClickButtonForPhoto = false;
+                panDianItemBean = null;
+
+                eachBoxQtyEditText.setText("");
+
+            } else {
+                ToastUtil.showToastLong("提交失败" + ws_result.getErrorInfo());
+
+            }
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+    //手工托盘 标签盘点
+    private class CommitManuPalletStockResultAsyncTask extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
 
         @Override
@@ -568,7 +693,7 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
         @Override
         protected void onPostExecute(Void result) {
             if (ws_result.getResult()) {
-                CommonUtil.ShowToast(ProductCheckInventoryManuPalletActivity.this,
+                CommonUtil.ShowToast(ProductCheckInventoryCommonAllActivity.this,
                         "提交成功", R.mipmap.smiley, Toast.LENGTH_SHORT);
 
 
@@ -601,6 +726,90 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
 
     }
 
+    //手工非托盘 标签盘点
+    private class CommitManuNotPalletStockResultAsyncTask extends AsyncTask<String, Void, Void> {
+        WsResult ws_result;
+
+        @Override
+
+        protected Void doInBackground(String... params) {
+            if (fromSelfProduct) {
+//               ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+//                                thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(),
+//                       0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+                ws_result = WebServiceUtil.commit_Product_Manu_Pallet_Not_Pandian_ByBox(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(),"Product_LotID/" + currentLotID ,
+                        thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0,
+                        qty, N, PN, DQ, remark, storeArea, manuLotNO,currentLotID,currentPSID);
+
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            if (ws_result.getResult()) {
+                CommonUtil.ShowToast(ProductCheckInventoryCommonAllActivity.this,
+                        "提交成功", R.mipmap.smiley, Toast.LENGTH_SHORT);
+
+
+                //Clear Text
+                realQtyTextView.setText("");
+                etRemark.setText("");
+//                tvBoxName.setText("");
+                tvERPIst.setText("");
+                tvItemCode.setText("");
+                tvItemName.setText("");
+//                tvLeftQty.setText("");
+                tvManuLotno.setText("");
+
+                inputEditText.setText("");
+                inputEditText.findFocus();
+//                hasScannItemClickButtonForPhoto = false;
+                panDianItemBean = null;
+                eachBoxQtyEditText.setText("");
+
+            } else {
+                ToastUtil.showToastLong("提交失败" + ws_result.getErrorInfo());
+
+            }
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+    //成品托盘标签的ERP位置
+    private class GetCodeBoxERPIstNameByBoxIDAsyncTask extends AsyncTask<Void, Void, Void>{
+        WsResult wsResult;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            wsResult = WebServiceUtil.getProductIstNameByBoxID(currentBoxID);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (wsResult != null && wsResult.getResult()){
+                tvERPIst.setText(wsResult.getErrorInfo());
+                if (!tvIst.getText().equals(wsResult.getErrorInfo())) {
+                    tvERPIst.setTextColor(Color.RED);
+                } else {
+                    tvERPIst.setTextColor(Color.BLACK);
+                }
+
+            }else{
+                ToastUtil.showToastShort("获取该箱ERP存储位置失败！");
+
+            }
+
+        }
+    }
+
     private class GetManuPalletERPIstNameByBoxIDAsyncTask extends AsyncTask<Void, Void, Void>{
         WsResult wsResult;
         @Override
@@ -625,15 +834,8 @@ public class ProductCheckInventoryManuPalletActivity extends BaseActivity {
 
             }
 
-
-
-
-
-
         }
     }
 
 
 }
-
-

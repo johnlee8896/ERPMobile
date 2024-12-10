@@ -1,7 +1,6 @@
 package com.chinashb.www.mobileerp.warehouse;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
@@ -21,7 +19,11 @@ import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -33,15 +35,28 @@ import java.util.List;
  */
 public class StockFreezeActivity extends BaseActivity {
     private Button btnAddTray;
+    private Button btnAddRemark;
     private Button btnFreezeBox;
     private Button btnFreezeNot;
     private EditText inputEditText;
     private RecyclerView mRecyclerView;
+    private String remark = "";
 
     private AdapterFreezeBoxItem boxitemAdapter;
     private List<BoxItemEntity> boxitemList;
     private String scanstring;
-    private ProgressBar pbScan;
+    private CommonSelectInputDialog remarkDialog;
+
+    private OnViewClickListener remarkOnViewClickListener = new OnViewClickListener() {
+        @Override public <T> void onClickAction(View v, String tag, T t) {
+            if (t != null) {
+                remark = (String) t;
+            }
+            if (remarkDialog != null && remarkDialog.isShowing()) {
+                remarkDialog.dismiss();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +66,9 @@ public class StockFreezeActivity extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_freeze_box);
 
         btnAddTray = (Button) findViewById(R.id.btn_move_add_tray);
+        btnAddRemark = (Button) findViewById(R.id.btn_freeze_remark);
         btnFreezeBox = (Button) findViewById(R.id.btn_freeze_box);
         btnFreezeNot = (Button) findViewById(R.id.btn_freeze_not);
-        pbScan = (ProgressBar) findViewById(R.id.progressbar);
         inputEditText = findViewById(R.id.stock_freeze_input_EditeText);
 
         boxitemList = new ArrayList<>();
@@ -62,8 +77,6 @@ public class StockFreezeActivity extends BaseActivity {
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(boxitemAdapter);
-
-        setHomeButton();
 
 
         btnAddTray.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +91,16 @@ public class StockFreezeActivity extends BaseActivity {
 
             }
 
+        });
+
+        btnAddRemark.setOnClickListener(v -> {
+            if (remarkDialog == null) {
+                remarkDialog = new CommonSelectInputDialog(StockFreezeActivity.this);
+            }
+            remarkDialog.show();
+            remarkDialog.setInputDialogTitle("请添加备注");
+            remarkDialog.setInputOnly(true);
+            remarkDialog.setOnViewClickListener(remarkOnViewClickListener);
         });
 
         btnFreezeBox.setOnClickListener(new View.OnClickListener() {
@@ -232,30 +255,22 @@ public class StockFreezeActivity extends BaseActivity {
 
 
             mRecyclerView.setAdapter(boxitemAdapter);
-            pbScan.setVisibility(View.INVISIBLE);
         }
 
-        @Override
-        protected void onPreExecute() {
-            pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
 
     }
 
 
     private class AsyncExeFreezeBox extends AsyncTask<String, Void, Void> {
+        WsResult wsResult;
         @Override
         protected Void doInBackground(String... params) {
 
             for (int i = 0; i < boxitemList.size(); i++) {
                 BoxItemEntity bi = boxitemList.get(i);
-                WsResult result = WebServiceUtil.op_Commit_Freeze_Inv(bi);
-                bi.setWs_result(result);
-                if (result.getResult() ) {
+                wsResult = WebServiceUtil.op_Commit_Freeze_Inv(bi,remark, UserSingleton.get().getUserInfo().getBu_ID());
+                bi.setWs_result(wsResult);
+                if (wsResult.getResult() ) {
                     bi.setFreezeStatus("冻结");
                 }
             }
@@ -265,35 +280,37 @@ public class StockFreezeActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Void result) {
+            if (wsResult != null ){
+                if (wsResult.getResult()){
+                    ToastUtil.showToastShort("执行冻结成功！");
+                }else {
+                    ToastUtil.showToastShort("执行冻结失败，错误原因：" + wsResult.getErrorInfo());
+                }
+                boxitemAdapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter(boxitemAdapter);
+                remark = "";
+            }else{
+                ToastUtil.showToastShort("执行冻结失败");
+            }
             //tv.setText(fahren + "∞ F");
             //boxitemAdapter= new AdapterFreezeBoxItem(StockFreezeActivity.this, boxitemList);
-            pbScan.setVisibility(View.INVISIBLE);
-            boxitemAdapter.notifyDataSetChanged();
-            mRecyclerView.setAdapter(boxitemAdapter);
 
 
-        }
 
-        @Override
-        protected void onPreExecute() {
-            pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
         }
 
     }
 
     private class AsyncExeFreezeNot extends AsyncTask<String, Void, Void> {
+        WsResult wsResult;
         @Override
         protected Void doInBackground(String... params) {
 
             for (int i = 0; i < boxitemList.size(); i++) {
                 BoxItemEntity bi = boxitemList.get(i);
-                WsResult result = WebServiceUtil.op_Commit_FreezeNot_Inv(bi);
-                bi.setWs_result(result);
-                if (result.getResult() ) {
+                wsResult = WebServiceUtil.op_Commit_FreezeNot_Inv(bi,remark,UserSingleton.get().getUserInfo().getBu_ID());
+                bi.setWs_result(wsResult);
+                if (wsResult.getResult() ) {
                     bi.setFreezeStatus("正常");
                 }
             }
@@ -303,33 +320,25 @@ public class StockFreezeActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");
-            pbScan.setVisibility(View.INVISIBLE);
-            boxitemAdapter.notifyDataSetChanged();
-            mRecyclerView.setAdapter(boxitemAdapter);
+
+            if (wsResult != null ){
+                if (wsResult.getResult()){
+                    ToastUtil.showToastShort("执行解冻成功！");
+                }else {
+                    ToastUtil.showToastShort("执行解冻失败，错误原因：" + wsResult.getErrorInfo());
+                }
+                boxitemAdapter.notifyDataSetChanged();
+                mRecyclerView.setAdapter(boxitemAdapter);
+                remark = "";
+            }else{
+                ToastUtil.showToastShort("执行解冻失败");
+            }
+
         }
 
-        @Override
-        protected void onPreExecute() {
-            pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
 
     }
 
-
-    @Override
-    protected void onResume() {
-//设置为横屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-
-        super.onResume();
-    }
 
 
 }

@@ -29,11 +29,12 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.product_main_scan_ist_get_item_textView) TextView scanIstGetItemTextView;
     @BindView(R.id.product_main_bu_warehouse_textView) TextView buWarehouseInTextView;//车间仓
     @BindView(R.id.product_main_bu_warehouse_out_textView) TextView buWarehouseOutTextView;//车间仓出库
-    @BindView(R.id.product_main_scan_code_box_textView) TextView codeBoxTextView;
-    @BindView(R.id.product_main_scan_code_box_manu_textView) TextView codeBoxManuTextView;
+    @BindView(R.id.product_main_scan_code_box_textView) TextView codeBoxTextView;//成品标签
+    @BindView(R.id.product_main_scan_code_box_manu_textView) TextView codeBoxManuTextView;//成品补打标签
     @BindView(R.id.product_main_product_dp_order_textView) TextView dpOrderTextView;//发货指令查询
     @BindView(R.id.product_main_product_rework_pallet_textView) TextView reworkPalletTextView;//成品整托返工
     @BindView(R.id.product_main_product_move_record_textView) TextView moveRecordTextView;//成品移库记录查询
+    @BindView(R.id.product_main_check_inventory_common_all_box_textView) TextView checkInventoryCommonAllTextView;//成品标签统一盘点
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         dpOrderTextView.setOnClickListener(this);
         reworkPalletTextView.setOnClickListener(this);
         moveRecordTextView.setOnClickListener(this);
+        checkInventoryCommonAllTextView.setOnClickListener(this);
     }
 
     @Override
@@ -92,8 +94,12 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         } else if (v == reworkPalletTextView) {
             Intent intent = new Intent(this, ProductReworkPalletActivity.class);
             startActivity(intent);
-        }else if (v == moveRecordTextView){
+        } else if (v == moveRecordTextView) {
             Intent intent = new Intent(this, ProductMoveRecordActivity.class);
+            startActivity(intent);
+
+        }else if (v == checkInventoryCommonAllTextView) {
+            Intent intent = new Intent(this, ProductCheckInventoryCommonAllActivity.class);
             startActivity(intent);
 
         }

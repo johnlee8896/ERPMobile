@@ -103,6 +103,7 @@ public class PartAllocateTransferInnerCompanyActivity extends BaseActivity imple
         });
     }
 
+//    private boolean isCurrentSmallPackage = false;
     private boolean isCurrentSmallPackage = false;
     private void parseContent(String content) {
         isCurrentSmallPackage = false;

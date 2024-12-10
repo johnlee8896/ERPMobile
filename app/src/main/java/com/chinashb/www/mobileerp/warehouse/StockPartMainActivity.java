@@ -68,6 +68,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button partAllocateSameCompanyButton;//同公司零件调拨
     private Button getPictureButton;//获取图片，从服务器，为打印作准备
     private Button pickGoodsButton;//拣货任务，为供货准备
+    private Button freezeRecordButton;//拣货任务，为供货准备
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
     private UserInfoEntity userInfo;
@@ -106,6 +107,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         getPictureButton = findViewById(R.id.btn_get_image_from_server);
         partAllocateSameCompanyButton = findViewById(R.id.btn_part_allocate_inner_company);
         pickGoodsButton = findViewById(R.id.btn_pick_goods_task);
+        freezeRecordButton = findViewById(R.id.btn_get_freeze_record);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -189,6 +191,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         partAllocateSameCompanyButton.setOnClickListener(this);
         getPictureButton.setOnClickListener(this);
         pickGoodsButton.setOnClickListener(this);
+        freezeRecordButton.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -305,7 +308,11 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
 //            Intent intent = new Intent(StockPartMainActivity.this, PickGoodsActivity.class);
             Intent intent = new Intent(StockPartMainActivity.this, PickGoodsNewShowActivity.class);
             startActivity(intent);
+        }else if (view == freezeRecordButton){
+            Intent intent = new Intent(StockPartMainActivity.this, FreezeRecordActivity.class);
+            startActivity(intent);
         }
+
     }
 
     /**

@@ -1,11 +1,11 @@
 package com.chinashb.www.mobileerp.warehouse;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -15,12 +15,18 @@ import android.widget.Toast;
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssuedItemAdapter;
-import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
+import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.ExtraHRBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.StaticVariableUtils;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -129,9 +135,58 @@ public class StockPutActivity extends BaseActivity {
             public void onClick(View view) {
 
                 if (mpiWcBean != null) {
-                    Intent intent = new Intent(StockPutActivity.this, StockOutMoreExtraActivity.class);
-                    intent.putExtra("mw", mpiWcBean);
-                    startActivityForResult(intent, 400);
+//                    ToastUtil.showToastShort("Company_id =" + UserSingleton.get().getUserInfo().getCompany_ID());
+//
+//                    //// TODO: 11/5/24  额外领料限制
+////                    如果是上海的，作限制，否则直接操作
+//                    String  companySql = "Select Company_ID from bu where bu_id = " + UserSingleton.get().getUserInfo().getBu_ID();
+//                    int companyID = -1;
+//                    WsResult companyResult = WebServiceUtil.getDataTable(companySql);
+//                    if (companyResult != null && companyResult.getResult()){
+//                        String jsonData = companyResult.getErrorInfo();
+//                        ArrayList<Integer> wcList = new ArrayList<Integer>();
+//                        Gson gson = new Gson();
+//                        wcList = gson.fromJson(jsonData, new TypeToken<List<Integer>>() {
+//                        }.getType());
+//                        if (wcList.size() == 1){
+//                            companyID = wcList.get(0);
+//                        }
+//                    }
+                    if (UserSingleton.get().getUserInfo().getCompany_ID() == 1){
+//                    if (companyID == 1){
+//                        String sql = "select HR_ID from Permission_MW_Extra_Allow";
+//
+////                    WebServiceUtil.getDataTable()
+                        //// TODO: 11/5/24 错误原因，这个必须是在线程里面调用执行
+//                        WsResult result = WebServiceUtil.getDataTable(sql);
+//                        ToastUtil.showToastShort(" result =" + result.getErrorInfo() + " " + result.getResult());
+//                        if (result != null && result.getResult()) {
+//                            String jsonData = result.getErrorInfo();
+//                            ArrayList<Integer> wcList = new ArrayList<Integer>();
+//                            Gson gson = new Gson();
+//                            wcList = gson.fromJson(jsonData, new TypeToken<List<Integer>>() {
+//                            }.getType());
+//
+//                            if (wcList .contains(UserSingleton.get().getHRID())){
+//                                Intent intent = new Intent(StockPutActivity.this, StockOutMoreExtraActivity.class);
+//                                intent.putExtra("mw", mpiWcBean);
+//                                startActivityForResult(intent, 400);
+//                            }else{
+//                                ToastUtil.showToastShort("您暂无权限操作额外领料");
+//                            }
+//
+//
+//                        }
+                        GetExtraPutHRListAsyncTask task = new GetExtraPutHRListAsyncTask();
+                        task.execute();
+
+                    }else{
+                        Intent intent = new Intent(StockPutActivity.this, StockOutMoreExtraActivity.class);
+                        intent.putExtra("mw", mpiWcBean);
+                        startActivityForResult(intent, 400);
+                    }
+
+
                 }
 
             }
@@ -345,23 +400,64 @@ public class StockPutActivity extends BaseActivity {
     }
 
 
-    @Override
-    protected void onResume() {
-//设置为屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    private class GetExtraPutHRListAsyncTask extends AsyncTask<Void, String, String> {
 
+        @Override
+        protected String doInBackground(Void... voids) {
+
+
+
+
+            String sql = "select HR_ID from Permission_MW_Extra_Allow";
+
+//                    WebServiceUtil.getDataTable()
+            //// TODO: 11/5/24 错误原因，这个必须是在线程里面调用执行
+            WsResult result = WebServiceUtil.getDataTable(sql);
+//            ToastUtil.showToastShort(" result =" + result.getErrorInfo() + " " + result.getResult());
+
+            if (result != null && result.getResult()) {
+                String jsonData = result.getErrorInfo();
+                if (!TextUtils.isEmpty(jsonData)) {
+                    return jsonData;
+
+                }
+            }
+
+
+
+
+
+
+            return null;
         }
 
-        super.onResume();
-    }
+        @Override
+        protected void onPostExecute(String jsonData) {
+            super.onPostExecute(jsonData);
+            ArrayList<ExtraHRBean> wcList = new ArrayList<ExtraHRBean>();
+            Gson gson = new Gson();
+//            wcList = gson.fromJson(jsonData, new TypeToken<List<Integer>>() {
+//            }.getType());
+            wcList = gson.fromJson(jsonData, new TypeToken<List<ExtraHRBean>>() {
+            }.getType());
+            List<Integer> hrIDList = new ArrayList<>();
+            for (ExtraHRBean bean : wcList){
+                hrIDList.add(bean.getHrID());
+            }
+
+//            if (wcList .contains(UserSingleton.get().getHRID())){
+            if (hrIDList .contains(UserSingleton.get().getHRID())){
+                Intent intent = new Intent(StockPutActivity.this, StockOutMoreExtraActivity.class);
+                intent.putExtra("mw", mpiWcBean);
+                startActivityForResult(intent, 400);
+            }else{
+                ToastUtil.showToastShort("您暂无权限操作额外领料");
+            }
 
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
 
-        outState.putSerializable("MWList", (Serializable) mpiWcBeanList);
 
+
+        }
     }
 }

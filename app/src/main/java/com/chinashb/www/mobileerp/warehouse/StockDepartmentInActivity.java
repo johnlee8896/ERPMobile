@@ -712,7 +712,8 @@ public class StockDepartmentInActivity extends BaseActivity {
                     CommonUtil.ShowToast(StockDepartmentInActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
                     description = "";
                     hasSelectUse = false;
-                    finish();
+                    //// TODO: 11/11/24 这里不必每次finish 
+//                    finish();
                 }
             }
         }

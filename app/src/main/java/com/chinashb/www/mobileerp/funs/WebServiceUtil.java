@@ -51,8 +51,10 @@ import static com.chinashb.www.mobileerp.funs.CommonUtil.isNothing2String;
 //这里的T只是为了getcommonbean方法使用
 public class WebServiceUtil {
 
-    //    public static final String IP = "http://116.236.16.218";
-    public static final String IP = "http://60.172.145.222";
+//        public static final String IP = "http://116.236.16.218";
+//2024-12-10 john 将ip改为域名
+        public static final String IP = "http://visitor.czshb.com";
+//    public static final String IP = "http://60.172.145.222";
     //    public static final Class<BUItemBean> bu = BUItemBean.class;
     public static String Current_Net_Link = "Intranet";
     private static String NAMESPACE = "http://tempuri.org/";
@@ -75,6 +77,8 @@ public class WebServiceUtil {
     //john 2023-02-08 调整过之后还是要加的
     private static String URL = IP + ":8188/Test_Wss/Service.svc";
     private static String URL_Internet = IP + ":8188/Test_Wss/Service.svc";
+
+
     //john 2024-01-04 添加手机测试环境
     private static String URL_Test = IP + ":8188/Test_Wss_Test_Environment/Service.svc";
     private static String URL_Internet_Test = IP + ":8188/Test_Wss_Test_Environment/Service.svc";
@@ -92,16 +96,16 @@ public class WebServiceUtil {
     private static String URL_Internet_QueryWage = IP + ":8188/WageQueryWeb/Service.svc";
 
 //    private static String URL_Intranet = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-//    private static String URL_Intranet = "http://172.19.1.26:8100/Service.svc";
-//    private static String URL_Intranet = "http://172.19.1.26:8100/Test_Wss/Service.svc";
+//    private static String URL_Intranet = "http://172.16.1.26:8100/Service.svc";
+//    private static String URL_Intranet = "http://172.16.1.26:8100/Test_Wss/Service.svc";
 //    private static String URL_Intranet_BackUp = "http://172.16.1.24:8100/Test_Wss/Service.svc";
 
 
-    private static String URL_Intranet = "http://172.19.1.26:8100/Test_Wss/Service.svc";
-    private static String URL_Intranet_Test = "http://172.19.1.26:8100/Test_Wss_Test_Environment/Service.svc";
+    private static String URL_Intranet = "http://172.16.1.26:8100/Test_Wss/Service.svc";
+    private static String URL_Intranet_Test = "http://172.16.1.26:8100/Test_Wss_Test_Environment/Service.svc";
     //    private static String URL_Intranet_BackUp = "http://172.16.1.24:8100/Test_Wss/Service.svc";
     //因80受影响，关闭处理，以前的back有问题
-    private static String URL_Intranet_BackUp = "http://172.19.1.26:8100/Test_Wss/Service.svc";
+    private static String URL_Intranet_BackUp = "http://172.16.1.26:8100/Test_Wss/Service.svc";
     private static String URL_Intranet_Internet_QueryWage = "http://172.16.1.80:8100/WageQueryWeb/Service.svc";
 
 
@@ -1162,8 +1166,8 @@ public class WebServiceUtil {
 //            URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
 //            URL = UserSingleton.get().isServerBack() ? "http://172.16.1.24:8100/Test_Wss/Service.svc" : "http://172.16.1.80:8100/Test_Wss/Service.svc";
 //            finalUrl = UserSingleton.get().isServerBack() ? "http://172.16.1.24:8100/Test_Wss/Service.svc" : "http://172.16.1.80:8100/Test_Wss/Service.svc";
-//            finalUrl = "http://172.19.1.26:8100/Test_Wss/Service.svc";
-            finalUrl = UserSingleton.get().isTestEnvironment() ? "http://172.19.1.26:8100/Test_Wss_Test_Environment/Service.svc" : "http://172.19.1.26:8100/Test_Wss/Service.svc";
+//            finalUrl = "http://172.16.1.26:8100/Test_Wss/Service.svc";
+            finalUrl = UserSingleton.get().isTestEnvironment() ? "http://172.16.1.26:8100/Test_Wss_Test_Environment/Service.svc" : "http://172.16.1.26:8100/Test_Wss/Service.svc";
 
         } else {
 //            finalUrl = UserSingleton.get().isServerBack() ? URL_BackUp : URL;
@@ -3974,8 +3978,12 @@ public class WebServiceUtil {
 
     //移动库位
     public static BoxItemEntity op_Check_Commit_Move_Item_Barcode(String X) {
-        String webMethodName = "op_Check_Commit_Inv_Barcode";
+//        String webMethodName = "op_Check_Commit_Inv_Barcode";
+//         为方便一些同公司零件调拨后的bu_id问题，作此处理
+//// TODO: 11/6/24 webservice还未完善，暂恢复原来
+        String webMethodName = "op_Check_Commit_Inv_Barcode_For_Move";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
         AddPropertyInfo(propertyInfos, "X", X);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
@@ -4468,7 +4476,7 @@ public class WebServiceUtil {
 
     }
 
-    public static WsResult op_Commit_Freeze_Inv(BoxItemEntity box_item) {
+    public static WsResult op_Commit_Freeze_Inv(BoxItemEntity box_item,String remark,int buID) {
 //        String webMethodName = "op_Commit_Freeze_Inv";
 //        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 //
@@ -4485,11 +4493,12 @@ public class WebServiceUtil {
 //
 //
 //        return result;
-        return op_Commit_Freeze_Inv(box_item.getSMLI_ID(), box_item.getSMT_ID());
+        return op_Commit_Freeze_Inv(box_item.getSMLI_ID(), box_item.getSMT_ID(),remark,buID);
 
     }
 
-    public static WsResult op_Commit_Freeze_Inv(long smli_id, long smt_id) {
+    //// TODO: 11/19/24 增加、remark，bu_id
+    public static WsResult op_Commit_Freeze_Inv(long smli_id, long smt_id,String remark,int buID) {
         String webMethodName = "op_Commit_Freeze_Inv";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -4497,6 +4506,8 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
         AddPropertyInfo(propertyInfos, "SMLI_ID", smli_id);
         AddPropertyInfo(propertyInfos, "SMT_ID", smt_id);
+        AddPropertyInfo(propertyInfos, "Remark", remark);
+        AddPropertyInfo(propertyInfos, "Bu_ID", buID);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
 
@@ -4528,7 +4539,7 @@ public class WebServiceUtil {
         return result;
     }
 
-    public static WsResult op_Commit_FreezeNot_Inv(BoxItemEntity box_item) {
+    public static WsResult op_Commit_FreezeNot_Inv(BoxItemEntity box_item,String remark,int buID ) {
 //        String webMethodName = "op_Commit_FreezeNot_Inv";
 //        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 //
@@ -4544,12 +4555,12 @@ public class WebServiceUtil {
 //        WsResult result = Get_WS_Result(obj);
 //
 //        return result;
-        return op_Commit_FreezeNot_Inv(box_item.getSMLI_ID(), box_item.getSMT_ID());
+        return op_Commit_FreezeNot_Inv(box_item.getSMLI_ID(), box_item.getSMT_ID(),remark,buID);
 
     }
 
 
-    public static WsResult op_Commit_FreezeNot_Inv(long smli_id, long smt_id) {
+    public static WsResult op_Commit_FreezeNot_Inv(long smli_id, long smt_id,String remark,int buID ) {
         String webMethodName = "op_Commit_FreezeNot_Inv";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
@@ -4557,6 +4568,9 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
         AddPropertyInfo(propertyInfos, "SMLI_ID", smli_id);
         AddPropertyInfo(propertyInfos, "SMT_ID", smt_id);
+        //// TODO: 11/19/24 增加两字段
+        AddPropertyInfo(propertyInfos, "Remark", remark);
+        AddPropertyInfo(propertyInfos, "Bu_ID", buID);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
 
@@ -5008,7 +5022,7 @@ public class WebServiceUtil {
         String finalUrl = UserSingleton.get().isTestEnvironment() ? URL_Test : URL;
         if (UserSingleton.get().isCurrentInnerNetLink() || TextUtils.equals(Current_Net_Link, "Intranet")) {
 //            finalUrl = UserSingleton.get().isServerBack() ? "http://172.16.1.24:8100/Test_Wss/Service.svc" : "http://172.16.1.80:8100/Test_Wss/Service.svc";
-            finalUrl = UserSingleton.get().isTestEnvironment() ? "http://172.19.1.26:8100/Test_Wss_Test_Environment/Service.svc" : "http://172.19.1.26:8100/Test_Wss/Service.svc";
+            finalUrl = UserSingleton.get().isTestEnvironment() ? "http://172.16.1.26:8100/Test_Wss_Test_Environment/Service.svc" : "http://172.16.1.26:8100/Test_Wss/Service.svc";
 
         } else {
 //            finalUrl = UserSingleton.get().isServerBack() ? URL_BackUp : URL;
@@ -5079,7 +5093,7 @@ public class WebServiceUtil {
         String finalUrl = URL_Test;
         if (UserSingleton.get().isCurrentInnerNetLink() || TextUtils.equals(Current_Net_Link, "Intranet")) {
 //            finalUrl = UserSingleton.get().isServerBack() ? "http://172.16.1.24:8100/Test_Wss/Service.svc" : "http://172.16.1.80:8100/Test_Wss/Service.svc";
-            finalUrl = "http://172.19.1.26:8100/Test_Wss_Test_Environment/Service.svc";
+            finalUrl = "http://172.16.1.26:8100/Test_Wss_Test_Environment/Service.svc";
 
         } else {
 //            finalUrl = UserSingleton.get().isServerBack() ? URL_BackUp : URL;
