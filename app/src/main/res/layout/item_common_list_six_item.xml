@@ -106,8 +106,6 @@
         android:layout_marginLeft="@dimen/dimen_size_10"
         android:paddingTop="@dimen/dimen_size_10"
         tools:text="钣金车间"
-        android:textSize="@dimen/text_size_18"
-        android:textColor="@color/color_orange_FF6A00"
         app:layout_constraintBottom_toBottomOf="@id/item_fourth_info_textView"
         app:layout_constraintLeft_toRightOf="@id/item_common_barrier"
         app:layout_constraintTop_toTopOf="@id/item_fourth_info_textView" />

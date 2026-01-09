@@ -23,9 +23,12 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.StringUtils;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
+import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -59,6 +62,27 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
     private List<BoxItemEntity> boxItemEntityArrayList = new ArrayList<>();
     private String remark;
     private InnerSelectBuBean innerSelectBuBean;
+    private CommonSelectInputDialog remarkDialog;
+
+    private OnViewClickListener remarkOnViewClickListener = new OnViewClickListener() {
+        @Override public <T> void onClickAction(View v, String tag, T t) {
+            if (t != null) {
+                remark = (String) t;
+            }
+            //// TODO: 5/6/25 能调用 此方法说明是点了确定按钮，取消按钮则是直接dismiss
+            if (remark.length() > 0){
+                ToastUtil.showToastShort("备注添加成功！");
+                remarkTextView.setText(String.format("备注：%s",remark));
+                remarkTextView.setTextColor(getResources().getColor(R.color.color_orange_F58B23));
+                if (remarkDialog != null && remarkDialog.isShowing()) {
+                    remarkDialog.dismiss();
+                }
+            }else{
+                ToastUtil.showToastShort("备注为空！");
+            }
+
+        }
+    };
 
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -139,7 +163,7 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
             intent.putExtra(IntentConstant.Intent_Extra_to_inner_company_bu_from,IntentConstant.Intent_Request_Code_Sale_Out_to_Bu);
             startActivityForResult(intent,IntentConstant.Intent_Request_Code_Sale_Out_to_Bu);
         } else if (v == remarkButton) {
-
+            showRemarkDialog();
         } else if (v == outWarehouseInButton) {
             if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
 
@@ -169,6 +193,16 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
+    private void showRemarkDialog() {
+        if (remarkDialog == null) {
+            remarkDialog = new CommonSelectInputDialog(InnerSaleOutActivity.this);
+        }
+        remarkDialog.show();
+        remarkDialog.setInputDialogTitle("请添加备注");
+        remarkDialog.setInputOnly(true);
+        remarkDialog.setOnViewClickListener(remarkOnViewClickListener);
+    }
+
     private class GetItemQRCodeAsyncTask extends AsyncTask<String, Void, BoxItemEntity> {
         @Override
         protected BoxItemEntity doInBackground(String... params) {
@@ -195,7 +229,15 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
                     boxItemEntity.setCanNotEdit(true);
                     if (isCurrentSmallPackage){
                         boxItemEntity.setCanNotEdit(false);
+                    }else{
+                        //// TODO: 9/6/25 增加，针对结算中心发马来的，不论外购件还是自制件大标签 可以 修改数量
+//                        if (innerSelectBuBean .getBuID() == 149 && UserSingleton.get().getUserInfo().getBu_ID() == 155){
+                        if ((innerSelectBuBean .getBuName() .equals("马来座椅电机") && UserSingleton.get().getUserInfo().getBu_ID() == 155)
+                                ||(innerSelectBuBean .getBuName() .contains("结算中心") )){
+                            boxItemEntity .setCanNotEdit(false);
+                        }
                     }
+
                     boxItemEntityArrayList.add(boxItemEntity);
 
                 } else {
@@ -259,8 +301,13 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
             int count = 0;
             int newissuesize = boxItemEntityArrayList.size();
             while (count < newissuesize && boxItemEntityArrayList.size() > 0) {
-                BoxItemEntity boxItemEntity = boxItemEntityArrayList.get(0);
-                ws_result = WebServiceUtil.op_Commit_Sale_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), UserSingleton.get().getHRID(), innerSelectBuBean.getCfID(), innerSelectBuBean.getCompanyName(), boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
+                //// TODO: 9/6/25   这里如果改了数量如果还取boxItemEntityArrayList的话值是没有变的
+//                BoxItemEntity boxItemEntity = boxItemEntityArrayList.get(0);
+                List<BoxItemEntity> currentEntityList = new ArrayList<>();
+                currentEntityList = adapter.getList();
+                BoxItemEntity boxItemEntity = currentEntityList.get(0);
+//                ws_result = WebServiceUtil.op_Commit_Sale_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), UserSingleton.get().getHRID(), innerSelectBuBean.getCfID(), innerSelectBuBean.getCompanyName(), boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
+                ws_result = WebServiceUtil.op_Commit_Sale_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), UserSingleton.get().getHRID(), innerSelectBuBean.getCfID(), innerSelectBuBean.getBuName() , boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
                         boxItemEntity.getLotNo(), boxItemEntity.getIst_ID(), boxItemEntity.getSub_Ist_ID(), boxItemEntity.getSMLI_ID(), boxItemEntity.getSMM_ID(), boxItemEntity.getSMT_ID(),
                         String.valueOf(boxItemEntity.getQty()));
 
@@ -290,9 +337,16 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
             remark = "";
             if (ws_result != null) {
                 if (!ws_result.getResult()) {
-                    ToastUtil.showToastShort(ws_result.getErrorInfo());
+                    if (StringUtils.isStringValid(ws_result.getErrorInfo())){
+                        ToastUtil.showToastLong("执行超时，未知错误！");
+                    }
+                    else {
+                        ToastUtil.showToastLong("执行超时！" + ws_result.getErrorInfo());
+                    }
+
+
                 } else {
-                    ToastUtil.showToastShort("成功出库");
+                    ToastUtil.showToastLong("成功出库");
                     boxItemEntityArrayList.clear();
 //                    boxItemEntityArrayList.remove(boxItemen)
                     adapter.notifyDataSetChanged();

@@ -1,10 +1,10 @@
 package com.chinashb.www.mobileerp.adapter;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.text.Html;
 import android.text.TextUtils;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.PlanItemDetailActivity;
+import com.chinashb.www.mobileerp.PlanManageForWorkReportingActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.bean.PlanItemDetailBean;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
@@ -28,8 +29,22 @@ import butterknife.ButterKnife;
 
 public class PlanItemDetailAdapter extends BaseRecycleAdapter<PlanItemDetailBean, PlanItemDetailAdapter.PlanItemViewHolder> {
 
+    private boolean forWorkReporting;
+
+    public boolean isForWorkReporting() {
+        return forWorkReporting;
+    }
+
+    public PlanItemDetailAdapter setForWorkReporting(boolean forWorkReporting) {
+        this.forWorkReporting = forWorkReporting;
+        return this;
+    }
+
     @NonNull @Override public PlanItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new PlanItemViewHolder(parent);
+        PlanItemViewHolder planItemViewHolder = new PlanItemViewHolder(parent);
+        planItemViewHolder.setForWorkReporting(forWorkReporting);
+//        return new PlanItemViewHolder(parent);
+        return planItemViewHolder;
     }
 
     static class PlanItemViewHolder extends BaseViewHolder {
@@ -41,6 +56,16 @@ public class PlanItemDetailAdapter extends BaseRecycleAdapter<PlanItemDetailBean
         @BindView(R.id.plan_list_title_layout) LinearLayout titleLayout;
         @BindView(R.id.plan_list_plan_detail_textView) TextView planDetailTextView;
         @BindView(R.id.plan_list_remark_textView) TextView remarkTextView;
+        private boolean forWorkReporting;
+
+        public boolean isForWorkReporting() {
+            return forWorkReporting;
+        }
+
+        public PlanItemViewHolder setForWorkReporting(boolean forWorkReporting) {
+            this.forWorkReporting = forWorkReporting;
+            return this;
+        }
 
         public PlanItemViewHolder(ViewGroup viewGroup) {
             super(viewGroup, R.layout.item_plan_show_list_layout);
@@ -61,9 +86,19 @@ public class PlanItemDetailAdapter extends BaseRecycleAdapter<PlanItemDetailBean
             }
 
             itemView.setOnClickListener(v ->{
-                Intent intent = new Intent(itemView.getContext(), PlanItemDetailActivity.class);
-                intent.putExtra(IntentConstant.Intent_PlanItemDetailBean,bean);
-                itemView.getContext().startActivity(intent);
+                if (forWorkReporting){
+                    Intent intent = new Intent(itemView.getContext(), PlanManageForWorkReportingActivity.class);
+                    intent.putExtra(IntentConstant.Intent_PlanItemDetailBean,bean);
+//                    itemView.getContext().startActivity(intent);
+                    Activity  activity = (Activity) itemView.getContext();
+                    activity.setResult(IntentConstant.Intent_Request_Code_Plan_Select_to_Work_Reporting_Activity, intent);
+                    activity.finish();
+                }else {
+                    Intent intent = new Intent(itemView.getContext(), PlanItemDetailActivity.class);
+                    intent.putExtra(IntentConstant.Intent_PlanItemDetailBean,bean);
+                    itemView.getContext().startActivity(intent);
+                }
+
             });
 
             itemView.setOnLongClickListener(new View.OnLongClickListener() {

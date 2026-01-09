@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
@@ -41,6 +42,7 @@ public class StockFreezeActivity extends BaseActivity {
     private EditText inputEditText;
     private RecyclerView mRecyclerView;
     private String remark = "";
+    private TextView remarkTitleTextView;
 
     private AdapterFreezeBoxItem boxitemAdapter;
     private List<BoxItemEntity> boxitemList;
@@ -52,9 +54,18 @@ public class StockFreezeActivity extends BaseActivity {
             if (t != null) {
                 remark = (String) t;
             }
-            if (remarkDialog != null && remarkDialog.isShowing()) {
-                remarkDialog.dismiss();
+            //// TODO: 5/6/25 能调用 此方法说明是点了确定按钮，取消按钮则是直接dismiss
+            if (remark.length() > 0){
+                ToastUtil.showToastShort("备注添加成功！");
+                remarkTitleTextView.setText(String.format("备注：%s",remark));
+                remarkTitleTextView.setTextColor(getResources().getColor(R.color.color_orange_F58B23));
+                if (remarkDialog != null && remarkDialog.isShowing()) {
+                    remarkDialog.dismiss();
+                }
+            }else{
+                ToastUtil.showToastShort("备注为空！");
             }
+
         }
     };
 
@@ -70,6 +81,7 @@ public class StockFreezeActivity extends BaseActivity {
         btnFreezeBox = (Button) findViewById(R.id.btn_freeze_box);
         btnFreezeNot = (Button) findViewById(R.id.btn_freeze_not);
         inputEditText = findViewById(R.id.stock_freeze_input_EditeText);
+        remarkTitleTextView = findViewById(R.id.tv_freeze_box_title);
 
         boxitemList = new ArrayList<>();
 
@@ -255,6 +267,11 @@ public class StockFreezeActivity extends BaseActivity {
 
 
             mRecyclerView.setAdapter(boxitemAdapter);
+
+            remarkTitleTextView.setText("冻结/解冻托盘");
+            remarkTitleTextView.setTextColor(getResources().getColor(R.color.black));
+            //// TODO: 7/14/25
+            inputEditText.setText("");
         }
 
 
@@ -292,6 +309,7 @@ public class StockFreezeActivity extends BaseActivity {
             }else{
                 ToastUtil.showToastShort("执行冻结失败");
             }
+            inputEditText.setText("");
             //tv.setText(fahren + "∞ F");
             //boxitemAdapter= new AdapterFreezeBoxItem(StockFreezeActivity.this, boxitemList);
 
@@ -333,6 +351,7 @@ public class StockFreezeActivity extends BaseActivity {
             }else{
                 ToastUtil.showToastShort("执行解冻失败");
             }
+            inputEditText.setText("");
 
         }
 

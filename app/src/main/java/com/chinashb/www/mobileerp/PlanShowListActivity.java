@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,6 +14,7 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.basicobject.s_WCList;
 import com.chinashb.www.mobileerp.bean.PlanItemDetailBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.utils.UnitFormatUtil;
@@ -53,6 +53,7 @@ public class PlanShowListActivity extends BaseActivity implements View.OnClickLi
     private String endDateString;
     private s_WCList selectedWCEntity;
     private ArrayList<PlanItemDetailBean> originalBeanList;
+    private boolean fromWorkReportingRequestCode = false;
 //    private ArrayList<WorkCenter> workCenterList;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class PlanShowListActivity extends BaseActivity implements View.OnClickLi
         endDateString = currentDate;
         Intent intent = getIntent();
         selectedWCEntity = (s_WCList) intent.getSerializableExtra("wclist");
+        fromWorkReportingRequestCode = intent.getBooleanExtra(IntentConstant.Intent_Extra_Plan_Select_to_Work_Reporting_boolean,false);
         if (selectedWCEntity != null) {
             titleManagerView.setTitle(selectedWCEntity.getListName() + "的生产线");
         }
@@ -72,6 +74,7 @@ public class PlanShowListActivity extends BaseActivity implements View.OnClickLi
         setViewListeners();
         adapter = new PlanItemDetailAdapter();
         recyclerView.setAdapter(adapter);
+        adapter.setForWorkReporting(fromWorkReportingRequestCode);
 
         timePickerManager = new TimePickerManager(PlanShowListActivity.this);
         GetMPAsyncTask task;

@@ -48,6 +48,14 @@ public class ToastUtil {
         }
     }
 
+    public static void showToastCertainTime(CharSequence text,int seconds) {
+        if (!TextUtils.isEmpty(text)) {
+            getsToast().setDuration(seconds);
+            getsToast().setText(text);
+            getsToast().show();
+        }
+    }
+
     public static void showToastLong(@StringRes int textId) {
         getsToast().setDuration(Toast.LENGTH_LONG);
         getsToast().setText(textId);

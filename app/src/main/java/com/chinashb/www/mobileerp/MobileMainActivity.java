@@ -1,5 +1,6 @@
 package com.chinashb.www.mobileerp;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +40,11 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.umeng.analytics.MobclickAgent;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,6 +67,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private ImageView avatarImageView;
     private TextView testEnvironmentTextView;
     private TextView printTextView;
+    private TextView workReportingTextView;
 
     private NetWorkReceiver netWorkReceiver;
     private boolean isFromNamePwdCheck = false;
@@ -102,6 +109,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         return appVersionName;
     }
 
+    @TargetApi(Build.VERSION_CODES.CUPCAKE)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,6 +201,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         versionTextView = findViewById(R.id.main_version_button);
         testEnvironmentTextView = findViewById(R.id.tv_current_test_environment);
         printTextView = findViewById(R.id.main_print_button);
+        workReportingTextView = findViewById(R.id.main_work_reporting_button);
     }
 
     protected void setViewListeners() {
@@ -209,6 +218,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         nucleinTextView.setOnClickListener(this);
         versionTextView.setOnClickListener(this);
         printTextView.setOnClickListener(this);
+        workReportingTextView.setOnClickListener(this);
     }
 
     private String getSqlBu() {
@@ -254,7 +264,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                         userInfo.setHR_ID(Integer.parseInt(qrContent[2]));
                         userInfo.setHrNum(qrContent[4]);
                         GetHrNameAsyncTask task = new GetHrNameAsyncTask();
-                        task.execute();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
+                            task.execute();
+                        }
                     }
                 }
             }
@@ -407,14 +419,16 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             startActivity(intent);
             MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_product_management);
         } else if (view == switchBUTextView) {
+
+//            testWebApi();
+//            fetchDataFromWebApi("");
+
+
             if (!UserSingleton.get().hasLogin()) {
                 ToastUtil.showToastLong("请先登录");
                 return;
             }
             jumpToSwitchBuActivity();
-
-//            Intent intent = new Intent(MobileMainActivity.this, ImageManageActivity.class);
-//            startActivity(intent);
 
         } else if (view == planTextView) {
             if (!UserSingleton.get().hasLogin()) {
@@ -433,7 +447,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         } else if (view == foodOrderTextView) {
 //            Intent intent = new Intent(this,FoodOrderActivity.class);
 //            startActivity(intent);
-            new GetTestService2AsyncTask().execute();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
+                new GetTestService2AsyncTask().execute();
+            }
         } else if (view == attendanceTextView) {
 //            Intent intent = new Intent(this,AttendanceActivity.class);
 //            Intent intent = new Intent(this,LogisticsTrackingActivity.class);
@@ -448,6 +464,46 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         }else if (view == printTextView) {
             Intent intent = new Intent(this, MobilePrinterActivity.class);
             startActivity(intent);
+        }else if (view == workReportingTextView) {
+            Intent intent = new Intent(this, PlanManageForWorkReportingActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    public String fetchDataFromWebApi(String urlString) {
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+
+        try {
+            URL url = new URL(urlString);
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            InputStreamReader streamReader = new InputStreamReader(urlConnection.getInputStream());
+            reader = new BufferedReader(streamReader);
+
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line).append("\n");
+            }
+
+            return stringBuilder.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -477,6 +533,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_switch_bu);
     }
 
+    @TargetApi(Build.VERSION_CODES.CUPCAKE)
     private class GetHrNameAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {

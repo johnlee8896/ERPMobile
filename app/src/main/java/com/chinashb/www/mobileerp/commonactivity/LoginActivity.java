@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -48,8 +47,6 @@ import com.google.zxing.integration.android.IntentResult;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
-
-import static com.chinashb.www.mobileerp.funs.CommonUtil.userPictureMap;
 
 public class LoginActivity extends BaseActivity {
 
@@ -472,11 +469,12 @@ public class LoginActivity extends BaseActivity {
                 String userName = params[0];
                 String password = params[1];
 //                wsResult = WebServiceUtil.getTryLogin(userName, password);
-                if (UserSingleton.get().isTestEnvironment()) {
-                    wsResult = WebServiceUtil.getTryLogin_Test(userName, password);
-                } else {
-                    wsResult = WebServiceUtil.getTryLogin(userName, password);
-                }
+//                if (UserSingleton.get().isTestEnvironment()) {
+//                    wsResult = WebServiceUtil.getTryLogin_Test(userName, password);
+//                } else {
+//                    wsResult = WebServiceUtil.getTryLogin(userName, password);
+//                }
+                wsResult = WebServiceUtil.getTryLogin(userName, password);
                 return null;
             }
             return null;
@@ -553,9 +551,9 @@ public class LoginActivity extends BaseActivity {
             UserSingleton.get().setHRID(hrId);
             UserSingleton.get().setHRName(userInfo.getHR_Name());
             UserSingleton.get().setUserInfo(userInfo);
-            if (userInfo != null) {
-                Bitmap userPic = CommonUtil.getUserPic(LoginActivity.this, userPictureMap, userInfo.getHR_ID());
-            }
+//            if (userInfo != null) {
+//                Bitmap userPic = CommonUtil.getUserPic(LoginActivity.this, userPictureMap, userInfo.getHR_ID());
+//            }
             return null;
         }
 
@@ -594,6 +592,49 @@ public class LoginActivity extends BaseActivity {
     }
 
     private class GetDownloadUrlTask extends AsyncTask<String, Void, WsResult> {
+        //Image hr_photo;
+        String updateLog = "";
+
+        @Override
+        protected WsResult doInBackground(String... params) {
+            if (params != null && params.length > 0) {
+                updateLog = params[0];
+            }
+            WsResult result = WebServiceUtil.getDownloadUrl();
+            return result;
+        }
+
+        @Override
+        protected void onPreExecute() {
+//            scanProgressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(WsResult result) {
+//
+//            MobclickAgent.onEvent(LoginActivity.this, StringConstantUtil.Umeng_event_scan_hr_login);
+            if (result != null && result.getResult() && !TextUtils.isEmpty(result.getErrorInfo())) {
+                APPUpgradeManager.with(LoginActivity.this)
+                        .setNeedShowToast(true)
+//                                .setAPIService(APIDefine.SERVICE_BASE)
+//                                .setAPIUrl(APIDefine.API_check_new_version)
+//                                .setAppName(getString(R.string.app_name))
+                        .setApkDownloadedPath(FileUtil.getCachePath())
+//                                .setVersionName(APPUtil.getVersionName()).setVersionCode(APPUtil.getVersionCode() + "")
+//                                .builder().checkNewVersion(APPUpgradeManager.NAME_MaterialsManager);
+                        .builder().showForceUpdateDialog(updateLog, result.getErrorInfo());
+            } else {
+                ToastUtil.showToastShort("获取下载链接失败！");
+            }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+    private class GetTestNameListTask extends AsyncTask<String, Void, WsResult> {
         //Image hr_photo;
         String updateLog = "";
 

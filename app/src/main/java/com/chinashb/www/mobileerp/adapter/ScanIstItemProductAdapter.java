@@ -34,6 +34,7 @@ public class ScanIstItemProductAdapter extends BaseRecycleAdapter<ScanIstItemPro
         @BindView(R.id.item_scan_product_ist_qty_textView) TextView qtyTextView;
         @BindView(R.id.item_scan_product_ist_in_pallet_textView) TextView isInPalletTextView;
         @BindView(R.id.item_scan_product_status_textView) TextView statusTextView;
+        @BindView(R.id.item_scan_product_ist_serialNo_textView) TextView serialNoTextView;
 
         public ScanISTItemProductViewHolder(ViewGroup viewGroup) {
             super(viewGroup, R.layout.item_scan_ist_product_item_detail_layout);
@@ -52,6 +53,7 @@ public class ScanIstItemProductAdapter extends BaseRecycleAdapter<ScanIstItemPro
                 qtyTextView.setText(String.valueOf(entity.get库存()));
                 isInPalletTextView.setText(entity.is在托盘() ? "是" : "否");
                 statusTextView.setText(entity.get状态());
+                serialNoTextView.setText(entity.get托盘序号());
 
             }
         }

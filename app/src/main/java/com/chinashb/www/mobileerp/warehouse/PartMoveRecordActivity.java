@@ -107,9 +107,29 @@ public class PartMoveRecordActivity extends BaseActivity {
                         ToastUtil.showToastShort("格式不符，请在输入框中输入VG或VE开头的箱码，点回车结束！");
                     }
                 }
-                GetMoveRecordAsyncTask task = new GetMoveRecordAsyncTask();
-                task.execute(boxID);
+//                GetMoveRecordAsyncTask task = new GetMoveRecordAsyncTask();
+//                task.execute(boxID);
+            }else {
+                //  3/24/25   john 处理类似 v9/....等很多split的字段
+
+                if (qrContent .length > 5){
+                    String qrTitle = qrContent[0];
+                    if (qrTitle.equals("V9")  ) {
+                        //物品条码
+                        boxID = qrContent[2];
+                    }else if (qrTitle.equals("VA") ) {
+                        //物品条码
+                        boxID = qrContent[2];
+                    }else if (qrTitle.equals("VB") ) {
+                        //物品条码
+                        boxID = qrContent[2];
+                    }else{
+                        ToastUtil.showToastShort("格式不符，请在输入框中输入VG或VE开头的箱码，点回车结束！");
+                    }
+                }
             }
+            GetMoveRecordAsyncTask task = new GetMoveRecordAsyncTask();
+            task.execute(boxID);
         }
     }
 

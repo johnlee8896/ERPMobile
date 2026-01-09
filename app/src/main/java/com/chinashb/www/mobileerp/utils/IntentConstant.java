@@ -82,6 +82,11 @@ public class IntentConstant {
     public static final String Intent_Extra_goods_poi_map_string = "Intent_Extra_goods_poi_map";
     public static final String Intent_Extra_goods_poi_map_order_boolean = "Extra_goods_poi_map_order_boolean";
 
+    public static final String Intent_Extra_Plan_Select_to_Work_Reporting_boolean = "Intent_Extra_Plan_Select_to_Work_Reporting_boolean";
+    public static final String Intent_Extra_MY_Purchase_Order_Bu_ID = "Intent_Extra_MY_Purchase_Order_Bu_ID";
+    public static final String Intent_Extra_MY_Purchase_Order_Item_ID = "Intent_Extra_MY_Purchase_Order_Item_ID";
+    public static final String Intent_Extra_MY_Purchase_Order_bean = "Intent_Extra_MY_Purchase_Order_bean";
+
 
     public static final int Intent_Request_Code_Product_Out_And_Delivery_Order = 0X100;
     public static final int Intent_Request_Code_Product_Out_And_Check_Same = 0X109;
@@ -106,6 +111,10 @@ public class IntentConstant {
     public static final int Intent_Request_Code_Inv_Query_Item_To_InputActivity = 0X211;
     public static final int Intent_Request_Code_Goods_Send_To_Goods_Order_Activity = 0X212;
     public static final int Intent_Request_Code_Pick_Goods_To_Stock_Move_Activity = 0X213;
+
+
+    public static final int Intent_Request_Code_Plan_Select_to_Work_Reporting_Activity = 0X214;
+    public static final int Intent_Request_Stock_in_To_Purchase_Order_Activity = 0X215;
 
 
 }

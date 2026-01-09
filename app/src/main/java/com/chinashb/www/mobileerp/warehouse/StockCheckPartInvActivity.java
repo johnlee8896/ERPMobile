@@ -240,6 +240,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
 //                        W + ") As W On W.Warehouse_ID=CheckInventory.Warehouse_ID " +
 //                        "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type ;
                 String sql = "";
+//                Datediff(day, Insert_Time, Getdate())<100  2025-07-28 将原100改为200，可扩大显示时间
                 if (Ac_Type == 13 || Ac_Type == 14){
 
 //                    2023-06-25 john 如果是五金，则ac_type只为1
@@ -248,7 +249,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
                     }
 
                      sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20),Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory\n" +
-                            " Where Bu_ID=" + Bu_ID + " And  Ac_Type=" + Ac_Type + " And Datediff(day, Insert_Time, Getdate())<100 ";
+                            " Where Bu_ID=" + Bu_ID + " And  Ac_Type=" + Ac_Type + " And Datediff(day, Insert_Time, Getdate())<200 ";
                 }else if (Ac_Type == 1 || Ac_Type == 2){
                     String W = "Select Distinct Warehouse_ID From Bu_W_Ac " +
                             "Inner Join Bu_Ac On Bu_W_Ac.Ac_Book_ID=Bu_Ac.Ac_Book_ID " +
@@ -261,7 +262,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
                             "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type +
                             " And " +
 //                        "Datediff(day, Insert_Time, Getdate())<30 ";
-                            "Datediff(day, Insert_Time, Getdate())<100 ";
+                            "Datediff(day, Insert_Time, Getdate())<200 ";
                 }
 
 

@@ -12,6 +12,7 @@ import com.chinashb.www.mobileerp.bean.CompanyBean;
 import com.chinashb.www.mobileerp.bean.DeliveryTypeBean;
 import com.chinashb.www.mobileerp.bean.LogisticsCompanyBean;
 import com.chinashb.www.mobileerp.bean.ReceiverCompanyBean;
+import com.chinashb.www.mobileerp.bean.WCProductBean;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 
 import butterknife.BindView;
@@ -75,6 +76,9 @@ public class SelectUseAdapter<T> extends BaseRecycleAdapter<T, SelectUseAdapter.
                 useTextView.setText(((LogisticsCompanyBean)t).getLcName());
             }else if(t instanceof DeliveryTypeBean){
                 useTextView.setText(((DeliveryTypeBean)t).getDelivery());
+            }else if (t instanceof WCProductBean){
+                WCProductBean bean = (WCProductBean) t;
+                useTextView.setText(bean.get车间() + "*" + bean.get生产线() );
             }
 
 

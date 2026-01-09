@@ -278,6 +278,42 @@ public class MoveManuProductPalletActivity extends BaseActivity implements View.
         palletIDList.clear();
     }
 
+    private class GetPalletRemarkAsyncTask extends AsyncTask<String, Void, Void> {
+        IstPlaceEntity placeEntity;
+
+        @Override
+        protected Void doInBackground(String... params) {
+            placeEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
+            thePlace = placeEntity;
+            if (placeEntity.getResult()) {
+            } else {
+                Toast.makeText(MoveManuProductPalletActivity.this, placeEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //tv.setText(fahren + "∞ F");
+//            boxitemAdapter = new AdapterMoveBoxItem(MoveManuProductPalletActivity.this, boxitemList);
+//            mRecyclerView.setAdapter(boxitemAdapter);
+
+            handleMoveStockArea();
+            //// TODO: 2024/5/8 这里不能直接清除数据，如果有错误，则boxidlist.clear，再看错误就index为0报错，因为异步
+//            finishHandleMove();
+//            boxitemList.clear();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
         IstPlaceEntity placeEntity;
 

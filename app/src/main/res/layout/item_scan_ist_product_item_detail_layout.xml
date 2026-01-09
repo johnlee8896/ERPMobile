@@ -254,7 +254,35 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_5"
+        android:orientation="horizontal">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="托盘序号:" />
+
+            <TextView
+                android:id="@+id/item_scan_product_ist_serialNo_textView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                tools:text="DX0000" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -52,6 +52,7 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
     //    private long boxId;
     private List<Integer> boxIDList;
     private TextView itemInfoTextView;
+    private TextView remarkTextView;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -82,6 +83,7 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
         stockSwitch = findViewById(R.id.stock_move_suggest_stock_Switch_pallet);
         switchLayout = findViewById(R.id.stock_move_suggest_stock_Layout_pallet);
         itemInfoTextView = findViewById(R.id.product_pallet_move_item_info_textview);
+        remarkTextView = findViewById(R.id.product_pallet_remark_info_textview);
 
         boxIDList = new ArrayList<>();
 //        boxitemAdapter = new AdapterMoveBoxItem(MoveProductPalletActivity.this, boxitemList);
@@ -215,7 +217,7 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
                                 tempBoxInfoSBuilder.append("物料信息\n");
                             }
 
-                            tempBoxInfoSBuilder.append(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s\n", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
+                            tempBoxInfoSBuilder.append(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
                             //                        itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
                             itemInfoTextView.setText(tempBoxInfoSBuilder.toString());
                             inputEditText.setText("");
@@ -225,6 +227,9 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
                     }
                     GetProductMoveSuggestAreaAsyncTask task = new GetProductMoveSuggestAreaAsyncTask();
                     task.execute(boxId);
+                    GetProductPalletRemarkAsyncTask remarkAsyncTask = new GetProductPalletRemarkAsyncTask();
+//                    remarkAsyncTask.execute((long) boxId);
+                    remarkAsyncTask.execute(boxId);
                 } else if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
                     //仓库位置码
                     scanstring = content;
@@ -270,6 +275,7 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
 
     private void finishHandleMove() {
         itemInfoTextView.setText("");
+        remarkTextView.setText("");
         inputEditText.setText("");
         inputEditText.setHint("请继续扫描");
         boxIDList.clear();
@@ -504,6 +510,43 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
                 ToastUtil.showToastShort("未能获取建议库位");
 
             }
+        }
+    }
+
+    private class GetProductPalletRemarkAsyncTask extends AsyncTask<Integer,Void,Void>{
+        WsResult ws_result;
+//        long boxID = 0;
+        int boxID = 0;
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            boxID = integers[0];
+            ws_result = WebServiceUtil.getProductPalletRemark(UserSingleton.get().getUserInfo().getBu_ID(),boxID);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (ws_result != null && ws_result.getResult()){
+//                ToastUtil.showToastShort("建议库位:" + ws_result.getErrorInfo());
+                StringBuilder tempBoxInfoSBuilder = new StringBuilder();
+//                            tempBoxInfoSBuilder.append("\n\n");
+                if (!TextUtils.isEmpty(remarkTextView.getText())) {
+                    tempBoxInfoSBuilder.append(remarkTextView.getText());
+                } else {
+                    //  第一行换行
+                    tempBoxInfoSBuilder.append("备注信息      ");
+                }
+
+                tempBoxInfoSBuilder.append(String.format("托盘Box_ID:%s,备注：%s\n", boxID + "",ws_result .getErrorInfo().contains("any") ? "" : ws_result .getErrorInfo() ));
+                //                        remarkTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
+                remarkTextView.setText(tempBoxInfoSBuilder.toString());
+            }
+//            else{
+//                ToastUtil.showToastShort("未能获取建议库位");
+//
+//            }
         }
     }
 

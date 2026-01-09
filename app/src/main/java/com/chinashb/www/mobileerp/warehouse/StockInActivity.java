@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.SelectPurchaseOrderListActivity;
 import com.chinashb.www.mobileerp.adapter.InBoxItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
@@ -34,6 +35,7 @@ import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -81,8 +83,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     private InBoxItemAdapter boxItemAdapter;
     private List<BoxItemEntity> boxItemEntityList = new ArrayList<>();
     private IstPlaceEntity thePlace;
-    private String scanContent;
     private ArrayList<String> scanCodeList = new ArrayList<>();
+    private String scanContent;
     private String scanCode = "";
     private ScanInputDialog inputDialog;
     private RelativeLayout switchLayout;
@@ -458,7 +460,14 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
         @Override
         protected Void doInBackground(String... params) {
-            BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanContent);
+
+            BoxItemEntity boxItemEntity = null;
+            if(UserSingleton.get().getUserInfo().getBu_ID() ==149 || UserSingleton.get().getUserInfo().getBu_ID() == 155){
+
+                boxItemEntity = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode_ML(scanContent);
+            }else {
+                boxItemEntity = WebServiceUtil.op_Check_Commit_DS_Item_Income_Barcode(scanContent);
+            }
 
             //// TODO: 2020/10/19 test
             String s = JsonUtil.objectToJson(boxItemEntity);
@@ -509,6 +518,11 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
                         bundle.putString("suggest_ist", boxItemEntity.getIstName());
                         message.setData(bundle);
                         handler.sendMessage(message);
+
+
+//                        jumpToSelectPurchaseOrderActivity(boxItemEntity.getItem_ID(),boxItemEntity.getBu_ID());
+
+//                        getPOList(boxItemEntity.getItem_ID());
                     }
                     boxItemEntity.setSelect(true);
                     boxItemEntityList.add(boxItemEntity);
@@ -572,6 +586,59 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
     }
 
+    private void jumpToSelectPurchaseOrderActivity(int item_ID ,int toBu_ID) {
+        Intent intent = new Intent(StockInActivity.this, SelectPurchaseOrderListActivity.class);
+        intent.putExtra(IntentConstant.Intent_Extra_MY_Purchase_Order_Bu_ID,toBu_ID);
+        intent.putExtra(IntentConstant.Intent_Extra_MY_Purchase_Order_Item_ID,item_ID);
+        startActivityForResult(intent,IntentConstant.Intent_Request_Stock_in_To_Purchase_Order_Activity);
+
+    }
+
+    private void getPOList(long item_id) {
+        GetPOOrderListAsyncTask task = new GetPOOrderListAsyncTask();
+        task.execute(item_id + "");
+    }
+
+
+    private class GetPOOrderListAsyncTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String sitem_ID = strings[0];
+            String sql = String.format("SELECT POI.POI_ID,POI.PO_ID\n" +
+                    "  ,Case When PO.Ver=1 Then PO_No Else POR.Release_No End As PO_No\n" +
+                    "  ,Case When PO.Ver=1 Then PO_Date Else POR.Release_Date End As 下单日期\n" +
+                    "  ,Item.KisCode,Item.Item_ID,Item.Item As 物料编码, Item.Item_Name As 物料,Item.Item_Spec2 As 规格,Item_Version.Item_Version As 版本,Item.Item_Unit As 单位\n" +
+                    "  ,POI.POI_Quantity AS 采购数量,POI.POI_In_Qty AS 已关联数量,POI.POI_Quantity-ISNULL(POI.POI_In_Qty,0) AS 未关联数量,POI.ML_Kis_BillNo AS 金蝶采购单号\n" +
+                    "  FROM Purchase_Order_Item AS POI\n" +
+                    "  INNER JOIN Purchase_Order AS PO ON PO.PO_ID=POI.PO_ID\n" +
+                    "  Inner join Item_Version On Item_Version.IV_ID=POI.IV_ID \n" +
+                    "  Inner Join Item On Item_Version.Item_ID=Item.Item_ID\n" +
+                    "  Left Join Purchase_Order_Release As POR On POR.POR_ID = POI.POR_ID\n" +
+                    "  WHERE PO.BU_ID=%d AND POI.Item_ID=%s AND POI.PO_Status_ID IN(1,2)\n" +
+                    "   AND POI.ML_Kis_FID>0 AND POI_Quantity<>POI_In_Qty AND PO_Date>='2025-12-01'",UserSingleton.get().getUserInfo().getBu_ID(),sitem_ID );
+
+            WsResult result = WebServiceUtil.getDataTable(sql);
+            if (result != null && result.getResult()) {
+                String jsonData = result.getErrorInfo();
+                System.out.println("============================jsonData = " + jsonData);
+                if (!TextUtils.isEmpty(jsonData)) {
+                    return jsonData;
+
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String json) {
+            if (!TextUtils.isEmpty(json) && !json.trim().equals("[]")) {
+
+            }
+        }
+    }
+
+
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
@@ -606,14 +673,6 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
         }
 
-        @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
 
     }
 

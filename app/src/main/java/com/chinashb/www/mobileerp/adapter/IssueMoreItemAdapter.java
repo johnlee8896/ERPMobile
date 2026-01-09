@@ -121,6 +121,7 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
                     String q = s.toString();
                     if (!q.isEmpty()) {
                         if (Float.parseFloat(q) > 0) {
+
                             Box_Item.setQty(Float.parseFloat(q));
                         } else {
                             Box_Item.setQty(0);

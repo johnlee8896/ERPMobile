@@ -188,6 +188,16 @@
                 android:background="@drawable/shape_conner_blue_button_bg"
                 android:gravity="center"
                 android:text="消息管理" />
+            <TextView
+                android:id="@+id/main_work_reporting_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="报工管理" />
 
             <TextView
                 android:id="@+id/main_plan_button"

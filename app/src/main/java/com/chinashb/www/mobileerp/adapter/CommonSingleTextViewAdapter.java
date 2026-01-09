@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.bean.AssistItemBean;
 import com.chinashb.www.mobileerp.bean.FreezeRecordBean;
 import com.chinashb.www.mobileerp.bean.PickGoodsBean;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
@@ -86,6 +87,12 @@ public class CommonSingleTextViewAdapter<TY> extends BaseRecycleAdapter<TY, Comm
                             UnitFormatUtil.formatTimeToSecond(Long.parseLong(tempDateString)),
                             freezeRecordBean.getHRName1(),freezeRecordBean.getRemark()));
                 }
+            }else if (t instanceof AssistItemBean){
+                AssistItemBean assistItemBean = (AssistItemBean) t;
+                commonTextView.setText(String.format(" Item_ID:%s 名称:%s 物料编码:%s, 规格:%s, 单位:%s, 单机用量:%s, 备注:%s ",
+                        assistItemBean.getItem_ID(),
+                        assistItemBean.getItem_Name(),
+                        assistItemBean.getItem(),assistItemBean.getItem_Spec2(),assistItemBean.getItem_Unit(),assistItemBean.getQty(),assistItemBean.getRemark()));
             }
         }
     }

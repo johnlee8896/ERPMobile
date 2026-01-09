@@ -21,6 +21,8 @@ public class ProductCodeBoxManagementActivity extends BaseActivity implements Vi
     @BindView(R.id.product_main_code_box_move_pallet_textView) TextView movePalletTextView;
     @BindView(R.id.product_main_code_box_move_not_pallet_textView) TextView moveNotPalletTextView;
     @BindView(R.id.product_main_code_box_product_check_inv_textView) TextView checkInvTextView;
+    @BindView(R.id.product_main_code_box_product_return_out_textView) TextView returnOutTextView;
+    @BindView(R.id.product_main_code_box_product_out_to_fa_textView) TextView outToFATextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,28 +39,37 @@ public class ProductCodeBoxManagementActivity extends BaseActivity implements Vi
         movePalletTextView.setOnClickListener(this);
         moveNotPalletTextView.setOnClickListener(this);
         checkInvTextView.setOnClickListener(this);
+        returnOutTextView.setOnClickListener(this);
+        outToFATextView .setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if (v == scanInPalletTextView){
+        if (v == scanInPalletTextView) {
             Intent intent = new Intent(this, ProductInScanCodeBoxActivity.class);
             startActivity(intent);
-        }else if (v == scanInNotPalletTextView){
+        } else if (v == scanInNotPalletTextView) {
             Intent intent = new Intent(this, ProductNotPalletInActivity.class);
             startActivity(intent);
-        }else if (v == saleOutCodeBoxTextView){
+        } else if (v == saleOutCodeBoxTextView) {
 //            Intent intent = new Intent(this, ProductInScanCodeBoxActivity.class);
 //            startActivity(intent);
-        }else if (v == movePalletTextView){
+        } else if (v == movePalletTextView) {
             Intent intent = new Intent(this, MoveProductPalletActivity.class);
             startActivity(intent);
-        }else if (v == moveNotPalletTextView){
+        } else if (v == moveNotPalletTextView) {
             Intent intent = new Intent(this, MoveProductNotPalletActivity.class);
             startActivity(intent);
-        }else if (v == checkInvTextView){
+        } else if (v == checkInvTextView) {
             Intent intent = new Intent(this, ProductCheckInventoryActivity.class);
             startActivity(intent);
+        }else if (v == returnOutTextView) {
+            Intent intent = new Intent(this, ProductReturnOutActivity.class);
+            startActivity(intent);
+        }else if(v == outToFATextView ){
+            Intent intent = new Intent(this, ProductOutToFAWarehouseActivity .class);
+            startActivity(intent);
         }
+
     }
 }

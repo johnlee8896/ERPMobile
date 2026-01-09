@@ -68,7 +68,8 @@ public class PartMoveRecordAdapter extends BaseRecycleAdapter<BoxMoveRecordBean,
 //                Date(1686844800000+0800)
                     if (!TextUtils.isEmpty(originalDateString) && originalDateString.contains("Date")) {
                         String dateMillSecondString = originalDateString.substring(6, 19);
-                        dateTextView.setText(UnitFormatUtil.formatTimeToDayChinese(Long.parseLong(dateMillSecondString)));
+//                        dateTextView.setText(UnitFormatUtil.formatTimeToDayChinese(Long.parseLong(dateMillSecondString)));
+                        dateTextView.setText(UnitFormatUtil.formatTimeToSecond(Long.parseLong(dateMillSecondString)));
                     }
 //                    dateTextView.setText(bean.get移库时间());
                 }

@@ -284,6 +284,7 @@ public class StockQueryPartActivity extends BaseActivity {
                                         if (t != null) {
                                             BigAreaSumBean bean = (BigAreaSumBean) t;
                                             if (bean != null) {
+                                                UserSingleton.get().setItemID(bean.getItemID());
 //                                            Intent intent = new Intent(StockQueryPartActivity.this, StockQueryPartActivity.class);
 //                                            intent.putExtra(IntentConstant.Intent_Extra_storage_area_bean, bean);
 //                                            startActivity(intent);

@@ -542,6 +542,7 @@
                         android:layout_marginTop="@dimen/dimen_size_20"
                         android:layout_marginLeft="@dimen/dimen_size_20"
                         android:visibility="gone"
+                        tools:visibility="visible"
                         android:background="@drawable/shape_white_conner_8dp_bg"
                         android:orientation="horizontal">
 

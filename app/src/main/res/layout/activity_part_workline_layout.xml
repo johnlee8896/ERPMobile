@@ -1,150 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
-    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:app_title_text="生产线领料" />
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_bottom_content_ScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/attendance_gray_bg">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/part_workline_in_select_wc_button"
+        <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="@dimen/dimen_size_20"
-            android:layout_weight="1"
-            android:text="请选择线别" />
+            android:layout_height="50dp"
+            app:app_title_text="生产线领料" />
+
+
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:paddingLeft="20dp"
-            android:paddingRight="@dimen/dimen_size_20"
-            android:gravity="bottom"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/part_workline_in_select_wc_button"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="@dimen/dimen_size_20"
                 android:layout_marginRight="20dp"
-                android:text="您选择的产线是："
-                android:textColor="@color/black" />
-            <TextView
-                android:id="@+id/part_workline_in_wc_name_textView"
+                android:layout_weight="1"
+                android:text="请选择线别" />
+
+            <Button
+                android:id="@+id/part_workline_in_select_NO_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginRight="20dp"
+                android:layout_weight="1"
+                android:text="选择或输入入库单据" />
+
+            <Button
+                android:id="@+id/part_workline_in_remark_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:textColor="@color/color_blue_00AAEE" />
-        </LinearLayout>
-        <Button
-            android:id="@+id/part_workline_in_select_NO_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="@dimen/dimen_size_20"
-            android:layout_weight="1"
-            android:text="选择或输入入库单据" />
-        <TextView
-            android:id="@+id/part_workline_in_NO_textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="20dp"
-            android:paddingRight="@dimen/dimen_size_20"
-            android:layout_marginLeft="20dp"
-            tools:text="C-20191226-01"
-            android:textColor="@color/color_blue_00AAEE" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:paddingLeft="20dp"
-            android:paddingRight="@dimen/dimen_size_20"
-            android:gravity="bottom"
-            android:orientation="horizontal">
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:text="添加选择备注" />
 
-            <!--<Button-->
-            <!--android:id="@+id/product_no_tray_scan_button"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="start"-->
-            <!--android:layout_weight="1"-->
-            <!--android:visibility="gone"-->
-            <!--android:text="扫码枪扫描" />-->
+<!--            <EditText-->
+<!--                android:id="@+id/input_EditText"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="@dimen/dimen_size_45"-->
+<!--                android:background="@color/transparent"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:hint="接收扫描结果"-->
+<!--                android:paddingLeft="@dimen/dimen_size_20"-->
+<!--                android:paddingRight="@dimen/dimen_size_10"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"-->
+<!--                android:textSize="@dimen/text_size_14" />-->
 
+            <EditText
+                android:id="@+id/part_workline_in_input_EditText"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_size_45"
+                android:background="@color/transparent"
+                android:gravity="center_vertical"
+                android:hint="接收扫描结果"
+                android:paddingLeft="@dimen/dimen_size_20"
+                android:paddingRight="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+                android:textSize="@dimen/text_size_14" />
 
-            <Button
-                android:id="@+id/part_workline_in_scan_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:layout_weight="1"
-                android:text="相机扫描物料" />
+                android:gravity="bottom"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="@dimen/dimen_size_20">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:text="您选择的产线是："
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/part_workline_in_wc_name_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:textColor="@color/color_blue_00AAEE" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="@dimen/dimen_size_20">
+
+                <!--<Button-->
+                <!--android:id="@+id/product_no_tray_scan_button"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="start"-->
+                <!--android:layout_weight="1"-->
+                <!--android:visibility="gone"-->
+                <!--android:text="扫码枪扫描" />-->
 
 
-
-        </LinearLayout>
-
-        <EditText
-            android:id="@+id/input_EditText"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_size_45"
-            android:background="@color/transparent"
-            android:gravity="center_vertical"
-            android:hint="接收扫描结果"
-            android:paddingLeft="@dimen/dimen_size_20"
-            android:paddingRight="@dimen/dimen_size_10"
-            android:textColor="@color/black"
-            android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
-            android:textSize="@dimen/text_size_14"
-            />
-
-        <Button
-            android:id="@+id/part_workline_in_remark_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="@dimen/dimen_size_20"
-            android:text="添加选择备注" />
-
-        <TextView
-            android:id="@+id/part_workline_in_remark_TextView"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_size_45"
-            android:background="@color/transparent"
-            android:gravity="center_vertical"
-            android:hint="备注信息"
-            android:textColorHint="@color/black"
-            android:paddingLeft="@dimen/dimen_size_20"
-            android:paddingRight="@dimen/dimen_size_10"
-            android:textColor="@color/black"
-            android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
-            android:textSize="@dimen/text_size_14" />
+                <Button
+                    android:id="@+id/part_workline_in_scan_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+                    android:text="相机扫描物料" />
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dimen_size_10"
-            android:layout_gravity="center"
-            android:paddingLeft="20dp"
-            android:paddingRight="@dimen/dimen_size_20"
-            android:layout_weight="1"
-            android:gravity="bottom"
-            android:orientation="horizontal">
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:layout_weight="1"
+                android:gravity="bottom"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="@dimen/dimen_size_20">
 
 
-            <!--<Button-->
+                <!--<Button-->
                 <!--android:id="@+id/part_workline_in_scan_area_button"-->
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
@@ -152,148 +154,159 @@
                 <!--android:layout_weight="1"-->
                 <!--android:text="扫描库位" />-->
 
-            <Button
-                android:id="@+id/part_workline_in_warehouse_in_button"
-                android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/part_workline_in_warehouse_in_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="出库登账" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/part_workline_in_remark_TextView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_size_45"
+                android:background="@color/transparent"
+                android:gravity="center_vertical"
+                android:hint="备注信息"
+                android:paddingLeft="@dimen/dimen_size_20"
+                android:paddingRight="@dimen/dimen_size_10"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
+                android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+                android:textSize="@dimen/text_size_14" />
+
+
+            <TextView
+                android:id="@+id/part_workline_in_NO_textView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="出库登账" />
+                android:layout_marginLeft="20dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="@dimen/dimen_size_20"
+                android:textColor="@color/color_blue_00AAEE"
+                tools:text="C-20191226-01" />
+
 
         </LinearLayout>
 
-
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/part_workline_in_input_EditText"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_45"
-        android:background="@color/transparent"
-        android:gravity="center_vertical"
-        android:hint="接收扫描结果"
-        android:paddingLeft="@dimen/dimen_size_20"
-        android:paddingRight="@dimen/dimen_size_10"
-        android:textColor="@color/black"
-        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
-        android:textSize="@dimen/text_size_14"
-        />
-
-    <!--<Button-->
-    <!--android:id="@+id/btn_scan_area_green"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
-    <!--android:layout_gravity="left"-->
-    <!--android:text="跳过先进先出" />-->
-
-    <!--<Button-->
-    <!--android:id="@+id/btn_remark_select"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
-    <!--android:layout_gravity="left"-->
-    <!--android:text="备注（选择或添加）" />-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:paddingLeft="20dp"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-            <TextView
-                android:id="@+id/part_workline_in_tv_item_name_col"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="物品"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/part_workline_in_tv_bu_name_col"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:text="车间"
-                android:textColor="@color/black" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:paddingLeft="20dp"
-            android:orientation="horizontal">
-
-
-            <TextView
-                android:id="@+id/part_workline_in_tv_inv_in_lotno"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-
-                android:text="批次"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/part_workline_in_tv_qty_col"
-                android:layout_width="40dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:text="数量"
-                android:textColor="@android:color/holo_green_dark" />
+                android:layout_weight="2"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp">
+
+                <TextView
+                    android:id="@+id/part_workline_in_tv_item_name_col"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="物品"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/part_workline_in_tv_bu_name_col"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="车间"
+                    android:textColor="@color/black" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp">
+
+
+                <TextView
+                    android:id="@+id/part_workline_in_tv_inv_in_lotno"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+
+                    android:text="批次"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/part_workline_in_tv_qty_col"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="数量"
+                    android:textColor="@android:color/holo_green_dark" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal"
+                android:paddingLeft="20dp">
+
+                <TextView
+                    android:id="@+id/part_workline_in_tv_ist_name_col"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+
+                    android:text="仓位"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/part_workline_in_tv_inv_in_selected"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="选择"
+                    android:textColor="@color/black" />
+
+
+            </LinearLayout>
+
 
         </LinearLayout>
 
+        <!--<Button-->
+        <!--android:id="@+id/btn_scan_area_green"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
+        <!--android:layout_gravity="left"-->
+        <!--android:text="跳过先进先出" />-->
+
+        <!--<Button-->
+        <!--android:id="@+id/btn_remark_select"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
+        <!--android:layout_gravity="left"-->
+        <!--android:text="备注（选择或添加）" />-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:paddingLeft="20dp"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingLeft="20dp">
 
-            <TextView
-                android:id="@+id/part_workline_in_tv_ist_name_col"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-
-                android:text="仓位"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/part_workline_in_tv_inv_in_selected"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:text="选择"
-                android:textColor="@color/black" />
-
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:paddingLeft="20dp"
-        android:orientation="horizontal">
-
-        <!--<android.support.v7.widget.RecyclerView-->
+            <!--<android.support.v7.widget.RecyclerView-->
             <!--android:id="@+id/part_workline_in_recyclerView"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="match_parent"-->
@@ -303,15 +316,18 @@
             <!--tools:layout_editor_absoluteX="8dp"-->
             <!--tools:layout_editor_absoluteY="8dp">-->
 
-        <!--</android.support.v7.widget.RecyclerView>-->
+            <!--</android.support.v7.widget.RecyclerView>-->
 
-        <com.chinashb.www.mobileerp.widget.CustomRecyclerView
-            android:id="@+id/part_workline_in_recyclerView"
-            android:layout_width="match_parent"
-            tools:listitem="@layout/item_scan_bar_code_layout"
-            android:layout_height="match_parent"/>
+            <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+                android:id="@+id/part_workline_in_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_scan_bar_code_layout" />
+
+        </LinearLayout>
+
+
 
     </LinearLayout>
-
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>
 

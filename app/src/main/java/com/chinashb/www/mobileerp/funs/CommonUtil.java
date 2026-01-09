@@ -305,10 +305,11 @@ public class CommonUtil {
             //read from local storage
             Bitmap bi = CommonUtil.getBitmap(mContext, picFileName);
 
-            if (bi == null) {
-                bi = WebServiceUtil.getHRPhoto(HR_ID);
-                CommonUtil.saveBitmap(mContext, picFileName, bi);
-            }
+            //// TODO: 12/30/24 解决lianghuan等无法识别图片的问题
+//            if (bi == null) {
+//                bi = WebServiceUtil.getHRPhoto(HR_ID);
+//                CommonUtil.saveBitmap(mContext, picFileName, bi);
+//            }
 
             CommonUtil.updateUserPics(userPics, HR_ID, bi);
 
@@ -391,6 +392,10 @@ public class CommonUtil {
         }
         return x.toString();
 
+    }
+
+    public static boolean isPositiveInteger(String s) {
+        return s.matches("[1-9]\\d*");
     }
 
     public static void initNetWorkLink(Context context) {

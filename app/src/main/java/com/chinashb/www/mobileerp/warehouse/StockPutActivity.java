@@ -14,17 +14,20 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.adapter.CommonSingleTextViewAdapter;
 import com.chinashb.www.mobileerp.adapter.IssuedItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.AssistItemBean;
 import com.chinashb.www.mobileerp.bean.ExtraHRBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.StaticVariableUtils;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -46,6 +49,7 @@ public class StockPutActivity extends BaseActivity {
     private Button continuePutButton;
     private Button continueDirectPutButton;//不需要修改
     private Button extraPutButton;
+    private Button assistItemButton;
     private MpiWcBean mpiWcBean;
 
     private RecyclerView issuedItemRecyclerView;
@@ -56,6 +60,8 @@ public class StockPutActivity extends BaseActivity {
     private IstPlaceEntity thePlace;
     private String scanstring;
     private List<MpiWcBean> mpiWcBeanList;
+    private CustomRecyclerView assistRecyclerView;
+    private CommonSingleTextViewAdapter assistAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +81,18 @@ public class StockPutActivity extends BaseActivity {
         continuePutButton = (Button) findViewById(R.id.btn_continue_stock_out);
         extraPutButton = (Button) findViewById(R.id.btn_continue_stock_out_extra);
         continueDirectPutButton = findViewById(R.id.btn_continue_stock_out_direct_button);
+        assistItemButton = findViewById(R.id.btn_assist_item);
+        assistRecyclerView = findViewById(R.id.assist_item_recyclerView);
+
 
         mpiWcBeanList = StaticVariableUtils.selectMpiWcBeanList;
         IssuedItemList = new ArrayList<>();
         issuedItemAdapter = new IssuedItemAdapter(StockPutActivity.this, IssuedItemList);
         issuedItemRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         issuedItemRecyclerView.setAdapter(issuedItemAdapter);
+
+        assistAdapter = new CommonSingleTextViewAdapter();
+        assistRecyclerView.setAdapter(assistAdapter);
 
     }
 
@@ -103,6 +115,7 @@ public class StockPutActivity extends BaseActivity {
                     }
 
                 }
+                showIssueViews();
 
             }
 
@@ -114,6 +127,7 @@ public class StockPutActivity extends BaseActivity {
                 Intent intent = new Intent(StockPutActivity.this, SelectMPIWCStepOneActivity.class);
                 intent.putExtra("mw", mpiWcBean);
                 startActivityForResult(intent, 100);
+                showIssueViews();
             }
         });
 
@@ -121,13 +135,21 @@ public class StockPutActivity extends BaseActivity {
         continuePutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleContinuePut(false,"继续投料");
+                handleContinuePut(false, "继续投料");
+                showIssueViews();
 
             }
 
         });
-        continueDirectPutButton.setOnClickListener(v ->{
-            handleContinuePut(true,"直接投料");
+        continueDirectPutButton.setOnClickListener(v -> {
+            handleContinuePut(true, "直接投料");
+            showIssueViews();
+        });
+
+        assistItemButton.setOnClickListener(v -> {
+
+            getAssistList();
+
         });
 
         extraPutButton.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +174,7 @@ public class StockPutActivity extends BaseActivity {
 //                            companyID = wcList.get(0);
 //                        }
 //                    }
-                    if (UserSingleton.get().getUserInfo().getCompany_ID() == 1){
+                    if (UserSingleton.get().getUserInfo().getCompany_ID() == 1) {
 //                    if (companyID == 1){
 //                        String sql = "select HR_ID from Permission_MW_Extra_Allow";
 //
@@ -180,7 +202,7 @@ public class StockPutActivity extends BaseActivity {
                         GetExtraPutHRListAsyncTask task = new GetExtraPutHRListAsyncTask();
                         task.execute();
 
-                    }else{
+                    } else {
                         Intent intent = new Intent(StockPutActivity.this, StockOutMoreExtraActivity.class);
                         intent.putExtra("mw", mpiWcBean);
                         startActivityForResult(intent, 400);
@@ -195,13 +217,29 @@ public class StockPutActivity extends BaseActivity {
 
     }
 
-    private void handleContinuePut(boolean isDirect,String title) {
+    private void showIssueViews() {
+        assistRecyclerView.setVisibility(View.GONE);
+        issuedItemRecyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void getAssistList() {
+        String assistSql = "Select IA_ID, Item_Assist.Item_ID, Item.Item_Name as 名称, Item.Item As 物料编码, Item.Item_Spec2 As 规格, Item.Item_Unit As 单位," +
+                "Qty As 单机用量, Remark as 备注 " +
+                " From Item_Assist " +
+                " Inner Join Item On Item_Assist.Item_ID=Item.Item_ID " +
+                " Where Item_Assist.PItem_ID=" + mpiWcBean.getItem_ID();
+        GetAssistListAsyncTask task = new GetAssistListAsyncTask();
+        task.execute(assistSql);
+
+    }
+
+    private void handleContinuePut(boolean isDirect, String title) {
         if (mpiWcBean != null) {
             Intent intent = new Intent(StockPutActivity.this, StockOutMoreActivity.class);
             intent.putExtra("mw", mpiWcBean);
             intent.putExtra("IssuedItemList", (Serializable) IssuedItemList);
             intent.putExtra(IntentConstant.Intent_continue_put_directly, isDirect);
-            intent.putExtra(IntentConstant.Intent_supplier_input_title,title);
+            intent.putExtra(IntentConstant.Intent_supplier_input_title, title);
             startActivityForResult(intent, 300);
         }
     }
@@ -241,6 +279,7 @@ public class StockPutActivity extends BaseActivity {
                 mpiWcBean.setMwNameTextView(txtMW);
                 AsyncShowIssuedMW task = new AsyncShowIssuedMW();
                 task.execute();
+                showIssueViews();
             }
         }
 
@@ -292,7 +331,7 @@ public class StockPutActivity extends BaseActivity {
         protected Void doInBackground(String... params) {
             MpiWcBean mpiWcBean = WebServiceUtil.op_Check_Commit_MW_Barcode(scanstring);
             scanresult = mpiWcBean;
-            if (mpiWcBean.getResult() ) {
+            if (mpiWcBean.getResult()) {
                 StockPutActivity.this.mpiWcBean = mpiWcBean;
                 planInnerDetailEntityList = WebServiceUtil.opGetMWIssedItems(mpiWcBean.getMPIWC_ID());
             } else {
@@ -302,12 +341,16 @@ public class StockPutActivity extends BaseActivity {
             return null;
         }
 
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
+        }
 
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
             if (scanresult != null) {
-                if (!scanresult.getResult() ) {
+                if (!scanresult.getResult()) {
                     Toast.makeText(StockPutActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 } else {
                     txtMW.setText(scanresult.getMwName());
@@ -321,11 +364,6 @@ public class StockPutActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
         protected void onProgressUpdate(Void... values) {
         }
 
@@ -334,6 +372,7 @@ public class StockPutActivity extends BaseActivity {
 
     private class AsyncShowIssuedMW extends AsyncTask<String, Void, Void> {
         List<PlanInnerDetailEntity> planInnerDetailEntityList;
+
         @Override
         protected Void doInBackground(String... params) {
             if (mpiWcBean != null) {
@@ -343,6 +382,11 @@ public class StockPutActivity extends BaseActivity {
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -357,11 +401,6 @@ public class StockPutActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
         protected void onProgressUpdate(Void... values) {
         }
 
@@ -369,10 +408,16 @@ public class StockPutActivity extends BaseActivity {
 
     private class AsyncGetMWItems extends AsyncTask<String, Void, List<PlanInnerDetailEntity>> {
         MpiWcBean scanresult;
+
         @Override
         protected List<PlanInnerDetailEntity> doInBackground(String... params) {
             List<PlanInnerDetailEntity> planInnerDetailEntityList = WebServiceUtil.opGetMWIssedItems((long) 471058);
             return planInnerDetailEntityList;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -389,11 +434,6 @@ public class StockPutActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
         protected void onProgressUpdate(Void... values) {
         }
 
@@ -404,8 +444,6 @@ public class StockPutActivity extends BaseActivity {
 
         @Override
         protected String doInBackground(Void... voids) {
-
-
 
 
             String sql = "select HR_ID from Permission_MW_Extra_Allow";
@@ -424,10 +462,6 @@ public class StockPutActivity extends BaseActivity {
             }
 
 
-
-
-
-
             return null;
         }
 
@@ -441,23 +475,96 @@ public class StockPutActivity extends BaseActivity {
             wcList = gson.fromJson(jsonData, new TypeToken<List<ExtraHRBean>>() {
             }.getType());
             List<Integer> hrIDList = new ArrayList<>();
-            for (ExtraHRBean bean : wcList){
+            for (ExtraHRBean bean : wcList) {
                 hrIDList.add(bean.getHrID());
             }
 
 //            if (wcList .contains(UserSingleton.get().getHRID())){
-            if (hrIDList .contains(UserSingleton.get().getHRID())){
+            if (hrIDList.contains(UserSingleton.get().getHRID())) {
                 Intent intent = new Intent(StockPutActivity.this, StockOutMoreExtraActivity.class);
                 intent.putExtra("mw", mpiWcBean);
                 startActivityForResult(intent, 400);
-            }else{
+            } else {
                 ToastUtil.showToastShort("您暂无权限操作额外领料");
             }
 
 
-
-
-
         }
     }
+
+    //    private class GetAssistListAsyncTask<T> extends AsyncTask<String, Void, List<T>> {
+//
+//        @Override protected List<T> doInBackground(String... strings) {
+////            String sql = "select Company_ID,Company_Chinese_Name,Company_English_Name from company where Company_Enabled = 1";
+//            String sql = strings[0];
+//            WsResult result = WebServiceUtil.getDataTable(sql);
+//            List<T> commonDataList = null;
+//            if (result != null && result.getResult()) {
+//                String jsonData = result.getErrorInfo();
+//                Gson gson = new Gson();
+//                commonDataList = gson.fromJson(jsonData, new TypeToken<List<AssistItemBean>>() {
+//                }.getType());
+//
+//                if (commonDataList != null && commonDataList.size() > 0) {
+//                    if (commonDataList.get(0) instanceof AssistItemBean) {
+//                        commonDataList = gson.fromJson(jsonData, new TypeToken<List<AssistItemBean>>() {
+//                        }.getType());
+//                    }
+//                }
+//            }
+//            return commonDataList;
+//        }
+//
+//        @Override protected void onPostExecute(List<T> AssistItemBeanList) {
+//            super.onPostExecute(AssistItemBeanList);
+//            if (AssistItemBeanList != null && AssistItemBeanList.size() > 0) {
+//               assistAdapter.setData(AssistItemBeanList);
+//
+//
+//
+//            }
+//            assistRecyclerView.setVisibility(View.VISIBLE);
+//            issuedItemRecyclerView.setVisibility(View.GONE);
+//
+//        }
+//
+//    }
+    private class GetAssistListAsyncTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            String sql = strings[0];
+            WsResult result = WebServiceUtil.getDataTable(sql);
+            if (result != null && result.getResult()) {
+                String jsonData = result.getErrorInfo();
+                return jsonData;
+            }
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String jsonData) {
+            super.onPostExecute(jsonData);
+            Gson gson = new Gson();
+            List<AssistItemBean> commonDataList = gson.fromJson(jsonData, new TypeToken<List<AssistItemBean>>() {
+            }.getType());
+
+            if (commonDataList != null && commonDataList.size() > 0) {
+                if (commonDataList.get(0) instanceof AssistItemBean) {
+                    commonDataList = gson.fromJson(jsonData, new TypeToken<List<AssistItemBean>>() {
+                    }.getType());
+
+                    if (commonDataList != null && commonDataList.size() > 0) {
+                        assistAdapter.setData(commonDataList);
+//
+//
+//
+                    }
+                    assistRecyclerView.setVisibility(View.VISIBLE);
+                    issuedItemRecyclerView.setVisibility(View.GONE);
+                }
+            }
+        }
+    }
+
 }

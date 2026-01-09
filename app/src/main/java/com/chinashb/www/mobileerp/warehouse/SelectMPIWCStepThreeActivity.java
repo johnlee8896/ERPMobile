@@ -293,7 +293,8 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
 //                                buItemBean.getItem_Name().contains(keyWord)|| String.valueOf(buItemBean.getItem_ID()).contains(keyWord)) {
 //                            tempList.add(buItemBean);
 //                        }
-                        if (buItemBean.getMwName().contains(keyWord)) {
+                        //2024-12-11 john 处理 buItemBean.getMwName()为空报错的情况加上空值判断
+                        if ((buItemBean != null) && (buItemBean.getMwName() != null) && (buItemBean.getMwName().contains(keyWord))) {
                             tempList.add(buItemBean);
                         }
                     }
@@ -349,7 +350,8 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
     private class GetMWAsyncTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
-            String sql = "Select M.MPIWC_ID,dbo.get_mw_plan_show_name(mpiwc_ID) As MwName,dbo.get_mw_plan_show_name_html(mpiwc_ID) As HtmlMwName, M.MPI_Remark " +
+            //2025-04-13 john 添加item_id，为辅料赋值
+            String sql = "Select M.Item_ID,M.MPIWC_ID,dbo.get_mw_plan_show_name(mpiwc_ID) As MwName,dbo.get_mw_plan_show_name_html(mpiwc_ID) As HtmlMwName, M.MPI_Remark " +
                     "From MPI_WC As M " +
                     "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + (bu_option_mp_bom  ? " and allow_iss=1" : " ") +
 //                    "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + "  and allow_iss=1" +

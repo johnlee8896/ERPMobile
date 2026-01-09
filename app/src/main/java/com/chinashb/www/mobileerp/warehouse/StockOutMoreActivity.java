@@ -456,6 +456,13 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
                 if (scanresult.getQty() < 0){
                     ToastUtil.showToastShort("投料数量不能为负");
                 }else{
+                    //2025-05-22 john 如果单位为个或pcs则不可为小数
+                    if (scanresult.getItem_Unit().equals("pcs") || scanresult.getItem_Unit().equals("个")){
+                        if (!CommonUtil.isPositiveInteger(String.valueOf(scanresult.getQty()))){
+                            ToastUtil.showToastShort("该物料投料数必须为整数！");
+                        }
+                    }
+
                     issueMoreItemAdapter = new IssueMoreItemAdapter(StockOutMoreActivity.this, boxItemEntityList);
                     issueMoreItemAdapter.setCanEdit(true);
                     recyclerView.setAdapter(issueMoreItemAdapter);
@@ -592,7 +599,9 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
 
             if (ws_result != null) {
                 if (!ws_result.getResult() ) {
-                    CommonUtil.ShowToast(StockOutMoreActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
+//                    CommonUtil.ShowToast(StockOutMoreActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
+                    //// TODO: 12/27/24 john 通通改为把错误提示显示出来
+                    ToastUtil.showToastShort(ws_result.getErrorInfo());
                 } else {
 //                    CommonUtil.ShowToast(StockOutMoreActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
                     ItemInvQueryAsyncTask task = new ItemInvQueryAsyncTask();

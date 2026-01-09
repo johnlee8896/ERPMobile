@@ -31,7 +31,7 @@ public class StockQueryPartItemActivity extends BaseActivity {
     private UserInfoEntity userInfoEntity;
     private RecyclerView recyclerView;
     private ItemPartLotInvAdapter partItemAdapter;
-//    private PartsEntity selected_item;
+    //    private PartsEntity selected_item;
     private List<Item_Lot_Inv> itemLotInvList;
     private TextView titleNameTextView;
     //john 2023-05-06 先将库存冻结，解冻 关闭
@@ -42,6 +42,7 @@ public class StockQueryPartItemActivity extends BaseActivity {
     private String description = "";
     private int requestCode = IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity;
     private int lotid;
+    private int itemID;
 
 
     @Override
@@ -56,15 +57,31 @@ public class StockQueryPartItemActivity extends BaseActivity {
         userInfoEntity = UserSingleton.get().getUserInfo();
         Intent intent = getIntent();
 //        selected_item = (PartsEntity) intent.getSerializableExtra("selected_item");
-        requestCode = getIntent().getIntExtra("InvQueryMiddleRequestCode",IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
-
-
+        requestCode = getIntent().getIntExtra("InvQueryMiddleRequestCode", IntentConstant.Intent_Request_Code_Inv_Query_Middle_from_Activity_To_Activity);
 
 
         initData();
 
         setHomeButton();
+        getRemarkByLotID();
 
+    }
+
+    @Override
+    protected void onResume() {
+        //设置为横屏幕
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
+        super.onResume();
+    }
+
+    private void getRemarkByLotID() {
+        if (itemLotInvList != null && itemLotInvList.size() == 1) {
+            GetFreezeRemarkAsyncTask task = new GetFreezeRemarkAsyncTask();
+            task.execute();
+        }
     }
 
     private void initData() {
@@ -104,7 +121,7 @@ public class StockQueryPartItemActivity extends BaseActivity {
                                                                originalDescription = EditingLot.getLotDescription();
                                                            }
                                                            intent.putExtra("OriText", originalDescription);
-                                                           intent.putExtra("InvQueryMiddleRequestCode",requestCode);
+                                                           intent.putExtra("InvQueryMiddleRequestCode", requestCode);
 //                                                           startActivityForResult(intent, 100);
                                                            startActivityForResult(intent, IntentConstant.Intent_Request_Code_Inv_Query_Item_To_InputActivity);
                                                        }
@@ -113,15 +130,15 @@ public class StockQueryPartItemActivity extends BaseActivity {
                                                }
         );
         lotid = itemLotInvList.get(0).getLotID();
-    }
 
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 //        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
 //        if (requestCode == 100 && resultCode == 1) {
         if (requestCode == IntentConstant.Intent_Request_Code_Inv_Query_Item_To_InputActivity) {
-            if (data != null){
+            if (data != null) {
                 String Input = data.getStringExtra("Input");
                 if (Input.isEmpty() || Input.equals("null")) {
                     Input = "";
@@ -140,7 +157,6 @@ public class StockQueryPartItemActivity extends BaseActivity {
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -149,14 +165,6 @@ public class StockQueryPartItemActivity extends BaseActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    protected void setHomeButton() {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
     }
 
 //    private class QueryPartInvItemAsyncTask extends AsyncTask<String, Void, Void> {
@@ -207,6 +215,13 @@ public class StockQueryPartItemActivity extends BaseActivity {
 //
 //    }
 
+    protected void setHomeButton() {
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
 
     private class AsyncUpdateLotDescription extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
@@ -217,6 +232,11 @@ public class StockQueryPartItemActivity extends BaseActivity {
                 ws_result = WebServiceUtil.op_Commit_Update_Lot_Description(UserSingleton.get().getHRID(), EditingLot.getLotID(), description);
             }
             return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -231,28 +251,14 @@ public class StockQueryPartItemActivity extends BaseActivity {
         }
 
         @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
         protected void onProgressUpdate(Void... values) {
         }
 
     }
 
-    @Override
-    protected void onResume() {
-        //设置为横屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        }
-
-        super.onResume();
-    }
-
     private class FreezeBoxAsyncTask extends AsyncTask<String, Void, Void> {
         WsResult wsResult;
+
         @Override
         protected Void doInBackground(String... params) {
 
@@ -269,20 +275,20 @@ public class StockQueryPartItemActivity extends BaseActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
         protected void onPostExecute(Void result) {
 //            boxitemAdapter.notifyDataSetChanged();
 //            mRecyclerView.setAdapter(boxitemAdapter);
-            if (wsResult.getResult()){
+            if (wsResult.getResult()) {
                 ToastUtil.showToastShort("库存冻结成功！");
-            }else{
+            } else {
                 ToastUtil.showToastShort("库存冻结失败！原因是 " + wsResult.getErrorInfo());
 
             }
 
-        }
-
-        @Override
-        protected void onPreExecute() {
         }
 
         @Override
@@ -293,6 +299,7 @@ public class StockQueryPartItemActivity extends BaseActivity {
 
     private class FreezeNotAsyncTask extends AsyncTask<String, Void, Void> {
         WsResult wsResult = null;
+
         @Override
         protected Void doInBackground(String... params) {
 
@@ -314,24 +321,53 @@ public class StockQueryPartItemActivity extends BaseActivity {
         }
 
         @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 //            boxitemAdapter.notifyDataSetChanged();
 //            mRecyclerView.setAdapter(boxitemAdapter);
-            if (wsResult.getResult()){
+            if (wsResult.getResult()) {
                 ToastUtil.showToastShort("库存解除冻结成功！");
-            }else{
+            } else {
                 ToastUtil.showToastShort("库存接触冻结失败！原因是 " + wsResult.getErrorInfo());
 
             }
         }
 
         @Override
-        protected void onPreExecute() {
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+    private class GetFreezeRemarkAsyncTask extends AsyncTask<String, Void, Void> {
+        WsResult wsResult;
+
+        @Override
+        protected Void doInBackground(String... params) {
+            wsResult = WebServiceUtil.op_Get_Freeze_Remark(lotid);
+            return null;
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
+        protected void onPostExecute(Void result) {
+            if (wsResult.getResult()) {
+//                ToastUtil.showToastShort("库存冻结成功！");
+                if (wsResult.getErrorInfo() != null && wsResult.getErrorInfo().length() > 0) {
+                    if (wsResult.getErrorInfo().contains("any")) {
+                    }else{
+                        partItemAdapter.updateFreezeRemark(wsResult.getErrorInfo());
+
+                    }
+                }
+            } else {
+                ToastUtil.showToastShort("获取冻结备注失败！原因是 " + wsResult.getErrorInfo());
+
+            }
+
         }
 
     }

@@ -17,6 +17,7 @@ import com.chinashb.www.mobileerp.adapter.CommonItemBarCodeAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.ProductInAlarmBeanSimple;
 import com.chinashb.www.mobileerp.bean.entity.WCSubProductEntity;
 import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
@@ -24,6 +25,7 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.OnAsyncTaskCompleteListener;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
@@ -273,6 +275,9 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                     }
                     GetProductSuggestAreaAsyncTask task = new GetProductSuggestAreaAsyncTask();
                     task.execute(boxId);
+
+                    GetProductInJudgeAlarmAsyncTask alarmAsyncTask = new GetProductInJudgeAlarmAsyncTask();
+                    alarmAsyncTask.execute(boxId);
                 } else if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
                     //仓库位置码
                     scanContent = content;
@@ -709,7 +714,9 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                                 });
                                 builder.create().show();
                             } else {
+//                                CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
                                 CommonUtil.ShowToast(ProductInScanCodeBoxActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
+                                ToastUtil.showToastShort(ws_result.getErrorInfo());
                                 handleFinishIfError();
                             }
                         }
@@ -1156,9 +1163,65 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if (ws_result != null && ws_result.getResult()){
-                ToastUtil.showToastShort("建议库位:" + ws_result.getErrorInfo());
+                ToastUtil.showToastLong("建议库位:" + ws_result.getErrorInfo());
             }else{
                 ToastUtil.showToastShort("未能获取建议库位");
+
+            }
+        }
+    }
+
+
+    private class GetProductInJudgeAlarmAsyncTask extends AsyncTask<Integer,Void,Void>{
+        WsResult ws_result;
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            int boxID = integers[0];
+            ws_result = WebServiceUtil.getProductInJudgeAlarm(UserSingleton.get().getUserInfo().getBu_ID(),boxID);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (ws_result != null && ws_result.getResult()){
+//                ToastUtil.showToastLong("建议库位:" + ws_result.getErrorInfo());
+                Type type = new TypeToken<List<ProductInAlarmBeanSimple>>() {
+                }.getType();
+//                List<ProductInAlarmBean> beanList = JsonUtil.parseJsonToObject(ws_result.getErrorInfo(), type);
+                List<ProductInAlarmBeanSimple> beanList = JsonUtil.parseJsonToObject(ws_result.getErrorInfo(), type);
+//                return beanList;
+                boolean isAlarm = false;
+                for (ProductInAlarmBeanSimple bean : beanList){
+                    //// TODO: 5/30/25 遍历查询，如果是排版，且有一个是不够就提示是紧急品
+                    if (bean.is排版()){
+                        if (!bean.is库存够发货()){
+                            isAlarm = true;
+                            break;
+                        }
+                    }
+                }
+                if (isAlarm){
+                    CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(ProductInScanCodeBoxActivity.this)
+                            .setTitle("").setMessage("该产品是发货缺料产品！")
+                            .setLeftText("确定");
+
+
+                    builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                        @Override
+                        public void onViewClick(Dialog dialog, View v, int tag) {
+                            switch (tag) {
+                                case CommAlertDialog.TAG_CLICK_LEFT:
+                                    dialog.dismiss();
+                                    break;
+                            }
+                        }
+                    });
+                    builder.create().show();
+                }
+            }else{
+//                ToastUtil.showToastShort("未能获取建议库位");
 
             }
         }

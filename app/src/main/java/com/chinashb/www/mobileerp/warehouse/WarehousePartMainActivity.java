@@ -3,7 +3,6 @@ package com.chinashb.www.mobileerp.warehouse;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -37,7 +36,7 @@ public class WarehousePartMainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_warehouse_part_main);
+        setContentView(R.layout.activity_warehouse_part_main_layout);
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation_contact);

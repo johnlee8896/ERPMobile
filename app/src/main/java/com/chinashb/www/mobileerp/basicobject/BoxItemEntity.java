@@ -35,6 +35,7 @@ public class BoxItemEntity implements Serializable {
     private String SmlRemark = "";
     private String ManuLotNo = "";
     private int Company_ID ;
+    private String Item_Unit;
     private WsResult ws_result = new WsResult();
     private boolean canNotEdit = false;
 
@@ -124,6 +125,15 @@ public class BoxItemEntity implements Serializable {
 
     public void setLotNo(String LotNo) {
         this.LotNo = LotNo;
+    }
+
+    public String getItem_Unit() {
+        return Item_Unit;
+    }
+
+    public BoxItemEntity setItem_Unit(String item_Unit) {
+        Item_Unit = item_Unit;
+        return this;
     }
 
     public String getLotBox() {

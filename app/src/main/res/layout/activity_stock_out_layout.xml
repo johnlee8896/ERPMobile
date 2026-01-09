@@ -65,6 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
+                    android:visibility="gone"
                     android:layout_weight="1"
                     android:text="直接投料" />
 
@@ -83,6 +84,13 @@
                     android:layout_gravity="start"
                     android:layout_weight="1"
                     android:text="额外领料" />
+                <Button
+                    android:id="@+id/btn_assist_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+                    android:text="辅料查询" />
 
             </LinearLayout>
 
@@ -182,6 +190,16 @@
             tools:layout_editor_absoluteY="8dp">
 
         </android.support.v7.widget.RecyclerView>
+        <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+            android:id="@+id/assist_item_recyclerView"
+            android:visibility="gone"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:layout_marginRight="@dimen/dimen_size_10"
+            app:app_layout_style="list_vertical"
+            app:app_item_decoration_type="ITEM_SPACE"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 

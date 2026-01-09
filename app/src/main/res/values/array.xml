@@ -40,6 +40,7 @@
         <item>包装材料</item>
         <item>双绕线</item>
         <item>自制件未按先进先出入库</item>
+        <item>前一批物料需要配用</item>
     </string-array>
 <!--        <item>丝杆批次异常</item>-->
 

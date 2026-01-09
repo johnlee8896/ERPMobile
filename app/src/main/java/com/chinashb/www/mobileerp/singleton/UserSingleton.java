@@ -24,6 +24,8 @@ public class UserSingleton {
     private String HRNO;
     private String HR_IDCardNO;
     private boolean stockPermit = false;
+    //// TODO: 5/6/25  全局变量，给查冻结备注使用
+    private int itemID;
 
     private UserSingleton() {
 
@@ -93,6 +95,15 @@ public class UserSingleton {
 
     public String getHRName() {
         return HRName;
+    }
+
+    public int getItemID() {
+        return itemID;
+    }
+
+    public UserSingleton setItemID(int itemID) {
+        this.itemID = itemID;
+        return this;
     }
 
     public UserSingleton setHRName(String HRName) {

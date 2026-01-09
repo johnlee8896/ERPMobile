@@ -31,6 +31,36 @@
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
 
+        <!--入库时选择采购订单，零部件及马来的采购订单由金蝶生成，这里入库时不再重复生成-->
+        <activity
+            android:name=".SelectPurchaseOrderListActivity"
+            android:screenOrientation="portrait" />
+
+        <!--成品仓整托出给车间仓-->
+        <activity
+            android:name=".ProductOutToFAWarehouseActivity"
+            android:screenOrientation="portrait" />
+
+        <!--计划管理-给报工专用-->
+        <activity
+            android:name=".PlanManageForWorkReportingActivity"
+            android:screenOrientation="portrait" />
+
+        <!--处理物流来料检验，输入一些数据，保存-->
+        <activity
+            android:name=".warehouse.DealCheckIncomeActivity"
+            android:screenOrientation="portrait" />
+
+        <!--成品返工出库-->
+        <activity
+            android:name=".ProductReturnOutActivity"
+            android:screenOrientation="portrait" />
+
+        <!--扫标签查看状态，入库车间、是否已入库等-->
+        <activity
+            android:name=".warehouse.GetSendInfoActivity"
+            android:screenOrientation="portrait" />
+
         <!--成品统一盘点成品标签，手工托盘 ，手工非托盘-->
         <activity
             android:name=".warehouse.FreezeRecordActivity"

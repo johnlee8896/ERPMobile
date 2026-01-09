@@ -36,6 +36,8 @@ public class ScanIstItemProductBean {
     @SerializedName("在托盘") private boolean 在托盘;
     @SerializedName("Status_ID") private int StatusID;
     @SerializedName("状态") private String 状态;
+    //2025-06-07 john增加托盘序号的字段
+    @SerializedName("托盘序号") private String 托盘序号;
 
     public String getProductChineseName() {
         return ProductChineseName;
@@ -131,5 +133,14 @@ public class ScanIstItemProductBean {
 
     public void set状态(String 状态) {
         this.状态 = 状态;
+    }
+
+    public String get托盘序号() {
+        return 托盘序号;
+    }
+
+    public ScanIstItemProductBean set托盘序号(String 托盘序号) {
+        this.托盘序号 = 托盘序号;
+        return this;
     }
 }

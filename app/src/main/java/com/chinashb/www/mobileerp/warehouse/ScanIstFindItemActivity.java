@@ -150,6 +150,7 @@ public class ScanIstFindItemActivity extends BaseActivity {
                 }
 
             }
+            inputEditText.setText("");
         }
 
     }

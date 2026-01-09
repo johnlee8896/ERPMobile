@@ -38,6 +38,20 @@ public class ItemPartLotInvAdapter extends RecyclerView.Adapter<ItemPartLotInvAd
         return dataSoure;
     }
 
+    public void updateFreezeRemark(String remark){
+        List<Item_Lot_Inv> tempDataSource = dataSoure;
+        int i = 0;
+        if (dataSoure.size() == 1){
+            for (Item_Lot_Inv entity : dataSoure){
+                tempDataSource.get(0).setLotDescription(remark);
+            }
+        }
+        dataSoure = tempDataSource;
+        notifyDataSetChanged();
+
+
+    }
+
     @Override
     public ProInvViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.listview_part_item_inv, parent, false);

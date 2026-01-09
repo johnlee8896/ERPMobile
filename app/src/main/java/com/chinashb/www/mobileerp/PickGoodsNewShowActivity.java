@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.adapter.CommonSingleTextViewAdapter;
@@ -69,9 +71,12 @@ public class PickGoodsNewShowActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.pick_new_goods_time_area_end_button) Button endTimeButton;
     @BindView(R.id.pick_new_goods_time_area_layout) LinearLayout timeAreaLayout;
     @BindView(R.id.pick_new_goods_order_area_button) Button orderAreaButton;
+    @BindView(R.id.pick_goods_day_radioButton) RadioButton dayRadioButton;
+    @BindView(R.id.pick_goods_night_radioButton) RadioButton nightRadioButton;
+    @BindView(R.id.day_night_shift_RadioGroup) RadioGroup shiftRadioGroup;
 
     private CommonSingleTextViewAdapter adapter;
-//    private List<?> originalBUDataList;
+    //    private List<?> originalBUDataList;
     private List<?> originalBUDataList;
     private CommProgressDialog progressDialog;
     private Date startDate;
@@ -80,6 +85,7 @@ public class PickGoodsNewShowActivity extends BaseActivity implements View.OnCli
     private TimePickerManager timePickerManager;
     private boolean selectStartDate;
     private int currentStartEndMode = -1;//0代表点击开始时间 ，1结束时间
+    private int currentDayNightMode = 1;//1表示白天，2代表晚班
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +109,7 @@ public class PickGoodsNewShowActivity extends BaseActivity implements View.OnCli
 
     /**
      * 拣货之后的刷新
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -112,19 +119,19 @@ public class PickGoodsNewShowActivity extends BaseActivity implements View.OnCli
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IntentConstant.Intent_Request_Code_Pick_Goods_To_Stock_Move_Activity) {
             //处理离开之前的保存的数据
-            if (data != null){
+            if (data != null) {
                 PickGoodsBean tempPickGoodsBean = data.getParcelableExtra(IntentConstant.Intent_Extra_to_pick_goods_bean_back);
                 boolean removeSuccess = false;
-                if (tempPickGoodsBean != null){
-                    if (originalBUDataList != null){
-                        for (PickGoodsBean bean : (List<PickGoodsBean>)originalBUDataList){
-                            if (bean.getSubIstID() == tempPickGoodsBean.getSubIstID()){
+                if (tempPickGoodsBean != null) {
+                    if (originalBUDataList != null) {
+                        for (PickGoodsBean bean : (List<PickGoodsBean>) originalBUDataList) {
+                            if (bean.getSubIstID() == tempPickGoodsBean.getSubIstID()) {
                                 removeSuccess = originalBUDataList.remove(bean);
                                 break;
                             }
                         }
                     }
-                    if (removeSuccess && originalBUDataList != null){
+                    if (removeSuccess && originalBUDataList != null) {
                         adapter.setData(originalBUDataList);
                         //// TODO: 8/9/24  如果有搜索之类的也保留
                         doSearchAction(searchEditText.getText().toString());
@@ -211,12 +218,12 @@ public class PickGoodsNewShowActivity extends BaseActivity implements View.OnCli
 //            });
 
             //// TODO: 8/15/24 经典排序案例，字符串间的 如M20.M20-16-1之类的排序 oa1Unit.compareTo(oa2Unit);
-             Collections.sort(originalBUDataList, new Comparator<Object>() {
+            Collections.sort(originalBUDataList, new Comparator<Object>() {
                 @Override
                 public int compare(Object o1, Object o2) {
-                    if (o1 instanceof PickGoodsBean && o2 instanceof  PickGoodsBean){
-                        String oa1Unit = ((PickGoodsBean) o1) .getAreaUnit();
-                        String oa2Unit = ((PickGoodsBean) o2) .getAreaUnit();
+                    if (o1 instanceof PickGoodsBean && o2 instanceof PickGoodsBean) {
+                        String oa1Unit = ((PickGoodsBean) o1).getAreaUnit();
+                        String oa2Unit = ((PickGoodsBean) o2).getAreaUnit();
                         return oa1Unit.compareTo(oa2Unit);
                     }
                     return -1;
@@ -241,6 +248,17 @@ public class PickGoodsNewShowActivity extends BaseActivity implements View.OnCli
 //                ToastUtil.showToastShort("请先选择开始时间");
 //            }
             selectDate();
+        });
+
+        shiftRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.pick_goods_day_radioButton){
+                    currentDayNightMode = 1;
+                }else if (checkedId == R.id.pick_goods_night_radioButton){
+                    currentDayNightMode = 2;
+                }
+            }
         });
     }
 
@@ -426,7 +444,14 @@ public class PickGoodsNewShowActivity extends BaseActivity implements View.OnCli
 //                    break;
 //
 //            }
-            wsResult = WebServiceUtil.getPickGoodsData(startDate, endDate);
+//            wsResult = WebServiceUtil.getPickGoodsData(startDate, endDate);
+            if (currentDayNightMode == 1){
+
+                wsResult = WebServiceUtil.getPickGoodsDataNewByShift(startDate, endDate,currentDayNightMode);
+            }else if(currentDayNightMode == 2){
+                //晚班班次的话，视同为和之前一样，因为例如今天白班是白班，晚班是今天全天，明天白班是今天加明天白班，明天晚班是今天加明天一天
+                wsResult = WebServiceUtil.getPickGoodsData(startDate, endDate);
+            }
             if (wsResult != null && wsResult.getResult()) {
                 Type type = new TypeToken<List<PickGoodsBean>>() {
                 }.getType();

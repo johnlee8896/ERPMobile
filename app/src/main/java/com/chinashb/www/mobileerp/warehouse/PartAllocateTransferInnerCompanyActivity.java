@@ -98,7 +98,12 @@ public class PartAllocateTransferInnerCompanyActivity extends BaseActivity imple
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override public void afterTextChanged(Editable editable) {
                 super.afterTextChanged(editable);
-
+                //2025-04-14 john这里添加手机 pda的扫描
+                if (editable.toString().length() > 7 ) {
+//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
+                    System.out.println("========================扫描结果:" + editable.toString());
+                    parseContent(editable.toString());
+                }
             }
         });
     }
