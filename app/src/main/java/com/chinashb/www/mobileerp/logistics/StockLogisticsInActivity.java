@@ -557,15 +557,6 @@ public class StockLogisticsInActivity extends BaseActivity implements View.OnCli
 
         }
 
-        @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-
     }
 
     private class AsyncExeWarehouseIn extends AsyncTask<String, Void, Void> {

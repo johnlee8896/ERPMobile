@@ -50,6 +50,7 @@ public class StockPutActivity extends BaseActivity {
     private Button continueDirectPutButton;//不需要修改
     private Button extraPutButton;
     private Button assistItemButton;
+    private Button backUpOutButton;
     private MpiWcBean mpiWcBean;
 
     private RecyclerView issuedItemRecyclerView;
@@ -82,6 +83,7 @@ public class StockPutActivity extends BaseActivity {
         extraPutButton = (Button) findViewById(R.id.btn_continue_stock_out_extra);
         continueDirectPutButton = findViewById(R.id.btn_continue_stock_out_direct_button);
         assistItemButton = findViewById(R.id.btn_assist_item);
+        backUpOutButton = findViewById(R.id.btn_continue_stock_out_backup);
         assistRecyclerView = findViewById(R.id.assist_item_recyclerView);
 
 
@@ -150,6 +152,17 @@ public class StockPutActivity extends BaseActivity {
 
             getAssistList();
 
+        });
+
+        backUpOutButton.setOnClickListener(v -> {
+            if (mpiWcBean != null) {
+                Intent intent = new Intent(StockPutActivity.this, StockOutMoreActivity.class);
+                intent.putExtra("mw", mpiWcBean);
+                intent.putExtra("IssuedItemList", (Serializable) IssuedItemList);
+                intent.putExtra(IntentConstant.Intent_continue_put_from_backup, true);
+                intent.putExtra(IntentConstant.Intent_supplier_input_title, "备料投料");
+                startActivityForResult(intent, 300);
+            }
         });
 
         extraPutButton.setOnClickListener(new View.OnClickListener() {

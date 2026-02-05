@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 /***
  * @date 创建时间 1/7/26 6:08 PM
  * @author 作者: liweifeng
- * @description
+ * @description 选择采购订单
  */
 public class StockInPurchaseOrderAdapter extends BaseRecycleAdapter<StockInPurchaseOrderBean, StockInPurchaseOrderAdapter.PurchaseOrderItemViewHolder> {
 

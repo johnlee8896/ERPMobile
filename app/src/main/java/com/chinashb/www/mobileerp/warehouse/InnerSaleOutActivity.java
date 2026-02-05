@@ -307,20 +307,15 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
                 currentEntityList = adapter.getList();
                 BoxItemEntity boxItemEntity = currentEntityList.get(0);
 //                ws_result = WebServiceUtil.op_Commit_Sale_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), UserSingleton.get().getHRID(), innerSelectBuBean.getCfID(), innerSelectBuBean.getCompanyName(), boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
-                ws_result = WebServiceUtil.op_Commit_Sale_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), UserSingleton.get().getHRID(), innerSelectBuBean.getCfID(), innerSelectBuBean.getBuName() , boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
+//                ws_result = WebServiceUtil.op_Commit_Sale_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), UserSingleton.get().getHRID(), innerSelectBuBean.getCfID(), innerSelectBuBean.getBuName() , boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
+//                        boxItemEntity.getLotNo(), boxItemEntity.getIst_ID(), boxItemEntity.getSub_Ist_ID(), boxItemEntity.getSMLI_ID(), boxItemEntity.getSMM_ID(), boxItemEntity.getSMT_ID(),
+//                        String.valueOf(boxItemEntity.getQty()));
+//                2026-01-19 john 加上备注的处理
+                ws_result = WebServiceUtil.op_Commit_Sale_Out_Item_Remark(UserSingleton.get().getUserInfo().getBu_ID(), UserSingleton.get().getHRID(), innerSelectBuBean.getCfID(), innerSelectBuBean.getBuName() , boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
                         boxItemEntity.getLotNo(), boxItemEntity.getIst_ID(), boxItemEntity.getSub_Ist_ID(), boxItemEntity.getSMLI_ID(), boxItemEntity.getSMM_ID(), boxItemEntity.getSMT_ID(),
-                        String.valueOf(boxItemEntity.getQty()));
+                        String.valueOf(boxItemEntity.getQty()),remark);
 
-//                ws_result = WebServiceUtil.op_Product_Manu_In_Not_Pallet(wcIdNameEntity,boxItemEntity,new Date(),
-//                        listNo,new Date() ,"李伟锋成品入库测试",
-//                        13269,"lwf",
-//                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),boxItemEntity.getQty());
 
-//                if (ws_result.getResult() ) {
-//                    boxItemEntityArrayList.remove(boxItemEntity);
-//                } else {
-//                    return null;
-//                }
 
                 count++;
             }

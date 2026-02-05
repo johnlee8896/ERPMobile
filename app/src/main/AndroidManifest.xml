@@ -31,6 +31,16 @@
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
 
+        <!--备料页面管理-->
+        <activity
+            android:name=".MWBackUpListActivity"
+            android:screenOrientation="portrait" />
+
+        <!--零部件公司入库单独页面-->
+        <activity
+            android:name=".warehouse.StockInCompany29Activity"
+            android:screenOrientation="portrait" />
+
         <!--入库时选择采购订单，零部件及马来的采购订单由金蝶生成，这里入库时不再重复生成-->
         <activity
             android:name=".SelectPurchaseOrderListActivity"

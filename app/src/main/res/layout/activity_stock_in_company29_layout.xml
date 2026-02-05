@@ -61,15 +61,6 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/company29_btn_add_tray_scanner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_weight="1"
-                android:visibility="gone"
-                android:text="扫码枪扫描" />
-
-            <Button
                 android:id="@+id/company29_btn_add_tray_photo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

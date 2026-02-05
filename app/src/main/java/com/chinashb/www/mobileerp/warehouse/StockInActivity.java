@@ -26,7 +26,6 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.SelectPurchaseOrderListActivity;
 import com.chinashb.www.mobileerp.adapter.InBoxItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
@@ -35,7 +34,6 @@ import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
-import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -133,6 +131,10 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(boxItemAdapter);
         setViewsListener();
+        if (UserSingleton.get().getUserInfo().getCompany_ID() == 29){
+            ToastUtil.showToastShort("您当前车间是零部件公司，请用零部件公司入库界面！");
+            finish();
+        }
 
     }
 
@@ -586,18 +588,18 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-    private void jumpToSelectPurchaseOrderActivity(int item_ID ,int toBu_ID) {
-        Intent intent = new Intent(StockInActivity.this, SelectPurchaseOrderListActivity.class);
-        intent.putExtra(IntentConstant.Intent_Extra_MY_Purchase_Order_Bu_ID,toBu_ID);
-        intent.putExtra(IntentConstant.Intent_Extra_MY_Purchase_Order_Item_ID,item_ID);
-        startActivityForResult(intent,IntentConstant.Intent_Request_Stock_in_To_Purchase_Order_Activity);
-
-    }
-
-    private void getPOList(long item_id) {
-        GetPOOrderListAsyncTask task = new GetPOOrderListAsyncTask();
-        task.execute(item_id + "");
-    }
+//    private void jumpToSelectPurchaseOrderActivity(int item_ID ,int toBu_ID) {
+//        Intent intent = new Intent(StockInActivity.this, SelectPurchaseOrderListActivity.class);
+//        intent.putExtra(IntentConstant.Intent_Extra_MY_Purchase_Order_Bu_ID,toBu_ID);
+//        intent.putExtra(IntentConstant.Intent_Extra_MY_Purchase_Order_Item_ID,item_ID);
+//        startActivityForResult(intent,IntentConstant.Intent_Request_Stock_in_To_Purchase_Order_Activity);
+//
+//    }
+//
+//    private void getPOList(long item_id) {
+//        GetPOOrderListAsyncTask task = new GetPOOrderListAsyncTask();
+//        task.execute(item_id + "");
+//    }
 
 
     private class GetPOOrderListAsyncTask extends AsyncTask<String, Void, String> {

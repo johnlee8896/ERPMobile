@@ -31,6 +31,7 @@ public class IntentConstant {
     public static final int Select_Search_From_Select_Book_Shelf = 0x7;
 
     public static final String Intent_continue_put_directly = "continue_put_directly";
+    public static final String Intent_continue_put_from_backup = "continue_put_from_backup";
     public static String Intent_Extra_mpiWcBean = "intent_mpiWcBean";
     public static String Intent_PlanItemDetailBean = "PlanItemDetailBean";
     public static String Intent_Scan_box_item_Bean = "Scan_box_item_Bean";
@@ -86,6 +87,8 @@ public class IntentConstant {
     public static final String Intent_Extra_MY_Purchase_Order_Bu_ID = "Intent_Extra_MY_Purchase_Order_Bu_ID";
     public static final String Intent_Extra_MY_Purchase_Order_Item_ID = "Intent_Extra_MY_Purchase_Order_Item_ID";
     public static final String Intent_Extra_MY_Purchase_Order_bean = "Intent_Extra_MY_Purchase_Order_bean";
+
+    public static final String Intent_Extra_backup_mpiwc_id = "Intent_Extra_backup_mpiwc_id";
 
 
     public static final int Intent_Request_Code_Product_Out_And_Delivery_Order = 0X100;

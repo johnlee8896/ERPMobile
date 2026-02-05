@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
+import com.chinashb.www.mobileerp.MWBackUpListActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
@@ -64,6 +65,8 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
     private Button selectDateButton;
     private Button btnScanWC;
     private Button btnWarehouseOut;
+    private Button btnExecuteBackUp;
+    private Button btnQueryBackUp;
     private RecyclerView recyclerView;
     private IssueMoreItemAdapter issueMoreItemAdapter;
     private List<BoxItemEntity> boxItemEntityList;
@@ -77,6 +80,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
     private long currentItemId = 0;
     private TimePickerManager timePickerManager;
     private Date outDate;
+    private boolean isBackUP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,8 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         //btnScanWC = (Button) findViewById(R.id.btn_issue_more_wc);
         btnWarehouseOut = (Button) findViewById(R.id.btn_exe_warehouse_out);
         selectDateButton = findViewById(R.id.btn_issue_more_add_date);
+        btnExecuteBackUp = findViewById(R.id.btn_exe_backup);
+        btnQueryBackUp = findViewById(R.id.btn_query_backup);
         titleLayoutManagerView = findViewById(R.id.supply_product_put_titleLayout);
 
         pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
@@ -114,7 +120,16 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         }
         planInnerDetailEntityList = (List<PlanInnerDetailEntity>) intent.getSerializableExtra("IssuedItemList");
         isDirect = intent.getBooleanExtra(IntentConstant.Intent_continue_put_directly, false);
+        isBackUP = intent.getBooleanExtra(IntentConstant.Intent_continue_put_from_backup,false);
         setHomeButton();
+
+        if (isBackUP){
+            btnWarehouseOut.setVisibility(View.GONE);
+            selectDateButton.setVisibility(View.GONE);
+        }else{
+            btnExecuteBackUp.setVisibility(View.GONE);
+            btnQueryBackUp.setVisibility(View.GONE);
+        }
 
         addTrayButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +165,19 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         });
 
         selectDateButton.setText(UnitFormatUtil.formatTimeToDayChinese(System.currentTimeMillis()));
+
+        btnExecuteBackUp.setOnClickListener(v -> {
+            HandleWarehouseBackupAsyncTask task = new HandleWarehouseBackupAsyncTask() ;
+            task.execute();
+        });
+
+        btnQueryBackUp.setOnClickListener(v -> {
+//            GetMWBackUpDataAsyncTask task = new GetMWBackUpDataAsyncTask();
+//            task.execute();
+            Intent intent1 = new Intent(StockOutMoreActivity.this, MWBackUpListActivity.class);
+            intent1.putExtra(IntentConstant.Intent_Extra_backup_mpiwc_id,mpiWcBean.getMPIWC_ID());
+            startActivity(intent1);
+        });
 
     }
 
@@ -624,6 +652,89 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         }
 
     }
+
+    private class HandleWarehouseBackupAsyncTask extends AsyncTask<String, Void, Void> {
+        WsResult ws_result;
+
+        protected void updateNeedQty(BoxItemEntity boxItemEntity) {
+            if (boxItemEntity != null && planInnerDetailEntityList != null) {
+                for (int i = 0; i < planInnerDetailEntityList.size(); i++) {
+                    PlanInnerDetailEntity issued_item = planInnerDetailEntityList.get(i);
+                    if (issued_item.getItem_ID() == boxItemEntity.getItem_ID()) {
+                        float oldmoreqty = issued_item.getMoreQty();
+                        float newmoreqty = oldmoreqty - boxItemEntity.getQty();
+                        issued_item.setMoreQty(newmoreqty);
+
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            int count = 0;
+            int size = boxItemEntityList.size();
+            while (count < size && boxItemEntityList.size() > 0) {
+                BoxItemEntity bi = boxItemEntityList.get(0);
+                if (outDate == null){
+                    outDate = new Date() ;
+                }
+//                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
+                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item_To_Backup(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
+                if (ws_result.getResult() ) {
+                    boxItemEntityList.remove(bi);
+                    updateNeedQty(bi);
+                } else {
+                    //遇到错误，停止
+                    return null;
+                }
+
+                count++;
+            }
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            issueMoreItemAdapter.notifyDataSetChanged();
+            recyclerView.setAdapter(issueMoreItemAdapter);
+            scanCodeList.clear();
+            pbScan.setVisibility(View.INVISIBLE);
+
+            if (ws_result != null) {
+                if (!ws_result.getResult() ) {
+//                    CommonUtil.ShowToast(StockOutMoreActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
+                    //// TODO: 12/27/24 john 通通改为把错误提示显示出来
+                    ToastUtil.showToastShort(ws_result.getErrorInfo());
+                } else {
+//                    CommonUtil.ShowToast(StockOutMoreActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
+//                    ItemInvQueryAsyncTask task = new ItemInvQueryAsyncTask();
+//                    task.execute(currentItemId + "");
+
+//                    投料备料的不需要再报库存，以及提示出库成功
+                    ToastUtil.showToastShort("备料成功");
+
+
+
+                }
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            pbScan.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
 
 private List<PartsEntity> partsEntityList;
     private class ItemInvQueryAsyncTask extends AsyncTask<String, Void, Void> {

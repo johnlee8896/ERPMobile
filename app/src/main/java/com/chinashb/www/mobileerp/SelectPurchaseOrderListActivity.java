@@ -15,7 +15,7 @@ import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
-import com.chinashb.www.mobileerp.warehouse.StockInActivity;
+import com.chinashb.www.mobileerp.warehouse.StockInCompany29Activity;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
 import com.google.gson.Gson;
@@ -32,10 +32,10 @@ import butterknife.ButterKnife;
  * @description 零部件及马来采购订单由金蝶生成，所以在入库的时候先选金蝶，避免重复创建
  */
 public class SelectPurchaseOrderListActivity extends BaseActivity {
-    @BindView(R.id.purchase_order_title_confirm_Button) Button confirmButton;
-    //    @BindView(R.id.select_purchase_order_title_manageView) TitleLayoutManagerView titleManageView;
-    @BindView(R.id.purchase_order_recyclerView) CustomRecyclerView orderRecyclerView;
-    @BindView(R.id.purchase_order_empty_layoutView) EmptyLayoutManageView emptyLayoutView;
+    @BindView(R.id.mw_backup_title_confirm_Button) Button confirmButton;
+    //    @BindView(R.id.select_mw_backup_title_manageView) TitleLayoutManagerView titleManageView;
+    @BindView(R.id.mw_backup_recyclerView) CustomRecyclerView orderRecyclerView;
+    @BindView(R.id.mw_backup_empty_layoutView) EmptyLayoutManageView emptyLayoutView;
     private int toBu_ID;
     private long itemID;
     private StockInPurchaseOrderAdapter adapter;
@@ -44,7 +44,7 @@ public class SelectPurchaseOrderListActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_select_purchase_order_list_layout);
+        setContentView(R.layout.activity_mw_backup_manage_layout);
         ButterKnife.bind(this);
         toBu_ID = getIntent().getIntExtra(IntentConstant.Intent_Extra_MY_Purchase_Order_Bu_ID, -1);
         itemID = getIntent().getLongExtra(IntentConstant.Intent_Extra_MY_Purchase_Order_Item_ID, -1);
@@ -76,7 +76,8 @@ public class SelectPurchaseOrderListActivity extends BaseActivity {
     }
 
     private void jumpBackToStockInActivity() {
-        Intent intent = new Intent(this, StockInActivity.class);
+//        Intent intent = new Intent(this, StockInActivity.class);
+        Intent intent = new Intent(this, StockInCompany29Activity.class);
         intent.putExtra(IntentConstant.Intent_Extra_MY_Purchase_Order_bean, tempDpOrderDetailBean);
         setResult(IntentConstant.Intent_Request_Stock_in_To_Purchase_Order_Activity, intent);
         finish();
@@ -98,14 +99,14 @@ public class SelectPurchaseOrderListActivity extends BaseActivity {
                     "  ,Case When PO.Ver=1 Then PO_No Else POR.Release_No End As PO_No\n" +
                     "  ,Case When PO.Ver=1 Then PO_Date Else POR.Release_Date End As 下单日期\n" +
                     "  ,Item.KisCode,Item.Item_ID,Item.Item As 物料编码, Item.Item_Name As 物料,Item.Item_Spec2 As 规格,Item_Version.Item_Version As 版本,Item.Item_Unit As 单位\n" +
-                    "  ,POI.POI_Quantity AS 采购数量,POI.POI_In_Qty AS 已关联数量,POI.POI_Quantity-ISNULL(POI.POI_In_Qty,0) AS 未关联数量,POI.ML_Kis_BillNo AS 金蝶采购单号\n" +
+                    "  ,POI.POI_Quantity AS 采购数量,POI.POI_In_Qty AS 已关联数量,POI.POI_Quantity-ISNULL(POI.POI_In_Qty,0) AS 未关联数量,POI.kis_FBillNo AS 金蝶采购单号\n" +
                     "  FROM Purchase_Order_Item AS POI\n" +
                     "  INNER JOIN Purchase_Order AS PO ON PO.PO_ID=POI.PO_ID\n" +
                     "  Inner join Item_Version On Item_Version.IV_ID=POI.IV_ID \n" +
                     "  Inner Join Item On Item_Version.Item_ID=Item.Item_ID\n" +
                     "  Left Join Purchase_Order_Release As POR On POR.POR_ID = POI.POR_ID\n" +
                     "  WHERE PO.BU_ID=%s AND POI.Item_ID=%s AND POI.PO_Status_ID IN(1,2)\n" +
-                    "   AND POI.ML_Kis_FID>0 AND POI_Quantity<>POI_In_Qty AND PO_Date>='2025-12-01'", sBu_ID, sitem_ID);
+                    "   AND POI.Kis_FID>0 AND isnull(POI_Quantity,0) <> isnull(POI_In_Qty,0) AND PO_Date>='2025-12-01'", sBu_ID, sitem_ID);
 
             WsResult result = WebServiceUtil.getDataTable(sql);
             if (result != null && result.getResult()) {

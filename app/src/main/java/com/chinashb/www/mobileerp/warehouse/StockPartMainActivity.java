@@ -70,6 +70,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button pickGoodsButton;//拣货任务，为供货准备
     private Button freezeRecordButton;//拣货任务，为供货准备
     private Button getSendInfoButton;//扫描标签获取发货及入库信息
+    private Button stockInCompany29Button;//零部件公司的入库三个结算中心
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
     private UserInfoEntity userInfo;
@@ -110,6 +111,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         pickGoodsButton = findViewById(R.id.btn_pick_goods_task);
         freezeRecordButton = findViewById(R.id.btn_get_freeze_record);
         getSendInfoButton = findViewById(R.id.btn_get_diii_by_code);
+        stockInCompany29Button = findViewById(R.id.btn_stock_in_company29);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -195,6 +197,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         pickGoodsButton.setOnClickListener(this);
         freezeRecordButton.setOnClickListener(this);
         getSendInfoButton.setOnClickListener(this);
+        stockInCompany29Button.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -317,6 +320,10 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         }else if (view == getSendInfoButton){
 //            Intent intent = new Intent(StockPartMainActivity.this, GetSendInfoActivity.class);
 //            startActivity(intent);
+        }else if (view == stockInCompany29Button){
+            Intent intent = new Intent(StockPartMainActivity.this,StockInCompany29Activity.class);
+            startActivity(intent);
+
         }
 
     }

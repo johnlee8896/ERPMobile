@@ -77,6 +77,19 @@
                     android:layout_weight="1"
                     android:text="出库登账" />
 
+                <Button
+                    android:id="@+id/btn_exe_backup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="投料备料" />
+                <Button
+                    android:id="@+id/btn_query_backup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="查看备料" />
+
             </LinearLayout>
 
         </LinearLayout>

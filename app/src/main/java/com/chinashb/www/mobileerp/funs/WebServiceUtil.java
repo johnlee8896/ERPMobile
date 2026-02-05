@@ -2103,6 +2103,14 @@ public class WebServiceUtil {
         propertyInfo.setType(String.class);
         propertyInfos.add(propertyInfo);
 
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("Bu_ID");
+        propertyInfo2.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo2.setType(Integer.class);
+        propertyInfos.add(propertyInfo2);
+
+
+
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
         BoxItemEntity box_item = new BoxItemEntity();
@@ -2676,6 +2684,81 @@ public class WebServiceUtil {
         propertyInfo9.setName("POI_ID");
         propertyInfo9.setValue(purchaseOrderBean.getPOIID());
         System.out.println("======================================= POI_ID =  " + purchaseOrderBean.getPOIID());
+        propertyInfo9.setType(Integer.class);
+        propertyInfos.add(propertyInfo9);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult ws_result = Get_WS_Result(obj);
+        return ws_result;
+
+    }
+
+    //将物料入相应的库,零部件账
+    public static WsResult op_Commit_DS_Item_Income_To_Warehouse_With_POI_ID(BoxItemEntity box_item, String scan_code, int poiID) {
+        String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse_With_POOrder";
+        System.out.println("=======================================  op_Commit_DS_Item_Income_To_Warehouse");
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("SenderID");
+//        propertyInfo.setValue(UserInfoEntity.ID);
+        propertyInfo.setValue(UserSingleton.get().getHRID());
+        propertyInfo.setType(Integer.class);
+        propertyInfos.add(propertyInfo);
+
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("DIII_ID");
+        propertyInfo2.setValue(box_item.getDIII_ID());
+        System.out.println("======================================= diii_id =  " + box_item.getDIII_ID());
+        propertyInfo2.setType(Long.class);
+        propertyInfos.add(propertyInfo2);
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("Ist_ID");
+        propertyInfo3.setValue(box_item.getIst_ID());
+        System.out.println("======================================= Ist_ID =  " + box_item.getIst_ID());
+        propertyInfo3.setType(Long.class);
+        propertyInfos.add(propertyInfo3);
+
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("Sub_Ist_ID");
+        propertyInfo4.setValue(box_item.getSub_Ist_ID());
+        System.out.println("======================================= Sub_Ist_ID =  " + box_item.getSub_Ist_ID());
+        propertyInfo4.setType(Long.class);
+        propertyInfos.add(propertyInfo4);
+
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo5.setName("Bu_ID");
+        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        System.out.println("======================================= Bu_ID =  " + UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo5.setType(Integer.class);
+        propertyInfos.add(propertyInfo5);
+
+        PropertyInfo propertyInfo6 = new PropertyInfo();
+        propertyInfo6.setName("HR_Name");
+        propertyInfo6.setValue(UserSingleton.get().getHRName());
+        System.out.println("======================================= HR_Name =  " + UserSingleton.get().getHRName());
+        propertyInfo6.setType(String.class);
+        propertyInfos.add(propertyInfo6);
+
+        PropertyInfo propertyInfo7 = new PropertyInfo();
+        propertyInfo7.setName("Scan_Code");
+        propertyInfo7.setValue(scan_code);
+        System.out.println("======================================= Scan_Code =  " + scan_code);
+        propertyInfo7.setType(String.class);
+        propertyInfos.add(propertyInfo7);
+
+        PropertyInfo propertyInfo8 = new PropertyInfo();
+        propertyInfo8.setName("Item_ID");
+        propertyInfo8.setValue(box_item.getItem_ID());
+        System.out.println("======================================= Item_ID =  " + box_item.getItem_ID());
+        propertyInfo8.setType(Integer.class);
+        propertyInfos.add(propertyInfo8);
+
+        PropertyInfo propertyInfo9 = new PropertyInfo();
+        propertyInfo9.setName("POI_ID");
+        propertyInfo9.setValue(poiID);
+//        System.out.println("======================================= POI_ID =  " + purchaseOrderBean.getPOIID());
         propertyInfo9.setType(Integer.class);
         propertyInfos.add(propertyInfo9);
 
@@ -4244,6 +4327,14 @@ public class WebServiceUtil {
         return Result;
     }
 
+    public static WsResult op_Commit_MW_Issue_Item_To_Backup(Long MW_ID, BoxItemEntity bi, Date outDate, String scan_code) {
+        String sqty = String.valueOf(bi.getQty());
+//        WsResult Result = op_Commit_MW_Issue_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
+        WsResult Result = op_Commit_MW_Issue_Item_To_Backup(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty, outDate, scan_code);
+
+        return Result;
+    }
+
     public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty, Date outDate, String scanCode) {
         String webMethodName = "op_Commit_MW_New_Issue_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -4279,6 +4370,52 @@ public class WebServiceUtil {
 
         return ws_result;
     }
+
+
+//    投料出库到备料区
+    public static WsResult op_Commit_MW_Issue_Item_To_Backup(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty, Date outDate, String scanCode) {
+        String webMethodName = "Handle_MW_Issues_Out_To_Backup_Area";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "MW_ID", MW_ID);
+        AddPropertyInfo(propertyInfos, "Exer", Sender);
+        AddPropertyInfo(propertyInfos, "Item_ID", Item_ID);
+        AddPropertyInfo(propertyInfos, "IV_ID", IV_ID);
+        AddPropertyInfo(propertyInfos, "LotID", LotID);
+        AddPropertyInfo(propertyInfos, "LotNo", LotNo);
+        AddPropertyInfo(propertyInfos, "Ist_ID", Ist_ID);
+        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", Sub_Ist_ID);
+        AddPropertyInfo(propertyInfos, "SMLI_ID", SMLI_ID);
+        AddPropertyInfo(propertyInfos, "SMM_ID", SMM_ID);
+        AddPropertyInfo(propertyInfos, "SMT_ID", SMT_ID);
+        AddPropertyInfo(propertyInfos, "Qty", Qty);
+        AddPropertyInfo(propertyInfos, "AcDate", outDate);
+
+        AddPropertyInfo(propertyInfos, "Scan_Code", scanCode);
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "HR_Name", UserSingleton.get().getHRName());
+
+        System.out.println("================ MW_ID = " + MW_ID + " exer = " + Sender + " item_id = " + Item_ID);
+        System.out.println("================ IV_ID = " + IV_ID + " LotID = " + LotID + " LotNo = " + LotNo);
+        System.out.println("================ Ist_ID = " + Ist_ID + " Sub_Ist_ID = " + Sub_Ist_ID + " SMLI_ID = " + SMLI_ID);
+        System.out.println("================ SMM_ID = " + SMM_ID + " SMT_ID = " + SMT_ID + " Qty = " + Qty + " acdate = " + outDate);
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        WsResult ws_result = Get_WS_Result(obj);
+
+        return ws_result;
+    }
+
+
+//    Function Handle_MW_Issues_Out_To_Backup_Area(MW_ID As Long, Exer As Integer,
+//                                                 Item_ID As Long, IV_ID As Long,
+//                                                 LotID As Long, LotNo As String,
+//                                                 Ist_ID As Long, Sub_Ist_ID As Long,
+//                                                 SMLI_ID As Long, SMM_ID As Long, SMT_ID As Long,
+//                                                 Qty As String, AcDate As Date， Scan_Code As String, Bu_ID As Integer, HR_Name As String) As Web_Answer
 
     public static WsResult op_Commit_MW_Issue_Extra_Item(Long MW_ID, BoxItemEntity bi, String remark, Date outDate, String scanCode) {
         String sqty = String.valueOf(bi.getQty());
@@ -6214,6 +6351,166 @@ public class WebServiceUtil {
         propertyInfo16.setType(String.class);
         propertyInfos.add(propertyInfo16);
         System.out.println("================================InQty = " + Qty);
+
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+
+        return null;
+
+    }
+
+    public static WsResult op_Commit_Sale_Out_Item_Remark(int Bu_ID, int Exer, long EntityID, String EntityName,
+                                                   long Item_ID, long IV_ID,
+                                                   long LotID, String LotNo,
+                                                   long Ist_ID, long Sub_Ist_ID,
+                                                   long SMLI_ID, long SMM_ID, long SMT_ID,
+                                                   String Qty,String Remark) {
+
+        String webMethodName = "op_Commit_Sale_Out_Item";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo1 = new PropertyInfo();
+        propertyInfo1.setName("Bu_ID");
+//        propertyInfo1.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo1.setValue(Bu_ID);
+        propertyInfo1.setType(Integer.class);
+        propertyInfos.add(propertyInfo1);
+        System.out.println("================================Bu_ID = " + Bu_ID);
+
+        //// TODO: 2019/12/31 indate
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("Exer");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo2.setValue(Exer);
+        propertyInfo2.setType(Long.class);
+        propertyInfos.add(propertyInfo2);
+        System.out.println("================================Exer = " + UserSingleton.get().getHRID());
+
+        PropertyInfo propertyInfo20 = new PropertyInfo();
+        propertyInfo20.setName("EntityID");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo20.setValue(EntityID);
+        propertyInfo20.setType(Long.class);
+        propertyInfos.add(propertyInfo20);
+        System.out.println("================================EntityID = " + EntityID);
+
+        PropertyInfo propertyInfo21 = new PropertyInfo();
+        propertyInfo21.setName("EntityName");
+//        propertyInfo2.setValue(UserSingleton.get().getHRID());
+        propertyInfo21.setValue(EntityName);
+        propertyInfo21.setType(String.class);
+        propertyInfos.add(propertyInfo21);
+        System.out.println("================================EntityName = " + EntityName);
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("Item_ID");
+        propertyInfo3.setValue(Item_ID);
+        propertyInfo3.setType(Long.class);
+        propertyInfos.add(propertyInfo3);
+
+        System.out.println("================================Item_ID = " + Item_ID);
+
+        //// TODO: 2019/12/31 wc_id  ?
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("IV_ID");
+        propertyInfo4.setValue(IV_ID);
+        propertyInfo4.setType(Long.class);
+        propertyInfos.add(propertyInfo4);
+        System.out.println("================================IV_ID = " + IV_ID);
+
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo5.setName("LotID");
+        propertyInfo5.setValue(LotID);
+        propertyInfo5.setType(Long.class);
+        propertyInfos.add(propertyInfo5);
+        System.out.println("================================LotID = " + LotID);
+
+        PropertyInfo propertyInfo6 = new PropertyInfo();
+        propertyInfo6.setName("LotNo");
+        propertyInfo6.setValue(LotNo);
+        propertyInfo6.setType(String.class);
+        propertyInfos.add(propertyInfo6);
+        System.out.println("================================LotNo = " + LotNo);
+//
+        PropertyInfo propertyInfo7 = new PropertyInfo();
+        propertyInfo7.setName("Ist_ID");
+        propertyInfo7.setValue(Ist_ID);
+        propertyInfo7.setType(Long.class);
+        propertyInfos.add(propertyInfo7);
+        System.out.println("================================Ist_ID = " + Ist_ID);
+//
+        PropertyInfo propertyInfo8 = new PropertyInfo();
+        propertyInfo8.setName("Sub_Ist_ID");
+        propertyInfo8.setValue(Sub_Ist_ID);
+        propertyInfo8.setType(Long.class);
+        propertyInfos.add(propertyInfo8);
+        System.out.println("================================Sub_Ist_ID = " + Sub_Ist_ID);
+
+
+//        long LotID, String LotNo,
+//        long Ist_ID, long Sub_Ist_ID,
+//        long SMLI_ID, long SMM_ID, long SMT_ID,
+//        double Qty, String txtEntity, String txtRecord, String Remark, int WC_ID
+        PropertyInfo propertyInfo9 = new PropertyInfo();
+        propertyInfo9.setName("SMLI_ID");
+        propertyInfo9.setValue(SMLI_ID);
+        propertyInfo9.setType(Long.class);
+        propertyInfos.add(propertyInfo9);
+        System.out.println("================================SMLI_ID = " + SMLI_ID);
+//
+        PropertyInfo propertyInfo10 = new PropertyInfo();
+        propertyInfo10.setName("SMM_ID");
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setValue(Double.valueOf(subProductItemEntity.getQty()));
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setType(Double.class);
+//        propertyInfo10.setType(Float.class);
+        propertyInfo10.setValue(SMM_ID);
+        propertyInfo10.setType(Long.class);
+        propertyInfos.add(propertyInfo10);
+        System.out.println("================================SMM_ID = " + SMM_ID);
+
+//        ManuLotNo , ManuDate As Date,
+        // Ist_ID , Remark , Recorder , RecorderName
+        PropertyInfo propertyInfo11 = new PropertyInfo();
+        propertyInfo11.setName("SMT_ID");
+        propertyInfo11.setValue(SMT_ID);
+        propertyInfo11.setType(Long.class);
+        propertyInfos.add(propertyInfo11);
+        System.out.println("================================SMT_ID = " + SMT_ID);
+
+
+        PropertyInfo propertyInfo16 = new PropertyInfo();
+        propertyInfo16.setName("Qty");
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setValue(Double.valueOf(subProductItemEntity.getQty()));
+//        propertyInfo10.setValue(subProductItemEntity.getQty());
+//        propertyInfo10.setType(Double.class);
+//        propertyInfo10.setType(Float.class);
+        propertyInfo16.setValue(Qty);
+//        propertyInfo16.setType(Integer.class);
+        propertyInfo16.setType(String.class);
+        propertyInfos.add(propertyInfo16);
+        System.out.println("================================InQty = " + Qty);
+
+        PropertyInfo propertyInfo17 = new PropertyInfo();
+        propertyInfo17.setName("Remark");
+        propertyInfo17.setValue(Remark);
+        propertyInfo17.setType(String.class);
+        propertyInfos.add(propertyInfo17);
+        System.out.println("================================Remark = " + Remark);
 
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
