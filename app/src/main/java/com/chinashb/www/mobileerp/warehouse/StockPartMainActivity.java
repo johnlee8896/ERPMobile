@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.BuPlanGoodsActivity;
 import com.chinashb.www.mobileerp.GetPhotoFromServerActivity;
+import com.chinashb.www.mobileerp.NewLogisticsManageActivity;
 import com.chinashb.www.mobileerp.PartWorkLinePutActivity;
 import com.chinashb.www.mobileerp.PhotoCameraActivity;
 import com.chinashb.www.mobileerp.PickGoodsNewShowActivity;
@@ -71,6 +72,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button freezeRecordButton;//拣货任务，为供货准备
     private Button getSendInfoButton;//扫描标签获取发货及入库信息
     private Button stockInCompany29Button;//零部件公司的入库三个结算中心
+    private Button logisticsReceiveManageNewButton;//物流接收新，可扫送货单或发货
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
     private UserInfoEntity userInfo;
@@ -112,6 +114,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         freezeRecordButton = findViewById(R.id.btn_get_freeze_record);
         getSendInfoButton = findViewById(R.id.btn_get_diii_by_code);
         stockInCompany29Button = findViewById(R.id.btn_stock_in_company29);
+        logisticsReceiveManageNewButton = findViewById(R.id.btn_stock_logistics_manage_new);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -198,6 +201,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         freezeRecordButton.setOnClickListener(this);
         getSendInfoButton.setOnClickListener(this);
         stockInCompany29Button.setOnClickListener(this);
+        logisticsReceiveManageNewButton.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -324,6 +328,10 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             Intent intent = new Intent(StockPartMainActivity.this,StockInCompany29Activity.class);
             startActivity(intent);
 
+        }else if (view == logisticsReceiveManageNewButton){
+            Intent intent = new Intent(StockPartMainActivity.this, NewLogisticsManageActivity.class);
+            startActivity(intent);
+
         }
 
     }
@@ -368,27 +376,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         if (userInfo == null) {
             Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-
-//            SelectStorageAreaDialog dialog = new SelectStorageAreaDialog(StockPartMainActivity.this, 1);
-//            dialog.show();
-//            dialog.setOnViewClickListener(new OnViewClickListener() {
-//                @Override
-//                public <T> void onClickAction(View v, String tag, T t) {
-//                    if (t != null) {
-//                        SelectStorageAreaBean bean = (SelectStorageAreaBean) t;
-//                        if (bean != null) {
-//                            Intent intent = new Intent(StockPartMainActivity.this, StockQueryPartActivity.class);
-//                            intent.putExtra(IntentConstant.Intent_Extra_storage_area_bean,bean);
-//                            startActivity(intent);
-//                            if (dialog != null && dialog.isShowing()){
-//                                dialog.dismiss();
-//                            }
-//                        }
-//                    }
-//                }
-//            });
             Intent intent = new Intent(StockPartMainActivity.this, StockQueryPartActivity.class);
-//          intent.putExtra(IntentConstant.Intent_Extra_storage_area_bean,bean);
             startActivity(intent);
 
         }

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+    <EditText
+        android:id="@+id/pallet_container_order_input_EditText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="接收扫描结果"
+        android:paddingLeft="@dimen/dimen_size_20"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14"
+        />
+
+    <!-- 发货单号 -->
+    <TextView
+        android:id="@+id/pallet_container_order_tvShipOrderNo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="发货单号："
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- 当前操作提示 -->
+    <TextView
+        android:id="@+id/pallet_container_order_tvCurrentStep"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="请扫描：集装箱 / 托盘 / 物料"
+        android:textSize="14sp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- 当前集装箱 -->
+    <TextView
+        android:id="@+id/pallet_container_order_tvCurrentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="当前集装箱：-"
+        android:textSize="14sp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- 当前托盘 -->
+    <TextView
+        android:id="@+id/pallet_container_order_tvCurrentPallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="当前托盘：-"
+        android:textSize="14sp"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- 按钮区 -->
+    <Button
+        android:id="@+id/pallet_container_order_btnScan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="扫码"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:id="@+id/pallet_container_order_btnUndo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="撤销上一步扫码"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- 列表标题 -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="发货单结构"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- RecyclerView -->
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView 
+        android:id="@+id/pallet_container_order_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- 提交 -->
+    <Button
+        android:id="@+id/pallet_container_order_btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="生成并提交发货单"/>
+
+</LinearLayout>

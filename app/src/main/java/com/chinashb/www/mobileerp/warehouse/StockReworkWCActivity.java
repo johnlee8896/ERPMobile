@@ -1,13 +1,11 @@
 package com.chinashb.www.mobileerp.warehouse;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +22,7 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.StringUtils;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
@@ -32,7 +31,6 @@ import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,9 +80,6 @@ public class StockReworkWCActivity extends BaseActivity {
         inputEditText = findViewById(R.id.stock_out_return_wc_input_EditeText);
 
         newissuelist = new ArrayList<>();
-        if (savedInstanceState != null) {
-            newissuelist = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
-        }
         returnItemAdapter = new ReturnItemAdapter(StockReworkWCActivity.this, newissuelist);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(returnItemAdapter);
@@ -93,8 +88,6 @@ public class StockReworkWCActivity extends BaseActivity {
         themw = (MpiWcBean) intent.getSerializableExtra("mw");
         if (themw != null) {
         }
-
-        setHomeButton();
 
         btnAddTray.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,13 +103,16 @@ public class StockReworkWCActivity extends BaseActivity {
         btnWarehouseOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!StringUtils.isStringValid(remark)){
-                    ToastUtil.showToastShort("请添加备注！");
-                    return;
+                if (!(UserSingleton.get().getUserInfo().getBu_ID() == 149)){
+                    if (!StringUtils.isStringValid(remark)){
+                        ToastUtil.showToastShort("请添加备注！");
+                        return;
+                    }
                 }
 
+
                 if (newissuelist.size() > 0) {
-                    StockReworkWCActivity.AsyncExeWarehouseOut task = new StockReworkWCActivity.AsyncExeWarehouseOut();
+                    ExeWarehouseOutAsyncTask task = new ExeWarehouseOutAsyncTask();
                     task.execute();
                 }
             }
@@ -146,11 +142,20 @@ public class StockReworkWCActivity extends BaseActivity {
             remarkDialog.setOnViewClickListener(onRemarkViewClickListener);
         });
 
+//        if (UserSingleton.get().getUserInfo().getBu_ID() == 149){
+////            btnRemark.setEnabled(false );
+//            btnWarehouseOut .setEnabled(false);
+//        }else{
+////            btnRemark.setEnabled(true);
+//            btnWarehouseOut .setEnabled(true);
+//        }
+
     }
 
     private void parseScanResult(String result) {
 //        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
+
         if (result.contains("/")) {
             String[] qrContent;
             qrContent = result.split("/");
@@ -160,29 +165,18 @@ public class StockReworkWCActivity extends BaseActivity {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
                         scanstring = result;
+//                        if (UserSingleton.get().getUserInfo().getBu_ID() == 149){
+//                            ExeWarehouseOutMalaiAsyncTask task = new ExeWarehouseOutMalaiAsyncTask();
+//                            task.execute();
+//                        }else {
+//                            GetReturnBoxAsyncTask task = new GetReturnBoxAsyncTask();
+//                            task.execute();
+//                        }
                         GetReturnBoxAsyncTask task = new GetReturnBoxAsyncTask();
                         task.execute();
                     }
                 }
             }
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    protected void setHomeButton() {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -247,6 +241,10 @@ public class StockReworkWCActivity extends BaseActivity {
                     Toast.makeText(StockReworkWCActivity.this, scanresult.getErrorInfo(), Toast.LENGTH_LONG).show();
                 }
             }
+            //// TODO: 5/5/26 如果是退还马来零部件，不可编辑数量
+//            if (UserSingleton.get().getUserInfo().getBu_ID() == 149 && judgeIsMalaiPart(scanresult.getSupplierID())){
+//                returnItemAdapter.
+//            }
 
             returnItemAdapter = new ReturnItemAdapter(StockReworkWCActivity.this, newissuelist);
             mRecyclerView.setAdapter(returnItemAdapter);
@@ -265,7 +263,7 @@ public class StockReworkWCActivity extends BaseActivity {
     }
 
 
-    private class AsyncExeWarehouseOut extends AsyncTask<String, Void, Void> {
+    private class ExeWarehouseOutAsyncTask extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
 
         @Override
@@ -277,9 +275,13 @@ public class StockReworkWCActivity extends BaseActivity {
 
             while (count < 10 && newissuelist.size() > 0) {
                 BoxItemEntity bi = newissuelist.get(0);
-                ws_result = WebServiceUtil.op_Commit_Return_Item(bi,remark);
+//                ws_result = WebServiceUtil.op_Commit_Return_Item(bi,remark);
+                if (UserSingleton.get().getUserInfo().getBu_ID() == 149 && judgeIsMalaiPart(bi.getSupplierID())) {
+                    ws_result = WebServiceUtil.opPartReturnInnerOrgForMalaysia(UserSingleton.get().getUserInfo().getBu_ID(), bi.getDIII_ID(),bi.getQty() + "",remark,UserSingleton.get().getHRID());
+                }else{
+                    ws_result = WebServiceUtil.op_Commit_Return_Item(bi,remark);
 
-
+                }
                 if (ws_result.getResult() ) {
                     newissuelist.remove(bi);
                     newissuelist.remove(bi);
@@ -310,39 +312,49 @@ public class StockReworkWCActivity extends BaseActivity {
             //pbScan.setVisibility(View.INVISIBLE);
         }
 
-        @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
 
     }
 
-
-    @Override
-    protected void onResume() {
-//设置为横屏幕
-        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT );
+    private boolean judgeIsMalaiPart(int supplierID){
+        if (supplierID == 6504 || supplierID == 6505 ||supplierID == 6506 ){
+            return true;
         }
-
-        /*issueMoreItemAdapter = new ReturnItemAdapter(StockOutMoreExtraActivity.this, newissuelist);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
-        mRecyclerView.setAdapter(issueMoreItemAdapter);*/
-
-        super.onResume();
+        return false;
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+//    private class ExeWarehouseOutMalaiAsyncTask extends AsyncTask<String, Void, Void> {
+//        WsResult ws_result;
+//
+//        @Override
+//        protected Void doInBackground(String... params) {
+//
+//            if (UserSingleton.get().getUserInfo().getBu_ID() == 149) {
+//                ws_result = WebServiceUtil.opPartReturnInnerOrgForMalaysia(UserSingleton.get().getUserInfo().getBu_ID(),
+//                        scanstring, UserSingleton.get().getHRID());
+//            }
+//            return null;
+//        }
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            //tv.setText(fahren + "∞ F");
+//
+//            if (ws_result != null) {
+//                if (!ws_result.getResult() ) {
+//                    CommonUtil.ShowToast(StockReworkWCActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
+//
+//                } else {
+//                    CommonUtil.ShowToast(StockReworkWCActivity.this, "退料出库完成", R.mipmap.smiley);
+//                }
+//
+//            }
+//
+//            returnItemAdapter = new ReturnItemAdapter(StockReworkWCActivity.this, newissuelist);
+//            mRecyclerView.setAdapter(returnItemAdapter);
+//            //pbScan.setVisibility(View.INVISIBLE);
+//        }
+//
+//    }
 
-        outState.putSerializable("BoxItemList", (Serializable) newissuelist);
-
-    }
 
 
 }

@@ -41,17 +41,11 @@ public class IssueOutBackUpBean implements Parcelable {
     @SerializedName("Sub_Ist_ID") private long Sub_Ist_ID;
     @SerializedName("SMLI_ID") private long SMLI_ID;
     @SerializedName("SMT_ID") private long SMT_ID;
+    //增加 To_Ist_ID,To_Sub_Ist_ID
+    @SerializedName("To_Ist_ID") private long toIst_ID;
+    @SerializedName("To_Sub_Ist_ID") private long toSub_Ist_ID;
 
     private boolean selected;
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public IssueOutBackUpBean setSelected(boolean selected) {
-        this.selected = selected;
-        return this;
-    }
 
     protected IssueOutBackUpBean(Parcel in) {
         ItemId = in.readLong();
@@ -70,6 +64,9 @@ public class IssueOutBackUpBean implements Parcelable {
         Sub_Ist_ID = in.readLong();
         SMLI_ID = in.readLong();
         SMT_ID = in.readLong();
+        toIst_ID = in.readLong();
+        toSub_Ist_ID = in.readLong();
+        selected = in.readByte() != 0;
     }
 
     @Override
@@ -90,6 +87,9 @@ public class IssueOutBackUpBean implements Parcelable {
         dest.writeLong(Sub_Ist_ID);
         dest.writeLong(SMLI_ID);
         dest.writeLong(SMT_ID);
+        dest.writeLong(toIst_ID);
+        dest.writeLong(toSub_Ist_ID);
+        dest.writeByte((byte) (selected ? 1 : 0));
     }
 
     @Override
@@ -108,6 +108,15 @@ public class IssueOutBackUpBean implements Parcelable {
             return new IssueOutBackUpBean[size];
         }
     };
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public IssueOutBackUpBean setSelected(boolean selected) {
+        this.selected = selected;
+        return this;
+    }
 
     public long getItemId() {
         return ItemId;
@@ -250,6 +259,24 @@ public class IssueOutBackUpBean implements Parcelable {
 
     public IssueOutBackUpBean setSMT_ID(long SMT_ID) {
         this.SMT_ID = SMT_ID;
+        return this;
+    }
+
+    public long getToIst_ID() {
+        return toIst_ID;
+    }
+
+    public IssueOutBackUpBean setToIst_ID(long toIst_ID) {
+        this.toIst_ID = toIst_ID;
+        return this;
+    }
+
+    public long getToSub_Ist_ID() {
+        return toSub_Ist_ID;
+    }
+
+    public IssueOutBackUpBean setToSub_Ist_ID(long toSub_Ist_ID) {
+        this.toSub_Ist_ID = toSub_Ist_ID;
         return this;
     }
 }

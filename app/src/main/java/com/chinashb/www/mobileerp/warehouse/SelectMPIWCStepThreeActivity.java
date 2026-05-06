@@ -351,11 +351,18 @@ public class SelectMPIWCStepThreeActivity extends BaseActivity {
         @Override
         protected Void doInBackground(String... params) {
             //2025-04-13 john 添加item_id，为辅料赋值
-            String sql = "Select M.Item_ID,M.MPIWC_ID,dbo.get_mw_plan_show_name(mpiwc_ID) As MwName,dbo.get_mw_plan_show_name_html(mpiwc_ID) As HtmlMwName, M.MPI_Remark " +
-                    "From MPI_WC As M " +
+//            String sql = "Select M.Item_ID,M.MPIWC_ID,dbo.get_mw_plan_show_name(mpiwc_ID) As MwName,dbo.get_mw_plan_show_name_html(mpiwc_ID) As HtmlMwName, M.MPI_Remark " +
+//                    "From MPI_WC As M " +
+//                    "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + (bu_option_mp_bom  ? " and allow_iss=1" : " ") +
+////                    "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + "  and allow_iss=1" +
+//                    " Order By PShift_ID, Shift_No";
+            //2026-03-06 john 关联计划员
+            String sql = "Select M.Item_ID,M.MPIWC_ID,dbo.get_mw_plan_show_name(mpiwc_ID) As MwName,dbo.get_mw_plan_show_name_html(mpiwc_ID) As HtmlMwName, M.MPI_Remark ,HR.HR_Name "  +
+                    "From MPI_WC As M Inner Join HR on HR.HR_ID = M.Editor " +
                     "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + (bu_option_mp_bom  ? " and allow_iss=1" : " ") +
 //                    "Where M.Deleted=0 And M.WC_ID=" + selectWorkCenter.getWC_ID() + " And MPI_Date=" + CommonUtil.SqlDate(showdate) + "  and allow_iss=1" +
                     " Order By PShift_ID, Shift_No";
+
             WsResult result = WebServiceUtil.getDataTable(sql);
             if (result != null && result.getResult()) {
                 String js = result.getErrorInfo();

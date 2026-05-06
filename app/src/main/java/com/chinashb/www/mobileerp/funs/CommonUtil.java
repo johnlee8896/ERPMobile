@@ -17,8 +17,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.commonactivity.LoginActivity;
 import com.chinashb.www.mobileerp.permission.PermissionsUtil;
+import com.chinashb.www.mobileerp.utils.AutoI18nUtil;
+import com.chinashb.www.mobileerp.utils.FailureCaptureUtil;
 import com.chinashb.www.mobileerp.utils.PermissionGroupDefine;
 import com.google.gson.JsonObject;
 
@@ -122,7 +125,7 @@ public class CommonUtil {
     }
 
     public static void ShowToast(Context context, String Message, Integer image) {
-        Toast toast = Toast.makeText(context, Message, Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(context, AutoI18nUtil.translate(context, Message), Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         //创建图片视图对象
         ImageView imageView = new ImageView(context);
@@ -134,11 +137,14 @@ public class CommonUtil {
         toastView.setOrientation(LinearLayout.HORIZONTAL);
         //将ImageView在加入到此布局中的第一个位置
         toastView.addView(imageView, 0);
+        if (image != null && image == R.mipmap.warning) {
+            FailureCaptureUtil.captureIfPossible();
+        }
         toast.show();
     }
 
     public static void ShowToast(Context context, String Message, Integer image, Integer length) {
-        Toast toast = Toast.makeText(context, Message, length);
+        Toast toast = Toast.makeText(context, AutoI18nUtil.translate(context, Message), length);
         toast.setGravity(Gravity.CENTER, 0, 0);
         //创建图片视图对象
         ImageView imageView = new ImageView(context);
@@ -150,6 +156,9 @@ public class CommonUtil {
         toastView.setOrientation(LinearLayout.HORIZONTAL);
         //将ImageView在加入到此布局中的第一个位置
         toastView.addView(imageView, 0);
+        if (image != null && image == R.mipmap.warning) {
+            FailureCaptureUtil.captureIfPossible();
+        }
         toast.show();
     }
 

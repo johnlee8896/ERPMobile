@@ -1,0 +1,151 @@
+<resources>
+    <!-- App & Titles -->
+    <string name="app_name">SHB ERP</string>
+    <string name="title_activity_warehouse_part_main">Gudang Alat Ganti</string>
+    <string name="title_activity_task">Pengurusan Tugas</string>
+    <string name="title_activity_conversation_contacts">Senarai Kenalan</string>
+    <string name="title_activity_conversation">Mesej</string>
+    <string name="title_home">Beranda</string>
+    <string name="title_dashboard">Papan Pemuka</string>
+    <string name="title_notifications">Notifikasi</string>
+    <string name="title_activity_task_view">Jejak Tugas</string>
+
+    <!-- Login -->
+    <string name="prompt_password">Kata Laluan</string>
+    <string name="action_sign_in">Log Masuk Dengan Akaun/Kata Laluan</string>
+    <string name="action_sign_in_short">Log Masuk</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Empty / Error Views -->
+    <string name="empty_no_message">Anda belum mempunyai mesej</string>
+    <string name="empty_no_data">Tiada data tersedia</string>
+    <string name="empty_no_network">Rangkaian lemah, klik untuk muat semula</string>
+    <string name="empty_no_search">Tiada hasil yang sepadan</string>
+    <string name="empty_no_voucher">Tiada baucar tersedia</string>
+
+    <!-- Printer -->
+    <string name="discovery_printer">Cari Pencetak</string>
+    <string name="paired_printer_list">Senarai Pencetak Terkini</string>
+    <string name="print_text">Cetak Teks</string>
+    <string name="print_1D_barcode">Cetak Kod Bar 1D</string>
+    <string name="print_2D_barcode">Cetak Kod QR</string>
+    <string name="print_image">Cetak Imej</string>
+    <string name="print_express">Cetak Resit Penghantaran</string>
+    <string name="print_receipt">Cetak Resit</string>
+    <string name="zebra_log_image" translatable="false">Logo Zebra</string>
+    <string name="please_connect_printer">Sambungkan pencetak</string>
+    <string name="bluetooth_not_support">Peranti ini tidak menyokong Bluetooth</string>
+    <string name="scanning">Mengimbas, sila tunggu</string>
+    <string name="select_printer">Pilih Pencetak Bluetooth</string>
+    <string name="not_find_printer">Tiada pencetak Bluetooth ditemui</string>
+    <string name="discovery_printer_list">Senarai Pencetak Dijumpai</string>
+    <string name="language_switched_error">Pencetak sibuk, tidak boleh bertukar</string>
+    <string name="language_switched_to_cpcl">Bahasa pencetak ditukar ke CPCL</string>
+    <string name="not_support_cpcl">Pencetak ini tidak menyokong CPCL</string>
+    <string name="language_switched_to_escpos">Bahasa pencetak ditukar ke ESC/POS</string>
+    <string name="not_support_escpos">Pencetak ini tidak menyokong ESC/POS</string>
+    <string name="connect_error">Sambungan terputus secara tidak dijangka, sila periksa</string>
+    <string name="connecting">Menyambung, sila tunggu</string>
+    <string name="connect_success">Sambungan berjaya</string>
+    <string name="connect_failed">Gagal menyambung</string>
+    <string name="not_support_printer">Pencetak tidak disokong</string>
+    <string name="disconnecting">Memutuskan sambungan, sila tunggu</string>
+    <string name="printer_error_not_print">Ralat pencetak, tidak boleh cetak</string>
+    <string name="printer_ready">Sedia</string>
+    <string name="printer_busy">Sibuk</string>
+    <string name="printer_cover_open">Penutup Terbuka</string>
+    <string name="printer_media_out">Kertas Habis</string>
+    <string name="printing">Mencetak, sila tunggu</string>
+
+    <!-- Calendar / Lunar -->
+    <string-array name="lunar_first_of_month">
+        <item>Tahun Baru Cina</item>
+        <item>Februari</item>
+        <item>Mac</item>
+        <item>April</item>
+        <item>Mei</item>
+        <item>Jun</item>
+        <item>Juli</item>
+        <item>Ogos</item>
+        <item>September</item>
+        <item>Oktober</item>
+        <item>Bulan Sebelas</item>
+        <item>Bulan Kedua Belas</item>
+    </string-array>
+
+    <string-array name="lunar_str">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
+        <item>25</item>
+        <item>26</item>
+        <item>27</item>
+        <item>28</item>
+        <item>29</item>
+        <item>30</item>
+    </string-array>
+
+    <string name="sun">Ahad</string>
+    <string name="mon">Isnin</string>
+    <string name="tue">Selasa</string>
+    <string name="wed">Rabu</string>
+    <string name="thu">Khamis</string>
+    <string name="fri">Jumaat</string>
+    <string name="sat">Sabtu</string>
+    <string name="cancel">Batal</string>
+    <string name="ok">OK</string>
+
+    <string-array name="week_string_array">
+        <item>Ahad</item>
+        <item>Isnin</item>
+        <item>Selasa</item>
+        <item>Rabu</item>
+        <item>Khamis</item>
+        <item>Jumaat</item>
+        <item>Sabtu</item>
+    </string-array>
+
+    <string-array name="test_name_array">
+        <item>余莲方</item>
+        <item>常芙蓉</item>
+        <item>桂伟松</item>
+        <item>李伟锋</item>
+        <item>邵家伟</item>
+        <item>李忠飞</item>
+        <item>LIM XIN YEE</item>
+    </string-array>
+
+    <string name="turn_on_flashlight">Hidupkan Lampu Suluh</string>
+    <string name="turn_off_flashlight">Matikan Lampu Suluh</string>
+    <string name="part_inv_check">Stok Kiraan Alat Ganti</string>
+    <string name="title_activity_stock_check_part_inv">Inventori Gudang</string>
+    <string name="shberp_login">SHB ERP 登录</string>
+    <string name="system_version_format">Versi Sistem: %1$s</string>
+    <string name="main_version_outdated_message">Versi aplikasi semasa bukan yang terkini. Sila kembali ke halaman log masuk untuk naik taraf.</string>
+    <string name="language_selector_title">Pilih Bahasa</string>
+    <string name="language_label_simplified_chinese">Bahasa Cina Ringkas</string>
+    <string name="language_label_traditional_chinese">Bahasa Cina Tradisional</string>
+    <string name="language_label_english">Bahasa Inggeris</string>
+    <string name="language_label_malay">Bahasa Melayu</string>
+</resources>

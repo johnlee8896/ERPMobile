@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.TaskMainNewActivity;
 import com.chinashb.www.mobileerp.adapter.TaskJsonAdapter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.TaskBean;
@@ -113,7 +112,7 @@ public class TasksActivity extends BaseActivity {
 
         tasks_type = 0;
         addSingleTaskButton.setOnClickListener(v ->{
-            Intent intent = new Intent(TasksActivity.this, TaskCreateActivity.class);
+            Intent intent = new Intent(TasksActivity.this, TaskCreateFullActivity.class);
             startActivity(intent);
         });
         LoadTasks();

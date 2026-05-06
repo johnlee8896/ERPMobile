@@ -17,6 +17,7 @@
         android:clickable="false"
         android:focusable="false"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintVertical_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -201,5 +202,23 @@
         app:layout_constraintBottom_toBottomOf="@id/item_seventh_info_textView"
         app:layout_constraintLeft_toRightOf="@id/item_common_barrier"
         app:layout_constraintTop_toTopOf="@id/item_seventh_info_textView" />
+    <!-- 新增：底部右侧操作按钮 -->
+    <Button
+        android:id="@+id/item_common_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="撤回备料"
+        android:paddingStart="@dimen/dimen_size_12"
+        android:paddingEnd="@dimen/dimen_size_12"
+        android:paddingTop="@dimen/dimen_size_6"
+        android:paddingBottom="@dimen/dimen_size_6"
+        android:background="@drawable/shape_conner_blue_button_bg"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_14"
+        android:layout_marginBottom="@dimen/dimen_size_10"
+        android:layout_marginEnd="@dimen/dimen_size_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="@dimen/dimen_size_10" />
 
 </android.support.constraint.ConstraintLayout>

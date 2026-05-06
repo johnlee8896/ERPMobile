@@ -62,6 +62,7 @@ public class ProductCheckInventoryCommonAllActivity extends BaseActivity {
     private EditText eachBoxQtyEditText;
     private EditText singleQtyEditText;
     private TextView realQtyTextView;
+    private TextView tvChayiQty;
     private Button btnCal;
     private EditText etRemark;
     private EditText inputEditText;
@@ -129,6 +130,7 @@ public class ProductCheckInventoryCommonAllActivity extends BaseActivity {
         btnCal = (Button) findViewById(R.id.product_check_btn_check_inv_cal_qty);
         titleLayoutManagerView = findViewById(R.id.product_check_titleLayout);
         tvIst = (TextView) findViewById(R.id.product_check_tv_check_stock_ist);
+        tvChayiQty = (TextView)findViewById(R.id.tv_product_checkcheck_stock_chayi_qty);
 
         tvERPIst = (TextView) findViewById(R.id.product_check_tv_check_stock_ist_erp);
         tvItemCode = (TextView) findViewById(R.id.product_check_tv_check_stock_item_code);
@@ -564,6 +566,9 @@ public class ProductCheckInventoryCommonAllActivity extends BaseActivity {
 //                        GetERPIstNameByBoxIDAsyncTask task = new GetERPIstNameByBoxIDAsyncTask();
 //                        task.execute();
 
+                    GetEosCheckInvChaYiAsyncTask task = new GetEosCheckInvChaYiAsyncTask();
+                    task.execute();
+
                     inputEditText.setText("");
 //                    }
                     CURRENT_PRODUCT_LABEL = MANU_PALLET_NOT;
@@ -801,6 +806,8 @@ public class ProductCheckInventoryCommonAllActivity extends BaseActivity {
                 } else {
                     tvERPIst.setTextColor(Color.BLACK);
                 }
+                GetEosCheckInvChaYiAsyncTask task = new GetEosCheckInvChaYiAsyncTask();
+                task.execute();
 
             }else{
                 ToastUtil.showToastShort("获取该箱ERP存储位置失败！");
@@ -829,10 +836,51 @@ public class ProductCheckInventoryCommonAllActivity extends BaseActivity {
                     tvERPIst.setTextColor(Color.BLACK);
                 }
 
+                GetEosCheckInvChaYiAsyncTask task = new GetEosCheckInvChaYiAsyncTask();
+                task.execute();
+
             }else{
                 ToastUtil.showToastShort("获取该箱ERP存储位置失败！");
 
             }
+
+        }
+    }
+
+    private class GetEosCheckInvChaYiAsyncTask extends AsyncTask<Void, Void, Void>{
+        WsResult wsResult;
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (CURRENT_PRODUCT_LABEL == CODE_BOX){
+                wsResult = WebServiceUtil.GetProductCompareCheckInventoryToInv(currentBoxID,0,0,CI_ID,thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
+            }else if (CURRENT_PRODUCT_LABEL == MANU_PALLET){
+                wsResult = WebServiceUtil.GetProductCompareCheckInventoryToInv(0,currentPalletID,0,CI_ID,thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
+            }else if (CURRENT_PRODUCT_LABEL == MANU_PALLET_NOT){
+                wsResult = WebServiceUtil.GetProductCompareCheckInventoryToInv(0,0,currentPSID,CI_ID,thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (wsResult != null && wsResult.getResult()){
+                tvChayiQty.setText(wsResult.getErrorInfo());
+//                if (!tvChayiQty.getText().equals(wsResult.getErrorInfo())) {
+//                    tvERPIst.setTextColor(Color.RED);
+//                } else {
+//                    tvERPIst.setTextColor(Color.BLACK);
+//                }
+
+            }else{
+                ToastUtil.showToastShort("获取差异失败！" + wsResult.getErrorInfo());
+
+            }
+
+
+
+
+
 
         }
     }

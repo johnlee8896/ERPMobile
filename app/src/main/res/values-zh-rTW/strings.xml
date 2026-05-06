@@ -1,0 +1,151 @@
+<resources>
+    <!-- App & Titles -->
+    <string name="app_name">SHB ERP</string>
+    <string name="title_activity_warehouse_part_main">零部件倉庫</string>
+    <string name="title_activity_task">任務管理</string>
+    <string name="title_activity_conversation_contacts">通訊錄</string>
+    <string name="title_activity_conversation">訊息</string>
+    <string name="title_home">首頁</string>
+    <string name="title_dashboard">儀表板</string>
+    <string name="title_notifications">通知</string>
+    <string name="title_activity_task_view">任務追蹤</string>
+
+    <!-- Login UI -->
+    <string name="prompt_password">密碼</string>
+    <string name="action_sign_in">帳號密碼登入</string>
+    <string name="action_sign_in_short">登入</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Empty Views -->
+    <string name="empty_no_message">您暫時還沒有訊息</string>
+    <string name="empty_no_data">暫無資料</string>
+    <string name="empty_no_network">網路不太穩定，點擊重新載入</string>
+    <string name="empty_no_search">未找到相關內容</string>
+    <string name="empty_no_voucher">暫無代金券</string>
+
+    <!-- Printer -->
+    <string name="discovery_printer">尋找印表機</string>
+    <string name="paired_printer_list">最近使用印表機列表</string>
+    <string name="print_text">列印文字</string>
+    <string name="print_1D_barcode">列印一維條碼</string>
+    <string name="print_2D_barcode">列印二維條碼</string>
+    <string name="print_image">列印圖片</string>
+    <string name="print_express">列印快遞單</string>
+    <string name="print_receipt">列印小票</string>
+    <string name="zebra_log_image" translatable="false">Zebra 標誌圖片</string>
+    <string name="please_connect_printer">請連接印表機</string>
+    <string name="bluetooth_not_support">當前設備不支援藍牙</string>
+    <string name="scanning">正在掃描，請稍後</string>
+    <string name="select_printer">選擇藍牙印表機</string>
+    <string name="not_find_printer">沒有找到藍牙印表機</string>
+    <string name="discovery_printer_list">查找印表機列表</string>
+    <string name="language_switched_error">印表機正忙, 不能切換</string>
+    <string name="language_switched_to_cpcl">切換印表機語言為CPCL</string>
+    <string name="not_support_cpcl">當前印表機不支援CPCL</string>
+    <string name="language_switched_to_escpos">切換印表機語言為ESC/POS</string>
+    <string name="not_support_escpos">當前印表機不支援ESC/POS</string>
+    <string name="connect_error">連接異常斷開，請查找原因</string>
+    <string name="connecting">正在連接，請稍後</string>
+    <string name="connect_success">已連接</string>
+    <string name="connect_failed">連接失敗</string>
+    <string name="not_support_printer">不支援當前印表機</string>
+    <string name="disconnecting">正在斷開連接，請稍後</string>
+    <string name="printer_error_not_print">印表機異常, 不能列印</string>
+    <string name="printer_ready">就緒</string>
+    <string name="printer_busy">正忙</string>
+    <string name="printer_cover_open">蓋打開</string>
+    <string name="printer_media_out">紙用完</string>
+    <string name="printing">正在列印, 請稍後</string>
+
+    <!-- Calendar / Lunar -->
+    <string-array name="lunar_first_of_month">
+        <item>春節</item>
+        <item>二月</item>
+        <item>三月</item>
+        <item>四月</item>
+        <item>五月</item>
+        <item>六月</item>
+        <item>七月</item>
+        <item>八月</item>
+        <item>九月</item>
+        <item>十月</item>
+        <item>冬月</item>
+        <item>臘月</item>
+    </string-array>
+
+    <string-array name="lunar_str">
+        <item>初一</item>
+        <item>初二</item>
+        <item>初三</item>
+        <item>初四</item>
+        <item>初五</item>
+        <item>初六</item>
+        <item>初七</item>
+        <item>初八</item>
+        <item>初九</item>
+        <item>初十</item>
+        <item>十一</item>
+        <item>十二</item>
+        <item>十三</item>
+        <item>十四</item>
+        <item>十五</item>
+        <item>十六</item>
+        <item>十七</item>
+        <item>十八</item>
+        <item>十九</item>
+        <item>二十</item>
+        <item>廿一</item>
+        <item>廿二</item>
+        <item>廿三</item>
+        <item>廿四</item>
+        <item>廿五</item>
+        <item>廿六</item>
+        <item>廿七</item>
+        <item>廿八</item>
+        <item>廿九</item>
+        <item>三十</item>
+    </string-array>
+
+    <string name="sun">日</string>
+    <string name="mon">一</string>
+    <string name="tue">二</string>
+    <string name="wed">三</string>
+    <string name="thu">四</string>
+    <string name="fri">五</string>
+    <string name="sat">六</string>
+    <string name="cancel">取消</string>
+    <string name="ok">確定</string>
+
+    <string-array name="week_string_array">
+        <item>日</item>
+        <item>一</item>
+        <item>二</item>
+        <item>三</item>
+        <item>四</item>
+        <item>五</item>
+        <item>六</item>
+    </string-array>
+
+    <string-array name="test_name_array">
+        <item>余莲方</item>
+        <item>常芙蓉</item>
+        <item>桂伟松</item>
+        <item>李伟锋</item>
+        <item>邵家伟</item>
+        <item>李忠飞</item>
+        <item>LIM XIN YEE</item>
+    </string-array>
+
+    <string name="turn_on_flashlight">打開手電筒</string>
+    <string name="turn_off_flashlight">關閉手電筒</string>
+    <string name="part_inv_check">零部件倉庫盤點</string>
+    <string name="title_activity_stock_check_part_inv">倉庫盤點</string>
+    <string name="shberp_login">SHB ERP 登录</string>
+    <string name="system_version_format">系統版本：%1$s</string>
+    <string name="main_version_outdated_message">您當前使用版本非最新版本，請退回登入頁面進行升級！</string>
+    <string name="language_selector_title">選擇語言</string>
+    <string name="language_label_simplified_chinese">簡體中文</string>
+    <string name="language_label_traditional_chinese">繁體中文</string>
+    <string name="language_label_english">英文</string>
+    <string name="language_label_malay">馬來文</string>
+</resources>

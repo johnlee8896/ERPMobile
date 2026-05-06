@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.utils.AutoI18nUtil;
 
 /***
  * @date 创建时间 2019/6/19 10:12 AM
@@ -53,7 +54,7 @@ public class CommProgressDialog extends Dialog {
 
     public void setTitleText(CharSequence title) {
         if (title != null) {
-            titleTextView.setText(title);
+            titleTextView.setText(AutoI18nUtil.translate(getContext(), title));
         }
     }
 
@@ -91,7 +92,7 @@ public class CommProgressDialog extends Dialog {
 
 
         public Builder setTitle(String title) {
-            this.title = title;
+            this.title = AutoI18nUtil.translate(context, title);
             return this;
         }
 
@@ -125,4 +126,3 @@ public class CommProgressDialog extends Dialog {
         }
     }
 }
-

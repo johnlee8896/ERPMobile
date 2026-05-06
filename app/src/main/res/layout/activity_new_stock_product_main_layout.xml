@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="仓库管理" />
+
+    <TextView
+        android:id="@+id/new_product_menu_title_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="2dp"
+        android:paddingBottom="4dp"
+        android:text="成品仓功能"
+        android:textColor="#444444"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/new_product_menu_summary_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F5F7F9"
+        android:padding="10dp"
+        android:text="当前显示 0 / 0 个功能"
+        android:textColor="#666666"
+        android:textSize="12sp" />
+
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/new_product_menu_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
+        app:app_item_decoration_type="ITEM_SPACE"
+        app:app_item_margin="8dp"
+        app:app_layout_style="grid_vertical"
+        app:app_span_count="2" />
+
+    <TextView
+        android:id="@+id/new_product_menu_empty_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="当前账号暂无成品仓功能权限"
+        android:textColor="#999999"
+        android:textSize="13sp"
+        android:visibility="gone" />
+
+</LinearLayout>

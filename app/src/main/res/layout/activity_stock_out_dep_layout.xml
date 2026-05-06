@@ -38,33 +38,53 @@
 
                 <Button
                     android:id="@+id/deparment_in_scan_hr_code_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:textSize="13sp"
                     android:text="扫描工位码" />
 
                 <Button
                     android:id="@+id/deparment_in_input_hrno_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:textSize="13sp"
                     android:text="输入工号" />
 
                 <Button
                     android:id="@+id/btn_stock_out_dep_select_dep"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:textSize="13sp"
                     android:text="选择部门" />
 
                 <Button
                     android:id="@+id/btn_stock_out_dep_select_program"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:textSize="13sp"
                     android:text="选择研发项目" />
 
             </LinearLayout>
@@ -120,25 +140,40 @@
 
                 <Button
                     android:id="@+id/btn_issue_more_add_extra"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:textSize="13sp"
                     android:text="扫描领料" />
 
                 <Button
                     android:id="@+id/deparment_in_select_use_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:textSize="13sp"
                     android:text="选择用途" />
 
                 <Button
                     android:id="@+id/btn_exe_warehouse_out"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:textSize="13sp"
                     android:text="出库登账" />
 
             </LinearLayout>
@@ -209,5 +244,4 @@
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
-
 

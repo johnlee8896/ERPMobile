@@ -43,17 +43,6 @@
                     android:paddingLeft="5dp"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp">
-                    <!--<TextView-->
-                    <!--android:id="@+id/main_warehouse_manage__product_button"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="50dp"-->
-                    <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
-                    <!--android:layout_marginTop="@dimen/dimen_size_15"-->
-                    <!--android:layout_marginRight="@dimen/dimen_size_20"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:background="@drawable/shape_conner_blue_button_bg"-->
-                    <!--android:gravity="center"-->
-                    <!--android:text="成品仓库管理" />-->
                     <ImageView
                         android:id="@+id/imageView"
                         android:layout_width="wrap_content"
@@ -480,8 +469,6 @@
                         android:textSize="15sp" />
                 </TableRow>
 
-
-
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -723,12 +710,13 @@
                         app:srcCompat="@mipmap/xenogenesis_2" />
 
                     <Button
+                        android:id="@+id/btn_stock_logistics_manage_new"
                         android:layout_width="100dp"
                         android:layout_height="60dp"
                         android:layout_gravity="left"
+                        android:text="物流接收（新）"
                         android:background="@drawable/squarebutton"
                         android:textColor="#ffffff"
-                        android:visibility="gone"
                         android:textSize="15sp" />
                 </TableRow>
 

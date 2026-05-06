@@ -64,4 +64,34 @@ public class PlanInnerDetailEntity implements Serializable {
     public  String getLastIssueMoment(){return LastIssueMoment;}
     public void setLastIssueMoment(String LastIssueMoment){this.LastIssueMoment=LastIssueMoment;}
 
+    private boolean hasBackUp;
+    private String HR_Name;
+    private float BackUpQty;
+
+    public boolean isHasBackUp() {
+        return hasBackUp;
+    }
+
+    public PlanInnerDetailEntity setHasBackUp(boolean hasBackUp) {
+        this.hasBackUp = hasBackUp;
+        return this;
+    }
+
+    public String getHR_Name() {
+        return HR_Name;
+    }
+
+    public PlanInnerDetailEntity setHR_Name(String HR_Name) {
+        this.HR_Name = HR_Name;
+        return this;
+    }
+
+    public float getBackUpQty() {
+        return BackUpQty;
+    }
+
+    public PlanInnerDetailEntity setBackUpQty(float backUpQty) {
+        BackUpQty = backUpQty;
+        return this;
+    }
 }

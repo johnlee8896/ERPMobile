@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.StockIssueBomContainsBackupListActivity;
 import com.chinashb.www.mobileerp.adapter.CommonSingleTextViewAdapter;
 import com.chinashb.www.mobileerp.adapter.IssuedItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
@@ -51,6 +52,7 @@ public class StockPutActivity extends BaseActivity {
     private Button extraPutButton;
     private Button assistItemButton;
     private Button backUpOutButton;
+    private Button issueBomContainsBackUpButton;
     private MpiWcBean mpiWcBean;
 
     private RecyclerView issuedItemRecyclerView;
@@ -85,6 +87,7 @@ public class StockPutActivity extends BaseActivity {
         assistItemButton = findViewById(R.id.btn_assist_item);
         backUpOutButton = findViewById(R.id.btn_continue_stock_out_backup);
         assistRecyclerView = findViewById(R.id.assist_item_recyclerView);
+        issueBomContainsBackUpButton = findViewById(R.id.btn_query_backup_bom);
 
 
         mpiWcBeanList = StaticVariableUtils.selectMpiWcBeanList;
@@ -151,6 +154,17 @@ public class StockPutActivity extends BaseActivity {
         assistItemButton.setOnClickListener(v -> {
 
             getAssistList();
+
+        });
+
+        issueBomContainsBackUpButton.setOnClickListener(v -> {
+            if (mpiWcBean != null){
+                Intent intent = new Intent(StockPutActivity.this, StockIssueBomContainsBackupListActivity.class);
+                intent.putExtra(IntentConstant.Intent_Extra_backup_mpiwc_id_for_check_list,mpiWcBean.getMPIWC_ID());
+                startActivity(intent);
+            }else {
+                ToastUtil.showToastShort("您还未选择计划，请先选择计划！");
+            }
 
         });
 
@@ -287,7 +301,7 @@ public class StockPutActivity extends BaseActivity {
                 if (!Exist_mws()) {
                     mpiWcBeanList.add(mpiWcBean);
                 }
-                titleTextView.setText("投料出库 #" + mpiWcBean.getMPIWC_ID().toString());
+                titleTextView.setText("投料出库 #" + mpiWcBean.getMPIWC_ID().toString() + " 计划员:" + mpiWcBean.getHR_Name());
                 //// TODO: 2019/7/23
                 mpiWcBean.setMwNameTextView(txtMW);
                 AsyncShowIssuedMW task = new AsyncShowIssuedMW();

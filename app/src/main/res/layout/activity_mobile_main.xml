@@ -166,6 +166,16 @@
                     android:gravity="center"
                     android:text="零部件仓库管理" />
             </LinearLayout>
+            <TextView
+                android:id="@+id/main_select_switch_language_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="切换语言环境" />
 
             <TextView
                 android:id="@+id/main_task_manage_button"
@@ -217,9 +227,32 @@
                 android:layout_marginLeft="@dimen/dimen_size_20"
                 android:layout_marginTop="@dimen/dimen_size_15"
                 android:layout_marginRight="@dimen/dimen_size_20"
+                android:visibility="gone"
                 android:background="@drawable/shape_conner_blue_button_bg"
                 android:gravity="center"
                 android:text="工资查询" />
+
+            <TextView
+                android:id="@+id/main_partcompany_send_goods_button"
+                android:layout_width="match_parent"
+                android:visibility="gone"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="零部件公司发货" />
+            <TextView
+                android:id="@+id/main_trade_delivery_management_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="@dimen/dimen_size_20"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginRight="@dimen/dimen_size_20"
+                android:background="@drawable/shape_conner_blue_button_bg"
+                android:gravity="center"
+                android:text="外贸发运管理" />
 
             <TextView
                 android:id="@+id/main_food_order_button"

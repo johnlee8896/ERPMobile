@@ -54,6 +54,8 @@
             android:layout_gravity="start"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="@dimen/dimen_size_20"
+            android:visibility="gone"
+            tools:visibility="visible"
             android:layout_weight="1"
             android:text="选择或输入入库单据" />
         <TextView
@@ -63,6 +65,8 @@
             android:paddingLeft="20dp"
             android:paddingRight="@dimen/dimen_size_20"
             android:layout_marginLeft="20dp"
+            android:visibility="gone"
+            tools:visibility="visible"
             tools:text="C-20191226-01"
             android:textColor="@color/color_blue_00AAEE" />
         <LinearLayout
@@ -164,6 +168,8 @@
         android:paddingLeft="@dimen/dimen_size_20"
         android:paddingRight="@dimen/dimen_size_10"
         android:textColor="@color/black"
+        android:visibility="gone"
+        tools:visibility="visible"
         android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
         android:textSize="@dimen/text_size_16"
         />

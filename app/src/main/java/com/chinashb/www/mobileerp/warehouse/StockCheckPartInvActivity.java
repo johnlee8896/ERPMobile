@@ -247,9 +247,10 @@ public class StockCheckPartInvActivity extends BaseActivity {
                     if (Bu_ID == 13 || Bu_ID == 94){
                         Ac_Type = 1;
                     }
-
+                    // TODO: 5/4/26 将  And Datediff(day, CheckDate, Getdate()) <= 0 and Datediff(day, Insert_Time, Getdate()) >= 0
                      sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20),Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory\n" +
-                            " Where Bu_ID=" + Bu_ID + " And  Ac_Type=" + Ac_Type + " And Datediff(day, Insert_Time, Getdate())<200 ";
+//                            " Where Bu_ID=" + Bu_ID + " And  Ac_Type=" + Ac_Type + " And Datediff(day, Insert_Time, Getdate())<60 ";
+                            " Where Bu_ID=" + Bu_ID + " And  Ac_Type=" + Ac_Type + " And Datediff(day, CheckDate, Getdate()) <= 0 and Datediff(day, Insert_Time, Getdate()) >= 0 ";
                 }else if (Ac_Type == 1 || Ac_Type == 2){
                     String W = "Select Distinct Warehouse_ID From Bu_W_Ac " +
                             "Inner Join Bu_Ac On Bu_W_Ac.Ac_Book_ID=Bu_Ac.Ac_Book_ID " +
@@ -262,7 +263,7 @@ public class StockCheckPartInvActivity extends BaseActivity {
                             "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type +
                             " And " +
 //                        "Datediff(day, Insert_Time, Getdate())<30 ";
-                            "Datediff(day, Insert_Time, Getdate())<200 ";
+                            " Datediff(day, CheckDate, Getdate()) <= 0 and Datediff(day, Insert_Time, Getdate()) >= 0";
                 }
 
 

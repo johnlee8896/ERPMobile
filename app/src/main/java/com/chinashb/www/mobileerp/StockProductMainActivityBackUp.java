@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountInActivity;
+import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountTailInActivity;
 import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountOutActivity;
 import com.chinashb.www.mobileerp.warehouse.ScanIstFindProductActivity;
 import com.chinashb.www.mobileerp.warehouse.StockDepartmentInActivity;
@@ -136,7 +136,7 @@ class StockProductMainActivityBackUp extends BaseActivity implements View.OnClic
             startActivity(intent);
         } else if (v == buWarehouseInTextView) {
 //            Intent intent = new Intent(this,ProductInNonTrayScanOuterBoxActivity.class);
-            Intent intent = new Intent(this, BuWarehouseAccountInActivity.class);
+            Intent intent = new Intent(this, BuWarehouseAccountTailInActivity.class);
             startActivity(intent);
         } else if (v == buWarehouseOutTextView) {
             Intent intent = new Intent(this, BuWarehouseAccountOutActivity.class);

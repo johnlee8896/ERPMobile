@@ -23,6 +23,7 @@ import com.chinashb.www.mobileerp.bean.PanDianItemBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.bean.SendGoodsSearchItemBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.utils.AppUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -120,6 +121,7 @@ public class CommonSelectItemActivity extends BaseActivity {
                     if (searchTextView.getText().equals("取消")) {
                         finish();
                     } else {
+                        AppUtil.forceHideInputMethod(CommonSelectItemActivity.this);
                         doSearchAction(searchEditText.getText().toString());
                     }
                 }

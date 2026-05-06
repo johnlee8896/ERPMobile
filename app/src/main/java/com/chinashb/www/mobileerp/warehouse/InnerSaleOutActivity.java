@@ -63,6 +63,7 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
     private String remark;
     private InnerSelectBuBean innerSelectBuBean;
     private CommonSelectInputDialog remarkDialog;
+    private long lastItemID = 0;
 
     private OnViewClickListener remarkOnViewClickListener = new OnViewClickListener() {
         @Override public <T> void onClickAction(View v, String tag, T t) {
@@ -247,6 +248,10 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
             }
 
             if (boxItemEntity != null) {
+                if (lastItemID != boxItemEntity.getItem_ID()){
+                    emptyRemark();
+                }
+                lastItemID = boxItemEntity.getItem_ID();
                 if (!boxItemEntity.getResult()) {
                     ToastUtil.showToastShort(boxItemEntity.getErrorInfo());
                 }
@@ -329,14 +334,15 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
 //            recyclerView.setAdapter(adapter);
             //pbScan.setVisibility(View.INVISIBLE);
 //            remarkTextView.setText("");
-            remark = "";
+
             if (ws_result != null) {
                 if (!ws_result.getResult()) {
                     if (StringUtils.isStringValid(ws_result.getErrorInfo())){
-                        ToastUtil.showToastLong("执行超时，未知错误！");
+//                        ToastUtil.showToastLong("执行超时，未知错误！");
+                        ToastUtil.showToastLong("执行失败！" + ws_result.getErrorInfo());
                     }
                     else {
-                        ToastUtil.showToastLong("执行超时！" + ws_result.getErrorInfo());
+                        ToastUtil.showToastLong("执行失败！" + ws_result.getErrorInfo());
                     }
 
 
@@ -347,6 +353,7 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
                     adapter.notifyDataSetChanged();
                 }
             }
+            emptyRemark();
         }
 
         @Override
@@ -358,5 +365,10 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
         protected void onProgressUpdate(Void... values) {
         }
 
+    }
+
+    private void emptyRemark() {
+        remark = "";
+        remarkTextView.setText(String.format("备注：%s",remark));
     }
 }

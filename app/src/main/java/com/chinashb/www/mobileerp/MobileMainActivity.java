@@ -1,6 +1,7 @@
 package com.chinashb.www.mobileerp;
 
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,15 +24,19 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.StockPermittedBean;
+import com.chinashb.www.mobileerp.bucompanydelivery.NewPartBuCompanyDeliverySystemActivity;
 import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.NetWorkReceiver;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.printer.MobilePrinterActivity;
+import com.chinashb.www.mobileerp.shipment.AllShipmentAccountDeliveryManagement;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.MessageManageActivity;
+import com.chinashb.www.mobileerp.task.TaskCreateSimpleActivity;
 import com.chinashb.www.mobileerp.task.TasksActivity;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.LanguageHelper;
 import com.chinashb.www.mobileerp.utils.StringConstantUtil;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.warehouse.StockPartMainActivity;
@@ -57,6 +63,8 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private TextView conversationTextView;
     private TextView foodOrderTextView;
     private TextView wageQueryTextView;
+    private TextView sendGoodsTextView;
+    private TextView tradeDeliveryManagementTextView;
     private TextView attendanceTextView;
     private TextView taskTextView;
     private TextView planTextView;
@@ -68,6 +76,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private TextView testEnvironmentTextView;
     private TextView printTextView;
     private TextView workReportingTextView;
+    private TextView languageSwitchTextView;
 
     private NetWorkReceiver netWorkReceiver;
     private boolean isFromNamePwdCheck = false;
@@ -151,8 +160,8 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         if (getAppVersionCode(MobileMainActivity.this) < 59 ){
 
             CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(MobileMainActivity.this)
-                    .setTitle("").setMessage("您当前使用版本非最新版本，请退回登录页面进行升级！")
-                    .setLeftText("确定");
+                    .setTitle("").setMessage(getString(R.string.main_version_outdated_message))
+                    .setLeftText(getString(R.string.ok));
 
 
             builder.setOnViewClickListener(new OnDialogViewClickListener() {
@@ -181,7 +190,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initVersion() {
-        versionTextView.setText("系统版本：" + getAppVersionName(MobileMainActivity.this));
+        versionTextView.setText(getString(R.string.system_version_format, getAppVersionName(MobileMainActivity.this)));
     }
 
     protected void getViewFromXML() {
@@ -196,12 +205,15 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         planTextView = findViewById(R.id.main_plan_button);
         foodOrderTextView = findViewById(R.id.main_food_order_button);
         wageQueryTextView = findViewById(R.id.main_wage_query_button);
+        sendGoodsTextView = findViewById(R.id.main_partcompany_send_goods_button);
+        tradeDeliveryManagementTextView = findViewById(R.id.main_trade_delivery_management_button);
         attendanceTextView = findViewById(R.id.main_attendance_button);
         nucleinTextView = findViewById(R.id.main_nuclein_button);
         versionTextView = findViewById(R.id.main_version_button);
         testEnvironmentTextView = findViewById(R.id.tv_current_test_environment);
         printTextView = findViewById(R.id.main_print_button);
         workReportingTextView = findViewById(R.id.main_work_reporting_button);
+        languageSwitchTextView = findViewById(R.id.main_select_switch_language_button);
     }
 
     protected void setViewListeners() {
@@ -214,11 +226,14 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         taskTextView.setOnClickListener(this);
         foodOrderTextView.setOnClickListener(this);
         wageQueryTextView.setOnClickListener(this);
+        sendGoodsTextView.setOnClickListener(this);
+        tradeDeliveryManagementTextView.setOnClickListener(this);
         attendanceTextView.setOnClickListener(this);
         nucleinTextView.setOnClickListener(this);
         versionTextView.setOnClickListener(this);
         printTextView.setOnClickListener(this);
         workReportingTextView.setOnClickListener(this);
+        languageSwitchTextView.setOnClickListener(this);
     }
 
     private String getSqlBu() {
@@ -301,6 +316,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -415,6 +431,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 ToastUtil.showToastShort("您暂无权限进此页面!");
                 return;
             }
+//            Intent intent = new Intent(MobileMainActivity.this, NewStockProductMainActivity.class);
             Intent intent = new Intent(MobileMainActivity.this, StockProductMainActivity.class);
             startActivity(intent);
             MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_product_management);
@@ -458,6 +475,12 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         } else if (view == wageQueryTextView) {
             Intent intent = new Intent(this, WageQueryActivity.class);
             startActivity(intent);
+        } else if (view == sendGoodsTextView) {
+            Intent intent = new Intent(this, NewPartBuCompanyDeliverySystemActivity.class);
+            startActivity(intent);
+        } else if (view == tradeDeliveryManagementTextView) {
+            Intent intent = new Intent(this, AllShipmentAccountDeliveryManagement.class);
+            startActivity(intent);
         } else if (view == nucleinTextView) {
             Intent intent = new Intent(this, NucleinCheckActivity.class);
             startActivity(intent);
@@ -465,9 +488,76 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             Intent intent = new Intent(this, MobilePrinterActivity.class);
             startActivity(intent);
         }else if (view == workReportingTextView) {
-            Intent intent = new Intent(this, PlanManageForWorkReportingActivity.class);
+//            Intent intent = new Intent(this, PlanManageForWorkReportingActivity.class);
+            Intent intent = new Intent(this, TaskCreateSimpleActivity.class);
             startActivity(intent);
+        }else if (view == languageSwitchTextView){
+//            changeLanguageNoDialog();
+            showLanguageSelectorDialog();
         }
+    }
+
+    private void showLanguageSelectorDialog() {
+        final String[] languageCodes = {
+                LanguageHelper.LANG_ZH,
+                LanguageHelper.LANG_ZH_TW,
+                LanguageHelper.LANG_EN,
+                LanguageHelper.LANG_MS
+        };
+
+        final String[] languageLabels = {
+                getString(R.string.language_label_simplified_chinese),
+                getString(R.string.language_label_traditional_chinese),
+                getString(R.string.language_label_english),
+                getString(R.string.language_label_malay)
+        };
+
+        String currentLangCode = LanguageHelper.getFinalLanguageCode(this);
+
+        int checkedItem = 0;
+        for (int i = 0; i < languageCodes.length; i++) {
+            if (languageCodes[i].equals(currentLangCode)) {
+                checkedItem = i;
+                break;
+            }
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.language_selector_title))
+                .setSingleChoiceItems(
+                        languageLabels,
+                        checkedItem,
+                        (dialog, which) -> {
+                            String selectedLangCode = languageCodes[which];
+                            changeLanguage(selectedLangCode);
+                            dialog.dismiss();
+                        }
+                )
+                .setNegativeButton(getString(R.string.cancel), null)
+                .show();
+    }
+
+
+    private void changeLanguageNoDialog() {
+        String currentLang = LanguageHelper.getUserSelectedLanguage(this);
+
+        String nextLang;
+
+        if (currentLang == null) {
+            // 用户从未选过，系统语言可能是繁体、英文等，这里我们默认先切到英文
+            nextLang = LanguageHelper.LANG_EN;
+        } else if (currentLang.equals(LanguageHelper.LANG_ZH)) {
+            nextLang = LanguageHelper.LANG_EN;
+        } else if (currentLang.equals(LanguageHelper.LANG_EN)) {
+            nextLang = LanguageHelper.LANG_MS;
+        } else if (currentLang.equals(LanguageHelper.LANG_MS)) {
+            nextLang = LanguageHelper.LANG_ZH_TW;
+        } else {
+            // 比如当前是繁体，再循环回简体
+            nextLang = LanguageHelper.LANG_ZH;
+        }
+
+        changeLanguage(nextLang); // 切换并重启
     }
 
     public String fetchDataFromWebApi(String urlString) {
@@ -508,6 +598,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     }
 
     private void jumpToStockPartActivity() {
+//        Intent intent = new Intent(MobileMainActivity.this, NewStockPartMainActivity.class);
         Intent intent = new Intent(MobileMainActivity.this, StockPartMainActivity.class);
         startActivity(intent);
         MobclickAgent.onEvent(this, StringConstantUtil.Umeng_event_activity_part_management);
@@ -632,4 +723,3 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 
 
 }
-

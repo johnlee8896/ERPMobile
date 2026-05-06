@@ -36,6 +36,17 @@ public class BoxItemEntity implements Serializable {
     private String ManuLotNo = "";
     private int Company_ID ;
     private String Item_Unit;
+    private int supplierID;
+
+    public int getSupplierID() {
+        return supplierID;
+    }
+
+    public BoxItemEntity setSupplierID(int supplierID) {
+        this.supplierID = supplierID;
+        return this;
+    }
+
     private WsResult ws_result = new WsResult();
     private boolean canNotEdit = false;
 

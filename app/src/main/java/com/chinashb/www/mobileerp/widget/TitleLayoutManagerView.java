@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.utils.AutoI18nUtil;
 
 /***
  * @date 创建时间 2018/4/24 10:37
@@ -70,7 +71,7 @@ public class TitleLayoutManagerView extends RelativeLayout implements View.OnCli
         if (text == null) {
             return;
         }
-        titleTextView.setText(text);
+        titleTextView.setText(AutoI18nUtil.translate(getContext(), text));
     }
 
 

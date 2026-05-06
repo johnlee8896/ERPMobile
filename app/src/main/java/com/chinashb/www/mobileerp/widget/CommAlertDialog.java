@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.utils.AutoI18nUtil;
 
 /***
  * @date 创建时间 2018/5/22 18:48
@@ -276,7 +277,7 @@ public class CommAlertDialog extends Dialog implements View.OnClickListener {
         }
 
         public DialogBuilder setHintText(CharSequence hintText) {
-            this.hintText = hintText;
+            this.hintText = AutoI18nUtil.translate(context, hintText);
             return this;
         }
 
@@ -420,27 +421,27 @@ public class CommAlertDialog extends Dialog implements View.OnClickListener {
         }
 
         public DialogBuilder setTitle(CharSequence title) {
-            this.title = title;
+            this.title = AutoI18nUtil.translate(context, title);
             return this;
         }
 
         public DialogBuilder setMessage(CharSequence message) {
-            this.message = message;
+            this.message = AutoI18nUtil.translate(context, message);
             return this;
         }
 
         public DialogBuilder setLeftText(CharSequence leftText) {
-            this.leftText = leftText;
+            this.leftText = AutoI18nUtil.translate(context, leftText);
             return this;
         }
 
         public DialogBuilder setMiddleText(CharSequence middleText) {
-            this.middleText = middleText;
+            this.middleText = AutoI18nUtil.translate(context, middleText);
             return this;
         }
 
         public DialogBuilder setRightText(CharSequence rightText) {
-            this.rightText = rightText;
+            this.rightText = AutoI18nUtil.translate(context, rightText);
             return this;
         }
 

@@ -1,6 +1,8 @@
 package com.chinashb.www.mobileerp;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +18,7 @@ import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.warehouse.StockPartMoveActivity;
 import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.chinashb.www.mobileerp.widget.EmptyLayoutManageView;
@@ -47,6 +50,7 @@ public class MWBackUpListActivity extends BaseActivity {
     private List<IssueOutBackUpBean> resultBeanList = new ArrayList<>();
     private List<IssueOutBackUpBean> removedBeanList = new ArrayList<>();
     private List<IssueOutBackUpBean> originalBeanList = new ArrayList<>();
+    private IssueOutBackUpBean backUpBean;
 
 
     @Override
@@ -81,6 +85,19 @@ public class MWBackUpListActivity extends BaseActivity {
                 }
             }
         });
+
+        adapter.setOnReworkClickListener(new MWBackUpAdapter.OnReworkClickListener() {
+            @Override
+            public void onReworkClick(IssueOutBackUpBean backUpBean) {
+                if (backUpBean != null){
+                    ToastUtil.showToastShort("进入到移库页面");
+                    Intent intent = new Intent(MWBackUpListActivity.this, StockPartMoveActivity.class);
+                    intent.putExtra(IntentConstant.Intent_Extra_Backup_ScanCode,backUpBean.getScanX());
+                    intent.putExtra(IntentConstant.Intent_Extra_Backup_bean,backUpBean);
+                    startActivityForResult(intent,IntentConstant.Intent_Request_Backup_To_PartMove_Activity);
+                }
+            }
+        });
         if (mpiwc_ID > 0) {
             getBackUpList();
         } else {
@@ -92,6 +109,31 @@ public class MWBackUpListActivity extends BaseActivity {
             handleAllOut();
         });
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IntentConstant.Intent_Request_Backup_To_PartMove_Activity){
+            boolean moveResult = data.getBooleanExtra(IntentConstant.Intent_Extra_backup_rework_move_result_boolean,false);
+            if (moveResult){
+                ToastUtil.showToastShort("撤回备料的移库成功！");
+                backUpBean = data.getParcelableExtra(IntentConstant.Intent_Extra_Backup_bean);
+//                intent.putExtra(IntentConstant.Intent_Extra_backup_rework_move_ist_id,thePlace != null ? thePlace.getIst_ID() : 0) ;
+//                intent.putExtra(IntentConstant.Intent_Extra_backup_rework_move_sub_ist_id,thePlace != null ? thePlace.getSub_Ist_ID() : 0);
+                int toIstID = data.getIntExtra(IntentConstant.Intent_Extra_backup_rework_move_ist_id,0);
+                int toSubIstID = data.getIntExtra(IntentConstant.Intent_Extra_backup_rework_move_sub_ist_id,0);
+
+                //借用一下这个变量
+                backUpBean.setToIst_ID(toIstID);
+                backUpBean.setToSub_Ist_ID(toSubIstID);
+                BackupMWReworkAsyncTask task = new BackupMWReworkAsyncTask();
+                task.execute();
+
+            }else{
+                ToastUtil.showToastShort("撤回备料的移库失败！");
+            }
+        }
     }
 
     private void handleAllOut() {
@@ -157,12 +199,27 @@ public class MWBackUpListActivity extends BaseActivity {
         @Override
         protected String doInBackground(String... params) {
 
-            String sql = "Select MB.Item_id,item_Name,Item_Version.Item_Version,Lot.LotNo ,Item_Storage_Sub.Ist_Name,ScanX,Qty,Bu_ID,HR_Name,Remark,MB.IV_ID,Lot.LotID,MB.Ist_ID,MB.Sub_Ist_ID,SMLI_ID,smmTotalQty,SMT_ID from MW_Issue_Out_BackUp  MB\n" +
-                    "Inner Join Item on Item.item_id  = MB.item_id\n" +
+//            String sql = "Select MB.Item_id,item_Name,Item_Version.Item_Version,Lot.LotNo ,Item_Storage_Sub.Ist_Name,ScanX,Qty,Bu_ID,HR_Name,Remark,MB.IV_ID,Lot.LotID,MB.Ist_ID,MB.Sub_Ist_ID,SMLI_ID,smmTotalQty,SMT_ID from MW_Issue_Out_BackUp  MB\n" +
+//                    "Inner Join Item on Item.item_id  = MB.item_id\n" +
+//                    "Inner Join Item_Version on Item_Version.IV_ID = MB.IV_ID\n" +
+//                    "Inner Join Lot on Lot.LotID = MB.Lot_ID\n" +
+//                    "Inner Join Item_Storage_Sub on Item_Storage_Sub.Sub_Ist_ID = mb.sub_ist_id\n" +
+//                    "where MB.MPIWC_ID =  " + mpiwc_ID;
+
+//            上面语句优化，作一合并
+            String sql = "Select MB.Item_id, Item.item_Name, Item_Version.Item_Version, Lot.LotNo, Item_Storage_Sub.Ist_Name, " +
+                    "MB.ScanX,SUM(MB.Qty) AS Qty,Bu_ID, MB.HR_Name, MB.Remark, MB.IV_ID, Lot.LotID, " +
+                    "MB.Ist_ID, MB.Sub_Ist_ID, MAX(MB.SMLI_ID) as SMLI_ID, SUM(MB.smmTotalQty) as smmTotalQty, " +
+                    "MAX(MB.SMT_ID) as SMT_ID,To_Ist_ID,To_Sub_Ist_ID \n" +
+                    "from MW_Issue_Out_BackUp MB\n" +
+                    "Inner Join Item on Item.item_id = MB.item_id\n" +
                     "Inner Join Item_Version on Item_Version.IV_ID = MB.IV_ID\n" +
                     "Inner Join Lot on Lot.LotID = MB.Lot_ID\n" +
                     "Inner Join Item_Storage_Sub on Item_Storage_Sub.Sub_Ist_ID = mb.sub_ist_id\n" +
-                    "where MB.MPIWC_ID =  " + mpiwc_ID;
+                    "where MB.MPIWC_ID = " + mpiwc_ID + "  and isnull(hasOut,0) = 0 " +
+                    "Group By MB.Item_id, Item.item_Name, Item_Version.Item_Version, Lot.LotNo, " +
+                    "Item_Storage_Sub.Ist_Name, MB.ScanX, Bu_ID, MB.HR_Name, MB.Remark, MB.IV_ID, " +
+                    "Lot.LotID, MB.Ist_ID, MB.Sub_Ist_ID,To_Ist_ID,To_Sub_Ist_ID";
             WsResult result = WebServiceUtil.getDataTable(sql);
             if (result != null && result.getResult()) {
                 String jsonData = result.getErrorInfo();
@@ -188,25 +245,47 @@ public class MWBackUpListActivity extends BaseActivity {
                     orderRecyclerView.setVisibility(View.VISIBLE);
                     emptyLayoutView.setVisibility(View.GONE);
                 } else {
-                    ToastUtil.showToastShort("没有获取到相关数据！");
-                    emptyLayoutView.setVisibility(View.VISIBLE);
-                    orderRecyclerView.setVisibility(View.GONE);
+                    getNoData();
                 }
+            }else{
+                getNoData();
             }
         }
 
     }
 
+    private void getNoData() {
+        ToastUtil.showToastShort("没有获取到相关数据！");
+        emptyLayoutView.setVisibility(View.VISIBLE);
+        orderRecyclerView.setVisibility(View.GONE);
+    }
+
     private class BackupMWOutAsyncTask  extends AsyncTask<String, Void, String> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(MWBackUpListActivity.this);
+            progressDialog.setMessage("备料出库中，请稍候...");
+            progressDialog.setCancelable(false);  // 不能点外部取消
+            progressDialog.show();
+        }
 
         @Override
         protected String doInBackground(String... strings) {
             StringBuilder stringBuilder = new StringBuilder();
             if (resultBeanList.size() > 0){
                 for (IssueOutBackUpBean backUpBean : resultBeanList){
+//                    WsResult ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiwc_ID, UserSingleton.get().getHRID(),backUpBean.getItemId(),backUpBean.getIV_ID(),backUpBean.getLotID(),
+//                            backUpBean.getLotNo() != null ? backUpBean.getLotNo():"",backUpBean.getIst_ID(),backUpBean.getSub_Ist_ID(),
+//                            backUpBean.getSMLI_ID(),0L,backUpBean.getSMT_ID(),backUpBean.getQty() + "",
+//                            new Date(),backUpBean.getScanX() != null ? backUpBean.getScanX() : "" );
+                    //2026-03-11 john 出库时这里用backup的位置，ist_id改为to_ist_id，以及sub
                     WsResult ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiwc_ID, UserSingleton.get().getHRID(),backUpBean.getItemId(),backUpBean.getIV_ID(),backUpBean.getLotID(),
-                            backUpBean.getLotNo() != null ? backUpBean.getLotNo():"",backUpBean.getIst_ID(),backUpBean.getSub_Ist_ID(),
-                            backUpBean.getSMLI_ID(),0L,backUpBean.getSMT_ID(),backUpBean.getQty() + "",new Date(),backUpBean.getScanX() != null ? backUpBean.getScanX() : "" );
+                            backUpBean.getLotNo() != null ? backUpBean.getLotNo():"",backUpBean.getToIst_ID(),backUpBean.getToSub_Ist_ID(),
+                            backUpBean.getSMLI_ID(),0L,backUpBean.getSMT_ID(),backUpBean.getQty() + "",
+                            new Date(),backUpBean.getScanX() != null ? backUpBean.getScanX() : "" );
                     if (ws_result.getResult()){
                         stringBuilder.append(backUpBean.getScanX()).append("成功！\n");
 //                        resultBeanList.remove(backUpBean);
@@ -226,6 +305,10 @@ public class MWBackUpListActivity extends BaseActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+            // 关闭进度框
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
             CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(MWBackUpListActivity.this)
                     .setTitle("备料出库信息").setMessage(result)
                     .setLeftText("确定");
@@ -255,11 +338,31 @@ public class MWBackUpListActivity extends BaseActivity {
 //        if (originalBeanList.size() > 0)
 
 //        adapter.notifyDataSetChanged();
-        if (originalBeanList.size() == 0){
-            orderRecyclerView.setVisibility(View.GONE);
-            emptyLayoutView.setVisibility(View.VISIBLE);
-        }else{
-            adapter.setData(originalBeanList);
+
+        getBackUpList();
+
+//        if (originalBeanList.size() == 0){
+//            orderRecyclerView.setVisibility(View.GONE);
+//            emptyLayoutView.setVisibility(View.VISIBLE);
+//        }else{
+//            adapter.setData(originalBeanList);
+//        }
+    }
+
+    private class BackupMWReworkAsyncTask  extends AsyncTask<String, Void, String> {
+        WsResult ws_result;
+        @Override
+        protected String doInBackground(String... strings) {
+
+            ws_result = WebServiceUtil.op_Commit_MW_Backup_Rework(mpiwc_ID,
+                            backUpBean.getScanX(),backUpBean.getSMLI_ID(),backUpBean.getSMT_ID(),backUpBean.getToIst_ID(),backUpBean.getToSub_Ist_ID());
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            refreshAdapter();
         }
     }
 

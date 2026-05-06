@@ -105,6 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="@dimen/dimen_size_20"
+            android:visibility="gone"
             android:text="添加选择备注(可选)" />
 
         <TextView

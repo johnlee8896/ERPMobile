@@ -58,6 +58,7 @@ public class ProductCheckInventoryActivity extends BaseActivity {
     private TextView tvItemCode;
     private TextView tvManuLotno;
     private TextView tvItemName;
+    private TextView tvChayiQty;
     private EditText totalBoxNOEditText;
     private EditText eachBoxQtyEditText;
     private EditText singleQtyEditText;
@@ -111,6 +112,7 @@ public class ProductCheckInventoryActivity extends BaseActivity {
         btnCal = (Button) findViewById(R.id.product_check_btn_check_inv_cal_qty);
         titleLayoutManagerView = findViewById(R.id.product_check_titleLayout);
         tvIst = (TextView) findViewById(R.id.product_check_tv_check_stock_ist);
+        tvChayiQty = (TextView)findViewById(R.id.tv_product_checkcheck_stock_chayi_qty);
 
         tvERPIst = (TextView) findViewById(R.id.product_check_tv_check_stock_ist_erp);
         tvItemCode = (TextView) findViewById(R.id.product_check_tv_check_stock_item_code);
@@ -617,6 +619,8 @@ public class ProductCheckInventoryActivity extends BaseActivity {
                 } else {
                     tvERPIst.setTextColor(Color.BLACK);
                 }
+//                GetEosCheckInvChaYiAsyncTask task = new GetEosCheckInvChaYiAsyncTask();
+//                task.execute();
 
             }else{
                 ToastUtil.showToastShort("获取该箱ERP存储位置失败！");
@@ -630,6 +634,38 @@ public class ProductCheckInventoryActivity extends BaseActivity {
 
         }
     }
+
+//    private class GetEosCheckInvChaYiAsyncTask extends AsyncTask<Void, Void, Void>{
+//        WsResult wsResult;
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            wsResult = WebServiceUtil.GetProductCompareCheckInventoryToInv(currentBoxID,CI_ID,thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            if (wsResult != null && wsResult.getResult()){
+//                tvChayiQty.setText(wsResult.getErrorInfo());
+////                if (!tvChayiQty.getText().equals(wsResult.getErrorInfo())) {
+////                    tvERPIst.setTextColor(Color.RED);
+////                } else {
+////                    tvERPIst.setTextColor(Color.BLACK);
+////                }
+//
+//            }else{
+//                ToastUtil.showToastShort("获取差异失败！" + wsResult.getErrorInfo());
+//
+//            }
+//
+//
+//
+//
+//
+//
+//        }
+//    }
 
 
 }

@@ -71,10 +71,15 @@
 
             <Button
                 android:id="@+id/btn_add_tray_photo"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:maxLines="2"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:textSize="13sp"
                 android:text="相机扫描物料" />
 
         </LinearLayout>
@@ -94,17 +99,27 @@
 
             <Button
                 android:id="@+id/btn_scan_area"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:maxLines="2"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:textSize="13sp"
                 android:text="扫描库位" />
 
             <Button
                 android:id="@+id/btn_exe_warehouse_in"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:maxLines="2"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:textSize="13sp"
                 android:text="入库登账" />
 
         </LinearLayout>
@@ -255,4 +270,3 @@
     </LinearLayout>
 
 </LinearLayout>
-

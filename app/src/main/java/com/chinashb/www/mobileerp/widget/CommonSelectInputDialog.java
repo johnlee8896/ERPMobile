@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.chinashb.www.mobileerp.APP;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.bean.CompanyBean;
+import com.chinashb.www.mobileerp.utils.AutoI18nUtil;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.ScreenUtil;
 
@@ -74,6 +75,9 @@ public class CommonSelectInputDialog<T> extends BaseDialog {
         ButterKnife.bind(this);
         configDialog(Gravity.CENTER);
         setCanceledOnTouchOutside(false);
+        if (title != null) {
+            titleTextView.setText(AutoI18nUtil.translate(getContext(), title));
+        }
         adapter = new SelectUseAdapter();
         recyclerView.setAdapter(adapter);
         setContentList();
@@ -133,7 +137,10 @@ public class CommonSelectInputDialog<T> extends BaseDialog {
     }
 
     public CommonSelectInputDialog setTitle(String title) {
-        titleTextView.setText(title);
+        this.title = title;
+        if (titleTextView != null) {
+            titleTextView.setText(AutoI18nUtil.translate(getContext(), title));
+        }
         return this;
     }
 
@@ -144,11 +151,15 @@ public class CommonSelectInputDialog<T> extends BaseDialog {
 
 
     public void setInputTextHint(String hint) {
-        remarkEditText.setHint(hint);
+        if (remarkEditText != null) {
+            remarkEditText.setHint(AutoI18nUtil.translate(getContext(), hint));
+        }
     }
 
     public void setInputDialogTitle(String title) {
-        titleTextView.setText(title);
+        this.title = title;
+        if (titleTextView != null) {
+            titleTextView.setText(AutoI18nUtil.translate(getContext(), title));
+        }
     }
 }
-

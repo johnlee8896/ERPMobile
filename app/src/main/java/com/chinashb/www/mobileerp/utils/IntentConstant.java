@@ -11,6 +11,9 @@ public class IntentConstant {
 
     public static final String Intent_Extra_do_id = "Extra_do_id";
 
+    public static final String Intent_Extra_Backup_ScanCode = "Extra_Backup_ScanCode";
+    public static final String Intent_Extra_Backup_bean = "Extra_Backup_bean";
+
 
 
     public static final String Intent_Extra_hr_id = "Extra_hr_id";
@@ -89,6 +92,10 @@ public class IntentConstant {
     public static final String Intent_Extra_MY_Purchase_Order_bean = "Intent_Extra_MY_Purchase_Order_bean";
 
     public static final String Intent_Extra_backup_mpiwc_id = "Intent_Extra_backup_mpiwc_id";
+    public static final String Intent_Extra_backup_mpiwc_id_for_check_list = "Intent_Extra_backup_mpiwc_id_for_check_list ";
+    public static final String Intent_Extra_backup_rework_move_result_boolean = "Intent_Extra_backup_rework_result_boolean";
+    public static final String Intent_Extra_backup_rework_move_ist_id = "Intent_Extra_backup_rework_move_rist_id";
+    public static final String Intent_Extra_backup_rework_move_sub_ist_id = "Intent_Extra_backup_rework_move_sub_ist_id";
 
 
     public static final int Intent_Request_Code_Product_Out_And_Delivery_Order = 0X100;
@@ -118,6 +125,8 @@ public class IntentConstant {
 
     public static final int Intent_Request_Code_Plan_Select_to_Work_Reporting_Activity = 0X214;
     public static final int Intent_Request_Stock_in_To_Purchase_Order_Activity = 0X215;
+
+    public static final int Intent_Request_Backup_To_PartMove_Activity = 0X216;
 
 
 }

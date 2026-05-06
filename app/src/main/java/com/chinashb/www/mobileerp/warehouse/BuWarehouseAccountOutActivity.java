@@ -344,7 +344,10 @@ public class BuWarehouseAccountOutActivity extends BaseActivity implements View.
     private void handleOutWareHouse() {
         if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
             if (hasScanItem) {
-                ExeWarehouseProductOutCodeBoxAsyncTask task = new ExeWarehouseProductOutCodeBoxAsyncTask();
+//                ExeWarehouseProductOutCodeBoxAsyncTask task = new ExeWarehouseProductOutCodeBoxAsyncTask();
+//                task.execute();
+                //2026-03-31 john 重新定义
+                ExeWarehouseProductFATailReleaseAsyncTask task = new ExeWarehouseProductFATailReleaseAsyncTask();
                 task.execute();
             } else {
                 ToastUtil.showToastShort("没有扫描待出库箱码，请重新扫描！");
@@ -544,6 +547,44 @@ public class BuWarehouseAccountOutActivity extends BaseActivity implements View.
                 itemInfoTextView.setText(text + " 实际装载数：" + result.getBoxLoadedQty());
             } else {
                 ToastUtil.showToastShort("解析失败！");
+            }
+        }
+
+    }
+
+        private class ExeWarehouseProductFATailReleaseAsyncTask extends AsyncTask<String, Void, Void> {
+        WsResult ws_result;
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+//            ws_result = WebServiceUtil.op_Product_Manu_In_Pallet(boxId, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), remark);
+//            车间仓尾数入库
+//            ws_result = WebServiceUtil.op_Product_Manu_In_Bu_Warehouse_Account(boxId, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(), remark);
+            ws_result = WebServiceUtil.op_Scan_Product_To_Release_Fractional_Library(boxId, remark);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            if (ws_result != null) {
+                if (!ws_result.getResult()) {
+
+                    CommonUtil.ShowToast(BuWarehouseAccountOutActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
+
+                } else {
+                    //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
+//                    CommonUtil.ShowToast(ProductScanBoxInActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
+                    CommonUtil.ShowToast(BuWarehouseAccountOutActivity.this, "扫描尾数释放托盘成功！", R.mipmap.smiley);
+                    hasScanItem = false;
+                    inputEditText.setText("");
+
+                }
+
+            } else {
+                CommonUtil.ShowToast(BuWarehouseAccountOutActivity.this, "扫描尾数释放托盘失败！", R.mipmap.warning);
+
             }
         }
 

@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.chinashb.www.mobileerp.BaseActivity;
 import com.chinashb.www.mobileerp.MWBackUpListActivity;
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.StockIssueBomContainsBackupListActivity;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
@@ -67,6 +68,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
     private Button btnWarehouseOut;
     private Button btnExecuteBackUp;
     private Button btnQueryBackUp;
+    private Button btnQueryBomBackUp;
     private RecyclerView recyclerView;
     private IssueMoreItemAdapter issueMoreItemAdapter;
     private List<BoxItemEntity> boxItemEntityList;
@@ -95,6 +97,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         selectDateButton = findViewById(R.id.btn_issue_more_add_date);
         btnExecuteBackUp = findViewById(R.id.btn_exe_backup);
         btnQueryBackUp = findViewById(R.id.btn_query_backup);
+        btnQueryBomBackUp = findViewById(R.id.btn_query_backup_bom);
         titleLayoutManagerView = findViewById(R.id.supply_product_put_titleLayout);
 
         pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
@@ -129,6 +132,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         }else{
             btnExecuteBackUp.setVisibility(View.GONE);
             btnQueryBackUp.setVisibility(View.GONE);
+            btnQueryBomBackUp.setVisibility(View.GONE);
         }
 
         addTrayButton.setOnClickListener(new View.OnClickListener() {
@@ -178,6 +182,14 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
             intent1.putExtra(IntentConstant.Intent_Extra_backup_mpiwc_id,mpiWcBean.getMPIWC_ID());
             startActivity(intent1);
         });
+
+        btnQueryBomBackUp .setOnClickListener(v -> {
+            Intent intent2 = new Intent(StockOutMoreActivity.this, StockIssueBomContainsBackupListActivity.class);
+            intent2.putExtra(IntentConstant.Intent_Extra_backup_mpiwc_id_for_check_list,mpiWcBean.getMPIWC_ID());
+            startActivity(intent2);
+
+        });
+
 
     }
 
@@ -406,166 +418,6 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         @Override
         protected void onPreExecute() {
             pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-
-    }
-
-    //测试从服务器扫码，查看条码是否合规
-    private class AsyncDirectGetBox extends AsyncTask<String, Void, Void> {
-        BoxItemEntity scanresult;
-
-        protected Boolean is_box_existed(BoxItemEntity box_item) {
-            Boolean result = false;
-
-            if (boxItemEntityList != null) {
-                for (int i = 0; i < boxItemEntityList.size(); i++) {
-                    if (boxItemEntityList.get(i).getSMLI_ID() == box_item.getSMLI_ID() && box_item.getSMLI_ID() > 0) {
-                        return true;
-                    }
-                    if (boxItemEntityList.get(i).getSMM_ID() == box_item.getSMM_ID() && box_item.getSMM_ID() > 0) {
-                        return true;
-                    }
-                    if (boxItemEntityList.get(i).getSMT_ID() == box_item.getSMT_ID() && box_item.getSMT_ID() > 0) {
-                        return true;
-                    }
-                    if (boxItemEntityList.get(i).getSMT_ID() == box_item.getSMT_ID() && box_item.getSMT_ID() == 0
-                            && boxItemEntityList.get(i).getSMM_ID() == box_item.getSMM_ID() && box_item.getSMM_ID() == 0
-                            && boxItemEntityList.get(i).getSMLI_ID() == box_item.getSMLI_ID() && box_item.getSMLI_ID() == 0
-                            && boxItemEntityList.get(i).getLotID() == box_item.getLotID()) {
-                        return true;
-                    }
-
-
-                }
-            }
-
-            return result;
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-
-            BoxItemEntity bi = WebServiceUtil.op_Check_Commit_MW_Issue_Item_Barcode((long) 471059, "VE/3655118");
-
-            scanresult = bi;
-
-            if (bi.getResult() ) {
-                if (!is_box_existed(bi)) {
-                    if (bi.getQty() > 0){
-                        bi.setSelect(true);
-                        boxItemEntityList.add(bi);
-                    }
-                } else {
-                    bi.setResult(false);
-                    bi.setErrorInfo("该包装已经在装载列表中");
-                }
-
-
-            } else {
-
-            }
-
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");
-
-            if (scanresult != null) {
-                if (!scanresult.getResult() ) {
-                    ToastUtil.showToastShort( scanresult.getErrorInfo());
-                }
-                if (scanresult.getQty() < 0){
-                    ToastUtil.showToastShort("投料数量不能为负");
-                }else{
-                    //2025-05-22 john 如果单位为个或pcs则不可为小数
-                    if (scanresult.getItem_Unit().equals("pcs") || scanresult.getItem_Unit().equals("个")){
-                        if (!CommonUtil.isPositiveInteger(String.valueOf(scanresult.getQty()))){
-                            ToastUtil.showToastShort("该物料投料数必须为整数！");
-                        }
-                    }
-
-                    issueMoreItemAdapter = new IssueMoreItemAdapter(StockOutMoreActivity.this, boxItemEntityList);
-                    issueMoreItemAdapter.setCanEdit(true);
-                    recyclerView.setAdapter(issueMoreItemAdapter);
-                }
-            }
-
-
-            //pbScan.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-
-    }
-
-    private class AsyncGetIst extends AsyncTask<String, Void, Void> {
-        @Override
-        protected Void doInBackground(String... params) {
-
-
-            IstPlaceEntity bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanedString);
-
-            if (bi.getResult() ) {
-                thePlace = bi;
-
-                if (bi.getResult() ) {
-                    for (int i = 0; i < boxItemEntityList.size(); i++) {
-                        if (boxItemEntityList.get(i).getSelect() ) {
-                            boxItemEntityList.get(i).setIstName(bi.getIstName());
-                            boxItemEntityList.get(i).setIst_ID(bi.getIst_ID());
-                            boxItemEntityList.get(i).setSub_Ist_ID(bi.getSub_Ist_ID());
-
-
-                        }
-                    }
-                }
-            } else {
-                Toast.makeText(StockOutMoreActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
-            }
-            /*
-            List<Boolean> result;
-            MealTypeEntity mealType;
-            for (Date d:weekDates) {
-                mealType = new MealTypeEntity();
-                mealType.setDate(d);
-                result = WebServiceUtil.getFoodOrderDay(userInfo.getHrID(), d);
-                if (result.size()==4)
-                {
-                    mealType.setBreakfast(result.get(0));
-                    mealType.setLunch(result.get(1));
-                    mealType.setDinner(result.get(2));
-                    mealType.setSnack(result.get(3));
-                }
-                mealTypes.add(mealType);
-            } */
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");
-
-            recyclerView.setAdapter(issueMoreItemAdapter);
-            //pbScan.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
         }
 
         @Override

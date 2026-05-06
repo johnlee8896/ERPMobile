@@ -1,0 +1,364 @@
+<resources>
+    <string-array name="auto_i18n_target_phrases">
+        <item>Akaun semasa anda tidak sah. Sila log masuk semula!</item>
+        <item>Syarikat semasa anda tidak sepadan dengan syarikat penerimaan bahan. Sila sahkan sama ada penerimaan ini perlu dimasukkan ke syarikat ini!</item>
+        <item>Kod bar item atau kod lokasi gudang tidak berjaya diimbas. Sila imbas semula!</item>
+        <item>Lokasi gudang belum diimbas</item>
+        <item>Sila pilih borang stok kira dahulu!</item>
+        <item>Sila pilih borang stok kira dahulu</item>
+        <item>Sila imbas kod lokasi unit gudang tempat palet berada dahulu</item>
+        <item>Kotak semasa belum penuh. Adakah anda pasti mahu keluarkan?</item>
+        <item>Bulan pada nombor palet semasa tidak sepadan dengan bulan lot. Ubah bulan? Tekan Sahkan untuk ubah, atau Batal untuk terus masuk stok!</item>
+        <item>Gudang cadangan telah dibuka!</item>
+        <item>Gudang cadangan telah ditutup!</item>
+        <item>Sila terus gunakan pengimbas</item>
+        <item>Sila imbas terus menggunakan pengimbas kod bar dan pastikan Bluetooth telah disambung serta dipadankan!</item>
+        <item>Sila tekan pengimbas</item>
+        <item>Sila pastikan Bluetooth telah disambung. Jika belum, buka Tetapan - Bluetooth - sambung QScanner</item>
+        <item>Anda tiada kebenaran untuk masuk ke halaman ini!</item>
+        <item>Tidak dapat mengakses pelayan. Sila semak sama ada sambungan rangkaian adalah normal</item>
+        <item>Sila imbas kod QR pekerja untuk log masuk dahulu</item>
+        <item>Kandungan imbasan kosong!</item>
+        <item>Tiada kod bar berkaitan</item>
+        <item>Maklumat operator telah diperoleh. Tidak perlu imbas kad pekerja lagi!</item>
+        <item>Kuantiti adalah negatif. Kod bar bahan tidak betul. Sila imbas semula!</item>
+        <item>Bahan ini ialah bahan segera!</item>
+        <item>Catatan berjaya ditambah!</item>
+        <item>Catatan kosong!</item>
+        <item>Pembekuan stok berjaya!</item>
+        <item>Dalam mod palet, sila imbas kod palet dahulu kemudian kod barang</item>
+        <item>Sila imbas kod palet dahulu, contohnya PT/4</item>
+        <item>Sila imbas kod kontena dahulu, kemudian kod palet</item>
+        <item>Dalam mod kontena, kod barang tidak boleh diimbas terus. Sila imbas kod kontena dahulu</item>
+        <item>Sila imbas kod pesanan penghantaran dahulu, kemudian kod kontena</item>
+        <item>Gagal memuatkan ke palet. Sila semak rangkaian dan cuba lagi</item>
+        <item>Gagal memuatkan ke kontena. Sila semak rangkaian dan cuba lagi</item>
+        <item>Gagal memuatkan ke pesanan penghantaran. Sila semak rangkaian dan cuba lagi</item>
+        <item>Pengesahan gagal. Sila semak rangkaian dan cuba lagi</item>
+        <item>Hantar gagal. Sila semak rangkaian dan cuba lagi</item>
+        <item>Batal balik gagal. Sila semak rangkaian dan cuba lagi</item>
+        <item>Palet semasa telah ditetapkan semula</item>
+        <item>Kontena semasa telah ditetapkan semula</item>
+        <item>Pesanan penghantaran semasa telah ditetapkan semula</item>
+        <item>Rekod mod semasa telah dikosongkan</item>
+        <item>Imbas kod palet dahulu, contohnya PT/4</item>
+        <item>Teruskan mengimbas kod barang, contohnya VG/12345</item>
+        <item>Imbas kod kontena dahulu</item>
+        <item>Teruskan mengimbas kod palet</item>
+        <item>Imbas kod pesanan penghantaran dahulu</item>
+        <item>Teruskan mengimbas kod kontena</item>
+        <item>Imbasan yang berjaya akan dipaparkan di sini</item>
+        <item>Menunggu imbas kod barang</item>
+        <item>Menunggu imbas kod palet</item>
+        <item>Menunggu imbas kod kontena</item>
+        <item>Penghantaran Pemasangan Syarikat Alat Ganti</item>
+        <item>Mod Semasa: Muat Barang ke Palet</item>
+        <item>Sila gunakan pengimbas untuk input</item>
+        <item>Tetapkan semula sasaran semasa</item>
+        <item>Mod Semasa:</item>
+        <item>Muat Barang ke Palet</item>
+        <item>Muat Palet ke Kontena</item>
+        <item>Muat Kontena ke Pesanan Penghantaran</item>
+        <item>Palet Semasa</item>
+        <item>Kontena Semasa</item>
+        <item>Pesanan Penghantaran Semasa</item>
+        <item>Kod Barang Dalam Palet Ini</item>
+        <item>Palet Dalam Kontena Ini</item>
+        <item>Kontena Dalam Pesanan Ini</item>
+        <item>Belum dipilih</item>
+        <item>Petunjuk:</item>
+        <item>Tetapkan Semula Palet Semasa</item>
+        <item>Tetapkan Semula Kontena Semasa</item>
+        <item>Tetapkan Semula Pesanan Semasa</item>
+        <item>Kosongkan Rekod Palet</item>
+        <item>Kosongkan Rekod Kontena</item>
+        <item>Kosongkan Rekod Pesanan</item>
+        <item>Versi Sistem:</item>
+        <item>Persekitaran semasa ialah ujian. Semua log masuk di sini akan menggunakan persekitaran ujian!!</item>
+        <item>Pilih Bahasa</item>
+        <item>Bahasa Cina Ringkas</item>
+        <item>Bahasa Cina Tradisional</item>
+        <item>Bahasa Inggeris</item>
+        <item>Bahasa Melayu</item>
+        <item>Terima Hasil Imbasan</item>
+        <item>Item</item>
+        <item>Kuantiti</item>
+        <item>Lot</item>
+        <item>Pilih</item>
+        <item>Lokasi Gudang</item>
+        <item>Bengkel</item>
+        <item>Stok</item>
+        <item>Catatan</item>
+        <item>Maklumat Catatan</item>
+        <item>Catatan (Pilih atau Tambah)</item>
+        <item>Lot Pengeluaran</item>
+        <item>Versi</item>
+        <item>Nama</item>
+        <item>Nama Umum Produk</item>
+        <item>Nombor Bahagian Pelanggan</item>
+        <item>Syarikat Logistik</item>
+        <item>Kaedah Pengangkutan</item>
+        <item>Alamat Pelanggan</item>
+        <item>Arahan Khas</item>
+        <item>Maklumat Bahan</item>
+        <item>Status</item>
+        <item>Palet</item>
+        <item>Kontena</item>
+        <item>Pesanan Penghantaran</item>
+        <item>Kamera</item>
+        <item>Cari</item>
+        <item>Pertanyaan</item>
+        <item>Hantar</item>
+        <item>Simpan</item>
+        <item>Kirim</item>
+        <item>Mula Mengimbas</item>
+        <item>Sedang mendapatkan data</item>
+        <item>Sedang memuatkan</item>
+        <item>Penerimaan Selesai</item>
+        <item>Penerimaan Gagal!</item>
+        <item>Pengeluaran Selesai</item>
+        <item>Pengeluaran Berjaya!</item>
+        <item>Berjaya dikeluarkan</item>
+        <item>Pemindahan Selesai</item>
+        <item>Pemindahan Gagal</item>
+        <item>Berjaya disimpan!</item>
+        <item>Simpan gagal, maklumat ralat ialah</item>
+        <item>Kemas kini berjaya!</item>
+        <item>Kemas kini gagal, maklumat ralat ialah</item>
+        <item>Operasi berjaya!</item>
+        <item>Operasi gagal!</item>
+        <item>Ralat permintaan API</item>
+        <item>Ralat permintaan data API!</item>
+        <item>Sila log masuk dahulu</item>
+        <item>Sila imbas palet dahulu</item>
+        <item>Sila pilih barisan pengeluaran dahulu</item>
+        <item>Sila pilih syarikat dahulu</item>
+        <item>Sila pilih syarikat</item>
+        <item>Sila pilih atau tambah nombor dokumen</item>
+        <item>Sila pilih arahan penghantaran dahulu</item>
+        <item>Makluman</item>
+        <item>Peringatan Mesra</item>
+        <item>Sahkan</item>
+        <item>Batal</item>
+        <item>Ya</item>
+        <item>Tidak</item>
+        <item>Selesai</item>
+        <item>Pengurusan Gudang</item>
+        <item>Pengurusan Gudang Produk Siap</item>
+        <item>Gudang Alat Ganti</item>
+        <item>Pertanyaan Stok Gudang Alat Ganti</item>
+        <item>Tempahan Kafeteria</item>
+        <item>Pengurusan Tugas</item>
+        <item>Pengurusan Mesej</item>
+        <item>Kehadiran</item>
+        <item>Percetakan Mudah Alih</item>
+        <item>Laporan Kerja</item>
+        <item>Imbas Bahan Dengan Kamera</item>
+        <item>Imbas Label Bahan Dengan Kamera</item>
+        <item>Imbasan Pengimbas</item>
+        <item>Imbas Lokasi Gudang</item>
+        <item>Imbas Bahan</item>
+        <item>Imbas Kod Lokasi</item>
+        <item>Imbas Label Kotak Luar</item>
+        <item>Imbas Lokasi Baharu</item>
+        <item>Imbas untuk Tambah Palet</item>
+        <item>Unit Lokasi</item>
+        <item>Kod Bar Bahan</item>
+        <item>Lokasi ERP</item>
+        <item>Sila masukkan lot pengeluaran</item>
+        <item>Bilangan Penuh</item>
+        <item>Kuantiti Setiap Unit</item>
+        <item>Bilangan Longgar</item>
+        <item>Kiraan Sebenar</item>
+        <item>Kawasan Penerimaan</item>
+        <item>Pengeluaran Bahan Tambahan</item>
+        <item>Lokasi Asal</item>
+        <item>Lokasi Baharu</item>
+        <item>Versi:</item>
+        <item>Model:</item>
+        <item>Pengeluaran Bahan</item>
+        <item>Pengeluaran Suapan</item>
+        <item>Pelan Baharu Dipilih</item>
+        <item>Pelan Sedia Ada Dipilih</item>
+        <item>Suap Terus</item>
+        <item>Teruskan Suapan</item>
+        <item>Semasa</item>
+        <item>Sila teruskan mengimbas</item>
+        <item>Hasil Imbasan:</item>
+        <item>Gudang Cadangan:</item>
+        <item>Lokasi Cadangan:</item>
+        <item>Kata Kunci Carian</item>
+        <item>Kata Kunci Pertanyaan</item>
+        <item>Arahan Penghantaran</item>
+        <item>Pulangan Pembekal</item>
+        <item>Pemindahan Produk Siap (Palet)</item>
+        <item>Pemindahan Produk Siap (Bukan Palet)</item>
+        <item>No. Pesanan Penghantaran</item>
+        <item>Sila imbas nombor kotak</item>
+        <item>Bahan</item>
+        <item>Unit</item>
+        <item>Spesifikasi</item>
+        <item>Laman Utama SHB ERP</item>
+        <item>Laman Utama</item>
+        <item>Pengguna</item>
+        <item>Log Masuk</item>
+        <item>Imbas Kod Pekerja</item>
+        <item>Rangkaian Dalaman</item>
+        <item>Rangkaian Luaran</item>
+        <item>Tukar Bahasa</item>
+        <item>Tukar Bengkel</item>
+        <item>Pengurusan Gudang Alat Ganti</item>
+        <item>Pengurusan Laporan Kerja</item>
+        <item>Pengurusan Pelan</item>
+        <item>Semakan Gaji</item>
+        <item>Penghantaran Syarikat Alat Ganti</item>
+        <item>Pendaftaran Asid Nukleik</item>
+        <item>Versi Sistem</item>
+        <item>Stok Kiraan Produk Siap Buatan Sendiri</item>
+        <item>Lihat Kod Bar</item>
+        <item>Penerimaan Bahan Logistik</item>
+        <item>Edit Kandungan Pembungkusan Pecah</item>
+        <item>Edit Kandungan Tambahan Pembungkusan</item>
+        <item>Pemprosesan Imej</item>
+        <item>Imbas Lokasi Gudang untuk Cari Bahan</item>
+        <item>Pertanyaan Pemindahan</item>
+        <item>Dapatkan Imej</item>
+        <item>Tugas Picking</item>
+        <item>Pertanyaan Rekod Pembekuan</item>
+        <item>Maklumat Penghantaran Label</item>
+        <item>Penerimaan Syarikat Alat Ganti</item>
+        <item>Pengeluaran Rework Malaysia</item>
+        <item>Penerimaan Palet</item>
+        <item>Tunjuk Gudang Cadangan Simpanan</item>
+        <item>Langkau FIFO</item>
+        <item>Sila Pilih Tarikh Penerimaan</item>
+        <item>Imbas Penerimaan Syarikat Alat Ganti</item>
+        <item>Adakah anda pasti mahu keluar?</item>
+        <item>Log Keluar</item>
+        <item>Operasi gudang memerlukan bengkel yang sepadan. Adakah anda mahu menukar bengkel sekarang?</item>
+        <item>Syarikat</item>
+        <item>Pilih Bengkel</item>
+        <item>Bengkel semasa anda ialah Syarikat Alat Ganti. Sila gunakan skrin penerimaan Syarikat Alat Ganti!</item>
+        <item>Sila pilih item!</item>
+        <item>Bahan Segera</item>
+        <item>Pembungkusan ini sudah ada dalam senarai pemuatan</item>
+        <item>ID sah tidak dapat dihuraikan daripada kod palet:</item>
+        <item>ID sah tidak dapat dihuraikan daripada kod kontena:</item>
+        <item>ID sah tidak dapat dihuraikan daripada kod pesanan penghantaran:</item>
+        <item>Kod Barang</item>
+        <item>Ke-</item>
+        <item>Item</item>
+        <item>Pilih atau Masukkan Dokumen Penerimaan</item>
+        <item>Barisan pengeluaran yang anda pilih ialah:</item>
+        <item>Catat Transaksi Pengeluaran</item>
+        <item>Perbezaan</item>
+        <item>Sila pilih line</item>
+        <item>Pilih Pelan Pengeluaran</item>
+        <item>Pelan Pengeluaran</item>
+        <item>Laksanakan Pemindahan</item>
+        <item>Pilih Fail Stok Kiraan</item>
+        <item>Jumlah Kecil</item>
+        <item>Tarikh Penerimaan</item>
+        <item>Tanda</item>
+        <item>Pelanggan Logistik</item>
+        <item>Suapan Terkini</item>
+        <item>Stok:</item>
+        <item>Perbezaan:</item>
+        <item>Pilih Borang Stok Kiraan</item>
+        <item>Sila masukkan item_id, ps_id, nama bahan dan sebagainya untuk carian</item>
+        <item>Pengeluaran</item>
+        <item>Tambah Catatan Pilihan</item>
+        <item>Sahkan</item>
+        <item>Tapis</item>
+        <item>Masa Tamat</item>
+        <item>Unit</item>
+        <item>Lot Penerimaan</item>
+        <item>Buang Kod Bar Unit Tunggal</item>
+        <item>Pertanyaan Stok Gudang</item>
+        <item>Halaman Sebelum</item>
+        <item>Halaman Seterusnya</item>
+        <item>Penerimaan Imbas Produk Siap (Bukan Palet)</item>
+        <item>Penerimaan Produk Siap (Imbas Label Palet)</item>
+        <item>Pengeluaran Produk Siap (Imbas Label Palet)</item>
+        <item>Stok Kiraan Produk Siap (Label Asal)</item>
+        <item>Kumpulan Barisan Pengeluaran</item>
+        <item>Penggunaan Seunit</item>
+        <item>Kuantiti Diperlukan</item>
+        <item>Pengeluaran Rework Produk Siap</item>
+        <item>Pengesahan Tiga Titik</item>
+        <item>Pengeluaran Produk Siap</item>
+        <item>Imbas Kod Kotak untuk Pengeluaran</item>
+        <item>Pengesahan Tiga Titik Imbas Pengeluaran Unit Tunggal</item>
+        <item>Pengesahan Tiga Titik Imbas Pengeluaran Label Palet</item>
+        <item>Sila pilih arahan penghantaran</item>
+        <item>Arahan penghantaran yang anda pilih ialah:</item>
+        <item>Sila pilih perkhidmatan logistik</item>
+        <item>Guna kamera untuk imbas bahan palet atau kod QR unit tunggal</item>
+        <item>Pertanyaan Rekod Pemindahan Produk Siap</item>
+        <item>ID (Bahasa Inggeris atau Nombor):</item>
+        <item>Jana Secara Rawak</item>
+        <item>Kosongkan Kawasan Terima</item>
+        <item>Kosongkan Kawasan Hantar</item>
+        <item>Kawasan Terima:</item>
+        <item>Kawasan Hantar:</item>
+        <item>Palet ini sudah ada dalam senarai. Sila jangan imbas semula!</item>
+        <item>Maklumat Kawasan:</item>
+        <item>ID Palet:%s, No. Siri Palet:%s, No. Lukisan Pelanggan:%s, Kuantiti Kotak:%s</item>
+        <item>Kotak ini sudah penuh. Sila imbas kotak seterusnya!</item>
+        <item>Gagal mendapatkan lokasi cadangan</item>
+        <item>Sila imbas kod lokasi dahulu!</item>
+        <item>Sila pilih item kotak produk siap!</item>
+        <item>Kuantiti kosong!</item>
+        <item>Kandungan carian anda kosong!</item>
+        <item>Gagal mendapatkan lokasi simpanan ERP bagi kotak ini!</item>
+        <item>Sila masukkan kandungan carian</item>
+        <item>Label produk siap tidak boleh digunakan bersama label cetak semula palet/bukan palet</item>
+        <item>Produk ini tidak tergolong dalam barisan pengeluaran ini!</item>
+        <item>Semua pemindahan selesai</item>
+        <item>Ringkasan Pemindahan</item>
+        <item>Nombor kotak ini tidak wujud!</item>
+        <item>Imbasan berterusan tidak boleh melebihi 3 palet setiap kali</item>
+        <item>Kod bahan ini tidak tergolong dalam bengkel ini!</item>
+        <item>Kehadiran berjaya!</item>
+        <item>Kemas kini kehadiran berjaya!</item>
+        <item>Operator:</item>
+        <item>Sila imbas label dahulu!</item>
+        <item>Palet ini telah diterima. Sila jangan terima semula!</item>
+        <item>Kod kotak atau kod lokasi gudang tidak berjaya diimbas. Sila imbas semula!</item>
+        <item>Kod lokasi gudang tidak diimbas. Sila imbas semula!</item>
+        <item>Format tidak sah. Sila masukkan kod kotak bermula dengan VG atau VE dalam kotak input dan tekan Enter untuk tamat!</item>
+        <item>Catatan: %s</item>
+        <item>Sedang Dibangunkan!</item>
+        <item>Keluar Rework</item>
+        <item>Beku Stok</item>
+        <item>Stok Produk Siap</item>
+        <item>Stok Alat Ganti</item>
+        <item>Ambil Bahan Jabatan</item>
+        <item>Catat Penerimaan</item>
+        <item>Imbas Kod Stesen</item>
+        <item>Masuk No. Pekerja</item>
+        <item>Pilih Jabatan</item>
+        <item>Pilih Projek R&amp;D</item>
+        <item>Imbas Bahan</item>
+        <item>Pilih Kegunaan</item>
+        <item>Jabatan Ambil Bahan</item>
+        <item>Projek R&amp;D</item>
+        <item>Penerimaan Imbas</item>
+        <item>Pengeluaran Bahan</item>
+        <item>Pindah Lokasi Gudang</item>
+        <item>Stok Kiraan WIP</item>
+        <item>Ambil Bahan Barisan Pengeluaran</item>
+        <item>Pelan Permintaan Bengkel</item>
+        <item>Pulangan Bengkel Buatan Sendiri</item>
+        <item>Shanghai Seat Electric</item>
+        <item>Pindah Palet</item>
+        <item>Beku/Nyahbeku Palet</item>
+        <item>Beku Palet</item>
+        <item>Nyahbeku</item>
+        <item>Tambah Catatan</item>
+        <item>Sedia Ambil Bahan</item>
+        <item>Pertanyaan Bahan Sokongan</item>
+        <item>Imbas Bahan Keluar Rework</item>
+        <item>Lihat BOM dengan Bahan Sedia</item>
+    </string-array>
+</resources>

@@ -20,12 +20,14 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
+import com.chinashb.www.mobileerp.MWBackUpListActivity;
 import com.chinashb.www.mobileerp.PickGoodsNewShowActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.BoxMoveItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.IssueOutBackUpBean;
 import com.chinashb.www.mobileerp.bean.PickGoodsBean;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
@@ -61,6 +63,8 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
     private boolean isOpenSuggestStock = true;
     private boolean fromPickGoods ;
     private PickGoodsBean pickGoodsBean;
+    private String backUpScanCode = "";//从备料来的标签，自动作移库提示
+    private IssueOutBackUpBean backUpBean;
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -86,6 +90,8 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
         if (fromPickGoods){
             pickGoodsBean = getIntent().getParcelableExtra(IntentConstant.Intent_Extra_to_pick_goods_bean);
         }
+
+
 //        tv = (TextView)findViewById(R.id.tv_stock_system_title);
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_move_box);
         btnAddTray = (Button) findViewById(R.id.btn_move_add_tray);
@@ -168,6 +174,12 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
                 isOpenSuggestStock = isChecked;
             }
         });
+
+        backUpScanCode = getIntent().getStringExtra(IntentConstant.Intent_Extra_Backup_ScanCode);
+        backUpBean = getIntent().getParcelableExtra(IntentConstant.Intent_Extra_Backup_bean);
+        if (!TextUtils.isEmpty(backUpScanCode)){
+            parseScanResult(backUpScanCode);
+        }
 
     }
 
@@ -316,7 +328,12 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
 
         @Override
         protected Void doInBackground(String... params) {
-            BoxItemEntity bi = WebServiceUtil.op_Check_Commit_Move_Item_Barcode(scanstring);
+            BoxItemEntity bi;
+            if (!TextUtils.isEmpty(backUpScanCode)){
+                bi = WebServiceUtil.op_Check_Commit_Move_Item_Barcode_For_BackUp(scanstring) ;
+            }else{
+                bi = WebServiceUtil.op_Check_Commit_Move_Item_Barcode(scanstring);
+            }
             boxItemEntity = bi;
             if (bi.getResult()) {
                 if (!is_box_existed(bi)) {
@@ -492,6 +509,16 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
             boxitemList.clear();
             boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
             mRecyclerView.setAdapter(boxitemAdapter);
+            if (!TextUtils.isEmpty(backUpScanCode)){
+                backUpScanCode = "";
+                Intent intent = new Intent(StockPartMoveActivity.this, MWBackUpListActivity.class);
+                intent.putExtra(IntentConstant.Intent_Extra_backup_rework_move_result_boolean,result.getResult());
+                intent.putExtra(IntentConstant.Intent_Extra_backup_rework_move_ist_id,thePlace != null ? thePlace.getIst_ID() : 0) ;
+                intent.putExtra(IntentConstant.Intent_Extra_backup_rework_move_sub_ist_id,thePlace != null ? thePlace.getSub_Ist_ID() : 0);
+                intent.putExtra(IntentConstant.Intent_Extra_Backup_bean,backUpBean);
+                setResult(IntentConstant.Intent_Request_Backup_To_PartMove_Activity,intent);
+                finish();
+            }
         }
 
         @Override

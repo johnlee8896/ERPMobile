@@ -1,0 +1,153 @@
+<resources>
+    <!-- App & Top Level Titles -->
+    <string name="app_name">SHB ERP</string>
+    <string name="title_activity_warehouse_part_main">Parts Warehouse</string>
+    <string name="title_activity_task">Task Management</string>
+    <string name="title_activity_conversation_contacts">Contacts</string>
+    <string name="title_activity_conversation">Messages</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_activity_task_view">Task Tracking</string>
+
+    <!-- Login UI -->
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in with Account/Password</string>
+    <string name="action_sign_in_short">Sign in</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Common / Empty Views -->
+    <string name="empty_no_message">You have no messages yet</string>
+    <string name="empty_no_data">No data available</string>
+    <string name="empty_no_network">Network is not good, click to reload</string>
+    <string name="empty_no_search">No matching results found</string>
+    <string name="empty_no_voucher">No vouchers available</string>
+
+    <!-- Printer Related -->
+    <string name="discovery_printer">Discover Printers</string>
+    <string name="paired_printer_list">Recently Used Printers</string>
+    <string name="print_text">Print Text</string>
+    <string name="print_1D_barcode">Print 1D Barcode</string>
+    <string name="print_2D_barcode">Print 2D Barcode</string>
+    <string name="print_image">Print Image</string>
+    <string name="print_express">Print Express Waybill</string>
+    <string name="print_receipt">Print Receipt</string>
+    <string name="zebra_log_image" translatable="false">Zebra logo image</string>
+    <string name="please_connect_printer">Please connect the printer</string>
+    <string name="bluetooth_not_support">Bluetooth is not supported on this device</string>
+    <string name="scanning">Scanning, please wait</string>
+    <string name="select_printer">Select Bluetooth Printer</string>
+    <string name="not_find_printer">No Bluetooth printer found</string>
+    <string name="discovery_printer_list">Discovered Printers</string>
+    <string name="language_switched_error">Printer is busy, cannot switch</string>
+    <string name="language_switched_to_cpcl">Switched printer language to CPCL</string>
+    <string name="not_support_cpcl">Current printer does not support CPCL</string>
+    <string name="language_switched_to_escpos">Switched printer language to ESC/POS</string>
+    <string name="not_support_escpos">Current printer does not support ESC/POS</string>
+    <string name="connect_error">Connection lost unexpectedly, please check</string>
+    <string name="connecting">Connecting, please wait</string>
+    <string name="connect_success">Connected</string>
+    <string name="connect_failed">Connection failed</string>
+    <string name="not_support_printer">Unsupported printer</string>
+    <string name="disconnecting">Disconnecting, please wait</string>
+    <string name="printer_error_not_print">Printer error, cannot print</string>
+    <string name="printer_ready">Ready</string>
+    <string name="printer_busy">Busy</string>
+    <string name="printer_cover_open">Cover Open</string>
+    <string name="printer_media_out">Paper Out</string>
+    <string name="printing">Printing, please wait</string>
+
+    <!-- Calendar / Lunar -->
+    <string-array name="lunar_first_of_month">
+        <item>Spring Festival</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November (Winter)</item>
+        <item>December (Lunar Year)</item>
+    </string-array>
+
+    <string-array name="lunar_str">
+        <item>1st</item>
+        <item>2nd</item>
+        <item>3rd</item>
+        <item>4th</item>
+        <item>5th</item>
+        <item>6th</item>
+        <item>7th</item>
+        <item>8th</item>
+        <item>9th</item>
+        <item>10th</item>
+        <item>11th</item>
+        <item>12th</item>
+        <item>13th</item>
+        <item>14th</item>
+        <item>15th</item>
+        <item>16th</item>
+        <item>17th</item>
+        <item>18th</item>
+        <item>19th</item>
+        <item>20th</item>
+        <item>21st</item>
+        <item>22nd</item>
+        <item>23rd</item>
+        <item>24th</item>
+        <item>25th</item>
+        <item>26th</item>
+        <item>27th</item>
+        <item>28th</item>
+        <item>29th</item>
+        <item>30th</item>
+    </string-array>
+
+    <string name="sun">Sun</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+
+    <string-array name="week_string_array">
+        <item>Sun</item>
+        <item>Mon</item>
+        <item>Tue</item>
+        <item>Wed</item>
+        <item>Thu</item>
+        <item>Fri</item>
+        <item>Sat</item>
+    </string-array>
+
+    <string-array name="test_name_array">
+        <item>余莲方</item>
+        <item>常芙蓉</item>
+        <item>桂伟松</item>
+        <item>李伟锋</item>
+        <item>邵家伟</item>
+        <item>李忠飞</item>
+        <item>LIM XIN YEE</item>
+    </string-array>
+
+    <!-- Miscellaneous -->
+    <string name="turn_on_flashlight">Turn On Flashlight</string>
+    <string name="turn_off_flashlight">Turn Off Flashlight</string>
+    <string name="part_inv_check">Parts Warehouse Inventory Check</string>
+    <string name="title_activity_stock_check_part_inv">Warehouse Inventory</string>
+    <string name="shberp_login">SHB ERP 登录</string>
+    <string name="system_version_format">System Version: %1$s</string>
+    <string name="main_version_outdated_message">Your current app version is not the latest. Please return to the login page to upgrade.</string>
+    <string name="language_selector_title">Select Language</string>
+    <string name="language_label_simplified_chinese">Simplified Chinese</string>
+    <string name="language_label_traditional_chinese">Traditional Chinese</string>
+    <string name="language_label_english">English</string>
+    <string name="language_label_malay">Bahasa Melayu</string>
+</resources>

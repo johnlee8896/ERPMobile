@@ -1,0 +1,364 @@
+<resources>
+    <string-array name="auto_i18n_target_phrases">
+        <item>Your current account is invalid. Please log in again!</item>
+        <item>Your current company does not match the incoming company. Please confirm whether the receipt should be booked into this company!</item>
+        <item>The item barcode or warehouse location barcode was not scanned successfully. Please scan again!</item>
+        <item>Warehouse location has not been scanned yet</item>
+        <item>Please select an inventory sheet first!</item>
+        <item>Please select an inventory sheet first</item>
+        <item>Please scan the warehouse bin location barcode where the pallet is stored first</item>
+        <item>The current carton is not full. Are you sure you want to ship it out?</item>
+        <item>The month in the current pallet number does not match the batch month. Modify the month? Tap Confirm to modify, or Cancel to receive directly!</item>
+        <item>Suggested warehouse has been enabled!</item>
+        <item>Suggested warehouse has been disabled!</item>
+        <item>Please continue using the scanner</item>
+        <item>Please scan directly with the barcode scanner and make sure Bluetooth is connected and paired!</item>
+        <item>Please tap the scanner</item>
+        <item>Please ensure Bluetooth is connected. If not, open Settings - Bluetooth - connect QScanner</item>
+        <item>You do not have permission to enter this page!</item>
+        <item>Unable to reach the server. Please check whether the network connection is normal</item>
+        <item>Please scan the employee QR code to log in first</item>
+        <item>Scan content is empty!</item>
+        <item>No related barcode found</item>
+        <item>Operator information has been obtained. No need to scan the badge again!</item>
+        <item>Quantity is negative. The material barcode is incorrect. Please scan again!</item>
+        <item>This material is urgent!</item>
+        <item>Remark added successfully!</item>
+        <item>Remark is empty!</item>
+        <item>Inventory freeze successful!</item>
+        <item>In pallet mode, scan the pallet code first and then the cargo code</item>
+        <item>Please scan the pallet code first, e.g. PT/4</item>
+        <item>Please scan the container code first, then the pallet code</item>
+        <item>In container mode, cargo codes cannot be scanned directly. Please scan the container code first</item>
+        <item>Please scan the delivery order code first, then the container code</item>
+        <item>Failed to load into pallet. Please check the network and try again</item>
+        <item>Failed to load into container. Please check the network and try again</item>
+        <item>Failed to load into delivery order. Please check the network and try again</item>
+        <item>Validation failed. Please check the network and try again</item>
+        <item>Submit failed. Please check the network and try again</item>
+        <item>Undo failed. Please check the network and try again</item>
+        <item>Current pallet has been reset</item>
+        <item>Current container has been reset</item>
+        <item>Current delivery order has been reset</item>
+        <item>Current mode records have been cleared</item>
+        <item>Scan the pallet code first, e.g. PT/4</item>
+        <item>Continue scanning cargo codes, e.g. VG/12345</item>
+        <item>Scan the container code first</item>
+        <item>Continue scanning pallet codes</item>
+        <item>Scan the delivery order code first</item>
+        <item>Continue scanning container codes</item>
+        <item>Successful scans will be shown here</item>
+        <item>Waiting to scan cargo code</item>
+        <item>Waiting to scan pallet code</item>
+        <item>Waiting to scan container code</item>
+        <item>Parts Company Assembly Delivery</item>
+        <item>Current Mode: Pallet Loading</item>
+        <item>Please use the scanner for input</item>
+        <item>Reset current target</item>
+        <item>Current Mode:</item>
+        <item>Pallet Loading</item>
+        <item>Container Loading Pallets</item>
+        <item>Delivery Order Loading Containers</item>
+        <item>Current Pallet</item>
+        <item>Current Container</item>
+        <item>Current Delivery Order</item>
+        <item>Cargo Codes in This Pallet</item>
+        <item>Pallets in This Container</item>
+        <item>Containers in This Delivery Order</item>
+        <item>Not selected</item>
+        <item>Hint:</item>
+        <item>Reset Current Pallet</item>
+        <item>Reset Current Container</item>
+        <item>Reset Current Delivery Order</item>
+        <item>Clear Pallet Records</item>
+        <item>Clear Container Records</item>
+        <item>Clear Delivery Order Records</item>
+        <item>System Version:</item>
+        <item>Current environment is test. All logins here will use the test environment!!</item>
+        <item>Select Language</item>
+        <item>Simplified Chinese</item>
+        <item>Traditional Chinese</item>
+        <item>English</item>
+        <item>Malay</item>
+        <item>Receive Scan Result</item>
+        <item>Item</item>
+        <item>Quantity</item>
+        <item>Batch</item>
+        <item>Select</item>
+        <item>Bin Location</item>
+        <item>Workshop</item>
+        <item>Inventory</item>
+        <item>Remark</item>
+        <item>Remark Info</item>
+        <item>Remark (Select or Add)</item>
+        <item>Production Batch</item>
+        <item>Version</item>
+        <item>Name</item>
+        <item>Product Common Name</item>
+        <item>Customer Part Number</item>
+        <item>Logistics Company</item>
+        <item>Transport Method</item>
+        <item>Customer Address</item>
+        <item>Special Notes</item>
+        <item>Material Information</item>
+        <item>Status</item>
+        <item>Pallet</item>
+        <item>Container</item>
+        <item>Delivery Order</item>
+        <item>Camera</item>
+        <item>Search</item>
+        <item>Query</item>
+        <item>Submit</item>
+        <item>Save</item>
+        <item>Send</item>
+        <item>Start Scanning</item>
+        <item>Loading Data</item>
+        <item>Loading</item>
+        <item>Receipt Completed</item>
+        <item>Receipt Failed!</item>
+        <item>Issue Completed</item>
+        <item>Issue Successful!</item>
+        <item>Issue Successful</item>
+        <item>Transfer Completed</item>
+        <item>Transfer Failed</item>
+        <item>Saved Successfully!</item>
+        <item>Save failed, error info is</item>
+        <item>Updated Successfully!</item>
+        <item>Update failed, error info is</item>
+        <item>Operation Successful!</item>
+        <item>Operation Failed!</item>
+        <item>API request error</item>
+        <item>API data request error!</item>
+        <item>Please log in first</item>
+        <item>Please scan the pallet first</item>
+        <item>Please select the production line first</item>
+        <item>Please select the company first</item>
+        <item>Please select company</item>
+        <item>Please select or add a document number</item>
+        <item>Please select the delivery instruction first</item>
+        <item>Notice</item>
+        <item>Friendly Reminder</item>
+        <item>Confirm</item>
+        <item>Cancel</item>
+        <item>Yes</item>
+        <item>No</item>
+        <item>Done</item>
+        <item>Warehouse Management</item>
+        <item>Finished Goods Warehouse Management</item>
+        <item>Parts Warehouse</item>
+        <item>Parts Warehouse Inventory Query</item>
+        <item>Cafeteria Ordering</item>
+        <item>Task Management</item>
+        <item>Message Management</item>
+        <item>Attendance Check-in</item>
+        <item>Mobile Printing</item>
+        <item>Work Reporting</item>
+        <item>Scan Material with Camera</item>
+        <item>Scan Material Label with Camera</item>
+        <item>Scanner Scan</item>
+        <item>Scan Bin Location</item>
+        <item>Scan Material</item>
+        <item>Scan Location Code</item>
+        <item>Scan Outer Carton Label</item>
+        <item>Scan New Location</item>
+        <item>Scan to Add Pallet</item>
+        <item>Storage Bin</item>
+        <item>Material Barcode</item>
+        <item>ERP Location</item>
+        <item>Please enter production batch</item>
+        <item>Full Carton Quantity</item>
+        <item>Quantity per Carton</item>
+        <item>Loose Quantity</item>
+        <item>Actual Count</item>
+        <item>Receipt Area</item>
+        <item>Extra Material Issue</item>
+        <item>Original Location</item>
+        <item>New Location</item>
+        <item>Version:</item>
+        <item>Model:</item>
+        <item>Production Feeding</item>
+        <item>Feeding Issue</item>
+        <item>New Selected Plan</item>
+        <item>Existing Selected Plan</item>
+        <item>Direct Feeding</item>
+        <item>Continue Feeding</item>
+        <item>Current</item>
+        <item>Please continue scanning</item>
+        <item>Scan Result:</item>
+        <item>Suggested Warehouse:</item>
+        <item>Suggested Location:</item>
+        <item>Search Keyword</item>
+        <item>Query Keyword</item>
+        <item>Delivery Instruction</item>
+        <item>Supplier Return</item>
+        <item>Finished Goods Transfer (Pallet)</item>
+        <item>Finished Goods Transfer (Non-Pallet)</item>
+        <item>Delivery Order No.</item>
+        <item>Please scan the carton number</item>
+        <item>Material</item>
+        <item>Unit</item>
+        <item>Spec</item>
+        <item>SHB ERP Home</item>
+        <item>Home</item>
+        <item>User</item>
+        <item>Log In</item>
+        <item>Scan Employee Code</item>
+        <item>Intranet</item>
+        <item>Internet</item>
+        <item>Switch Language</item>
+        <item>Switch Workshop</item>
+        <item>Parts Warehouse Management</item>
+        <item>Work Report Management</item>
+        <item>Plan Management</item>
+        <item>Salary Query</item>
+        <item>Parts Company Delivery</item>
+        <item>Nucleic Acid Registration</item>
+        <item>System Version</item>
+        <item>Self-made Finished Goods Inventory</item>
+        <item>View Barcode</item>
+        <item>Logistics Incoming Receipt</item>
+        <item>Edit Package Breakdown Content</item>
+        <item>Edit Added Package Content</item>
+        <item>Image Processing</item>
+        <item>Scan Bin to Find Material</item>
+        <item>Transfer Query</item>
+        <item>Get Image</item>
+        <item>Picking Task</item>
+        <item>Query Freeze Records</item>
+        <item>Label Delivery Info</item>
+        <item>Parts Company Receipt</item>
+        <item>Malaysia Rework Issue</item>
+        <item>Pallet Receipt</item>
+        <item>Show Suggested Storage Warehouse</item>
+        <item>Skip FIFO</item>
+        <item>Please Select Receipt Date</item>
+        <item>Parts Company Scan Receipt</item>
+        <item>Are you sure you want to exit?</item>
+        <item>Log Out</item>
+        <item>Warehouse operations require the corresponding workshop. Do you want to switch workshop now?</item>
+        <item>Company</item>
+        <item>Select Workshop</item>
+        <item>Your current workshop belongs to the Parts Company. Please use the Parts Company receipt screen!</item>
+        <item>Please select an item!</item>
+        <item>Urgent Material</item>
+        <item>This package is already in the loading list</item>
+        <item>No valid ID was parsed from pallet code:</item>
+        <item>No valid ID was parsed from container code:</item>
+        <item>No valid ID was parsed from delivery order code:</item>
+        <item>Cargo Code</item>
+        <item>No.</item>
+        <item>Item</item>
+        <item>Select or Enter Receipt Document</item>
+        <item>The production line you selected is:</item>
+        <item>Post Issue Transaction</item>
+        <item>Difference</item>
+        <item>Please select a line</item>
+        <item>Select Production Plan</item>
+        <item>Production Plan</item>
+        <item>Execute Transfer</item>
+        <item>Select Inventory File</item>
+        <item>Subtotal</item>
+        <item>Receipt Date</item>
+        <item>Mark</item>
+        <item>Logistics Customer</item>
+        <item>Recent Feeding</item>
+        <item>Inventory:</item>
+        <item>Difference:</item>
+        <item>Select Inventory Sheet</item>
+        <item>Please enter item_id, ps_id, material name, etc. to search</item>
+        <item>Issue</item>
+        <item>Add Selectable Remark</item>
+        <item>Confirm</item>
+        <item>Filter</item>
+        <item>End Time</item>
+        <item>Unit</item>
+        <item>Receipt Batch</item>
+        <item>Remove Single Unit Barcode</item>
+        <item>Warehouse Inventory Query</item>
+        <item>Previous Page</item>
+        <item>Next Page</item>
+        <item>Finished Goods (Non-Pallet) Scan Receipt</item>
+        <item>Finished Goods Receipt (Scan Pallet Label)</item>
+        <item>Finished Goods Issue (Scan Pallet Label)</item>
+        <item>Finished Goods Inventory Check (Original Label)</item>
+        <item>Production Line Group</item>
+        <item>Consumption per Unit</item>
+        <item>Required Qty</item>
+        <item>Finished Goods Rework Issue</item>
+        <item>Three-Point Verification</item>
+        <item>Finished Goods Issue</item>
+        <item>Scan Carton Code for Issue</item>
+        <item>Three-Point Verification Scan Single Unit Issue</item>
+        <item>Three-Point Verification Scan Pallet Label Issue</item>
+        <item>Please select a delivery instruction</item>
+        <item>The delivery instruction you selected is:</item>
+        <item>Please select logistics service</item>
+        <item>Use camera to scan pallet material or single-unit QR code</item>
+        <item>Finished Goods Transfer Record Query</item>
+        <item>ID (English or Number):</item>
+        <item>Generate Randomly</item>
+        <item>Clear Receive Area</item>
+        <item>Clear Send Area</item>
+        <item>Receive Area:</item>
+        <item>Send Area:</item>
+        <item>This pallet is already in the list. Please do not scan it again!</item>
+        <item>Area Information:</item>
+        <item>Pallet ID:%s, Pallet Serial No.:%s, Customer Drawing No.:%s, Carton Qty:%s</item>
+        <item>This carton is full. Please scan the next carton!</item>
+        <item>Failed to get suggested location</item>
+        <item>Please scan the location code first!</item>
+        <item>Please select a finished goods carton item!</item>
+        <item>Quantity is empty!</item>
+        <item>Your search content is empty!</item>
+        <item>Failed to obtain the ERP storage location of this carton!</item>
+        <item>Please enter search content</item>
+        <item>Finished goods labels cannot be operated together with reprinted pallet/non-pallet labels</item>
+        <item>This product does not belong to this production line!</item>
+        <item>All transfers completed</item>
+        <item>Transfer Summary</item>
+        <item>This carton number does not exist!</item>
+        <item>No more than 3 pallets can be scanned continuously at a time</item>
+        <item>This material code does not belong to this workshop!</item>
+        <item>Clock-in successful!</item>
+        <item>Clock-in update successful!</item>
+        <item>Operator:</item>
+        <item>Please scan the label first!</item>
+        <item>This pallet has already been received. Please do not receive it again!</item>
+        <item>The carton code or warehouse location code was not scanned successfully. Please scan again!</item>
+        <item>The warehouse location code was not scanned. Please scan again!</item>
+        <item>Invalid format. Please enter a carton code starting with VG or VE in the input box and press Enter to finish!</item>
+        <item>Remark: %s</item>
+        <item>Under Development!</item>
+        <item>Rework Issue</item>
+        <item>Freeze Stock</item>
+        <item>Finished Goods Stock</item>
+        <item>Parts Stock</item>
+        <item>Department Issue</item>
+        <item>Post Receipt</item>
+        <item>Scan Station Code</item>
+        <item>Enter Employee No.</item>
+        <item>Select Department</item>
+        <item>Select R&amp;D Project</item>
+        <item>Scan Issue</item>
+        <item>Select Usage</item>
+        <item>Issuing Department</item>
+        <item>R&amp;D Project</item>
+        <item>Scan Receiving</item>
+        <item>Production Feeding</item>
+        <item>Move Warehouse Location</item>
+        <item>WIP Inventory Check</item>
+        <item>Production Line Material Pick</item>
+        <item>Workshop Material Request Plan</item>
+        <item>Self-made Workshop Return</item>
+        <item>Shanghai Seat Electric</item>
+        <item>Pallet Move</item>
+        <item>Freeze/Unfreeze Pallet</item>
+        <item>Freeze Pallet</item>
+        <item>Unfreeze</item>
+        <item>Add Remark</item>
+        <item>Material Pick Backup</item>
+        <item>Auxiliary Material Query</item>
+        <item>Scan Rework Outgoing Material</item>
+        <item>View BOM with Backup Material</item>
+    </string-array>
+</resources>

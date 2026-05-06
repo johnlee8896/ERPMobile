@@ -1,23 +1,11 @@
 <resources>
     <string name="app_name">SHB ERP</string>
-    <string name="title_activity_stock_query">仓库库存查询</string>
     <string name="title_activity_warehouse_part_main">零部件仓库</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
     <string name="prompt_password">密码</string>
     <string name="action_sign_in">账号密码登录</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-    <string name="title_activity_active_login">active_login</string>
-    <string name="title_activity_stock_out">StockOutActivity</string>
-    <string name="title_activity_tcp_client_test">TcpClientTestActivity</string>
     <string name="title_activity_task">任务管理</string>
     <string name="title_activity_conversation_contacts">通讯录</string>
     <string name="title_activity_conversation">消息</string>
@@ -56,13 +44,6 @@
     <string name="print_receipt">打印小票</string>
     <string name="zebra_log_image" translatable="false">Zebra logo image</string>
     <string name="please_connect_printer">请连接打印机</string>
-    <string name="connect">连接</string>
-    <string name="disconnect">断开</string>
-    <string name="printer_language">打印机语言 ：</string>
-    <string name="cpcl_language" translatable="false">CPCL</string>
-    <string name="escpos_language" translatable="false">ESCPOS</string>
-    <string name="printer_status">获取打印机状态</string>
-    <string name="print_configuration">打印配置页</string>
     <string name="bluetooth_not_support">当前设备不支持蓝牙</string>
     <string name="scanning">正在扫描，请稍后</string>
     <string name="select_printer">选择蓝牙打印机</string>
@@ -85,9 +66,6 @@
     <string name="printer_cover_open">盖打开</string>
     <string name="printer_media_out">纸用完</string>
     <string name="printing">正在打印, 请稍后</string>
-    <string name="bluetooth_printer_list">蓝牙打印机列表</string>
-
-
 
 
     <!--日历控件-->
@@ -147,15 +125,25 @@
     <string name="thu">四</string>
     <string name="fri">五</string>
     <string name="sat">六</string>
-    <string name="to_approve_count">待我审批(%d)</string>
-    <string name="has_approve_count">我已审批(%d)</string>
-    <string name="to_read_count">待阅读(%d)</string>
-    <string name="has_read_count">已阅读(%d)</string>
-    <string name="my_request_to_approve_count">待审批(%d)</string>
-    <string name="my_request_has_approve_count">已审批(%d)</string>
-    <string name="request_server_error">请求错误：</string>
     <string name="cancel">取消</string>
     <string name="ok">确定</string>
+    <string name="shberp_login">SHB ERP 登录</string>
+    <string name="loginNameInfo">名字</string>
+    <string name="login_in_test_environment">测试环境登录</string>
+    <string name="intranet">内网</string>
+    <string name="internet">外网</string>
+    <string name="input_name_password">请输入名字/密码</string>
+    <string name="password_not_long_enough">您的密码不符合至少8位长度的要求，请重置后再试</string>
+    <string name="login_again">请重新登录</string>
+    <string name="logining">正在登录..</string>
+    <string name="get_download_url_fail">获取下载链接失败！</string>
+    <string name="system_version_format">系统版本：%1$s</string>
+    <string name="main_version_outdated_message">您当前使用版本非最新版本，请退回登录页面进行升级！</string>
+    <string name="language_selector_title">选择语言</string>
+    <string name="language_label_simplified_chinese">简体中文</string>
+    <string name="language_label_traditional_chinese">繁体中文</string>
+    <string name="language_label_english">英语</string>
+    <string name="language_label_malay">马来语</string>
 
     <string-array name="week_string_array">
         <item>日</item>

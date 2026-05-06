@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp">
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="零部件公司组装发货" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/new_part_delivery_tray_button"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="托盘"/>
+
+        <Button
+            android:id="@+id/new_part_delivery_container_button"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="集装箱"/>
+
+        <Button
+            android:id="@+id/new_part_delivery_delivery_order_button"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="发货单"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/new_part_delivery_status_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="#FFFFFF"
+        android:lineSpacingExtra="2dp"
+        android:minHeight="78dp"
+        android:padding="10dp"
+        android:text="当前模式：托盘装货"
+        android:textColor="#222222"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/new_part_delivery_input_edit"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_weight="1"
+            android:background="#FFFFFF"
+            android:hint="请使用扫描枪输入"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/new_part_delivery_camera_scan_button"
+            android:layout_width="72dp"
+            android:layout_height="42dp"
+            android:layout_marginLeft="8dp"
+            android:text="相机" />
+    </LinearLayout>
+
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/new_part_delivery_scan_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="8dp"
+        android:background="#FFFFFF"
+        app:app_item_decoration_type="ITEM_SPACE"
+        app:app_item_margin="6dp"
+        app:app_layout_style="list_vertical" />
+
+    <Button
+        android:id="@+id/new_part_delivery_submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_marginTop="8dp"
+        android:text="重置当前目标" />
+
+</LinearLayout>

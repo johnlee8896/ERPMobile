@@ -88,12 +88,14 @@
             android:layout_gravity="start"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="@dimen/dimen_size_20"
+            android:visibility="gone"
             android:layout_weight="1"
             android:text="选择或输入入库单据" />
         <TextView
             android:id="@+id/product_in_scan_code_box_NO_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:paddingLeft="20dp"
             android:paddingRight="@dimen/dimen_size_20"
             android:layout_marginLeft="20dp"

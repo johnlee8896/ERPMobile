@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 
 def cfg = rootProject.ext.android
+Properties localProperties = new Properties()
+InputStream localPropertiesInputStream = project.rootProject.file('local.properties').newDataInputStream()
+localProperties.load(localPropertiesInputStream)
 
 android {
     compileSdkVersion cfg.compileSdkVersion
@@ -22,16 +25,12 @@ android {
 
     signingConfigs {
         //加载资源
-        Properties properties = new Properties()
-        InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream();
-        properties.load(inputStream)
-
         //读取文件
-        def sdkDir = properties.getProperty('key.file')
+        def sdkDir = localProperties.getProperty('key.file')
         //读取字段
-        def key_keyAlias = properties.getProperty('keyAlias')
-        def key_keyPassword = properties.getProperty('keyPassword');
-        def key_storePassword = properties.getProperty('storePassword');
+        def key_keyAlias = localProperties.getProperty('keyAlias')
+        def key_keyPassword = localProperties.getProperty('keyPassword');
+        def key_storePassword = localProperties.getProperty('storePassword');
 
         release {
             keyAlias key_keyAlias
@@ -161,4 +160,81 @@ dependencies {
     implementation project(':zxing')
     implementation project(':qrcodecore')
     implementation 'org.jetbrains:annotations:15.0'
+}
+
+// created by code-x John
+// start: 2026-04-30 08:48:44 CST
+// end: 2026-04-30 08:48:44 CST
+def releaseUploadUrl = localProperties.getProperty('release.upload.url', 'http://116.236.16.218:8001/UploadApk.ashx?fileName=app-release.apk')
+def releaseUploadUser = localProperties.getProperty('release.upload.user', '')
+def releaseUploadPassword = localProperties.getProperty('release.upload.password', '')
+def releaseUploadEnabled = localProperties.getProperty('release.upload.enabled', 'true')
+def releaseUploadMode = localProperties.getProperty('release.upload.mode', 'multipart')
+def releaseUploadFormField = localProperties.getProperty('release.upload.formField', 'file')
+def releaseApkFile = file("$buildDir/outputs/apk/release/app-release.apk")
+
+task uploadReleaseApk {
+    group = "publishing"
+    description = "Upload signed release apk to remote server after assembleRelease."
+
+    doLast {
+        if (!Boolean.parseBoolean(releaseUploadEnabled)) {
+            println "release apk auto upload is disabled by local.properties: release.upload.enabled=false"
+            return
+        }
+
+        if (!releaseApkFile.exists()) {
+            throw new GradleException("release apk not found: " + releaseApkFile.absolutePath)
+        }
+
+        if (!releaseUploadUser || !releaseUploadPassword) {
+            throw new GradleException("please configure release.upload.user and release.upload.password in local.properties")
+        }
+
+        println "uploading release apk to " + releaseUploadUrl + " with mode=" + releaseUploadMode
+
+        try {
+            if ("multipart".equalsIgnoreCase(releaseUploadMode)) {
+                exec {
+                    commandLine 'curl',
+                            '--fail',
+                            '--show-error',
+                            '--silent',
+                            '--anyauth',
+                            '--user', "${releaseUploadUser}:${releaseUploadPassword}",
+                            '-F', "${releaseUploadFormField}=@${releaseApkFile.absolutePath};filename=app-release.apk",
+                            releaseUploadUrl
+                }
+            } else {
+                exec {
+                    commandLine 'curl',
+                            '--fail',
+                            '--show-error',
+                            '--silent',
+                            '--anyauth',
+                            '--user', "${releaseUploadUser}:${releaseUploadPassword}",
+                            '--upload-file', releaseApkFile.absolutePath,
+                            releaseUploadUrl
+                }
+            }
+        } catch (Exception e) {
+            throw new GradleException(
+                    "upload release apk failed. " +
+                            "Current mode=" + releaseUploadMode +
+                            ", url=" + releaseUploadUrl +
+                            ". If your IIS directory only supports GET/POST and not PUT, " +
+                            "please set a real upload endpoint and use release.upload.mode=multipart. " +
+                            "Original error: " + e.getMessage(),
+                    e
+            )
+        }
+
+        println "upload release apk success: " + releaseUploadUrl
+    }
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleRelease') {
+        task.finalizedBy(uploadReleaseApk)
+    }
 }

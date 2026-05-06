@@ -156,7 +156,8 @@ public class MoveProductPalletActivity extends BaseActivity implements View.OnCl
 
     private void handleMoveStockArea() {
         //2024-05-28 john在移库前做一操作，判断是否是座椅车间，如果不是给出提示
-        if ((UserSingleton.get().getUserInfo().getBu_ID() != 1) && (UserSingleton.get().getUserInfo().getBu_ID() != 81)){
+        if ((UserSingleton.get().getUserInfo().getBu_ID() != 1) && (UserSingleton.get().getUserInfo().getBu_ID() != 81)
+                && (UserSingleton.get().getUserInfo().getBu_ID() != 149)){
             ToastUtil.showToastShort("当前车间非座椅，不可操作托盘移库！");
 
         }else{

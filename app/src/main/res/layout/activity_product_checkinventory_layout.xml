@@ -237,6 +237,26 @@
                     </TableRow>
 
                     <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_10"
+                            android:layout_marginTop="@dimen/dimen_size_5"
+                            android:text="差异" />
+
+                        <TextView
+                            android:id="@+id/tv_product_checkcheck_stock_chayi_qty"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_size_20"
+                            android:text=""
+                            android:textColor="@color/color_red_E94156" />
+                    </TableRow>
+
+                    <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent">
                         <TextView

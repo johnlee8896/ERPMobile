@@ -42,6 +42,7 @@ import java.util.List;
  * @date 创建时间 2024/7/4 2:47 PM
  * @author 作者: liweifeng
  * @description 通用的成品盘点页面，将成品托盘，非托盘以及手工补打的成品托盘、非托盘统一放一起，程序判断
+ * 这个暂不用了，用productcheckinventorycommonactivity
  */
 public class ProductCommonCheckInventoryActivity extends BaseActivity {
     static HashMap<String, String> SelectCI;
@@ -62,6 +63,7 @@ public class ProductCommonCheckInventoryActivity extends BaseActivity {
     private EditText eachBoxQtyEditText;
     private EditText singleQtyEditText;
     private TextView realQtyTextView;
+    private TextView tvChayiQty;
     private Button btnCal;
     private EditText etRemark;
     private EditText inputEditText;
@@ -111,6 +113,7 @@ public class ProductCommonCheckInventoryActivity extends BaseActivity {
         btnCal = (Button) findViewById(R.id.product_check_btn_check_inv_cal_qty);
         titleLayoutManagerView = findViewById(R.id.product_check_titleLayout);
         tvIst = (TextView) findViewById(R.id.product_check_tv_check_stock_ist);
+        tvChayiQty = (TextView)findViewById(R.id.tv_product_checkcheck_stock_chayi_qty);
 
         tvERPIst = (TextView) findViewById(R.id.product_check_tv_check_stock_ist_erp);
         tvItemCode = (TextView) findViewById(R.id.product_check_tv_check_stock_item_code);
@@ -618,6 +621,9 @@ public class ProductCommonCheckInventoryActivity extends BaseActivity {
                     tvERPIst.setTextColor(Color.BLACK);
                 }
 
+//                GetEosCheckInvChaYiAsyncTask task = new GetEosCheckInvChaYiAsyncTask();
+//                task.execute();
+
             }else{
                 ToastUtil.showToastShort("获取该箱ERP存储位置失败！");
 
@@ -630,6 +636,38 @@ public class ProductCommonCheckInventoryActivity extends BaseActivity {
 
         }
     }
+
+//    private class GetEosCheckInvChaYiAsyncTask extends AsyncTask<Void, Void, Void>{
+//        WsResult wsResult;
+//        @Override
+//        protected Void doInBackground(Void... voids) {
+//            wsResult = WebServiceUtil.GetProductCompareCheckInventoryToInv(currentBoxID,CI_ID,thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            if (wsResult != null && wsResult.getResult()){
+//                tvChayiQty.setText(wsResult.getErrorInfo());
+////                if (!tvChayiQty.getText().equals(wsResult.getErrorInfo())) {
+////                    tvERPIst.setTextColor(Color.RED);
+////                } else {
+////                    tvERPIst.setTextColor(Color.BLACK);
+////                }
+//
+//            }else{
+//                ToastUtil.showToastShort("获取差异失败！" + wsResult.getErrorInfo());
+//
+//            }
+//
+//
+//
+//
+//
+//
+//        }
+//    }
 
 
 }

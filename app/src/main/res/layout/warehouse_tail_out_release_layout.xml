@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="成品车间仓扫描释放尾数" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/product_bu_warehouse_out_release_scan_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:text="请扫描箱号" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_gravity="center"
+            android:paddingLeft="20dp"
+            android:paddingRight="@dimen/dimen_size_20"
+            android:layout_weight="1"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/product_bu_warehouse_out_release_warehouse_in_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="出库登账" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/product_bu_warehouse_out_release_input_EditText"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_45"
+        android:background="@color/transparent"
+        android:gravity="center_vertical"
+        android:hint="接收扫描结果"
+        android:paddingLeft="@dimen/dimen_size_20"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
+        android:textSize="@dimen/text_size_14"
+        />
+
+
+</LinearLayout>
+

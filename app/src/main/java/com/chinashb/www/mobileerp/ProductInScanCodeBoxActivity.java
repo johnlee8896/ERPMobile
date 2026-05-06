@@ -50,7 +50,7 @@ import butterknife.ButterKnife;
 
 /***
  * @date 创建时间 2020/10/29 15:05
- * @author 作者: xxblwf
+ * @author 作者: xxblwf 最新沿用版
  * @description 扫描ERP程序生成的托盘标签入库，成品
  */
 

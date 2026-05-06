@@ -55,6 +55,16 @@ public class MpiWcBean implements Serializable {
     private int IV_ID;
     private int MPI_Quantity;
     private String MPI_Remark;
+    private String HR_Name;
+
+    public String getHR_Name() {
+        return HR_Name;
+    }
+
+    public MpiWcBean setHR_Name(String HR_Name) {
+        this.HR_Name = HR_Name;
+        return this;
+    }
 
     public boolean getResult() {
         return result;

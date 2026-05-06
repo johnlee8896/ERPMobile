@@ -24,16 +24,15 @@ import com.chinashb.www.mobileerp.MobileMainActivity;
 import com.chinashb.www.mobileerp.OnQRScanListenerImpl;
 import com.chinashb.www.mobileerp.QRCodeScanActivity;
 import com.chinashb.www.mobileerp.R;
-import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.entity.MESInnerDataEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
-import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.SPSingleton;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.upgrade.APPUpgradeManager;
+import com.chinashb.www.mobileerp.upgrade.AppUpgradeCheckManager;
 import com.chinashb.www.mobileerp.utils.FileUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.SPDefine;
@@ -41,12 +40,9 @@ import com.chinashb.www.mobileerp.utils.StringConstantUtil;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CommProgressDialog;
-import com.google.gson.JsonObject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.umeng.analytics.MobclickAgent;
-
-import java.util.List;
 
 public class LoginActivity extends BaseActivity {
 
@@ -58,9 +54,6 @@ public class LoginActivity extends BaseActivity {
     private Button scanHRButton;
 //    private ProgressBar progressBar;
 
-    //todo
-    private int mobile_erp_ver_id = 1;
-    private boolean versionOk = false;
     private boolean isNetReady = false;
 
     private RadioGroup netRadioGroup;
@@ -102,6 +95,7 @@ public class LoginActivity extends BaseActivity {
 //        progressBar = (ProgressBar) findViewById(R.id.login_progress);
         //最新版本检测
         checkErpVersionOk();
+        isNetReady = AppUpgradeCheckManager.get().isNetReady();
         CommonUtil.initNetWorkLink(this);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -330,56 +324,12 @@ public class LoginActivity extends BaseActivity {
 
     //http://www.chinashb.com/Download/ShbERP.apk
     private void checkErpVersionOk() {
-        String sql = "select top 1 VerID,Version,Convert(nvarchar(100),UpdateDate,23) As UpdateDate, Des " +
-                " from ERP_Mobile_Ver Where RequireUpdate=1 Order By VerID Desc";
-        QueryAsyncTask query = new QueryAsyncTask();
-        query.execute(sql);
-        query.setLoadDataCompleteListener(new OnLoadDataListener() {
+        AppUpgradeCheckManager.get().forceCheck(this, new AppUpgradeCheckManager.CheckStateListener() {
             @Override
-            public void loadComplete(List<JsonObject> result) {
-                if (result != null && result.size() == 1) {
-                    //返回结果，说明网络访问没有问题
-                    isNetReady = true;
-                    JsonObject o = result.get(0);
-                    Integer ErpVerID = o.get("VerID").getAsInt();
-                    //// TODO: 2019/7/19 这里根据数据库中Version 的值来判断 Version为实际versionCode值
-//                    String Version = o.get("Version").getAsString();
-                    String Version = o.get("Version").getAsString();
-                    String UpdateDate = o.get("UpdateDate").getAsString();
-                    String updateLog = o.get("Des").getAsString();
-//                    query_erp_id = ErpVerID;
-
-//                    if (mobile_erp_ver_id >= ErpVerID) {
-//                        versionOk = true;
-////                        debugLogin();
-//                    } else {
-//                        String newVerWarning = "当前App 版本已经过时。\n" +
-//                                "系统已于" + UpdateDate + "升级到版本" + Version + "\n" +
-//                                "版本描述：\n" +
-//                                Des;
-//                        CommonUtil.ShowToast(LoginActivity.this, newVerWarning, R.mipmap.warning, Toast.LENGTH_SHORT);
-//                    }
-
-                    if (getVersionCode(LoginActivity.this) < Integer.parseInt(Version)) {
-//                        APPUpgradeManager.with(LoginActivity.this)
-//                                .setNeedShowToast(true)
-////                                .setAPIService(APIDefine.SERVICE_BASE)
-////                                .setAPIUrl(APIDefine.API_check_new_version)
-////                                .setAppName(getString(R.string.app_name))
-//                                .setApkDownloadedPath(FileUtil.getCachePath())
-////                                .setVersionName(APPUtil.getVersionName()).setVersionCode(APPUtil.getVersionCode() + "")
-////                                .builder().checkNewVersion(APPUpgradeManager.NAME_MaterialsManager);
-//                                .builder().showForceUpdateDialog(updateLog);
-                        GetDownloadUrlTask task = new GetDownloadUrlTask();
-                        task.execute(updateLog);
-                    }
-
-                } else {
-
-                }
+            public void onCheckFinished(boolean netReady) {
+                isNetReady = netReady;
             }
         });
-
     }
 
 //    protected void debugLogin() {
@@ -419,9 +369,9 @@ public class LoginActivity extends BaseActivity {
         String userName = nameEditText.getText().toString();
         String password = passwordEditText.getText().toString();
         if (userName.isEmpty() || password.isEmpty()) {
-            ToastUtil.showToastLong("请输入名字/密码");
+            ToastUtil.showToastLong(R.string.input_name_password);
         } else if (password.length() < 8) {
-            ToastUtil.showToastLong("您的密码不符合至少8位长度的要求，请重置后再试");
+            ToastUtil.showToastLong(R.string.password_not_long_enough);
         } else {
 //            String Name = nameEditText.getText().toString();
 //            String password = passwordEditText.getText().toString();
@@ -435,7 +385,7 @@ public class LoginActivity extends BaseActivity {
         nameEditText.setText("");
         passwordEditText.setText("");
 //        ToastUtil.showToastShort("请重新登录");
-        nameEditText.setHint("请重新登录");
+        nameEditText.setHint(R.string.login_again);
 //        UserSingleton.get().setServerPort(8189);
 //        UserSingleton.get().setServerBack(true);
         //对于static变量，如果仅是上面的，则不行
@@ -484,7 +434,7 @@ public class LoginActivity extends BaseActivity {
         protected void onPreExecute() {
 //            progressBar.setVisibility(View.VISIBLE);
             progressDialog = new CommProgressDialog.Builder(LoginActivity.this)
-                    .setTitle("正在登录..").create();
+                    .setTitle(getString(R.string.logining)).create();
             progressDialog.show();
         }
 
@@ -624,7 +574,7 @@ public class LoginActivity extends BaseActivity {
 //                                .builder().checkNewVersion(APPUpgradeManager.NAME_MaterialsManager);
                         .builder().showForceUpdateDialog(updateLog, result.getErrorInfo());
             } else {
-                ToastUtil.showToastShort("获取下载链接失败！");
+                ToastUtil.showToastShort(R.string.get_download_url_fail);
             }
         }
 

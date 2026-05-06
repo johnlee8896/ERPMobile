@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountInActivity;
 import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountOutActivity;
+import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountTailInActivity;
 import com.chinashb.www.mobileerp.warehouse.ScanIstFindProductActivity;
 
 import butterknife.BindView;
@@ -77,11 +77,14 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
             Intent intent = new Intent(this, ScanIstFindProductActivity.class);
             startActivity(intent);
         } else if (v == buWarehouseInTextView) {
-            Intent intent = new Intent(this, BuWarehouseAccountInActivity.class);
+            Intent intent = new Intent(this, BuWarehouseAccountTailInActivity.class);
             startActivity(intent);
         } else if (v == buWarehouseOutTextView) {
+//            ToastUtil .showToastShort("暂不可用");
             Intent intent = new Intent(this, BuWarehouseAccountOutActivity.class);
+//            Intent intent = new Intent(this, BuWarehouseTailReleaseOutActivity.class);
             startActivity(intent);
+
         } else if (v == codeBoxTextView) {
             Intent intent = new Intent(this, ProductCodeBoxManagementActivity.class);
             startActivity(intent);

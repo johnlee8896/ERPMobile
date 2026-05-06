@@ -33,33 +33,57 @@
 
             <Button
                 android:id="@+id/btn_move_add_tray"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:maxLines="4"
+                android:minHeight="68dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:textSize="12sp"
                 android:text="扫描增加托盘" />
 
             <Button
                 android:id="@+id/btn_freeze_remark"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:maxLines="4"
+                android:minHeight="68dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:textSize="12sp"
                 android:text="添加备注" />
 
             <Button
                 android:id="@+id/btn_freeze_box"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:maxLines="4"
+                android:minHeight="68dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:textSize="12sp"
                 android:text="冻结托盘" />
 
             <Button
                 android:id="@+id/btn_freeze_not"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="center"
+                android:maxLines="4"
+                android:minHeight="68dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:textSize="12sp"
                 android:text="解除冻结" />
 
         </LinearLayout>
@@ -145,4 +169,3 @@
         android:visibility="invisible"
         />
 </LinearLayout>
-

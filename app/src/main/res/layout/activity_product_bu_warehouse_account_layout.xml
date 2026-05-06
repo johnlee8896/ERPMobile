@@ -53,6 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginRight="20dp"
+            android:visibility="gone"
             android:layout_marginLeft="@dimen/dimen_size_20"
             android:layout_weight="1"
             android:text="选择或输入入库单据" />

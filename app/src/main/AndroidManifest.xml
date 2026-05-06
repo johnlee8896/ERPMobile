@@ -26,9 +26,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- 定位需要的服务 -->
+
         <activity
             android:name=".MobileMainActivity"
+            android:screenOrientation="portrait" />
+        <!-- 物流接收与物流块区域移库 -->
+        <activity
+            android:name=".NewLogisticsManageActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <!--外贸发运扫码管理-->
+        <activity
+            android:name=".shipment.AllShipmentAccountDeliveryManagement"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
+
+        <!--创建简易任务手机端-->
+        <activity
+            android:name=".bucompanydelivery.NewPartBuCompanyDeliverySystemActivity"
+            android:screenOrientation="portrait" />
+
+        <!--创建简易任务手机端-->
+        <activity
+            android:name=".StockIssueBomContainsBackupListActivity"
+            android:screenOrientation="portrait" />
+
+        <!--创建简易任务手机端-->
+        <activity
+            android:name=".task.TaskCreateSimpleActivity"
             android:screenOrientation="portrait" />
 
         <!--备料页面管理-->
@@ -174,7 +200,7 @@
             android:name=".warehouse.BuWarehouseAccountOutActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".warehouse.BuWarehouseAccountInActivity"
+            android:name=".warehouse.BuWarehouseAccountTailInActivity"
             android:screenOrientation="portrait" />
 
         <!--&lt;!&ndash;成品扫箱号入库&ndash;&gt;-->
@@ -265,7 +291,7 @@
 
         <!--成品出库一致性校验页面-->
         <activity
-            android:name=".task.TaskCreateActivity"
+            android:name=".task.TaskCreateFullActivity"
             android:screenOrientation="portrait" />
 
         <!--工资查询页面-->
@@ -383,6 +409,9 @@
         <!--订餐页面-->
         <activity android:name=".PartItemMiddleActivity" />
         <activity
+            android:name=".warehouse.NewStockPartMainActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".warehouse.StockPartMainActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -467,6 +496,8 @@
 
         <activity android:name=".PlanItemDetailActivity" />
 
+        <activity android:name=".NewStockProductMainActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".StockProductMainActivity" />
         <activity
             android:name=".task.TaskDetailActivity"

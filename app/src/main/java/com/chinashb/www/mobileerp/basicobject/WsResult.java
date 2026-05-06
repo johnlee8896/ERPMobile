@@ -6,11 +6,20 @@ import java.io.Serializable;
 
 public class WsResult implements Serializable {
     private boolean result;
+    private String Info;
     private String ErrorInfo;
     private Long ID;
     private JsonObject jsonObject;
     private String HR_NO;
     private String HR_IDCardNO;
+
+    public String getInfo() {
+        return Info;
+    }
+
+    public void setInfo(String info) {
+        Info = info;
+    }
 
     public String getHR_IDCardNO() {
         return HR_IDCardNO;

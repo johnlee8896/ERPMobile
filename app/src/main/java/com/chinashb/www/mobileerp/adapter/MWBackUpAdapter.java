@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
@@ -23,6 +24,13 @@ import butterknife.ButterKnife;
 public class MWBackUpAdapter extends BaseRecycleAdapter<IssueOutBackUpBean, MWBackUpAdapter.MWBackUpItemViewHolder> {
 
     private OnViewClickListener onViewClickListener;
+    private OnReworkClickListener onReworkClickListener;
+
+    public MWBackUpAdapter setOnReworkClickListener(OnReworkClickListener onReworkClickListener) {
+        this.onReworkClickListener = onReworkClickListener;
+        return this;
+    }
+
     private SparseBooleanArray selectedStates = new SparseBooleanArray();
 
 
@@ -57,9 +65,18 @@ public class MWBackUpAdapter extends BaseRecycleAdapter<IssueOutBackUpBean, MWBa
             notifyItemChanged(position); // 触发状态更新
             if (onViewClickListener != null) {
 //                onViewClickListener.onClickAction(v,"" , holder.itemView.isSelected() ? backUpBean: null);
-                onViewClickListener.onClickAction(v,"" , backUpBean);
+                onViewClickListener.onClickAction(v, "", backUpBean);
             }
         });
+
+        holder.reworkButton.setOnClickListener(v -> {
+//            Intent intent = new Intent(getactivity)
+            if (onReworkClickListener != null){
+                onReworkClickListener.onReworkClick(backUpBean);
+            }
+        });
+
+
     }
 
     public static class MWBackUpItemViewHolder extends BaseViewHolder {
@@ -96,6 +113,7 @@ public class MWBackUpAdapter extends BaseRecycleAdapter<IssueOutBackUpBean, MWBa
         @BindView(R.id.item_seventh_info_textView) TextView seventhInfoTextView;
         @BindView(R.id.item_seventh_name_textView) TextView seventhNameTextView;
         @BindView(R.id.item_common_item_checkbox) CheckBox itemCheckbox;
+        @BindView(R.id.item_common_action_button) Button reworkButton;
 
         public MWBackUpItemViewHolder(ViewGroup viewGroup) {
             super(viewGroup, R.layout.item_common_list_six_item);
@@ -132,7 +150,6 @@ public class MWBackUpAdapter extends BaseRecycleAdapter<IssueOutBackUpBean, MWBa
                 seventhNameTextView.setTextColor(Color.BLACK);
 
 
-
             }
         }
     }
@@ -147,6 +164,9 @@ public class MWBackUpAdapter extends BaseRecycleAdapter<IssueOutBackUpBean, MWBa
 //        this.onCheckedChangeListener = listener;
 //    }
 
+    public interface OnReworkClickListener{
+        void onReworkClick(IssueOutBackUpBean backUpBean);
+    }
 }
 
 

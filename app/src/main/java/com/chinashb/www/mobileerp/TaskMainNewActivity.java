@@ -25,7 +25,7 @@ import com.chinashb.www.mobileerp.bean.TaskBean;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
-import com.chinashb.www.mobileerp.task.TaskCreateActivity;
+import com.chinashb.www.mobileerp.task.TaskCreateFullActivity;
 import com.chinashb.www.mobileerp.task.TaskDetailActivity;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
@@ -118,7 +118,7 @@ public class TaskMainNewActivity extends BaseActivity {
 
         tasks_type = 0;
         addSingleTaskButton.setOnClickListener(v ->{
-            Intent intent = new Intent(TaskMainNewActivity.this, TaskCreateActivity.class);
+            Intent intent = new Intent(TaskMainNewActivity.this, TaskCreateFullActivity.class);
             startActivity(intent);
         });
         LoadTasks();
