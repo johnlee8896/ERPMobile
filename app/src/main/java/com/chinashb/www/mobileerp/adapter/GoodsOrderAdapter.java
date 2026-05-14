@@ -1,7 +1,6 @@
 package com.chinashb.www.mobileerp.adapter;
 
 import android.support.annotation.NonNull;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,12 +67,12 @@ public class GoodsOrderAdapter extends BaseRecycleAdapter<GoodsPurchaseOrderBean
 
                 sixthNameTextView.addTextChangedListener(new TextWatcherImpl() {
                     @Override
-                    public void afterTextChanged(Editable editable) {
-                        if (TextUtils.isDigitsOnly(editable)) {
-                            if (!(editable.toString().equals("0.") || editable.toString().endsWith("."))) {
+                        protected void onTextChangedSafe(CharSequence text) {
+                        if (TextUtils.isDigitsOnly(text)) {
+                            if (!(text.toString().equals("0.") || text.toString().endsWith("."))) {
 
                                 try{
-                                    entity.setLeftQuantity(Float.parseFloat(editable.toString()));
+                                    entity.setLeftQuantity(Float.parseFloat(text.toString()));
                                 }catch (Exception e){
 //                                    ToastUtil.showToastShort("类型转换错误");
                                     //// TODO: 2024/4/17

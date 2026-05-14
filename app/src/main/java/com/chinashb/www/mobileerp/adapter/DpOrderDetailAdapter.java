@@ -1,16 +1,12 @@
 package com.chinashb.www.mobileerp.adapter;
 
 import android.support.annotation.NonNull;
-import android.text.Editable;
-import android.text.TextUtils;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.bean.DpOrderDetailBean;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
-import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,15 +67,15 @@ public class DpOrderDetailAdapter extends BaseRecycleAdapter<DpOrderDetailBean, 
 //                qtyEditText.setText(bean.getDPIQuantity());
                 qtyTextView.setText(bean.getDPIQuantity());
             }
-//            qtyEditText.addTextChangedListener(new TextWatcherImpl() {
-//                @Override public void afterTextChanged(Editable editable) {
-//                    super.afterTextChanged(editable);
-//                    if (TextUtils.isDigitsOnly(editable.toString())) {
-//                        bean.setDPIQuantity(editable.toString());
-//                        System.out.println("==============qty =" + bean.getDPIQuantity());
-//                    }
-//                }
-//            });
+////            qtyEditText.addTextChangedListener(new TextWatcherImpl() {
+////                @Override
+//protected void onTextChangedSafe(CharSequence text) {
+////                    //                    if (TextUtils.isDigitsOnly(text.toString())) {
+////                        bean.setDPIQuantity(text.toString());
+////                        System.out.println("==============qty =" + bean.getDPIQuantity());
+////                    }
+////                }
+////            });
         }
     }
 }

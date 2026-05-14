@@ -80,9 +80,9 @@ public class CommonItemBarCodeAdapter extends BaseRecycleAdapter<BoxItemEntity, 
             });
 
             qtyEditText.addTextChangedListener(new TextWatcherImpl() {
-                @Override public void afterTextChanged(Editable editable) {
-                    super.afterTextChanged(editable);
-                    String q = editable.toString();
+                @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                        String q = text.toString();
                     if (!q.isEmpty()) {
                         if (Float.parseFloat(q) > 0) {
                             entity.setQty(Float.parseFloat(q));

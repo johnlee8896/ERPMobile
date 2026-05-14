@@ -8,7 +8,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -215,9 +214,8 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
         cancelButton.setOnClickListener(this);
         keywordInputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                keyWord = editable.toString();
+            protected void onTextChangedSafe(CharSequence text) {
+                                keyWord = text.toString();
                 //john 2022-08-11
                 if (hasScanItemPDA) {
                     isFromPackage = true;
@@ -229,9 +227,8 @@ public class SendGoodsManagerActivity extends BaseActivity implements View.OnCli
         });
         remarkEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                remark = editable.toString();
+protected void onTextChangedSafe(CharSequence text) {
+                                remark = text.toString();
             }
         });
         packageTextView.setOnClickListener(this);

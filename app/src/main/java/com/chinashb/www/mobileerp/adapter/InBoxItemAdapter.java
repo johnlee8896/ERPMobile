@@ -52,6 +52,7 @@ public class InBoxItemAdapter extends RecyclerView.Adapter<InBoxItemAdapter.BoxI
         holder.tvQty.setText(DF.format(Box_Item.getQty()));
         holder.tvBu.setText(Box_Item.getBuName());
         holder.tvIst.setText(Box_Item.getIstName());
+        holder.cbSelect.setOnCheckedChangeListener(null);
         holder.cbSelect.setChecked(Box_Item.getSelect());
 
         String LotWithBox;

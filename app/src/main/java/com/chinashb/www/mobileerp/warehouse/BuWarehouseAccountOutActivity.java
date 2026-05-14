@@ -171,19 +171,17 @@ public class BuWarehouseAccountOutActivity extends BaseActivity implements View.
         selectNOButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                parseContent(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                parseContent(text.toString());
             }
         });
 
 
         outQtyEditText.addTextChangedListener(new TextWatcherImpl(){
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                try{
-                    outQty = Integer.parseInt(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                try{
+                    outQty = Integer.parseInt(text.toString());
                 }catch (Exception e){
                     ToastUtil.showToastShort("出库数据转换有误，请输入出库整数");
                 }
@@ -194,9 +192,8 @@ public class BuWarehouseAccountOutActivity extends BaseActivity implements View.
 
         NOTextView.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                listNo = editable.toString();
+protected void onTextChangedSafe(CharSequence text) {
+                                listNo = text.toString();
             }
         });
     }

@@ -63,10 +63,9 @@ public class ProductCheckSameActivity extends BaseActivity implements View.OnCli
         shbButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                System.out.println("========================扫描结果:" + editable.toString());
-                parseScanResult(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                System.out.println("========================扫描结果:" + text.toString());
+                parseScanResult(text.toString());
             }
         });
     }

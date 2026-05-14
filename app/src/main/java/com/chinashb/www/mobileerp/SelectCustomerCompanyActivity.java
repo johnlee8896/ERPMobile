@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -105,9 +104,10 @@ public class SelectCustomerCompanyActivity extends BaseActivity {
             });
         }
 
+
         searchEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable s) {
+            public void onTextChangedSafe(CharSequence s) {
                 clearImageView.setVisibility(s.length() > 0 ? View.VISIBLE : View.GONE);
                 searchTextView.setText(s.length() > 0 ? "搜索" : "取消");
                 if (s.length() == 0) {

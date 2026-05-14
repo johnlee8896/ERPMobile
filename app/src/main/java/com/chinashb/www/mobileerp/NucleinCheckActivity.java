@@ -82,10 +82,9 @@ public class NucleinCheckActivity extends BaseActivity implements View.OnClickLi
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (editable.toString().length() > 5) {
-                    parseScanResult(editable.toString());
+            public void onTextChangedSafe(CharSequence text) {
+                                if (text.toString().length() > 5) {
+                    parseScanResult(text.toString());
                 }
             }
         });

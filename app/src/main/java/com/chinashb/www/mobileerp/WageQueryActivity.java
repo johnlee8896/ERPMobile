@@ -85,9 +85,8 @@ public class WageQueryActivity extends BaseActivity implements View.OnClickListe
     private void setViewsListener() {
         selectButton.setOnClickListener(this);
 //        idCardFourEditText.addTextChangedListener(new TextWatcherImpl(){
-//            @Override public void afterTextChanged(Editable editable) {
-//                super.afterTextChanged(editable);
-//                idCardFourString = editable.toString();
+//            @Override public void onTextChangedSafe(CharSequence text) {
+//                //                idCardFourString = text.toString();
 //            }
 //        });
 

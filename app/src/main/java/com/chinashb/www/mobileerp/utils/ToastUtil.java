@@ -44,6 +44,12 @@ public class ToastUtil {
         }
     }
 
+    public static void showWrongToastShort(CharSequence text) {
+        Integer iconRes = null;
+        iconRes = R.mipmap.warning;
+        buildToast(text, Toast.LENGTH_SHORT, iconRes).show();
+    }
+
     public static void showToastLong(CharSequence text) {
         if (!TextUtils.isEmpty(text)) {
             showAutoStateToast(text, Toast.LENGTH_LONG);
@@ -75,17 +81,20 @@ public class ToastUtil {
         CharSequence translatedText = AutoI18nUtil.translate(APP.get(), rawText);
         String sourceText = rawText == null ? "" : rawText.toString();
         Integer iconRes = null;
-        if (isSuccessMessage(sourceText)) {
-            iconRes = R.mipmap.smiley;
-        } else if (isFailureMessage(sourceText)) {
+        if (isFailureMessage(sourceText)) {
             iconRes = R.mipmap.warning;
             FailureCaptureUtil.captureIfPossible();
+        } else if (isSuccessMessage(sourceText)) {
+            iconRes = R.mipmap.smiley;
         }
         buildToast(translatedText, duration, iconRes).show();
     }
 
     private static boolean isSuccessMessage(String text) {
         String lowerText = text == null ? "" : text.toLowerCase();
+        if (isFailureMessage(lowerText)) {
+            return false;
+        }
         return lowerText.contains("成功")
                 || lowerText.contains("完成")
                 || lowerText.contains("berjaya")
@@ -94,7 +103,11 @@ public class ToastUtil {
 
     private static boolean isFailureMessage(String text) {
         String lowerText = text == null ? "" : text.toLowerCase();
-        return lowerText.contains("失败")
+        return lowerText.contains("不成功")
+                || lowerText.contains("未成功")
+                || lowerText.contains("不完成")
+                || lowerText.contains("未完成")
+                || lowerText.contains("失败")
                 || lowerText.contains("错误")
                 || lowerText.contains("异常")
                 || lowerText.contains("警告")
@@ -107,6 +120,9 @@ public class ToastUtil {
                 || lowerText.contains("为空")
                 || lowerText.contains("请先")
                 || lowerText.contains("超时")
+                || lowerText.contains("unsuccess")
+                || lowerText.contains("not success")
+                || lowerText.contains("not completed")
                 || lowerText.contains("gagal")
                 || lowerText.contains("error")
                 || lowerText.contains("fail");

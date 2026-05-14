@@ -54,10 +54,9 @@ public class PartMoveRecordActivity extends BaseActivity {
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (editable.toString().length() > 7) {
-                    parseScanResult(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                if (text.toString().length() > 7) {
+                    parseScanResult(text.toString());
                 }
             }
         });

@@ -2,15 +2,13 @@ package com.chinashb.www.mobileerp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.os.Bundle;
-
-import java.lang.ref.WeakReference;
 
 import com.chinashb.www.mobileerp.upgrade.AppUpgradeCheckManager;
 import com.chinashb.www.mobileerp.utils.ExceptionCatchManager;
-import com.chinashb.www.mobileerp.utils.LanguageHelper;
 import com.umeng.commonsdk.UMConfigure;
+
+import java.lang.ref.WeakReference;
 
 /***
  * @date 创建时间 2019/6/18 10:09 AM
@@ -87,9 +85,9 @@ public class APP extends Application {
 //        super.attachBaseContext(LanguageHelper.setLocale(base, lang));
 //    }
 
-    @Override
-    protected void attachBaseContext(Context base) {
-        String langCode = LanguageHelper.getFinalLanguageCode(base); // 可能是系统语言 or 用户选择
-        super.attachBaseContext(LanguageHelper.setLocale(base, langCode));
-    }
+//    @Override
+//    protected void attachBaseContext(Context base) {
+//        String langCode = LanguageHelper.getFinalLanguageCode(base); // 可能是系统语言 or 用户选择
+//        super.attachBaseContext(LanguageHelper.setLocale(base, langCode));
+//    }
 }

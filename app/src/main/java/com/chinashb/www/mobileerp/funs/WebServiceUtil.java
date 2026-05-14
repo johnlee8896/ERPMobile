@@ -54,25 +54,9 @@ import static com.chinashb.www.mobileerp.funs.CommonUtil.isNothing2String;
 //这里的T只是为了getcommonbean方法使用
 public class WebServiceUtil {
 
-//        public static final String IP = "http://116.236.16.218";
-//2024-12-10 john 将ip改为域名 上面域名有问题，对电信
-//        public static final String IP = "http://visitor.czshb.com";
-//        public static final String IP = "http://shbgroup.com";
-        public static final String IP = "http://WMS.SHBGROUP.COM";
-//        public static final String IP = "WMS.SHSBGROUP.COM";//这个是错的
-//        public static final String IP = "WMS.SHBGROUP.COM";
-//    public static final String IP = "http://60.172.145.222";
-    //    public static final Class<BUItemBean> bu = BUItemBean.class;
+    public static final String IP = "http://WMS.SHBGROUP.COM";
     public static String Current_Net_Link = "Intranet";
     private static String NAMESPACE = "http://tempuri.org/";
-//    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-//        private static String URL = "http://116.236.97.186:8001/Service.svc";
-
-    //如果21本地和server切换，只需要改下面四行
-//    private static String URL = IP + ":8001/Service.svc";
-//    private static String URL_Internet = IP + ":8001/Service.svc";
-
-
 
     //john 2023-02-08 调整过之后还是要加的
     private static String URL = IP + ":8188/Test_Wss/Service.svc";
@@ -90,34 +74,16 @@ public class WebServiceUtil {
 
     private static String URL_Intranet = "http://172.16.1.26:8100/Test_Wss/Service.svc";
     private static String URL_Intranet_Test = "http://172.16.1.26:8100/Test_Wss_Test_Environment/Service.svc";
-    //    private static String URL_Intranet_BackUp = "http://172.16.1.24:8100/Test_Wss/Service.svc";
-    //因80受影响，关闭处理，以前的back有问题
-    private static String URL_Intranet_BackUp = "http://172.16.1.26:8100/Test_Wss/Service.svc";
-    private static String URL_Intranet_Internet_QueryWage = "http://172.16.1.80:8100/WageQueryWeb/Service.svc";
 
 
-//    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
 
-
-    //    private static String URL = "http://172.16.1.80:8100/Test_Wss/Service.svc";
-//    private static String URL = "http://180.167.56.250:8100/Test_Wss/Service.svc";
-    //    private static String URL = "http://172.16.1.43:8100/Test_Wss/Service.svc";
-//    private static String URL_Intranet = "http://172.16.1.80:8188/Test_Wss/Service.svc";
-//    private static String URL_Intranet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
-
-    //        private static String URL_Intranet = IP + ":8001/Service.svc";
-//        private static String URL_Intranet = "http://172.16.1.43:8100/Test_Wss/Service.svc";
-    //// TODO: 2019/12/2 切换到迦勒那边时要 加上 test_wss
-//    private static String URL_Intranet = "http://172.16.1.43:8001/Service.svc";//测试内网连接
-
-
-    //    private static String URL_Internet = "http://180.167.56.250:8100/Test_Wss/Service.svc";
 
 
     private static String SOAP_ACTION = "http://tempuri.org/IService/";
     private static String SOAP_ACTION2 = "http://tempuri.org/IService2/";
 
     private static String key = "Money_For_GodMoneyForGod";
+
 
     //private int
 
@@ -7454,6 +7420,60 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfos, "HR_Name", hrName);
         AddPropertyInfo(propertyInfos, "PalletScan", palletScan);
         AddPropertyInfo(propertyInfos, "ItemScan", itemScan);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                return Get_WS_Result(obj);
+            }
+        }
+
+        return null;
+    }
+
+    // created by code-x John
+    // start: 2026-05-11 10:16:08 CST
+    // end: 2026-05-11 10:16:08 CST
+    public static WsResult opTradeLabelCheckPallet(int hrId, String hrName, String palletScan) {
+        String webMethodName = "op_Trade_Label_Check_Pallet";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "HR_ID", hrId);
+        AddPropertyInfo(propertyInfos, "HR_Name", hrName);
+        AddPropertyInfo(propertyInfos, "PalletScan", palletScan);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                return Get_WS_Result(obj);
+            }
+        }
+
+        return null;
+    }
+
+    // created by code-x John
+    // start: 2026-05-11 10:16:08 CST
+    // end: 2026-05-11 10:16:08 CST
+    public static WsResult opTradeLabelUncheckPallet(int hrId, String hrName, String palletScan) {
+        String webMethodName = "op_Trade_Label_Uncheck_Pallet";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "HR_ID", hrId);
+        AddPropertyInfo(propertyInfos, "HR_Name", hrName);
+        AddPropertyInfo(propertyInfos, "PalletScan", palletScan);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         if (envelope != null) {

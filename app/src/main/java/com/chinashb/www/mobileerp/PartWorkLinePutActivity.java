@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -153,23 +152,23 @@ public class PartWorkLinePutActivity extends BaseActivity implements View.OnClic
         warehouseInButton.setOnClickListener(this);
         selectNOButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                parseContent(editable.toString());
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                parseContent(text.toString());
             }
         });
 
         NOTextView.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                listNo = editable.toString();
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                listNo = text.toString();
             }
         });
 
         remarkTextView.addTextChangedListener(new TextWatcherImpl(){
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                remark = editable.toString();
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                remark = text.toString();
             }
         });
     }

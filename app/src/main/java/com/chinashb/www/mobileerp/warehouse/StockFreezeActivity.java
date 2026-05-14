@@ -144,13 +144,12 @@ public class StockFreezeActivity extends BaseActivity {
         });
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-//                if (editable.toString().endsWith("\n")) {
-                if (editable.toString().length() > 0) {
-//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
-                    System.out.println("========================扫描结果:" + editable.toString());
-                    parseScanResult(editable.toString());
+            @Override public void onTextChangedSafe(CharSequence text) {
+                //                if (text.toString().endsWith("\n")) {
+                if (text.toString().length() > 0) {
+//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
+                    System.out.println("========================扫描结果:" + text.toString());
+                    parseScanResult(text.toString());
                 }
             }
         });

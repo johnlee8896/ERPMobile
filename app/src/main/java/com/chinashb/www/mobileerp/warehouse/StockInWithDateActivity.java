@@ -163,13 +163,12 @@ public class StockInWithDateActivity extends BaseActivity implements View.OnClic
         selectDateButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-//                if (editable.toString().length() > 7 && editable.toString().endsWith("\n")) {
-                if (editable.toString().length() > 7 ) {
-//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
-                    System.out.println("========================扫描结果:" + editable.toString());
-                    parseScanResult(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                //                if (text.toString().length() > 7 && text.toString().endsWith("\n")) {
+                if (text.toString().length() > 7 ) {
+//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
+                    System.out.println("========================扫描结果:" + text.toString());
+                    parseScanResult(text.toString());
                 }
             }
         });
@@ -678,14 +677,7 @@ public class StockInWithDateActivity extends BaseActivity implements View.OnClic
             //tv.setText(fahren + "∞ F");
 
             if (ws_result != null) {
-                if (!ws_result.getResult()) {
-                    //Toast.makeText(StockInActivity.this,ws_result.getErrorInfo(),Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(StockInWithDateActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
-
-                } else {
-                    //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(StockInWithDateActivity.this, "入库完成", R.mipmap.smiley);
-                }
+                CommonUtil.ShowWsResultToast(StockInWithDateActivity.this, ws_result, "入库完成");
                 warehouseInButton.setEnabled(true);
 
             }

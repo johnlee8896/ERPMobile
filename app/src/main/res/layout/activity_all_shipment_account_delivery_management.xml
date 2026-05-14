@@ -158,9 +158,18 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/shipment_toggle_pallet_check_button"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_weight="1"
+            android:maxLines="2"
+            android:text="封箱当前托盘" />
+
+        <Button
             android:id="@+id/shipment_reset_target_button"
             android:layout_width="0dp"
             android:layout_height="42dp"
+            android:layout_marginLeft="8dp"
             android:layout_weight="1"
             android:maxLines="2"
             android:text="重置当前目标" />

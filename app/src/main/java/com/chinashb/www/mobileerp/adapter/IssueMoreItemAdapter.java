@@ -2,18 +2,16 @@ package com.chinashb.www.mobileerp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -97,23 +95,11 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
         }
         holder.tvNeed.setText(CommonUtil.DecimalFormat(Box_Item.getNeedMoreQty()));
 
-        holder.etQty.addTextChangedListener(new TextWatcher() {
+        holder.etQty.addTextChangedListener(new TextWatcherImpl() {
+
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // 输入的内容变化的监听
-                //Log.e("输入过程中执行该方法", "文字变化");
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                                          int after) {
-                // 输入前的监听
-                //Log.e("输入前确认执行该方法", "开始输入");
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
+            protected void onTextChangedSafe(CharSequence s) {
                 // 输入后的监听
                 //Log.e("输入结束执行该方法", "输入结束");
 

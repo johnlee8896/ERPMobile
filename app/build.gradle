@@ -165,13 +165,30 @@ dependencies {
 // created by code-x John
 // start: 2026-04-30 08:48:44 CST
 // end: 2026-04-30 08:48:44 CST
-def releaseUploadUrl = localProperties.getProperty('release.upload.url', 'http://116.236.16.218:8001/UploadApk.ashx?fileName=app-release.apk')
+def releaseUploadUrl = localProperties.getProperty('release.upload.url', 'http://116.236.16.218:8001/Download/UploadApk.ashx')
 def releaseUploadUser = localProperties.getProperty('release.upload.user', '')
 def releaseUploadPassword = localProperties.getProperty('release.upload.password', '')
 def releaseUploadEnabled = localProperties.getProperty('release.upload.enabled', 'true')
 def releaseUploadMode = localProperties.getProperty('release.upload.mode', 'multipart')
 def releaseUploadFormField = localProperties.getProperty('release.upload.formField', 'file')
 def releaseApkFile = file("$buildDir/outputs/apk/release/app-release.apk")
+
+def normalizeMultipartUploadUrl = { String rawUrl ->
+    if (rawUrl == null) {
+        return rawUrl
+    }
+    String trimmedUrl = rawUrl.trim()
+    String lowerUrl = trimmedUrl.toLowerCase(java.util.Locale.US)
+    int lastSlashIndex = trimmedUrl.lastIndexOf('/')
+    if (lastSlashIndex < 0) {
+        return trimmedUrl
+    }
+    String directoryUrl = trimmedUrl.substring(0, lastSlashIndex + 1)
+    if (lowerUrl.endsWith("/upload.html") || lowerUrl.endsWith(".apk")) {
+        return directoryUrl + "UploadApk.ashx"
+    }
+    return trimmedUrl
+}
 
 task uploadReleaseApk {
     group = "publishing"
@@ -187,41 +204,53 @@ task uploadReleaseApk {
             throw new GradleException("release apk not found: " + releaseApkFile.absolutePath)
         }
 
-        if (!releaseUploadUser || !releaseUploadPassword) {
-            throw new GradleException("please configure release.upload.user and release.upload.password in local.properties")
+        def resolvedUploadUrl = "multipart".equalsIgnoreCase(releaseUploadMode)
+                ? normalizeMultipartUploadUrl(releaseUploadUrl)
+                : releaseUploadUrl
+
+        println "uploading release apk to " + resolvedUploadUrl + " with mode=" + releaseUploadMode
+        if (resolvedUploadUrl != releaseUploadUrl) {
+            println "normalized release upload url from " + releaseUploadUrl + " to " + resolvedUploadUrl
         }
 
-        println "uploading release apk to " + releaseUploadUrl + " with mode=" + releaseUploadMode
-
         try {
+            def curlArgs = [
+                    'curl',
+                    '--fail',
+                    '--show-error',
+                    '--silent'
+            ]
+            if (releaseUploadUser && releaseUploadPassword) {
+                curlArgs.addAll([
+                        '--anyauth',
+                        '--user', "${releaseUploadUser}:${releaseUploadPassword}"
+                ])
+            }
             if ("multipart".equalsIgnoreCase(releaseUploadMode)) {
+                curlArgs.addAll([
+                        '-F', "${releaseUploadFormField}=@${releaseApkFile.absolutePath};filename=app-release.apk",
+                        resolvedUploadUrl
+                ])
                 exec {
-                    commandLine 'curl',
-                            '--fail',
-                            '--show-error',
-                            '--silent',
-                            '--anyauth',
-                            '--user', "${releaseUploadUser}:${releaseUploadPassword}",
-                            '-F', "${releaseUploadFormField}=@${releaseApkFile.absolutePath};filename=app-release.apk",
-                            releaseUploadUrl
+                    commandLine curlArgs
                 }
             } else {
+                if (!releaseUploadUser || !releaseUploadPassword) {
+                    throw new GradleException("release.upload.user and release.upload.password are required for put mode")
+                }
+                curlArgs.addAll([
+                        '--upload-file', releaseApkFile.absolutePath,
+                        resolvedUploadUrl
+                ])
                 exec {
-                    commandLine 'curl',
-                            '--fail',
-                            '--show-error',
-                            '--silent',
-                            '--anyauth',
-                            '--user', "${releaseUploadUser}:${releaseUploadPassword}",
-                            '--upload-file', releaseApkFile.absolutePath,
-                            releaseUploadUrl
+                    commandLine curlArgs
                 }
             }
         } catch (Exception e) {
             throw new GradleException(
                     "upload release apk failed. " +
                             "Current mode=" + releaseUploadMode +
-                            ", url=" + releaseUploadUrl +
+                            ", url=" + resolvedUploadUrl +
                             ". If your IIS directory only supports GET/POST and not PUT, " +
                             "please set a real upload endpoint and use release.upload.mode=multipart. " +
                             "Original error: " + e.getMessage(),
@@ -229,7 +258,7 @@ task uploadReleaseApk {
             )
         }
 
-        println "upload release apk success: " + releaseUploadUrl
+        println "upload release apk success: " + resolvedUploadUrl
     }
 }
 

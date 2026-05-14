@@ -141,16 +141,16 @@ public class ProductInNonTrayScanOuterBoxActivity extends BaseActivity implement
         warehouseInButton.setOnClickListener(this);
         selectNOButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                parseContent(editable.toString());
+            @Override
+            public void onTextChangedSafe(CharSequence editable) {
+                                parseContent(editable.toString());
             }
         });
 
         NOTextView.addTextChangedListener(new TextWatcherImpl(){
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                listNo = editable.toString();
+            @Override
+            public void onTextChangedSafe(CharSequence text) {
+                                listNo = text.toString();
             }
         });
     }
@@ -531,14 +531,7 @@ public class ProductInNonTrayScanOuterBoxActivity extends BaseActivity implement
             //tv.setText(fahren + "∞ F");
 
             if (ws_result != null) {
-                if (!ws_result.getResult()) {
-                    //Toast.makeText(StockInActivity.this,ws_result.getErrorInfo(),Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(ProductInNonTrayScanOuterBoxActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
-
-                } else {
-                    //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(ProductInNonTrayScanOuterBoxActivity.this, "入库完成" + ws_result.getErrorInfo(), R.mipmap.smiley);
-                }
+                CommonUtil.ShowWsResultToast(ProductInNonTrayScanOuterBoxActivity.this, ws_result, "入库完成");
 
             }
 
@@ -587,5 +580,3 @@ public class ProductInNonTrayScanOuterBoxActivity extends BaseActivity implement
 
 
 }
-
-

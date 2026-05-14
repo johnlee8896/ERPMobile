@@ -58,15 +58,6 @@ public class PartBuCompanyDeliverySystemActivity extends BaseActivity {
         scanButton.setOnClickListener(v -> startScan());
         undoButton.setOnClickListener(v -> undoLastScan());
         submitButton.setOnClickListener(v -> submitShipOrder());
-//        inputEditText.addTextChangedListener(new TextWatcherImpl() {
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                super.afterTextChanged(editable);
-//                if (editable.toString().length() > 7) {
-//                    parseScanResult(editable.toString());
-//                }
-//            }
-//        });
     }
 
     private void initShipOrder() {

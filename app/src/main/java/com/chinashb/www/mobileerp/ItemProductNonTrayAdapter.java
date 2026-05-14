@@ -66,10 +66,9 @@ public class ItemProductNonTrayAdapter extends RecyclerView.Adapter<ItemProductN
 
         holder.tvQty.addTextChangedListener(new TextWatcherImpl(){
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                try {
-                    String q = editable.toString();
+protected void onTextChangedSafe(CharSequence text) {
+                                try {
+                    String q = text.toString();
                     if (!q.isEmpty()) {
 //                        if (Float.parseFloat(q) > 0) {
                         if (Integer.parseInt(q) > 0) {

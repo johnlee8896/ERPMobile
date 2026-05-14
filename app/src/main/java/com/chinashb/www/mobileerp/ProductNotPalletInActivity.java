@@ -160,16 +160,16 @@ public class ProductNotPalletInActivity extends BaseActivity implements View.OnC
         warehouseInButton.setOnClickListener(this);
         selectNOButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                parseContent(editable.toString());
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                parseContent(text.toString());
             }
         });
 
         NOTextView.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                listNo = editable.toString();
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                listNo = text.toString();
             }
         });
     }

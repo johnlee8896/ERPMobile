@@ -46,7 +46,7 @@
                     android:layout_weight="10"
                     android:ems="10"
                     android:hint="查询关键字"
-                    android:inputType="textPersonName" />
+                    android:inputType="text" />
 
                 <Button
                     android:id="@+id/btn_stock_query"

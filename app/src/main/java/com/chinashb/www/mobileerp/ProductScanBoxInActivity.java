@@ -4,9 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
 import android.support.annotation.Nullable;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -150,16 +148,14 @@ public class ProductScanBoxInActivity extends BaseActivity implements View.OnCli
         warehouseInButton.setOnClickListener(this);
         selectNOButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                parseContent(editable.toString());
+            @Override public void onTextChangedSafe(CharSequence text) {
+                                parseContent(text.toString());
             }
         });
 
         NOTextView.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                listNo = editable.toString();
+            @Override public void onTextChangedSafe(CharSequence text) {
+                                listNo = text.toString();
             }
         });
     }

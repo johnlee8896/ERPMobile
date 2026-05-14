@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -118,8 +117,6 @@ public class StockOutMoreExtraActivity extends BaseActivity {
 
         }
 
-        setHomeButton();
-
         btnAddTray.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -192,23 +189,16 @@ public class StockOutMoreExtraActivity extends BaseActivity {
         });
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-//                if (editable.toString().endsWith("\n")) {
-                if (editable.toString().length() > 0) {
-//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
-                    System.out.println("========================扫描结果:" + editable.toString());
-                    parseScanResult(editable.toString());
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                //                if (text.toString().endsWith("\n")) {
+                if (text.toString().length() > 0) {
+//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
+                    System.out.println("========================扫描结果:" + text.toString());
+                    parseScanResult(text.toString());
                 }
             }
         });
-
-//        remarkTextView.addTextChangedListener(new TextWatcherImpl(){
-//            @Override public void afterTextChanged(Editable editable) {
-//                super.afterTextChanged(editable);
-//                remark = editable.toString();
-//            }
-//        });
 
 
     }
@@ -428,11 +418,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
             remarkTextView.setText("");
             remark = "";
             if (ws_result != null) {
-                if (!ws_result.getResult() ) {
-                    CommonUtil.ShowToast(StockOutMoreExtraActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
-                } else {
-                    CommonUtil.ShowToast(StockOutMoreExtraActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
-                }
+                CommonUtil.ShowWsResultToast(StockOutMoreExtraActivity.this, ws_result, "成功出库", Toast.LENGTH_SHORT);
             }
             scanCodeList.clear();
         }

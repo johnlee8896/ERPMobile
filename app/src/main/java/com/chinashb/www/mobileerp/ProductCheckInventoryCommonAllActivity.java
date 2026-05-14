@@ -275,9 +275,8 @@ public class ProductCheckInventoryCommonAllActivity extends BaseActivity {
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (TextUtils.isEmpty(editable.toString())) {
+protected void onTextChangedSafe(CharSequence text) {
+                                if (TextUtils.isEmpty(text.toString())) {
                     return;
                 }
                 if (!inventoryFileSelect) {
@@ -286,16 +285,16 @@ public class ProductCheckInventoryCommonAllActivity extends BaseActivity {
                     return;
                 }
                 //todo 奇怪的这个endwith \n 居然不执行
-//                if (editable.toString().endsWith("\n")){
-//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
-                System.out.println("========================扫描结果:" + editable.toString());
+//                if (text.toString().endsWith("\n")){
+//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
+                System.out.println("========================扫描结果:" + text.toString());
                 //// TODO: 2019/12/10 scanfor之类的可能无用
 //                    if (ScanFor.endsWith("Ist")) {
 //                        ActivityResultScanIst(inputEditText.getText().toString());
 //                    } else {
 //                        ActivityResultScanItem(inputEditText.getText().toString());
 //                    }
-                parseScanData(editable.toString());
+                parseScanData(text.toString());
 //                }
             }
         });
@@ -303,49 +302,44 @@ public class ProductCheckInventoryCommonAllActivity extends BaseActivity {
 
         manuLotEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                manuLotNO = editable.toString();
+protected void onTextChangedSafe(CharSequence text) {
+                manuLotNO = text.toString();
             }
         });
 
         realQtyTextView.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                qty = editable.toString();
+protected void onTextChangedSafe(CharSequence text) {
+                                qty = text.toString();
             }
         });
 
         etRemark.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                remark = editable.toString();
-//                parseScanData(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                remark = text.toString();
+//                parseScanData(text.toString());
             }
         });
         totalBoxNOEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                N = editable.toString();
-//                parseScanData(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                N = text.toString();
+//                parseScanData(text.toString());
             }
         });
         eachBoxQtyEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                PN = editable.toString();
-//                parseScanData(editable.toString());
+            public void onTextChangedSafe(CharSequence text) {
+                                PN = text.toString();
+//                parseScanData(text.toString());
             }
         });
         singleQtyEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                DQ = editable.toString();
-//                parseScanData(editable.toString());
+            public void onTextChangedSafe(CharSequence text) {
+                                DQ = text.toString();
+//                parseScanData(text.toString());
             }
         });
 

@@ -203,17 +203,15 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         selectNOButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                parseContent(editable.toString());
+            public void onTextChangedSafe(CharSequence text) {
+                                parseContent(text.toString());
             }
         });
 
         NOTextView.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                listNo = editable.toString();
+            public void onTextChangedSafe(CharSequence text) {
+                                listNo = text.toString();
             }
         });
     }

@@ -155,9 +155,8 @@ public class ProductOutToFAWarehouseActivity extends BaseActivity implements Vie
 //        selectNOButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                parseContent(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                parseContent(text.toString());
             }
         });
     }

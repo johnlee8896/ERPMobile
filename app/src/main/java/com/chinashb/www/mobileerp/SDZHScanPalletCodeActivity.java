@@ -771,22 +771,21 @@ public class SDZHScanPalletCodeActivity extends BaseActivity implements View.OnC
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-//                if (editable.toString().length() > 3 && editable.toString().endsWith("\n")) {
-                if (editable.toString().length() > 3) {
-//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
-                    System.out.println("========================扫描结果:" + editable.toString());
-                    if (!TextUtils.isEmpty(editable.toString())) {
+protected void onTextChangedSafe(CharSequence text) {
+                //                if (text.toString().length() > 3 && text.toString().endsWith("\n")) {
+                if (text.toString().length() > 3) {
+//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
+                    System.out.println("========================扫描结果:" + text.toString());
+                    if (!TextUtils.isEmpty(text.toString())) {
                         switch (currentScanState) {
                             case SCAN_ORDER_NUMBER:
-                                handleOrderNOScan(editable.toString());
+                                handleOrderNOScan(text.toString());
                                 break;
                             case SCAN_BOX_CODE:
-                                handleBoxScan(editable.toString());
+                                handleBoxScan(text.toString());
                                 break;
                             case SCAN_PALLET_CODE:
-                                handleSinglePartScan(editable.toString());
+                                handleSinglePartScan(text.toString());
                                 break;
                         }
                     }

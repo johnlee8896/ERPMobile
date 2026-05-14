@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -156,10 +155,9 @@ public class NewLogisticsManageActivity extends BaseActivity {
     private void initListener() {
         inputEdit.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (editable != null && editable.toString().trim().length() > INPUT_MIN_LENGTH) {
-                    parseScan(editable.toString());
+            public void onTextChangedSafe(CharSequence text) {
+                  if (text != null && text.toString().trim().length() > INPUT_MIN_LENGTH) {
+                    parseScan(text.toString());
                 }
             }
         });

@@ -3,7 +3,6 @@ package com.chinashb.www.mobileerp.shipment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -64,6 +63,8 @@ public class AllShipmentAccountDeliveryManagement extends BaseActivity {
     Button cameraScanButton;
     @BindView(R.id.shipment_scan_list)
     CustomRecyclerView scanListView;
+    @BindView(R.id.shipment_toggle_pallet_check_button)
+    Button togglePalletCheckButton;
     @BindView(R.id.shipment_reset_target_button)
     Button resetTargetButton;
     @BindView(R.id.shipment_clear_records_button)
@@ -107,10 +108,9 @@ public class AllShipmentAccountDeliveryManagement extends BaseActivity {
     private void initListener() {
         inputEdit.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (editable != null && editable.toString().trim().length() > INPUT_MIN_LENGTH) {
-                    parseScan(editable.toString());
+            protected void onTextChangedSafe(CharSequence text) {
+                if (text != null && text.toString().trim().length() > INPUT_MIN_LENGTH) {
+                    parseScan(text.toString());
                 }
             }
         });
@@ -161,6 +161,18 @@ public class AllShipmentAccountDeliveryManagement extends BaseActivity {
         resetCurrentTargetForMode();
         refreshUi();
         focusInput();
+    }
+
+    @OnClick(R.id.shipment_toggle_pallet_check_button)
+    public void onTogglePalletCheckClick() {
+        if (TextUtils.isEmpty(currentPalletScan) || currentPalletBean == null) {
+            ToastUtil.showToastShort("请先扫描并校验托盘标签");
+            focusInput();
+            return;
+        }
+
+        isParsingScan = true;
+        new TogglePalletCheckTask(currentPalletScan, currentPalletBean.isChecked()).execute();
     }
 
     @OnClick(R.id.shipment_clear_records_button)
@@ -336,6 +348,7 @@ public class AllShipmentAccountDeliveryManagement extends BaseActivity {
         detachContainerPalletButton.setSelected(currentMode == ShipmentMode.CONTAINER_DETACH_PALLET);
         addPalletItemButton.setSelected(currentMode == ShipmentMode.PALLET_ADD_ITEM);
         removePalletItemButton.setSelected(currentMode == ShipmentMode.PALLET_REMOVE_ITEM);
+        togglePalletCheckButton.setText(getTogglePalletCheckButtonText());
     }
 
     private String buildStatusText() {
@@ -344,6 +357,7 @@ public class AllShipmentAccountDeliveryManagement extends BaseActivity {
         builder.append("当前发运单：").append(TextUtils.isEmpty(currentShipmentScan) ? "-" : currentShipmentScan).append("\n");
         builder.append("当前集装箱：").append(TextUtils.isEmpty(currentContainerScan) ? "-" : currentContainerScan).append("\n");
         builder.append("当前托盘：").append(TextUtils.isEmpty(currentPalletScan) ? "-" : currentPalletScan).append("\n");
+        builder.append("托盘封箱状态：").append(currentPalletBean == null ? "-" : (currentPalletBean.isChecked() ? "已封箱" : "未封箱")).append("\n");
         builder.append("下一步：");
         if (hasPrimaryTargetForMode()) {
             builder.append(currentMode.getWaitingSecondaryHint());
@@ -581,6 +595,13 @@ public class AllShipmentAccountDeliveryManagement extends BaseActivity {
         return "托盘号:" + safe(bean.getPallet_SerialNo())
                 + "  已检:" + (bean.isChecked() ? "是" : "否")
                 + "  可发运:" + (bean.isLoadForDelivery() ? "是" : "否");
+    }
+
+    private String getTogglePalletCheckButtonText() {
+        if (currentPalletBean == null || TextUtils.isEmpty(currentPalletScan)) {
+            return "封箱/解封当前托盘";
+        }
+        return currentPalletBean.isChecked() ? "解封当前托盘" : "封箱当前托盘";
     }
 
     private String safe(String value) {
@@ -864,6 +885,61 @@ public class AllShipmentAccountDeliveryManagement extends BaseActivity {
                 showSuccess((add ? "物料加入成功：" : "物料移出成功：") + result.scan);
             } else {
                 showError(result.wsResult == null ? "物料操作失败" : result.wsResult.getErrorInfo());
+            }
+        }
+    }
+
+    // created by code-x John
+    // start: 2026-05-11 10:16:08 CST
+    // end: 2026-05-11 10:16:08 CST
+    private class TogglePalletCheckTask extends AsyncTask<String, Void, ShipmentTaskResult> {
+        private final String palletScan;
+        private final boolean currentlyChecked;
+
+        TogglePalletCheckTask(String palletScan, boolean currentlyChecked) {
+            this.palletScan = palletScan;
+            this.currentlyChecked = currentlyChecked;
+        }
+
+        @Override
+        protected ShipmentTaskResult doInBackground(String... strings) {
+            ShipmentTaskResult result = new ShipmentTaskResult();
+            result.scan = palletScan;
+            try {
+                result.wsResult = ensureWsResult(
+                        currentlyChecked
+                                ? WebServiceUtil.opTradeLabelUncheckPallet(UserSingleton.get().getHRID(), UserSingleton.get().getHRName(), palletScan)
+                                : WebServiceUtil.opTradeLabelCheckPallet(UserSingleton.get().getHRID(), UserSingleton.get().getHRName(), palletScan),
+                        currentlyChecked ? "托盘解封无返回结果" : "托盘封箱无返回结果");
+                if (!result.wsResult.getResult()) {
+                    return result;
+                }
+
+                WsResult checkResult = ensureWsResult(WebServiceUtil.opCheckTradePalletLabel(palletScan), "托盘复查无返回结果");
+                if (!checkResult.getResult()) {
+                    result.wsResult = checkResult;
+                    return result;
+                }
+                result.palletBean = parsePalletBean(checkResult);
+            } catch (Exception e) {
+                result.wsResult = new WsResult();
+                result.wsResult.setResult(false);
+                result.wsResult.setErrorInfo("托盘封箱状态操作失败：" + e.getMessage());
+            }
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(ShipmentTaskResult result) {
+            isParsingScan = false;
+            if (result.wsResult != null && result.wsResult.getResult() && result.palletBean != null) {
+                bindPallet(result.scan, result.palletBean);
+                addRecentRecord(currentlyChecked ? "托盘解封" : "托盘封箱", result.scan,
+                        "状态：" + (result.palletBean.isChecked() ? "已封箱" : "未封箱"));
+                refreshUi();
+                showSuccess((currentlyChecked ? "托盘解封成功：" : "托盘封箱成功：") + result.scan);
+            } else {
+                showError(result.wsResult == null ? "托盘封箱状态操作失败" : result.wsResult.getErrorInfo());
             }
         }
     }

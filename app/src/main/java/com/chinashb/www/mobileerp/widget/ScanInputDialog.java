@@ -67,10 +67,10 @@ public class ScanInputDialog extends BaseDialog implements View.OnClickListener 
 //            }
 //
 //            @Override
-//            public void afterTextChanged(Editable editable) {
-//                System.out.println("===================== edtable = " + editable.toString());
+//            public void onTextChangedSafe(CharSequence text) {
+//                System.out.println("===================== edtable = " + text.toString());
 //                if (onEditTextInputCompleteListener != null){
-//                    onEditTextInputCompleteListener.onEditTextInputComplete(editable.toString());
+//                    onEditTextInputCompleteListener.onEditTextInputComplete(text.toString());
 //                }
 //            }
 //        });

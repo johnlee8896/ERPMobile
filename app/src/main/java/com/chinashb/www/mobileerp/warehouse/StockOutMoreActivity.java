@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -156,14 +155,13 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-//                if (editable.toString().endsWith("\n")) {
-                if (editable.toString().length() > 0) {
-//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                //                if (text.toString().endsWith("\n")) {
+                if (text.toString().length() > 0) {
+//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
 
-//                    parseScanResult(editable.toString());
-                    AfterGetItemBarcode(editable.toString());
+//                    parseScanResult(text.toString());
+                    AfterGetItemBarcode(text.toString());
                 }
             }
         });
@@ -481,7 +479,8 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
                 if (!ws_result.getResult() ) {
 //                    CommonUtil.ShowToast(StockOutMoreActivity.this, ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
                     //// TODO: 12/27/24 john 通通改为把错误提示显示出来
-                    ToastUtil.showToastShort(ws_result.getErrorInfo());
+//                    ToastUtil.showToastShort(ws_result.getErrorInfo());
+                    ToastUtil.showWrongToastShort(ws_result.getErrorInfo());
                 } else {
 //                    CommonUtil.ShowToast(StockOutMoreActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
                     ItemInvQueryAsyncTask task = new ItemInvQueryAsyncTask();

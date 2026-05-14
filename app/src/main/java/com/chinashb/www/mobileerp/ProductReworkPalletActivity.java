@@ -61,10 +61,9 @@ public class ProductReworkPalletActivity extends BaseActivity {
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (editable.toString().length() > 0) {
-                    parseScanResult(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                if (text.toString().length() > 0) {
+                    parseScanResult(text.toString());
                 }
             }
         });

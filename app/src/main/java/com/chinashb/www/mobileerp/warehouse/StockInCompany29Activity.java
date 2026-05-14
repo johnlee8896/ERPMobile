@@ -149,10 +149,9 @@ public class StockInCompany29Activity extends BaseActivity implements View.OnCli
         warehouseInButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (editable.toString().length() > 7 ) {
-                    parseScanResult(editable.toString());
+            public void onTextChangedSafe(CharSequence text) {
+                                if (text.toString().length() > 7 ) {
+                    parseScanResult(text.toString());
                 }
             }
         });
@@ -627,12 +626,7 @@ public class StockInCompany29Activity extends BaseActivity implements View.OnCli
             //tv.setText(fahren + "∞ F");
 
             if (ws_result != null) {
-                if (!ws_result.getResult()) {
-                    CommonUtil.ShowToast(StockInCompany29Activity.this, ws_result.getErrorInfo(), R.mipmap.warning);
-
-                } else {
-                    CommonUtil.ShowToast(StockInCompany29Activity.this, "入库完成", R.mipmap.smiley);
-                }
+                CommonUtil.ShowWsResultToast(StockInCompany29Activity.this, ws_result, "入库完成");
                 warehouseInButton.setEnabled(true);
 
             }
@@ -646,4 +640,3 @@ public class StockInCompany29Activity extends BaseActivity implements View.OnCli
 
 
 }
-

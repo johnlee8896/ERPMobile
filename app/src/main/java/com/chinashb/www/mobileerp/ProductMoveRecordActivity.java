@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -58,10 +57,9 @@ public class ProductMoveRecordActivity extends BaseActivity {
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (editable.toString().length() > 7) {
-                    parseScanResult(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                if (text.toString().length() > 7) {
+                    parseScanResult(text.toString());
                 }
             }
         });

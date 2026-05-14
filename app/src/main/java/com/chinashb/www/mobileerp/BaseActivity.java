@@ -3,7 +3,6 @@ package com.chinashb.www.mobileerp;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +29,14 @@ public class BaseActivity  extends AppCompatActivity {
                 }
             };
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        String lang = LanguageHelper.getFinalLanguageCode(newBase);
+        super.attachBaseContext(
+                LanguageHelper.setLocale(newBase, lang)
+        );
+    }
+
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -46,11 +53,11 @@ public class BaseActivity  extends AppCompatActivity {
 //        recreate(); // 重新创建 Activity，会触发 attachBaseContext 使用新语言
 //    }
 
-    @Override
-    protected void attachBaseContext(@NonNull Context newBase) {
-        String langCode = LanguageHelper.getFinalLanguageCode(newBase);
-        super.attachBaseContext(LanguageHelper.setLocale(newBase, langCode));
-    }
+//    @Override
+//    protected void attachBaseContext(@NonNull Context newBase) {
+//        String langCode = LanguageHelper.getFinalLanguageCode(newBase);
+//        super.attachBaseContext(LanguageHelper.setLocale(newBase, langCode));
+//    }
 
     // 提供给页面调用的：切换语言并重启 Activity
     protected void changeLanguage(String languageCode) {

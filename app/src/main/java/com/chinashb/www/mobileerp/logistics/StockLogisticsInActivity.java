@@ -151,13 +151,12 @@ public class StockLogisticsInActivity extends BaseActivity implements View.OnCli
         warehouseInButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-//                if (editable.toString().length() > 7 && editable.toString().endsWith("\n")) {
-                if (editable.toString().length() > 7 ) {
-//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
-                    System.out.println("========================扫描结果:" + editable.toString());
-                    parseScanResult(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                //                if (text.toString().length() > 7 && text.toString().endsWith("\n")) {
+                if (text.toString().length() > 7 ) {
+//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
+                    System.out.println("========================扫描结果:" + text.toString());
+                    parseScanResult(text.toString());
                 }
             }
         });
@@ -617,14 +616,7 @@ public class StockLogisticsInActivity extends BaseActivity implements View.OnCli
             //tv.setText(fahren + "∞ F");
 
             if (ws_result != null) {
-                if (!ws_result.getResult()) {
-                    //Toast.makeText(StockInActivity.this,ws_result.getErrorInfo(),Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(StockLogisticsInActivity.this, ws_result.getErrorInfo(), R.mipmap.warning);
-
-                } else {
-                    //Toast.makeText(StockInActivity.this,"入库完成",Toast.LENGTH_LONG).show();
-                    CommonUtil.ShowToast(StockLogisticsInActivity.this, "入库完成", R.mipmap.smiley);
-                }
+                CommonUtil.ShowWsResultToast(StockLogisticsInActivity.this, ws_result, "入库完成");
                 warehouseInButton.setEnabled(true);
 
             }

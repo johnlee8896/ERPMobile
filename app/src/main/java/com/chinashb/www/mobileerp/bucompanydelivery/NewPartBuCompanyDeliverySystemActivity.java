@@ -92,10 +92,9 @@ public class NewPartBuCompanyDeliverySystemActivity extends BaseActivity {
     private void setListener() {
         inputEdit.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (editable.toString().length() > 3) {
-                    parseScan(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                if (text.toString().length() > 3) {
+                    parseScan(text.toString());
                 }
             }
         });

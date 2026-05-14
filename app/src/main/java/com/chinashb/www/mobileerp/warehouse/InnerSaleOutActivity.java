@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -122,10 +121,10 @@ public class InnerSaleOutActivity extends BaseActivity implements View.OnClickLi
         scanButton.setOnClickListener(this);
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
-            @Override public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (editable.toString().length() > 0){
-                    parseContent(editable.toString());
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                if (text.toString().length() > 0){
+                    parseContent(text.toString());
                 }
 
             }

@@ -33,6 +33,22 @@ public class LanguageHelper {
         return normalizeLanguageCode(prefs.getString(KEY_LANGUAGE, null));
     }
 
+    //deep seek添加解决
+    public static String getCurrentLanguage(Context context) {
+        Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            locale = context.getResources()
+                    .getConfiguration()
+                    .getLocales()
+                    .get(0);
+        } else {
+            locale = context.getResources()
+                    .getConfiguration()
+                    .locale;
+        }
+        return locale.getLanguage();
+    }
+
     // 🎯 核心方法：获取最终使用的语言代码
     public static String getFinalLanguageCode(Context context) {
         // 1. 先看用户是否手动选过语言

@@ -80,13 +80,12 @@ public class SupplierOrSelfReturnActivity extends BaseActivity implements View.O
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-//                if (editable.toString().length() > 7 && editable.toString().endsWith("\n")) {
-                if (editable.toString().length() > 7 ) {
-//                    ToastUtil.showToastLong("扫描结果:" + editable.toString());
-                    System.out.println("========================扫描结果:" + editable.toString());
-                    parseContent(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                //                if (text.toString().length() > 7 && text.toString().endsWith("\n")) {
+                if (text.toString().length() > 7 ) {
+//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
+                    System.out.println("========================扫描结果:" + text.toString());
+                    parseContent(text.toString());
                 }
             }
         });

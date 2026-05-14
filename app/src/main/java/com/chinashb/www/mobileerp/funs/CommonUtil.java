@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.LoginActivity;
 import com.chinashb.www.mobileerp.permission.PermissionsUtil;
 import com.chinashb.www.mobileerp.utils.AutoI18nUtil;
@@ -160,6 +161,26 @@ public class CommonUtil {
             FailureCaptureUtil.captureIfPossible();
         }
         toast.show();
+    }
+
+    public static void ShowWsResultToast(Context context, WsResult wsResult, String successMessage) {
+        ShowWsResultToast(context, wsResult, successMessage, Toast.LENGTH_LONG);
+    }
+
+    public static void ShowWsResultToast(Context context, WsResult wsResult, String successMessage, int length) {
+        if (wsResult == null) {
+            ShowToast(context, "接口无返回结果", R.mipmap.warning, length);
+            return;
+        }
+        if (!wsResult.getResult()) {
+            ShowToast(context, wsResult.getErrorInfo(), R.mipmap.warning, length);
+            return;
+        }
+        String displayMessage = successMessage;
+        if (displayMessage == null || displayMessage.trim().isEmpty()) {
+            displayMessage = wsResult.getErrorInfo();
+        }
+        ShowToast(context, displayMessage, R.mipmap.smiley, length);
     }
 
 

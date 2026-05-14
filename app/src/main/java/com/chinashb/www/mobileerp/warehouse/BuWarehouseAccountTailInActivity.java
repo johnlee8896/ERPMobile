@@ -182,17 +182,15 @@ public class BuWarehouseAccountTailInActivity extends BaseActivity implements Vi
         selectNOButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                parseContent(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                parseContent(text.toString());
             }
         });
 
         NOTextView.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                listNo = editable.toString();
+protected void onTextChangedSafe(CharSequence text) {
+                                listNo = text.toString();
             }
         });
     }

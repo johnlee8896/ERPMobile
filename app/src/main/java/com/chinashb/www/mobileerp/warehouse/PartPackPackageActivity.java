@@ -105,11 +105,10 @@ public class PartPackPackageActivity extends BaseActivity implements View.OnClic
         confirmButton.setOnClickListener(this);
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                if (editable.toString().length() > 7) {
-                    System.out.println("========================扫描结果:" + editable.toString());
-                    parseScanResult(editable.toString());
+protected void onTextChangedSafe(CharSequence text) {
+                                if (text.toString().length() > 7) {
+                    System.out.println("========================扫描结果:" + text.toString());
+                    parseScanResult(text.toString());
                 }
             }
         });

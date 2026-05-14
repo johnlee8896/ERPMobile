@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -101,6 +100,11 @@ public final class AutoI18nUtil {
     }
 
     private static void applySingleView(Context context, View view) {
+        // ✅ 关键：永远不要碰 EditText
+        if (view instanceof android.widget.EditText) {
+            return;
+        }
+
         CharSequence contentDescription = view.getContentDescription();
         if (!TextUtils.isEmpty(contentDescription)) {
             view.setContentDescription(translate(context, contentDescription));

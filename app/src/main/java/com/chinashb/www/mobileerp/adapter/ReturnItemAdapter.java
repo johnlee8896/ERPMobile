@@ -2,9 +2,7 @@ package com.chinashb.www.mobileerp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +11,7 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -56,19 +55,10 @@ public class ReturnItemAdapter extends RecyclerView.Adapter<ReturnItemAdapter.Is
         DecimalFormat dfs = new DecimalFormat("####.####");
         holder.tvQty.setText(dfs.format(Box_Item.getQty()));
 
-        holder.tvQty.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+        holder.tvQty.addTextChangedListener(new TextWatcherImpl() {
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
+            protected void onTextChangedSafe(CharSequence s) {
                 if (!TextUtils.isEmpty(s.toString())){
                     Box_Item.setQty(Float.parseFloat(s.toString()) );
                 }

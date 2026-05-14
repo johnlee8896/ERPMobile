@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,6 +66,12 @@ public class LoginActivity extends BaseActivity {
             ToastUtil.showToastShort(msg.getData().getString("message"));
         }
     };
+
+//    @Override
+//    protected void attachBaseContext(Context base) {
+//        String langCode = LanguageHelper.getFinalLanguageCode(base); // 可能是系统语言 or 用户选择
+//        super.attachBaseContext(LanguageHelper.setLocale(base, langCode));
+//    }
 
 
     @Override
@@ -128,10 +133,9 @@ public class LoginActivity extends BaseActivity {
 
         nameEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                super.afterTextChanged(editable);
-                for (String name : testNameList) {
-                    if (name.equals(editable.toString())) {
+protected void onTextChangedSafe(CharSequence text) {
+                                for (String name : testNameList) {
+                    if (name.equals(text.toString())) {
                         testLoginButton.setVisibility(View.VISIBLE);
 //                        UserSingleton.get().setTestEnvironment(true);
                         break;
