@@ -83,6 +83,10 @@ public class IntentConstant {
     public static final String Intent_Extra_select_bu_bean = "Extra_select_bu_bean";
     public static final String Intent_Extra_goods_order_to_bu_id = "Extra_goods_order_to_bu_id";
     public static final String Intent_Extra_goods_order_iv_id = "Extra_goods_order_iv_id";
+
+    public static final String Intent_Extra_inner_sale_goods_order_to_bu_id = "Extra_inner_sale_goods_order_to_bu_id";
+    public static final String Intent_Extra_inner_sale_goods_order_iv_id = "Extra_inner_sale_goods_order_iv_id";
+
     public static final String Intent_Extra_goods_poi_map_string = "Intent_Extra_goods_poi_map";
     public static final String Intent_Extra_goods_poi_map_order_boolean = "Extra_goods_poi_map_order_boolean";
 
@@ -120,6 +124,7 @@ public class IntentConstant {
     public static final int Intent_Request_Code_Inv_Query_Middle_from_Dialog_To_Activity_But_Same_Issue = 0X210;
     public static final int Intent_Request_Code_Inv_Query_Item_To_InputActivity = 0X211;
     public static final int Intent_Request_Code_Goods_Send_To_Goods_Order_Activity = 0X212;
+    public static final int Intent_Request_Code_Inner_Sale_Send_To_Goods_Order_Activity = 0X2121;
     public static final int Intent_Request_Code_Pick_Goods_To_Stock_Move_Activity = 0X213;
 
 

@@ -30,6 +30,12 @@
         <activity
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
+
+        <!--转扣公司入库单独页面-->
+        <activity
+            android:name=".warehouse.StockInZhuanKouActivity"
+            android:screenOrientation="portrait" />
+
         <!-- 物流接收与物流块区域移库 -->
         <activity
             android:name=".NewLogisticsManageActivity"
@@ -39,6 +45,10 @@
         <!--外贸发运扫码管理-->
         <activity
             android:name=".shipment.AllShipmentAccountDeliveryManagement"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
+        <activity
+            android:name=".shipment.NewAllShipmentAccountDeliveryManagement"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize"/>
 
@@ -130,6 +140,10 @@
         <!--从服务端获取图片，为之后手机打印作准备-->
         <activity
             android:name=".GetPhotoFromServerActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".NewGetPrintImageActivity"
             android:screenOrientation="portrait" />
 
         <!--手机打印页面-->

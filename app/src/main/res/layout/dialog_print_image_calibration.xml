@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CPCL纸宽"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_calibration_paper_width_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="标签总高度"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_calibration_label_height_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="左右偏移（可负数）"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_calibration_horizontal_offset_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="numberSigned"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="上下偏移（可负数）"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_calibration_vertical_offset_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="numberSigned"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="CPCL缩放百分比"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_calibration_scale_percent_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="ESCPOS目标宽度"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_calibration_escpos_width_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+    </LinearLayout>
+</ScrollView>

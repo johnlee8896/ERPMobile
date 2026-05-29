@@ -325,7 +325,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
 //            Intent intent = new Intent(StockPartMainActivity.this, GetSendInfoActivity.class);
 //            startActivity(intent);
         }else if (view == stockInCompany29Button){
-            Intent intent = new Intent(StockPartMainActivity.this,StockInCompany29Activity.class);
+            Intent intent = new Intent(StockPartMainActivity.this,StockInZhuanKouActivity.class);
             startActivity(intent);
 
         }else if (view == logisticsReceiveManageNewButton){

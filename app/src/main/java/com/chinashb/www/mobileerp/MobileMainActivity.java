@@ -30,7 +30,7 @@ import com.chinashb.www.mobileerp.commonactivity.NetWorkReceiver;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.printer.MobilePrinterActivity;
-import com.chinashb.www.mobileerp.shipment.AllShipmentAccountDeliveryManagement;
+import com.chinashb.www.mobileerp.shipment.NewAllShipmentAccountDeliveryManagement;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.MessageManageActivity;
 import com.chinashb.www.mobileerp.task.TaskCreateSimpleActivity;
@@ -75,6 +75,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private ImageView avatarImageView;
     private TextView testEnvironmentTextView;
     private TextView printTextView;
+    private TextView getImageTextView;
     private TextView workReportingTextView;
     private TextView languageSwitchTextView;
 
@@ -212,6 +213,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         versionTextView = findViewById(R.id.main_version_button);
         testEnvironmentTextView = findViewById(R.id.tv_current_test_environment);
         printTextView = findViewById(R.id.main_print_button);
+        getImageTextView = findViewById(R.id.main_get_image_button);
         workReportingTextView = findViewById(R.id.main_work_reporting_button);
         languageSwitchTextView = findViewById(R.id.main_select_switch_language_button);
     }
@@ -232,6 +234,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         nucleinTextView.setOnClickListener(this);
         versionTextView.setOnClickListener(this);
         printTextView.setOnClickListener(this);
+        getImageTextView.setOnClickListener(this);
         workReportingTextView.setOnClickListener(this);
         languageSwitchTextView.setOnClickListener(this);
     }
@@ -479,13 +482,16 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             Intent intent = new Intent(this, NewPartBuCompanyDeliverySystemActivity.class);
             startActivity(intent);
         } else if (view == tradeDeliveryManagementTextView) {
-            Intent intent = new Intent(this, AllShipmentAccountDeliveryManagement.class);
+            Intent intent = new Intent(this, NewAllShipmentAccountDeliveryManagement.class);
             startActivity(intent);
         } else if (view == nucleinTextView) {
             Intent intent = new Intent(this, NucleinCheckActivity.class);
             startActivity(intent);
         }else if (view == printTextView) {
             Intent intent = new Intent(this, MobilePrinterActivity.class);
+            startActivity(intent);
+        }else if (view == getImageTextView) {
+            Intent intent = new Intent(this, NewGetPrintImageActivity.class);
             startActivity(intent);
         }else if (view == workReportingTextView) {
 //            Intent intent = new Intent(this, PlanManageForWorkReportingActivity.class);
@@ -668,6 +674,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                     "   From  FM_Permit As FP  Inner Join HR on FP.HR_ID=HR.HR_ID  " +
                     " Inner Join FM_Scope On FP.FA_Scope_ID = FM_Scope.FS_ID  Left Join Company On XID=Company.Company_ID  " +
                     " Left Join CC On XID = CC.CC_ID  Left Join Bu On XID=Bu.Bu_ID  Left Join FM_xScope On XScope_ID=FMx_ID  Where FP.Fun_ID=84";
+//                    " Left Join CC On XID = CC.CC_ID  Left Join Bu On XID=Bu.Bu_ID  Left Join FM_xScope On XScope_ID=FMx_ID  Where FP.Fun_ID=84 and hr_name = '" + UserSingleton.get().getHRName() + "'";
             List<StockPermittedBean> permittedBeanList = WebServiceUtil.getStockInPermittedHRIDList(sql);
             return permittedBeanList;
         }
@@ -677,7 +684,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             UserSingleton.get().setStockPermit(false);
             if (beanList != null) {
                 for (StockPermittedBean bean : beanList) {
-                    if (bean != null && bean.getHR_ID() == UserSingleton.get().getHRID() && bean.getHR_Name().equals(UserSingleton.get().getHRName())) {
+//                    if (bean != null && bean.getHR_ID() == UserSingleton.get().getHRID() && bean.getHR_Name().trim().equals(UserSingleton.get().getHRName().trim())) {
+//                    解决马来一些人名如 ZWE Aung Aung HLaing无权限，原因是两个名字不完全一致的问题
+                    if (bean != null && bean.getHR_ID() == UserSingleton.get().getHRID()) {
                         UserSingleton.get().setStockPermit(true);
                         break;
                     }

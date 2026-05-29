@@ -45,6 +45,10 @@ public class AppUpgradeCheckManager {
     private boolean netReady;
     private long lastCheckTime;
     private int lastPromptVersionCode = -1;
+    private int latestServerVersionCode = -1;
+    private String latestUpdateLog = "";
+    private String latestDownloadUrl = "";
+    private boolean pendingUpgradePrompt;
 
     private AppUpgradeCheckManager() {
     }
@@ -64,6 +68,7 @@ public class AppUpgradeCheckManager {
     }
 
     public void onActivityResumed(Activity activity) {
+        tryShowPendingPrompt(activity);
         startCheck(activity, false, null);
     }
 
@@ -125,6 +130,12 @@ public class AppUpgradeCheckManager {
             netReady = localNetReady;
             checking = false;
             lastCheckTime = System.currentTimeMillis();
+            latestServerVersionCode = serverVersionCode;
+            latestUpdateLog = updateLog == null ? "" : updateLog;
+            if (currentVersionCode >= serverVersionCode) {
+                pendingUpgradePrompt = false;
+                latestDownloadUrl = "";
+            }
             if (currentVersionCode >= lastPromptVersionCode) {
                 lastPromptVersionCode = -1;
             }
@@ -137,7 +148,14 @@ public class AppUpgradeCheckManager {
         }
 
         if (currentVersionCode < serverVersionCode && shouldPromptVersion(serverVersionCode)) {
-            loadDownloadUrlAndPrompt(activity, updateLog, serverVersionCode);
+            synchronized (this) {
+                pendingUpgradePrompt = true;
+            }
+            if (!TextUtils.isEmpty(latestDownloadUrl)) {
+                promptUpgradeIfPossible(activity);
+            } else {
+                loadDownloadUrlAndPrompt(activity, updateLog, serverVersionCode);
+            }
         }
     }
 
@@ -175,23 +193,69 @@ public class AppUpgradeCheckManager {
                     return;
                 }
 
-                Activity topActivity = APP.getTopActivity();
-                Activity dialogActivity = isActivityUsable(topActivity) ? topActivity : activity;
-                if (!isActivityUsable(dialogActivity)) {
-                    return;
-                }
-
                 synchronized (AppUpgradeCheckManager.this) {
-                    lastPromptVersionCode = serverVersionCode;
+                    latestServerVersionCode = serverVersionCode;
+                    latestUpdateLog = updateLog == null ? "" : updateLog;
+                    latestDownloadUrl = result.getErrorInfo();
+                    pendingUpgradePrompt = true;
                 }
-
-                APPUpgradeManager.with(dialogActivity)
-                        .setNeedShowToast(true)
-                        .setApkDownloadedPath(FileUtil.getCachePath())
-                        .builder()
-                        .showForceUpdateDialog(updateLog, result.getErrorInfo());
+                promptUpgradeIfPossible(activity);
             }
         }.execute();
+    }
+
+    private void tryShowPendingPrompt(Activity activity) {
+        if (!isActivityUsable(activity)) {
+            return;
+        }
+        promptUpgradeIfPossible(activity);
+    }
+
+    private void promptUpgradeIfPossible(Activity fallbackActivity) {
+        final int serverVersionCode;
+        final String updateLog;
+        final String downloadUrl;
+        synchronized (this) {
+            serverVersionCode = latestServerVersionCode;
+            updateLog = latestUpdateLog;
+            downloadUrl = latestDownloadUrl;
+        }
+
+        if (serverVersionCode <= 0 || TextUtils.isEmpty(downloadUrl)) {
+            return;
+        }
+
+        int currentVersionCode = getVersionCode(appContext);
+        if (currentVersionCode >= serverVersionCode) {
+            synchronized (this) {
+                pendingUpgradePrompt = false;
+            }
+            return;
+        }
+
+        Activity topActivity = APP.getTopActivity();
+        Activity dialogActivity = isActivityUsable(topActivity) ? topActivity : fallbackActivity;
+        if (!isActivityUsable(dialogActivity)) {
+            synchronized (this) {
+                pendingUpgradePrompt = true;
+            }
+            return;
+        }
+
+        synchronized (this) {
+            if (lastPromptVersionCode == serverVersionCode) {
+                pendingUpgradePrompt = false;
+                return;
+            }
+            lastPromptVersionCode = serverVersionCode;
+            pendingUpgradePrompt = false;
+        }
+
+        APPUpgradeManager.with(dialogActivity)
+                .setNeedShowToast(true)
+                .setApkDownloadedPath(FileUtil.getCachePath())
+                .builder()
+                .showForceUpdateDialog(updateLog, downloadUrl);
     }
 
     private void notifyPendingListeners(boolean currentNetReady) {

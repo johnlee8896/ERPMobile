@@ -96,6 +96,9 @@ public class StockInWithDateActivity extends BaseActivity implements View.OnClic
     private boolean isOpenSuggestStock = true;
     private TimePickerManager timePickerManager;
     private Date warehouseInDate;
+    private boolean isProcessingBoxScan;
+    private boolean isProcessingIstScan;
+    private boolean isExecutingWarehouseIn;
     //// TODO: 2020/1/9 以后要优化，暂时先解决Can't toast on a thread that has not called Looper.prepare() 的问题
     private Handler handler = new Handler() {
         @Override
@@ -138,6 +141,7 @@ public class StockInWithDateActivity extends BaseActivity implements View.OnClic
 
         boxItemAdapter = new InBoxItemAdapter(StockInWithDateActivity.this, boxItemEntityList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        mRecyclerView.setItemAnimator(null);
         mRecyclerView.setAdapter(boxItemAdapter);
         setViewsListener();
 
@@ -357,9 +361,12 @@ protected void onTextChangedSafe(CharSequence text) {
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
+                        if (isProcessingBoxScan) {
+                            return;
+                        }
                         scanContent = content;
-                        scanCodeList.add(content);
                         scanCode = content;
+                        isProcessingBoxScan = true;
                         GetBoxAsyncTask task = new GetBoxAsyncTask();
                         task.execute();
                     }
@@ -367,6 +374,9 @@ protected void onTextChangedSafe(CharSequence text) {
 
                 if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/") ||
                         content.startsWith("/SUB——IST——ID/") || content.startsWith("/IST——ID/")) {
+                    if (isProcessingIstScan) {
+                        return;
+                    }
                     if (content.startsWith("/SUB——IST——ID/")) {
                         content = content.replace("/SUB——IST——ID/", "/SUB_IST_ID/");
                     }
@@ -376,6 +386,7 @@ protected void onTextChangedSafe(CharSequence text) {
                     }
                     //仓库位置码
                     scanContent = content;
+                    isProcessingIstScan = true;
                     GetIstAsyncTask task = new GetIstAsyncTask();
                     task.execute();
                 }
@@ -384,6 +395,9 @@ protected void onTextChangedSafe(CharSequence text) {
     }
 
     private void handleIntoWareHouse() {
+        if (isExecutingWarehouseIn) {
+            return;
+        }
 //        防重复，金蝶慢，所以这样处理
         warehouseInButton.setEnabled(false);
         if (boxItemEntityList.size() > 0) {
@@ -434,6 +448,21 @@ protected void onTextChangedSafe(CharSequence text) {
         }
     }
 
+    private void refreshBoxItemList() {
+        if (mRecyclerView == null || boxItemAdapter == null) {
+            return;
+        }
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isFinishing()) {
+                    return;
+                }
+                boxItemAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     @Override
     public <T> void onClickAction(View v, String tag, T date) {
         if (tag.equals(TimePickerManager.PICK_TYPE_OUT_DATE)) {
@@ -461,6 +490,7 @@ protected void onTextChangedSafe(CharSequence text) {
 
     private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity scanBoxItemEntity;
+        boolean shouldTrackScanCode;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -517,7 +547,7 @@ protected void onTextChangedSafe(CharSequence text) {
                         handler.sendMessage(message);
                     }
                     boxItemEntity.setSelect(true);
-                    boxItemEntityList.add(boxItemEntity);
+                    shouldTrackScanCode = true;
                 } else {
                     boxItemEntity.setResult(false);
                     boxItemEntity.setErrorInfo("该包装已经在装载列表中");
@@ -550,13 +580,16 @@ protected void onTextChangedSafe(CharSequence text) {
             if (scanBoxItemEntity != null) {
                 if (!scanBoxItemEntity.getResult()) {
                     Toast.makeText(StockInWithDateActivity.this, scanBoxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                } else if (shouldTrackScanCode) {
+                    boxItemEntityList.add(scanBoxItemEntity);
+                    scanCodeList.add(scanCode);
                 }
             }
 
-            boxItemAdapter = new InBoxItemAdapter(StockInWithDateActivity.this, boxItemEntityList);
-            mRecyclerView.setAdapter(boxItemAdapter);
+            refreshBoxItemList();
             inputEditText.setText("");
             inputEditText.setHint("请继续使用扫描枪");
+            isProcessingBoxScan = false;
 //            if (inputDialog != null && inputDialog.isShowing()) {
 //                inputDialog.dismiss();
 //            }
@@ -575,9 +608,11 @@ protected void onTextChangedSafe(CharSequence text) {
     }
 
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
+        private IstPlaceEntity istPlaceEntity;
+
         @Override
         protected Void doInBackground(String... params) {
-            IstPlaceEntity istPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanContent);
+            istPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanContent);
             if (istPlaceEntity.getResult()) {
                 thePlace = istPlaceEntity;
                 if (istPlaceEntity.getResult()) {
@@ -589,9 +624,6 @@ protected void onTextChangedSafe(CharSequence text) {
                         }
                     }
                 }
-            } else {
-//                Toast.makeText(StockInActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
-                ToastUtil.showToastLong(istPlaceEntity.getErrorInfo());
             }
             return null;
         }
@@ -600,11 +632,16 @@ protected void onTextChangedSafe(CharSequence text) {
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
 
-            mRecyclerView.setAdapter(boxItemAdapter);
+            refreshBoxItemList();
             //pbScan.setVisibility(View.INVISIBLE);
             inputEditText.setText("");
             //todo 直接执行入库登帐
-            handleIntoWareHouse();
+            if (istPlaceEntity != null && !istPlaceEntity.getResult()) {
+                ToastUtil.showToastLong(istPlaceEntity.getErrorInfo());
+            } else {
+                handleIntoWareHouse();
+            }
+            isProcessingIstScan = false;
 
         }
 
@@ -621,6 +658,7 @@ protected void onTextChangedSafe(CharSequence text) {
 
     private class AsyncExeWarehouseIn extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
+        private final List<BoxItemEntity> successList = new ArrayList<>();
 
         @Override
         protected Void doInBackground(String... params) {
@@ -636,9 +674,9 @@ protected void onTextChangedSafe(CharSequence text) {
 
             int count = 0;
             int selectedCount = SelectList.size();
-            while (count < selectedCount && SelectList.size() > 0) {
+            while (count < selectedCount) {
                 //todo  这里取的是0，验证多个是否成功
-                BoxItemEntity boxItemEntity = SelectList.get(0);
+                BoxItemEntity boxItemEntity = SelectList.get(count);
 //                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo，SendToWarehouseTime) values (%d,%d,%d,%d,%d,%d,%d,%s,%s)",
                 String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",
                         boxItemEntity.getIst_ID(), boxItemEntity.getSub_Ist_ID(), boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
@@ -652,8 +690,7 @@ protected void onTextChangedSafe(CharSequence text) {
                 if (ws_result.getResult()) {
                     //添加库位与manuLot的关联
 //                    addIstSubIstManuLotRelation(boxItemEntity);
-                    boxItemEntityList.remove(boxItemEntity);
-                    SelectList.remove(boxItemEntity);
+                    successList.add(boxItemEntity);
                 }
 
                 count++;
@@ -675,15 +712,17 @@ protected void onTextChangedSafe(CharSequence text) {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
+            if (!successList.isEmpty()) {
+                boxItemEntityList.removeAll(successList);
+            }
 
             if (ws_result != null) {
                 CommonUtil.ShowWsResultToast(StockInWithDateActivity.this, ws_result, "入库完成");
                 warehouseInButton.setEnabled(true);
 
             }
-
-            boxItemAdapter = new InBoxItemAdapter(StockInWithDateActivity.this, boxItemEntityList);
-            mRecyclerView.setAdapter(boxItemAdapter);
+            isExecutingWarehouseIn = false;
+            refreshBoxItemList();
             scanCodeList.clear();
             //pbScan.setVisibility(View.INVISIBLE);
         }
@@ -691,6 +730,7 @@ protected void onTextChangedSafe(CharSequence text) {
         @Override
         protected void onPreExecute() {
             //pbScan.setVisibility(View.VISIBLE);
+            isExecutingWarehouseIn = true;
         }
 
         @Override

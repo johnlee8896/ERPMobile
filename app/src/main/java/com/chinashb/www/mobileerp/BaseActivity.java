@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import com.chinashb.www.mobileerp.utils.AutoI18nUtil;
 import com.chinashb.www.mobileerp.utils.LanguageHelper;
@@ -20,15 +19,6 @@ import com.umeng.analytics.MobclickAgent;
  */
 
 public class BaseActivity  extends AppCompatActivity {
-    private boolean autoI18nInstalled;
-    private final ViewTreeObserver.OnGlobalLayoutListener autoI18nLayoutListener =
-            new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    AutoI18nUtil.applyToActivity(BaseActivity.this);
-                }
-            };
-
     @Override
     protected void attachBaseContext(Context newBase) {
         String lang = LanguageHelper.getFinalLanguageCode(newBase);
@@ -102,7 +92,6 @@ public class BaseActivity  extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onDestroy() {
-        removeAutoI18nListener();
         super.onDestroy();
     }
 
@@ -117,23 +106,5 @@ public class BaseActivity  extends AppCompatActivity {
                 AutoI18nUtil.applyToActivity(BaseActivity.this);
             }
         });
-
-        if (!autoI18nInstalled && decorView.getViewTreeObserver().isAlive()) {
-            decorView.getViewTreeObserver().addOnGlobalLayoutListener(autoI18nLayoutListener);
-            autoI18nInstalled = true;
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-    private void removeAutoI18nListener() {
-        View decorView = getWindow() == null ? null : getWindow().getDecorView();
-        if (!autoI18nInstalled || decorView == null) {
-            return;
-        }
-        ViewTreeObserver observer = decorView.getViewTreeObserver();
-        if (observer.isAlive()) {
-            observer.removeOnGlobalLayoutListener(autoI18nLayoutListener);
-        }
-        autoI18nInstalled = false;
     }
 }

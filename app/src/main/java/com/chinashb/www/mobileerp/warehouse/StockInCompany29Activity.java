@@ -1,19 +1,16 @@
 package com.chinashb.www.mobileerp.warehouse;
 
 import android.app.Dialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -53,25 +50,6 @@ import java.util.List;
  * @description 给胜华波零部件三个结算中心作入库处理，因要选采购订单
  */
 public class StockInCompany29Activity extends BaseActivity implements View.OnClickListener {
-    BroadcastReceiver mFoundReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            //找到设备
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // 添加进一个设备列表，进行显示。
-                if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-//                    Log.v(TAG, "find device:" + device.getName() + device.getAddress());
-                }
-            }
-            //搜索完成
-            else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-//                cancelDiscovery();
-            }
-        }
-    };
     private Button addTrayPhotoButton;
     private Button scanAreaButton;
     private Button warehouseInButton;
@@ -321,6 +299,7 @@ public class StockInCompany29Activity extends BaseActivity implements View.OnCli
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onDestroy() {
         super.onDestroy();

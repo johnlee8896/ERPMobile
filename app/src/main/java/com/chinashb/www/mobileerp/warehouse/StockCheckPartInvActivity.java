@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -105,6 +106,19 @@ public class StockCheckPartInvActivity extends BaseActivity {
     private LinearLayout originalDataLayout;
     private LinearLayout productSearchLayout;
     private RecyclerView productSearchRecyclerView;
+    private boolean isProcessingItemScan = false;
+    private boolean isProcessingIstScan = false;
+    private boolean isCommitingResult = false;
+    private String pendingScanText = "";
+    private final Handler inputHandler = new Handler();
+    private final Runnable parseInputRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!TextUtils.isEmpty(pendingScanText)) {
+                parseScanData(pendingScanText);
+            }
+        }
+    };
 
     public StockCheckPartInvActivity() {
     }
@@ -410,7 +424,8 @@ public class StockCheckPartInvActivity extends BaseActivity {
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
 protected void onTextChangedSafe(CharSequence text) {
-                                if (TextUtils.isEmpty(text.toString())) {
+                String textValue = text == null ? "" : text.toString();
+                if (TextUtils.isEmpty(textValue)) {
                     return;
                 }
                 if (!inventoryFileSelect) {
@@ -418,18 +433,11 @@ protected void onTextChangedSafe(CharSequence text) {
                     inputEditText.setText("");
                     return;
                 }
-                //todo 奇怪的这个endwith \n 居然不执行
-//                if (text.toString().endsWith("\n")){
-//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
-                System.out.println("========================扫描结果:" + text.toString());
-                //// TODO: 2019/12/10 scanfor之类的可能无用
-//                    if (ScanFor.endsWith("Ist")) {
-//                        ActivityResultScanIst(inputEditText.getText().toString());
-//                    } else {
-//                        ActivityResultScanItem(inputEditText.getText().toString());
-//                    }
-                parseScanData(text.toString());
-//                }
+                if (textValue.length() > 7) {
+                    pendingScanText = textValue;
+                    inputHandler.removeCallbacks(parseInputRunnable);
+                    inputHandler.postDelayed(parseInputRunnable, 80);
+                }
             }
         });
 
@@ -553,6 +561,10 @@ protected void onTextChangedSafe(CharSequence text) {
 
 
     protected void Commit_Result() {
+        if (isCommitingResult) {
+            return;
+        }
+        isCommitingResult = true;
         CommitStockResultAsyncTask task = new CommitStockResultAsyncTask();
         task.execute();
     }
@@ -691,6 +703,9 @@ protected void onTextChangedSafe(CharSequence text) {
 
     private void parseScanData(String result) {
         //// TODO: 2019/12/10 这块逻辑可优化
+        if (TextUtils.isEmpty(result)) {
+            return;
+        }
         if (result.contains("/")) {
             System.out.println("result = " + result);
             if (!inventoryFileSelect) {
@@ -710,6 +725,10 @@ protected void onTextChangedSafe(CharSequence text) {
                             inputEditText.setText("");
                             return;
                         }
+                        if (isProcessingItemScan || isCommitingResult) {
+                            return;
+                        }
+                        isProcessingItemScan = true;
                         scanstring = result;
                         AsyncGetInvBox task = new AsyncGetInvBox();
                         task.execute();
@@ -720,6 +739,10 @@ protected void onTextChangedSafe(CharSequence text) {
 
                 if (result.startsWith("/SUB_IST_ID/") || result.startsWith("/IST_ID/")) {
                     //仓库位置码
+                    if (isProcessingIstScan || isCommitingResult) {
+                        return;
+                    }
+                    isProcessingIstScan = true;
                     scanstring = result;
                     GetIstAsynctTask task = new GetIstAsynctTask();
                     task.execute();
@@ -727,6 +750,10 @@ protected void onTextChangedSafe(CharSequence text) {
 
                 //  2023-06-25 john 五金的特殊解析
                 if (result.startsWith("Item")){
+                    if (isProcessingItemScan || isCommitingResult) {
+                        return;
+                    }
+                    isProcessingItemScan = true;
                     scanstring = result;
                     AsyncGetItemWujin task = new AsyncGetItemWujin();
                     task.execute();
@@ -833,53 +860,52 @@ protected void onTextChangedSafe(CharSequence text) {
                 if (!boxItemEntity.getResult()) {
                     Toast.makeText(StockCheckPartInvActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
                     inputEditText.setText("");
-                    return;
-                }
-
-                BoxItemEntity bi = boxItemEntity;
-                if (bi.getResult()) {
+                } else {
+                    BoxItemEntity bi = boxItemEntity;
                     if (is_box_existed(bi)) {
                         CommonUtil.ShowToast(StockCheckPartInvActivity.this,
                                 "前面已经扫描过", R.mipmap.warning, Toast.LENGTH_SHORT);
-                        return;
-                    }
-                    //暂存一下
-                    StockCheckPartInvActivity.this.boxItemEntity = bi;
-                    DecimalFormat DF = new DecimalFormat("####.####");
-                    tvERPIst.setText(bi.getIstName());
-                    if (thePlace.getIst_ID() != bi.getIst_ID() || thePlace.getSub_Ist_ID() != bi.getSub_Ist_ID()) {
-                        tvERPIst.setTextColor(Color.RED);
                     } else {
-                        tvERPIst.setTextColor(Color.BLACK);
-                    }
-                    tvItemName.setText(bi.getItemName());
-                    tvBoxName.setText(bi.getBoxNameNo());
-                    tvManuLotno.setText(bi.getManuLotNo());
+                        //暂存一下
+                        StockCheckPartInvActivity.this.boxItemEntity = bi;
+                        DecimalFormat DF = new DecimalFormat("####.####");
+                        tvERPIst.setText(bi.getIstName());
+                        if (thePlace.getIst_ID() != bi.getIst_ID() || thePlace.getSub_Ist_ID() != bi.getSub_Ist_ID()) {
+                            tvERPIst.setTextColor(Color.RED);
+                        } else {
+                            tvERPIst.setTextColor(Color.BLACK);
+                        }
+                        tvItemName.setText(bi.getItemName());
+                        tvBoxName.setText(bi.getBoxNameNo());
+                        tvManuLotno.setText(bi.getManuLotNo());
 
-                    if (!ShowERPInv) {
-                        tvLeftQty.setVisibility(View.INVISIBLE);
-                    } else {
-                        tvLeftQty.setVisibility(View.VISIBLE);
-                    }
-                    tvLeftQty.setText(DF.format(bi.getQty()));
-                    //realQtyTextView.setText(DF.format(bi.getBoxQty()));
-                    if (bi.getQty() != bi.getBoxQty()) {
-                        tvLeftQty.setTextColor(Color.RED);
-                    } else {
-                        tvLeftQty.setTextColor(Color.BLACK);
-                    }
+                        if (!ShowERPInv) {
+                            tvLeftQty.setVisibility(View.INVISIBLE);
+                        } else {
+                            tvLeftQty.setVisibility(View.VISIBLE);
+                        }
+                        tvLeftQty.setText(DF.format(bi.getQty()));
+                        //realQtyTextView.setText(DF.format(bi.getBoxQty()));
+                        if (bi.getQty() != bi.getBoxQty()) {
+                            tvLeftQty.setTextColor(Color.RED);
+                        } else {
+                            tvLeftQty.setTextColor(Color.BLACK);
+                        }
 
-                    if (fromZaiZhiPin){
-                        tvLeftQty.setVisibility(View.GONE);
+                        if (fromZaiZhiPin){
+                            tvLeftQty.setVisibility(View.GONE);
 //                        storeAreaEditText.setVisibility(View.GONE);
 //                        manuLotEditText.setVisibility(View.GONE);
 
 
+                        }
+                        inputEditText.setText("");
+                        inputEditText.findFocus();
                     }
-                    inputEditText.setText("");
-                    inputEditText.findFocus();
                 }
             }
+            pendingScanText = "";
+            isProcessingItemScan = false;
 
 
             //pbScan.setVisibility(View.INVISIBLE);
@@ -929,11 +955,8 @@ protected void onTextChangedSafe(CharSequence text) {
                 if (!boxItemEntity.getResult()) {
                     Toast.makeText(StockCheckPartInvActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
                     inputEditText.setText("");
-                    return;
-                }
-
-                BoxItemEntity bi = boxItemEntity;
-                if (bi.getResult()) {
+                } else {
+                    BoxItemEntity bi = boxItemEntity;
 //                    if (is_box_existed(bi)) {
 //                        CommonUtil.ShowToast(StockCheckPartInvActivity.this,
 //                                "前面已经扫描过", R.mipmap.warning, Toast.LENGTH_SHORT);
@@ -979,6 +1002,8 @@ protected void onTextChangedSafe(CharSequence text) {
                     inputEditText.findFocus();
                 }
             }
+            pendingScanText = "";
+            isProcessingItemScan = false;
 
 
             //pbScan.setVisibility(View.INVISIBLE);
@@ -997,32 +1022,33 @@ protected void onTextChangedSafe(CharSequence text) {
 
 
     private class GetIstAsynctTask extends AsyncTask<String, Void, Void> {
+        private IstPlaceEntity scanIstPlaceEntity;
+
         @Override
         protected Void doInBackground(String... params) {
-            IstPlaceEntity istPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
-            if (istPlaceEntity.getResult()) {
-                thePlace = istPlaceEntity;
-                //清空
-                boxItemEntity = null;
-            } else {
-                Toast.makeText(StockCheckPartInvActivity.this, istPlaceEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
-
-            }
-
+            scanIstPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
 
-            if (thePlace != null) {
+            if (scanIstPlaceEntity != null && scanIstPlaceEntity.getResult()) {
+                thePlace = scanIstPlaceEntity;
+                //清空
+                boxItemEntity = null;
                 tvIst.setText(thePlace.getIstName());
                 inputEditText.setText("");
                 inputEditText.setHint("请继续扫描");
                 istHasSelect = true;
             } else {
+                if (scanIstPlaceEntity != null) {
+                    Toast.makeText(StockCheckPartInvActivity.this, scanIstPlaceEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                }
                 inputEditText.setText("");
             }
+            pendingScanText = "";
+            isProcessingIstScan = false;
 
             //pbScan.setVisibility(View.INVISIBLE);
         }
@@ -1179,11 +1205,14 @@ protected void onTextChangedSafe(CharSequence text) {
 
         @Override
         protected void onPostExecute(Void result) {
-            if (ws_result.getResult()) {
+            isCommitingResult = false;
+            if (ws_result != null && ws_result.getResult()) {
                 CommonUtil.ShowToast(StockCheckPartInvActivity.this,
                         "提交成功", R.mipmap.smiley, Toast.LENGTH_SHORT);
 
-                boxItemEntityList.add(boxItemEntity);
+                if (boxItemEntity != null) {
+                    boxItemEntityList.add(boxItemEntity);
+                }
 
                 //Clear Text
                 realQtyTextView.setText("");
@@ -1200,11 +1229,11 @@ protected void onTextChangedSafe(CharSequence text) {
 //                hasScannItemClickButtonForPhoto = false;
                 panDianItemBean = null;
                 boxItemEntity = null;
+                pendingScanText = "";
 
             } else {
-//                CommonUtil.ShowToast(StockCheckPartInvActivity.this,
-//                        "提交失败" + ws_result.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_SHORT);
-                ToastUtil.showToastLong("提交失败" + ws_result.getErrorInfo());
+                String errorInfo = ws_result == null ? "接口无返回结果" : ws_result.getErrorInfo();
+                ToastUtil.showToastLong("提交失败" + errorInfo);
 
             }
 

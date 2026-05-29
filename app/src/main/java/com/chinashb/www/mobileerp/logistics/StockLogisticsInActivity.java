@@ -91,6 +91,20 @@ public class StockLogisticsInActivity extends BaseActivity implements View.OnCli
     private RelativeLayout switchLayout;
     private Switch stockSwitch;
     private boolean isOpenSuggestStock = true;
+    private String pendingScanText = "";
+    private boolean isProcessingBoxScan = false;
+    private boolean isProcessingIstScan = false;
+    private boolean isExecutingWarehouseIn = false;
+    private final ArrayList<String> pendingBoxScanQueue = new ArrayList<>();
+    private final ArrayList<Long> trackedScanDiiiIdList = new ArrayList<>();
+    private final Runnable parseInputRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!TextUtils.isEmpty(pendingScanText)) {
+                parseScanResult(pendingScanText);
+            }
+        }
+    };
     //// TODO: 2020/1/9 以后要优化，暂时先解决Can't toast on a thread that has not called Looper.prepare() 的问题
     private Handler handler = new Handler() {
         @Override
@@ -129,6 +143,7 @@ public class StockLogisticsInActivity extends BaseActivity implements View.OnCli
 
         boxItemAdapter = new InBoxItemAdapter(StockLogisticsInActivity.this, boxItemEntityList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        mRecyclerView.setItemAnimator(null);
         mRecyclerView.setAdapter(boxItemAdapter);
         setViewsListener();
 
@@ -152,11 +167,11 @@ public class StockLogisticsInActivity extends BaseActivity implements View.OnCli
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
 protected void onTextChangedSafe(CharSequence text) {
-                //                if (text.toString().length() > 7 && text.toString().endsWith("\n")) {
-                if (text.toString().length() > 7 ) {
-//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
-                    System.out.println("========================扫描结果:" + text.toString());
-                    parseScanResult(text.toString());
+                String textValue = text == null ? "" : text.toString();
+                if (textValue.length() > 7 ) {
+                    pendingScanText = textValue;
+                    inputEditText.removeCallbacks(parseInputRunnable);
+                    inputEditText.postDelayed(parseInputRunnable, 80);
                 }
             }
         });
@@ -313,11 +328,7 @@ protected void onTextChangedSafe(CharSequence text) {
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
-                        scanContent = content;
-                        scanCodeList.add(content);
-                        scanCode = content;
-                        GetBoxAsyncTask task = new GetBoxAsyncTask();
-                        task.execute();
+                        enqueueBoxScan(content);
                     }
                 }
 
@@ -331,17 +342,16 @@ protected void onTextChangedSafe(CharSequence text) {
                         content = content.replace("/IST——ID/", "/IST_ID/");
                     }
                     //仓库位置码
-                    scanContent = content;
-                    GetIstAsyncTask task = new GetIstAsyncTask();
-                    task.execute();
+                    startIstScan(content);
                 }
             }
         }
     }
 
     private void handleIntoWareHouse() {
-//        防重复，金蝶慢，所以这样处理
-        warehouseInButton.setEnabled(false);
+        if (isExecutingWarehouseIn) {
+            return;
+        }
         if (boxItemEntityList.size() > 0) {
             int selectedcount = 0;
             for (int i = 0; i < boxItemEntityList.size(); i++) {
@@ -357,6 +367,8 @@ protected void onTextChangedSafe(CharSequence text) {
             }
             if (selectedcount > 0) {
                 if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
+                    isExecutingWarehouseIn = true;
+                    warehouseInButton.setEnabled(false);
                     AsyncExeWarehouseIn task = new AsyncExeWarehouseIn();
                     task.execute();
                 }else{
@@ -394,9 +406,95 @@ protected void onTextChangedSafe(CharSequence text) {
     protected void onDestroy() {
         super.onDestroy();
         System.out.println("===========onDestroy");
+        inputEditText.removeCallbacks(parseInputRunnable);
         if (inputDialog != null && inputDialog.isShowing()) {
             inputDialog.dismiss();
         }
+    }
+
+    private void refreshBoxItemList() {
+        if (boxItemAdapter == null) {
+            boxItemAdapter = new InBoxItemAdapter(StockLogisticsInActivity.this, boxItemEntityList);
+            mRecyclerView.setAdapter(boxItemAdapter);
+            return;
+        }
+        if (mRecyclerView == null) {
+            boxItemAdapter.notifyDataSetChanged();
+            return;
+        }
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (boxItemAdapter != null) {
+                    boxItemAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    private void enqueueBoxScan(String content) {
+        if (TextUtils.isEmpty(content)) {
+            return;
+        }
+        pendingBoxScanQueue.add(content);
+        processNextBoxScan();
+    }
+
+    private void processNextBoxScan() {
+        if (isProcessingBoxScan || pendingBoxScanQueue.isEmpty()) {
+            return;
+        }
+        isProcessingBoxScan = true;
+        scanContent = pendingBoxScanQueue.remove(0);
+        scanCode = scanContent;
+        new GetBoxAsyncTask(scanContent).execute();
+    }
+
+    private void finishBoxScan() {
+        isProcessingBoxScan = false;
+        processNextBoxScan();
+    }
+
+    private void startIstScan(String content) {
+        if (TextUtils.isEmpty(content) || isProcessingIstScan || isExecutingWarehouseIn) {
+            return;
+        }
+        isProcessingIstScan = true;
+        scanContent = content;
+        new GetIstAsyncTask(content).execute();
+    }
+
+    private void trackScanCode(BoxItemEntity boxItemEntity, String content) {
+        if (boxItemEntity == null || TextUtils.isEmpty(content)) {
+            return;
+        }
+        scanCodeList.add(content);
+        trackedScanDiiiIdList.add(boxItemEntity.getDIII_ID());
+    }
+
+    private void removeTrackedScanCode(BoxItemEntity boxItemEntity) {
+        if (boxItemEntity == null) {
+            return;
+        }
+        for (int i = 0; i < trackedScanDiiiIdList.size(); i++) {
+            if (trackedScanDiiiIdList.get(i) == boxItemEntity.getDIII_ID()) {
+                trackedScanDiiiIdList.remove(i);
+                if (i < scanCodeList.size()) {
+                    scanCodeList.remove(i);
+                }
+                break;
+            }
+        }
+    }
+
+    private List<BoxItemEntity> buildSelectedBoxItemList() {
+        List<BoxItemEntity> selectedList = new ArrayList<>();
+        for (int i = 0; i < boxItemEntityList.size(); i++) {
+            if (boxItemEntityList.get(i).getSelect()) {
+                selectedList.add(boxItemEntityList.get(i));
+            }
+        }
+        return selectedList;
     }
 
     @Override
@@ -408,11 +506,16 @@ protected void onTextChangedSafe(CharSequence text) {
     }
 
     private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
+        private final String requestScanContent;
         BoxItemEntity scanBoxItemEntity;
+
+        GetBoxAsyncTask(String requestScanContent) {
+            this.requestScanContent = requestScanContent;
+        }
 
         @Override
         protected Void doInBackground(String... params) {
-            BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Logistics_DS_Item_Income_Barcode(scanContent);
+            BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Logistics_DS_Item_Income_Barcode(requestScanContent);
 
             //// TODO: 2020/10/19 test
             String s = JsonUtil.objectToJson(boxItemEntity);
@@ -464,8 +567,6 @@ protected void onTextChangedSafe(CharSequence text) {
                         message.setData(bundle);
                         handler.sendMessage(message);
                     }
-                    boxItemEntity.setSelect(true);
-                    boxItemEntityList.add(boxItemEntity);
                 } else {
                     boxItemEntity.setResult(false);
                     boxItemEntity.setErrorInfo("该包装已经在装载列表中");
@@ -498,13 +599,18 @@ protected void onTextChangedSafe(CharSequence text) {
             if (scanBoxItemEntity != null) {
                 if (!scanBoxItemEntity.getResult()) {
                     Toast.makeText(StockLogisticsInActivity.this, scanBoxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                } else {
+                    scanBoxItemEntity.setSelect(true);
+                    boxItemEntityList.add(scanBoxItemEntity);
+                    trackScanCode(scanBoxItemEntity, requestScanContent);
                 }
             }
 
-            boxItemAdapter = new InBoxItemAdapter(StockLogisticsInActivity.this, boxItemEntityList);
-            mRecyclerView.setAdapter(boxItemAdapter);
+            refreshBoxItemList();
             inputEditText.setText("");
             inputEditText.setHint("请继续使用扫描枪");
+            pendingScanText = "";
+            finishBoxScan();
 //            if (inputDialog != null && inputDialog.isShowing()) {
 //                inputDialog.dismiss();
 //            }
@@ -523,9 +629,16 @@ protected void onTextChangedSafe(CharSequence text) {
     }
 
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
+        private final String requestScanContent;
+        private IstPlaceEntity istPlaceEntity;
+
+        GetIstAsyncTask(String requestScanContent) {
+            this.requestScanContent = requestScanContent;
+        }
+
         @Override
         protected Void doInBackground(String... params) {
-            IstPlaceEntity istPlaceEntity = WebServiceUtil.op_Check_Logistics_IST_Barcode(scanContent);
+            istPlaceEntity = WebServiceUtil.op_Check_Logistics_IST_Barcode(requestScanContent);
             if (istPlaceEntity.getResult()) {
                 thePlace = istPlaceEntity;
                 if (istPlaceEntity.getResult()) {
@@ -537,9 +650,6 @@ protected void onTextChangedSafe(CharSequence text) {
                         }
                     }
                 }
-            } else {
-//                Toast.makeText(StockInActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
-                ToastUtil.showToastLong(istPlaceEntity.getErrorInfo());
             }
             return null;
         }
@@ -547,12 +657,15 @@ protected void onTextChangedSafe(CharSequence text) {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
-
-            mRecyclerView.setAdapter(boxItemAdapter);
-            //pbScan.setVisibility(View.INVISIBLE);
             inputEditText.setText("");
-            //todo 直接执行入库登帐
-            handleIntoWareHouse();
+            pendingScanText = "";
+            refreshBoxItemList();
+            if (istPlaceEntity != null && istPlaceEntity.getResult()) {
+                handleIntoWareHouse();
+            } else if (istPlaceEntity != null) {
+                ToastUtil.showToastLong(istPlaceEntity.getErrorInfo());
+            }
+            isProcessingIstScan = false;
 
         }
 
@@ -560,24 +673,20 @@ protected void onTextChangedSafe(CharSequence text) {
 
     private class AsyncExeWarehouseIn extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
+        private final List<BoxItemEntity> selectedList;
+        private final List<BoxItemEntity> successList = new ArrayList<>();
+
+        AsyncExeWarehouseIn() {
+            this.selectedList = buildSelectedBoxItemList();
+        }
 
         @Override
         protected Void doInBackground(String... params) {
 
-            List<BoxItemEntity> SelectList;
-            SelectList = new ArrayList<>();
-
-            for (int i = 0; i < boxItemEntityList.size(); i++) {
-                if (boxItemEntityList.get(i).getSelect()) {
-                    SelectList.add(boxItemEntityList.get(i));
-                }
-            }
-
             int count = 0;
-            int selectedCount = SelectList.size();
-            while (count < selectedCount && SelectList.size() > 0) {
-                //todo  这里取的是0，验证多个是否成功
-                BoxItemEntity boxItemEntity = SelectList.get(0);
+            int selectedCount = selectedList.size();
+            while (count < selectedCount) {
+                BoxItemEntity boxItemEntity = selectedList.get(count);
 //                String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo，SendToWarehouseTime) values (%d,%d,%d,%d,%d,%d,%d,%s,%s)",
                 String sql = String.format("insert into Ist_SubIst_ManuLot (IST_ID,Sub_IST_ID,Item_ID,IV_ID,LotID,Company_ID,Bu_ID,ManuLotNo) values (%d,%d,%d,%d,%d,%d,%d,%s)",
                         boxItemEntity.getIst_ID(), boxItemEntity.getSub_Ist_ID(), boxItemEntity.getItem_ID(), boxItemEntity.getIV_ID(), boxItemEntity.getLotID(),
@@ -589,10 +698,9 @@ protected void onTextChangedSafe(CharSequence text) {
 //                ws_result = WebServiceUtil.op_Commit_DS_Item_Income_To_Warehouse(boxItemEntity,sql);
                 ws_result = WebServiceUtil.op_Commit_Item_To_Logistics_Warehouse(boxItemEntity,scanCodeList.size() == selectedCount ? scanCodeList.get(0):"");
                 if (ws_result.getResult()) {
-                    //添加库位与manuLot的关联
-//                    addIstSubIstManuLotRelation(boxItemEntity);
-                    boxItemEntityList.remove(boxItemEntity);
-                    SelectList.remove(boxItemEntity);
+                    successList.add(boxItemEntity);
+                } else {
+                    break;
                 }
 
                 count++;
@@ -614,16 +722,19 @@ protected void onTextChangedSafe(CharSequence text) {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
+            if (!successList.isEmpty()) {
+                for (int i = 0; i < successList.size(); i++) {
+                    removeTrackedScanCode(successList.get(i));
+                }
+                boxItemEntityList.removeAll(successList);
+            }
 
             if (ws_result != null) {
                 CommonUtil.ShowWsResultToast(StockLogisticsInActivity.this, ws_result, "入库完成");
-                warehouseInButton.setEnabled(true);
-
             }
-
-            boxItemAdapter = new InBoxItemAdapter(StockLogisticsInActivity.this, boxItemEntityList);
-            mRecyclerView.setAdapter(boxItemAdapter);
-            scanCodeList.clear();
+            warehouseInButton.setEnabled(true);
+            isExecutingWarehouseIn = false;
+            refreshBoxItemList();
             //pbScan.setVisibility(View.INVISIBLE);
         }
 

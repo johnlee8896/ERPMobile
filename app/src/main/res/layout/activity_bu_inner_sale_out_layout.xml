@@ -45,24 +45,7 @@
                 android:layout_marginLeft="20dp"
                 android:textColor="@color/color_blue_00AAEE" />
         </LinearLayout>
-        <!--<Button-->
-            <!--android:id="@+id/inner_sale_out_select_NO_button"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="start"-->
-            <!--android:layout_marginRight="20dp"-->
-            <!--android:layout_marginLeft="@dimen/dimen_size_20"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="选择或输入入库单据" />-->
-        <!--<TextView-->
-            <!--android:id="@+id/inner_sale_out_NO_textView"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:paddingLeft="20dp"-->
-            <!--android:paddingRight="@dimen/dimen_size_20"-->
-            <!--android:layout_marginLeft="20dp"-->
-            <!--tools:text="C-20191226-01"-->
-            <!--android:textColor="@color/color_blue_00AAEE" />-->
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -120,6 +103,32 @@
             android:textColor="@color/black"
             android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
             android:textSize="@dimen/text_size_14" />
+        <LinearLayout
+            android:id="@+id/inner_sale_out_select_order_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:gravity="bottom"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/inner_sale_out_select_order_NO_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="请选择订单" />
+            <TextView
+                android:id="@+id/inner_sale_out_order_NO_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="20dp"
+                android:paddingRight="@dimen/dimen_size_20"
+                android:layout_marginLeft="20dp"
+                tools:text="D00100"
+                android:textColor="@color/color_blue_00AAEE" />
+
+        </LinearLayout>
 
 
         <LinearLayout

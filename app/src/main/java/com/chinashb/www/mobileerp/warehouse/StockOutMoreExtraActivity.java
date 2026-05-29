@@ -108,6 +108,7 @@ public class StockOutMoreExtraActivity extends BaseActivity {
         issueMoreItemAdapter.showNeedMore = false;
         issueMoreItemAdapter.setCanEdit(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        mRecyclerView.setItemAnimator(null);
         mRecyclerView.setAdapter(issueMoreItemAdapter);
 
         Intent who = getIntent();
@@ -201,6 +202,21 @@ protected void onTextChangedSafe(CharSequence text) {
         });
 
 
+    }
+
+    private void refreshIssueMoreExtraList() {
+        if (mRecyclerView == null || issueMoreItemAdapter == null) {
+            return;
+        }
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isFinishing()) {
+                    return;
+                }
+                issueMoreItemAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void selectDate() {
@@ -361,7 +377,7 @@ protected void onTextChangedSafe(CharSequence text) {
             }
 
             if (scanNormal){
-                 mRecyclerView.setAdapter(issueMoreItemAdapter);
+                 refreshIssueMoreExtraList();
             }else{
                 ToastUtil.showToastLong("数量为负数，物料码有误，请重新扫描！");
             }
@@ -384,14 +400,16 @@ protected void onTextChangedSafe(CharSequence text) {
 
     private class AsyncExeWarehouseOut extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
+        private final List<BoxItemEntity> successList = new ArrayList<>();
 
         @Override
         protected Void doInBackground(String... params) {
 
+            List<BoxItemEntity> selectedList = new ArrayList<>(newissuelist);
             int count = 0;
-            int newissuesize = newissuelist.size();
-            while (count < newissuesize && newissuelist.size() > 0) {
-                BoxItemEntity bi = newissuelist.get(0);
+            int newissuesize = selectedList.size();
+            while (count < newissuesize) {
+                BoxItemEntity bi = selectedList.get(count);
                 if (outDate == null){
                     outDate = new Date() ;
                 }
@@ -399,7 +417,7 @@ protected void onTextChangedSafe(CharSequence text) {
                 ws_result = WebServiceUtil.op_Commit_MW_Issue_Extra_Item(themw.getMPIWC_ID(), bi,remark,outDate,scanCodeList.size() == newissuesize ? scanCodeList.get(0):"");
 
                 if (ws_result.getResult() ) {
-                    newissuelist.remove(bi);
+                    successList.add(bi);
                 } else {
                     return null;
                 }
@@ -412,8 +430,10 @@ protected void onTextChangedSafe(CharSequence text) {
 
         @Override
         protected void onPostExecute(Void result) {
-            issueMoreItemAdapter.notifyDataSetChanged();
-            mRecyclerView.setAdapter(issueMoreItemAdapter);
+            if (!successList.isEmpty()) {
+                newissuelist.removeAll(successList);
+            }
+            refreshIssueMoreExtraList();
             //pbScan.setVisibility(View.INVISIBLE);
             remarkTextView.setText("");
             remark = "";

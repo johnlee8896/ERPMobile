@@ -82,6 +82,8 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
     private TimePickerManager timePickerManager;
     private Date outDate;
     private boolean isBackUP;
+    private boolean isProcessingScan;
+    private boolean isExecutingOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +113,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         issueMoreItemAdapter = new IssueMoreItemAdapter(StockOutMoreActivity.this, boxItemEntityList);
         issueMoreItemAdapter.setCanEdit(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        recyclerView.setItemAnimator(null);
         recyclerView.setAdapter(issueMoreItemAdapter);
 
         Intent intent = getIntent();
@@ -230,6 +233,9 @@ protected void onTextChangedSafe(CharSequence text) {
     }
 
     private void handleStockOut() {
+        if (isExecutingOut) {
+            return;
+        }
         if (boxItemEntityList.size() > 0) {
             if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
 
@@ -303,7 +309,25 @@ protected void onTextChangedSafe(CharSequence text) {
         super.onResume();
     }
 
+    private void refreshIssueMoreList() {
+        if (recyclerView == null || issueMoreItemAdapter == null) {
+            return;
+        }
+        recyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (isFinishing()) {
+                    return;
+                }
+                issueMoreItemAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
     void AfterGetItemBarcode(String content) {
+        if (isProcessingScan) {
+            return;
+        }
         System.out.println("========================扫描结果:" + content);
         //简单分析判别错误条码
         if (content.contains("/")) {
@@ -315,7 +339,7 @@ protected void onTextChangedSafe(CharSequence text) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
                         scanedString = content;
-                        scanCodeList.add(content);
+                        isProcessingScan = true;
                         GetIssueMoreBoxAsyncTask task = new GetIssueMoreBoxAsyncTask();
                         task.execute();
                     }
@@ -335,6 +359,7 @@ protected void onTextChangedSafe(CharSequence text) {
     private class GetIssueMoreBoxAsyncTask extends AsyncTask<String, Void, Void> {
         BoxItemEntity boxItemEntity;
         boolean scanNormal = true;
+        boolean shouldTrackScanCode;
 
         @Override
         protected Void doInBackground(String... params) {
@@ -351,8 +376,7 @@ protected void onTextChangedSafe(CharSequence text) {
                         scanNormal = false;
 
                     }
-
-                    boxItemEntityList.add(boxItemEntity);
+                    shouldTrackScanCode = true;
                 } else {
                     boxItemEntity.setResult(false);
                     boxItemEntity.setErrorInfo("该包装已经在列表中");
@@ -397,10 +421,12 @@ protected void onTextChangedSafe(CharSequence text) {
                 if (boxItemEntity != null) {
                     if (!boxItemEntity.getResult()) {
                         CommonUtil.ShowToast(StockOutMoreActivity.this, boxItemEntity.getErrorInfo(), R.mipmap.warning, Toast.LENGTH_LONG);
+                    } else if (shouldTrackScanCode) {
+                        boxItemEntityList.add(boxItemEntity);
+                        scanCodeList.add(scanedString);
                     }
                 }
-                issueMoreItemAdapter.notifyDataSetChanged();
-                recyclerView.setAdapter(issueMoreItemAdapter);
+                refreshIssueMoreList();
                 pbScan.setVisibility(View.INVISIBLE);
                 if (isDirect) {
                     handleStockOut();
@@ -411,6 +437,7 @@ protected void onTextChangedSafe(CharSequence text) {
             }
             inputEditText.setText("");
             inputEditText.setHint("请继续扫描");
+            isProcessingScan = false;
         }
 
         @Override
@@ -426,6 +453,7 @@ protected void onTextChangedSafe(CharSequence text) {
 
     private class AsyncExeWarehouseOut extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
+        private final List<BoxItemEntity> successList = new ArrayList<>();
 
         protected void updateNeedQty(BoxItemEntity boxItemEntity) {
             if (boxItemEntity != null && planInnerDetailEntityList != null) {
@@ -444,22 +472,21 @@ protected void onTextChangedSafe(CharSequence text) {
         @Override
         protected Void doInBackground(String... params) {
 
+            List<BoxItemEntity> selectedList = new ArrayList<>(boxItemEntityList);
             int count = 0;
-            int size = boxItemEntityList.size();
-            while (count < size && boxItemEntityList.size() > 0) {
-                BoxItemEntity bi = boxItemEntityList.get(0);
+            int size = selectedList.size();
+            while (count < size) {
+                BoxItemEntity bi = selectedList.get(count);
                 if (outDate == null){
                     outDate = new Date() ;
                 }
                 ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
                 if (ws_result.getResult() ) {
-                    boxItemEntityList.remove(bi);
-                    updateNeedQty(bi);
+                    successList.add(bi);
                 } else {
                     //遇到错误，停止
                     return null;
                 }
-
                 count++;
             }
 
@@ -470,10 +497,17 @@ protected void onTextChangedSafe(CharSequence text) {
         @Override
         protected void onPostExecute(Void result) {
 
-            issueMoreItemAdapter.notifyDataSetChanged();
-            recyclerView.setAdapter(issueMoreItemAdapter);
+            if (!successList.isEmpty()) {
+                for (int i = 0; i < successList.size(); i++) {
+                    BoxItemEntity boxItemEntity = successList.get(i);
+                    boxItemEntityList.remove(boxItemEntity);
+                    updateNeedQty(boxItemEntity);
+                }
+            }
+            refreshIssueMoreList();
             scanCodeList.clear();
             pbScan.setVisibility(View.INVISIBLE);
+            isExecutingOut = false;
 
             if (ws_result != null) {
                 if (!ws_result.getResult() ) {
@@ -496,6 +530,7 @@ protected void onTextChangedSafe(CharSequence text) {
         @Override
         protected void onPreExecute() {
             pbScan.setVisibility(View.VISIBLE);
+            isExecutingOut = true;
         }
 
         @Override
@@ -506,6 +541,7 @@ protected void onTextChangedSafe(CharSequence text) {
 
     private class HandleWarehouseBackupAsyncTask extends AsyncTask<String, Void, Void> {
         WsResult ws_result;
+        private final List<BoxItemEntity> successList = new ArrayList<>();
 
         protected void updateNeedQty(BoxItemEntity boxItemEntity) {
             if (boxItemEntity != null && planInnerDetailEntityList != null) {
@@ -524,18 +560,18 @@ protected void onTextChangedSafe(CharSequence text) {
         @Override
         protected Void doInBackground(String... params) {
 
+            List<BoxItemEntity> selectedList = new ArrayList<>(boxItemEntityList);
             int count = 0;
-            int size = boxItemEntityList.size();
-            while (count < size && boxItemEntityList.size() > 0) {
-                BoxItemEntity bi = boxItemEntityList.get(0);
+            int size = selectedList.size();
+            while (count < size) {
+                BoxItemEntity bi = selectedList.get(count);
                 if (outDate == null){
                     outDate = new Date() ;
                 }
 //                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
                 ws_result = WebServiceUtil.op_Commit_MW_Issue_Item_To_Backup(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
                 if (ws_result.getResult() ) {
-                    boxItemEntityList.remove(bi);
-                    updateNeedQty(bi);
+                    successList.add(bi);
                 } else {
                     //遇到错误，停止
                     return null;
@@ -551,8 +587,14 @@ protected void onTextChangedSafe(CharSequence text) {
         @Override
         protected void onPostExecute(Void result) {
 
-            issueMoreItemAdapter.notifyDataSetChanged();
-            recyclerView.setAdapter(issueMoreItemAdapter);
+            if (!successList.isEmpty()) {
+                for (int i = 0; i < successList.size(); i++) {
+                    BoxItemEntity boxItemEntity = successList.get(i);
+                    boxItemEntityList.remove(boxItemEntity);
+                    updateNeedQty(boxItemEntity);
+                }
+            }
+            refreshIssueMoreList();
             scanCodeList.clear();
             pbScan.setVisibility(View.INVISIBLE);
 

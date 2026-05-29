@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -194,6 +193,9 @@ protected void onTextChangedSafe(CharSequence text) {
                     inputEditText.setText("");
                     hasScanItem = true;
 //                    }
+
+                    GetProductMoveNotPalletSuggestAreaAsyncTask task = new GetProductMoveNotPalletSuggestAreaAsyncTask();
+                    task.execute(boxId);
                 } else if (content.startsWith("/SUB_IST_ID/") || content.startsWith("/IST_ID/")) {
                     //仓库位置码
                     scanContent = content;
@@ -549,4 +551,26 @@ protected void onTextChangedSafe(CharSequence text) {
 //        super.onDestroy();
 //        SPSingleton.get().putString(SPDefine.KEY_code_box_id_List,JsonUtil.objectToJson(boxIDList));
 //    }
+
+    private class GetProductMoveNotPalletSuggestAreaAsyncTask extends AsyncTask<Integer,Void,Void>{
+        WsResult ws_result;
+
+        @Override
+        protected Void doInBackground(Integer... integers) {
+            int boxID = integers[0];
+            ws_result = WebServiceUtil.getProductSuggestAreaName(UserSingleton.get().getUserInfo().getBu_ID(),boxID);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (ws_result != null && ws_result.getResult()){
+                ToastUtil.showToastShort("建议库位:" + ws_result.getErrorInfo());
+            }else{
+                ToastUtil.showToastShort("未能获取建议库位");
+
+            }
+        }
+    }
 }

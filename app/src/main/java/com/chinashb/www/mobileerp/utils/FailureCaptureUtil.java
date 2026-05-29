@@ -25,6 +25,8 @@ import java.util.Locale;
 public final class FailureCaptureUtil {
 
     private static final String SCREENSHOT_DIR = "shb/screen";
+    private static final long MIN_CAPTURE_INTERVAL_MS = 1500L;
+    private static long lastCaptureAt;
 
     private FailureCaptureUtil() {
     }
@@ -34,6 +36,13 @@ public final class FailureCaptureUtil {
         if (activity == null || activity.isFinishing() || activity.getWindow() == null) {
             return;
         }
+        long now = System.currentTimeMillis();
+        synchronized (FailureCaptureUtil.class) {
+            if (now - lastCaptureAt < MIN_CAPTURE_INTERVAL_MS) {
+                return;
+            }
+            lastCaptureAt = now;
+        }
         try {
             View rootView = activity.getWindow().getDecorView().getRootView();
             if (rootView == null || rootView.getWidth() <= 0 || rootView.getHeight() <= 0) {
@@ -42,11 +51,18 @@ public final class FailureCaptureUtil {
             Bitmap bitmap = Bitmap.createBitmap(rootView.getWidth(), rootView.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             rootView.draw(canvas);
-            try {
-                saveBitmap(activity, bitmap);
-            } finally {
-                bitmap.recycle();
-            }
+            final Bitmap bitmapForSave = bitmap;
+            final Activity currentActivity = activity;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        saveBitmap(currentActivity, bitmapForSave);
+                    } finally {
+                        bitmapForSave.recycle();
+                    }
+                }
+            }, "FailureCaptureSaveThread").start();
         } catch (Exception ignored) {
         }
     }

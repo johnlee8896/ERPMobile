@@ -95,7 +95,12 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
         }
         holder.tvNeed.setText(CommonUtil.DecimalFormat(Box_Item.getNeedMoreQty()));
 
-        holder.etQty.addTextChangedListener(new TextWatcherImpl() {
+        Object oldWatcher = holder.etQty.getTag();
+        if (oldWatcher instanceof TextWatcherImpl) {
+            holder.etQty.removeTextChangedListener((TextWatcherImpl) oldWatcher);
+        }
+
+        TextWatcherImpl watcher = new TextWatcherImpl() {
 
 
             @Override
@@ -121,7 +126,9 @@ public class IssueMoreItemAdapter extends RecyclerView.Adapter<IssueMoreItemAdap
 
 
             }
-        });
+        };
+        holder.etQty.addTextChangedListener(watcher);
+        holder.etQty.setTag(watcher);
 
 
     }

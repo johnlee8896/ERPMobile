@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -65,6 +64,19 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
     private PickGoodsBean pickGoodsBean;
     private String backUpScanCode = "";//从备料来的标签，自动作移库提示
     private IssueOutBackUpBean backUpBean;
+    private boolean isProcessingBoxScan = false;
+    private boolean isProcessingIstScan = false;
+    private boolean isExecutingWarehouseMove = false;
+    private String pendingScanText = "";
+    private final ArrayList<String> pendingBoxScanQueue = new ArrayList<>();
+    private final Runnable parseInputRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!TextUtils.isEmpty(pendingScanText)) {
+                parseScanResult(pendingScanText);
+            }
+        }
+    };
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -152,11 +164,11 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
 protected void onTextChangedSafe(CharSequence text) {
-                //                if (text.toString().endsWith("\n")){
-                if (text.toString().length() > 0) {
-//                    ToastUtil.showToastLong("扫描结果:" + text.toString());
-                    System.out.println("========================扫描结果:" + text.toString());
-                    parseScanResult(text.toString());
+                String textValue = text == null ? "" : text.toString();
+                if (textValue.length() > 7) {
+                    pendingScanText = textValue;
+                    inputEditText.removeCallbacks(parseInputRunnable);
+                    inputEditText.postDelayed(parseInputRunnable, 80);
                 }
             }
         });
@@ -193,17 +205,25 @@ protected void onTextChangedSafe(CharSequence text) {
     }
 
     private void handleMoveStockArea() {
+        if (isExecutingWarehouseMove) {
+            return;
+        }
         if (boxitemList.size() > 0) {
             int selectedcount = 0;
             for (int i = 0; i < boxitemList.size(); i++) {
                 if (boxitemList.get(i).getSelect()) {
+                    if (boxitemList.get(i).getIst_ID() == 0) {
+                        ToastUtil.showToastShort("请先扫描新库位！");
+                        return;
+                    }
                     selectedcount++;
                 }
             }
             if (selectedcount > 0) {
                 if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
-
-                    AsyncExeWarehouseMove task = new AsyncExeWarehouseMove();
+                    isExecutingWarehouseMove = true;
+                    btnWarehouseMove.setEnabled(false);
+                    AsyncExeWarehouseMove task = new AsyncExeWarehouseMove(buildSelectedBoxItemList());
                     task.execute();
                 } else {
                     CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockPartMoveActivity.this)
@@ -228,6 +248,58 @@ protected void onTextChangedSafe(CharSequence text) {
         }
     }
 
+    private void refreshMoveList() {
+        if (boxitemAdapter == null) {
+            boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
+            mRecyclerView.setAdapter(boxitemAdapter);
+            return;
+        }
+        boxitemAdapter.notifyDataSetChanged();
+    }
+
+    private List<BoxItemEntity> buildSelectedBoxItemList() {
+        List<BoxItemEntity> selectedList = new ArrayList<>();
+        for (int i = 0; i < boxitemList.size(); i++) {
+            if (boxitemList.get(i).getSelect()) {
+                selectedList.add(boxitemList.get(i));
+            }
+        }
+        return selectedList;
+    }
+
+    private void enqueueBoxScan(String result) {
+        if (TextUtils.isEmpty(result)) {
+            return;
+        }
+        pendingBoxScanQueue.add(result);
+        processNextBoxScan();
+    }
+
+    private void processNextBoxScan() {
+        if (isProcessingBoxScan || pendingBoxScanQueue.isEmpty()) {
+            return;
+        }
+        isProcessingBoxScan = true;
+        scanstring = pendingBoxScanQueue.remove(0);
+        GetBoxAsyncTask task = new GetBoxAsyncTask(scanstring);
+        task.execute();
+    }
+
+    private void finishBoxScan() {
+        isProcessingBoxScan = false;
+        processNextBoxScan();
+    }
+
+    private void startIstScan(String result) {
+        if (TextUtils.isEmpty(result) || isProcessingIstScan || isExecutingWarehouseMove) {
+            return;
+        }
+        isProcessingIstScan = true;
+        scanstring = result;
+        GetIstAsyncTask task = new GetIstAsyncTask(scanstring);
+        task.execute();
+    }
+
     private void parseScanResult(String result) {
         System.out.println("===== result = " + result);
 //        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
@@ -240,17 +312,13 @@ protected void onTextChangedSafe(CharSequence text) {
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
-                        scanstring = result;
-                        GetBoxAsyncTask task = new GetBoxAsyncTask();
-                        task.execute();
+                        enqueueBoxScan(result);
                     }
                 }
 
                 if (result.startsWith("/SUB_IST_ID/") || result.startsWith("/IST_ID/")) {
                     //仓库位置码
-                    scanstring = result;
-                    GetIstAsyncTask task = new GetIstAsyncTask();
-                    task.execute();
+                    startIstScan(result);
                 }
 
             }
@@ -323,38 +391,22 @@ protected void onTextChangedSafe(CharSequence text) {
     }
 
     private class GetBoxAsyncTask extends AsyncTask<String, Void, Void> {
+        private final String requestScanString;
         BoxItemEntity boxItemEntity;
+
+        GetBoxAsyncTask(String requestScanString) {
+            this.requestScanString = requestScanString;
+        }
 
         @Override
         protected Void doInBackground(String... params) {
             BoxItemEntity bi;
             if (!TextUtils.isEmpty(backUpScanCode)){
-                bi = WebServiceUtil.op_Check_Commit_Move_Item_Barcode_For_BackUp(scanstring) ;
+                bi = WebServiceUtil.op_Check_Commit_Move_Item_Barcode_For_BackUp(requestScanString) ;
             }else{
-                bi = WebServiceUtil.op_Check_Commit_Move_Item_Barcode(scanstring);
+                bi = WebServiceUtil.op_Check_Commit_Move_Item_Barcode(requestScanString);
             }
             boxItemEntity = bi;
-            if (bi.getResult()) {
-                if (!is_box_existed(bi)) {
-                    if (isOpenSuggestStock) {
-//                        ToastUtil.showToastLong("建议仓库存放:" + boxItemEntity.getIstName());
-                        Message message = new Message();
-                        message.what = 1;
-                        Bundle bundle = new Bundle();
-                        bundle.putString("suggest_ist", boxItemEntity.getIstName());
-                        message.setData(bundle);
-                        handler.sendMessage(message);
-                    }
-                    bi.setSelect(true);
-                    boxitemList.add(bi);
-                } else {
-                    bi.setResult(false);
-                    bi.setErrorInfo("该包装已经在装载列表中");
-                }
-
-            } else {
-
-            }
 
             return null;
         }
@@ -365,11 +417,24 @@ protected void onTextChangedSafe(CharSequence text) {
             if (boxItemEntity != null) {
                 if (!boxItemEntity.getResult()) {
                     Toast.makeText(StockPartMoveActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                } else if (is_box_existed(boxItemEntity)) {
+                    Toast.makeText(StockPartMoveActivity.this, "该包装已经在装载列表中", Toast.LENGTH_LONG).show();
+                } else {
+                    if (isOpenSuggestStock) {
+                        Message message = new Message();
+                        message.what = 1;
+                        Bundle bundle = new Bundle();
+                        bundle.putString("suggest_ist", boxItemEntity.getIstName());
+                        message.setData(bundle);
+                        handler.sendMessage(message);
+                    }
+                    boxItemEntity.setSelect(true);
+                    boxitemList.add(boxItemEntity);
+                    refreshMoveList();
                 }
             }
-            mRecyclerView.setAdapter(boxitemAdapter);
 //            2024-08-08 拣货物料判断
-            if (fromPickGoods && (pickGoodsBean != null)){
+            if (fromPickGoods && pickGoodsBean != null && boxItemEntity != null){
                 if (boxItemEntity.getItem_ID() != pickGoodsBean.getItemID()){
                     CommonUtil.ShowToast(StockPartMoveActivity.this, "所选拣货物料与扫描物料不一致！", R.mipmap.monster_mike, Toast.LENGTH_SHORT);
 
@@ -377,6 +442,8 @@ protected void onTextChangedSafe(CharSequence text) {
             }
             inputEditText.setText("");
             inputEditText.setHint("请继续扫描");
+            pendingScanText = "";
+            finishBoxScan();
 
 
         }
@@ -400,10 +467,15 @@ protected void onTextChangedSafe(CharSequence text) {
     }
 
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
+        private final String requestScanString;
         private IstPlaceEntity bi;
+
+        GetIstAsyncTask(String requestScanString) {
+            this.requestScanString = requestScanString;
+        }
         @Override
         protected Void doInBackground(String... params) {
-            bi = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
+            bi = WebServiceUtil.op_Check_Commit_IST_Barcode(requestScanString);
 
             return null;
         }
@@ -421,14 +493,16 @@ protected void onTextChangedSafe(CharSequence text) {
                         }
                     }
                 }
-                boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
-                mRecyclerView.setAdapter(boxitemAdapter);
+                refreshMoveList();
                 inputEditText.setText("");
                 inputEditText.setHint("请继续扫描");
+                pendingScanText = "";
+                isProcessingIstScan = false;
                 handleMoveStockArea();
 
             } else {
                 Toast.makeText(StockPartMoveActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
+                isProcessingIstScan = false;
             }
 
 
@@ -438,80 +512,50 @@ protected void onTextChangedSafe(CharSequence text) {
     }
 
     private class AsyncExeWarehouseMove extends AsyncTask<String, Void, WsResult> {
-        Boolean NoNewPlace = false;
+        private final List<BoxItemEntity> selectedList;
+        private final List<BoxItemEntity> successList = new ArrayList<>();
+
+        AsyncExeWarehouseMove(List<BoxItemEntity> selectedList) {
+            this.selectedList = selectedList;
+        }
 
         @Override
         protected WsResult doInBackground(String... params) {
-
-//            List<BoxItemEntity> SelectList;
-//            SelectList = new ArrayList<>();
-//
-//            for (int i = 0; i < boxitemList.size(); i++) {
-//                if (boxitemList.get(i).getIst_ID() == 0) {
-//                    NoNewPlace = true;
-//
-//                    return null;
-//                }
-//
-//                if (boxitemList.get(i).getSelect() ) {
-//                    SelectList.add(boxitemList.get(i));
-//                }
-//
-//
-//            }
-
-//            int count = 0;
-//
-//            int selectedcount = SelectList.size();
-//            while (count < selectedcount && SelectList.size() > 0) {
-//                BoxItemEntity bi = SelectList.get(0);
-//
-//                WsResult result = WebServiceUtil.op_Commit_Move_Item(bi);
-//
-//                if (result.getResult() ) {
-//                    boxitemList.remove(bi);
-//
-//                    SelectList.remove(bi);
-//                } else {
-//                    //Toast.makeText(StockMoveActivity.this,result.getErrorInfo(),Toast.LENGTH_LONG).show();
-//                }
-//
-//                count++;
-//            }
-            BoxItemEntity bi = boxitemList.get(0);
-            WsResult result = WebServiceUtil.op_Commit_Move_Item(bi);
-            return result;
+            WsResult lastResult = null;
+            for (int i = 0; i < selectedList.size(); i++) {
+                BoxItemEntity bi = selectedList.get(i);
+                lastResult = WebServiceUtil.op_Commit_Move_Item(bi);
+                if (lastResult == null || !lastResult.getResult()) {
+                    return lastResult;
+                }
+                successList.add(bi);
+            }
+            return lastResult;
         }
 
 
         @Override
         protected void onPostExecute(WsResult result) {
-            //tv.setText(fahren + "∞ F");
-
-//            if (NoNewPlace) {
-//                pbScan.setVisibility(View.INVISIBLE);
-//                CommonUtil.ShowToast(StockMoveActivity.this, "还没有扫描新位置", R.mipmap.warning);
-//            } else {
-//                pbScan.setVisibility(View.INVISIBLE);
-//                boxitemAdapter = new AdapterMoveBoxItem(StockMoveActivity.this, boxitemList);
-//                mRecyclerView.setAdapter(boxitemAdapter);
-//
-//                CommonUtil.ShowToast(StockMoveActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
-//            }
+            if (!successList.isEmpty()) {
+                boxitemList.removeAll(successList);
+            }
             if (result != null && result.getResult()) {
-                CommonUtil.ShowToast(StockPartMoveActivity.this, "移库完成", R.mipmap.smiley, Toast.LENGTH_SHORT);
+                CommonUtil.ShowToast(StockPartMoveActivity.this,
+                        successList.size() > 1 ? "全部移库完成" : "移库完成",
+                        R.mipmap.smiley,
+                        Toast.LENGTH_SHORT);
             } else {
-//                CommonUtil.ShowToast(StockPartMoveActivity.this, "移库失败", R.mipmap.monster_mike, Toast.LENGTH_SHORT);
-                ToastUtil.showToastShort("移库失败：" + result.getErrorInfo());
+                String errorInfo = result == null ? "接口无返回结果" : result.getErrorInfo();
+                ToastUtil.showToastShort("移库失败：" + errorInfo);
             }
 
-            boxitemList.clear();
-            boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
-            mRecyclerView.setAdapter(boxitemAdapter);
+            refreshMoveList();
+            isExecutingWarehouseMove = false;
+            btnWarehouseMove.setEnabled(true);
             if (!TextUtils.isEmpty(backUpScanCode)){
                 backUpScanCode = "";
                 Intent intent = new Intent(StockPartMoveActivity.this, MWBackUpListActivity.class);
-                intent.putExtra(IntentConstant.Intent_Extra_backup_rework_move_result_boolean,result.getResult());
+                intent.putExtra(IntentConstant.Intent_Extra_backup_rework_move_result_boolean,result != null && result.getResult());
                 intent.putExtra(IntentConstant.Intent_Extra_backup_rework_move_ist_id,thePlace != null ? thePlace.getIst_ID() : 0) ;
                 intent.putExtra(IntentConstant.Intent_Extra_backup_rework_move_sub_ist_id,thePlace != null ? thePlace.getSub_Ist_ID() : 0);
                 intent.putExtra(IntentConstant.Intent_Extra_Backup_bean,backUpBean);

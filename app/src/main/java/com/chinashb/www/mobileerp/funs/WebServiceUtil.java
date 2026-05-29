@@ -1985,6 +1985,147 @@ public class WebServiceUtil {
         return ws_result;
     }
 
+    /**
+     * created by code-x John
+     * start: 2026-05-28 10:16:28 CST
+     * end: 2026-05-28 10:16:28 CST
+     */
+    public static WsResult opLabelGetPrintImage(String labelType, long id) {
+        String webMethodName = "op_Label_Get_Print_Image";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "LabelType", labelType);
+        AddPropertyInfo(propertyInfos, "ID", id);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope == null) {
+            return null;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            return result;
+        }
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    /**
+     * created by code-x John
+     * start: 2026-05-28 10:16:28 CST
+     * end: 2026-05-28 10:16:28 CST
+     */
+    public static WsResult opTradeLabelGetPrintImage(String labelType, long id) {
+        String webMethodName = "op_Trade_Label_Get_Print_Image";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "LabelType", labelType);
+        AddPropertyInfo(propertyInfos, "ID", id);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope == null) {
+            return null;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            return result;
+        }
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    /**
+     * created by code-x John
+     * start: 2026-05-19 20:06:58 CST
+     * end: 2026-05-19 20:06:58 CST
+     *
+     * VB参考:
+     * Function op_Upload_Mobile_Crash_Log(HR_ID As Integer, HR_Name As String,
+     *     Crash_File_Name As String, Device_Model As String, SDK_Version As Integer,
+     *     Crash_Content As String) As Web_Answer
+     */
+    public static WsResult opUploadMobileCrashLog(int HR_ID, String HR_Name,
+                                                  String Crash_File_Name, String Device_Model,
+                                                  int SDK_Version, String Crash_Content) {
+        String webMethodName = "op_Upload_Mobile_Crash_Log";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "HR_ID", HR_ID);
+        AddPropertyInfo(propertyInfos, "HR_Name", HR_Name);
+        AddPropertyInfo(propertyInfos, "Crash_File_Name", Crash_File_Name);
+        AddPropertyInfo(propertyInfos, "Device_Model", Device_Model);
+        AddPropertyInfo(propertyInfos, "SDK_Version", SDK_Version);
+        AddPropertyInfo(propertyInfos, "Crash_Content", Crash_Content);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope == null) {
+            return null;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            return result;
+        }
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    /**
+     * created by code-x John
+     * start: 2026-05-19 21:08:28 CST
+     * end: 2026-05-19 21:08:28 CST
+     *
+     * VB参考:
+     * Function op_Get_Mobile_Crash_Log_List(QueryDate As String, Keyword As String) As Web_Answer
+     */
+    public static WsResult opGetMobileCrashLogList(String QueryDate, String Keyword) {
+        String webMethodName = "op_Get_Mobile_Crash_Log_List";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "QueryDate", QueryDate);
+        AddPropertyInfo(propertyInfos, "Keyword", Keyword);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope == null) {
+            return null;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            return result;
+        }
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    /**
+     * created by code-x John
+     * start: 2026-05-19 21:08:28 CST
+     * end: 2026-05-19 21:08:28 CST
+     *
+     * VB参考:
+     * Function op_Get_Mobile_Crash_Log_Content(RelativePath As String) As Web_Answer
+     */
+    public static WsResult opGetMobileCrashLogContent(String RelativePath) {
+        String webMethodName = "op_Get_Mobile_Crash_Log_Content";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "RelativePath", RelativePath);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope == null) {
+            return null;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            return result;
+        }
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
     //todo几点疑问  只有get，没有post,delete吗？
 
     //扫描入库，扫描物料码，来料码
@@ -2822,6 +2963,67 @@ public class WebServiceUtil {
         WsResult ws_result = Get_WS_Result(obj);
         return ws_result;
 
+    }
+
+    // created by code-x John
+    // start: 2026-05-16 10:41:05 CST
+    // end: 2026-05-16 10:41:05 CST
+    public static WsResult opCommitDsItemIncomeToWarehouseZhuanKou(BoxItemEntity boxItem, String scanCode) {
+        String webMethodName = "op_Commit_DS_Item_Income_To_Warehouse_ZhuanKou";
+        System.out.println("=======================================  op_Commit_DS_Item_Income_To_Warehouse_ZhuanKou");
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        PropertyInfo propertyInfo = new PropertyInfo();
+        propertyInfo.setName("SenderID");
+        propertyInfo.setValue((long) UserSingleton.get().getHRID());
+        propertyInfo.setType(Long.class);
+        propertyInfos.add(propertyInfo);
+
+        PropertyInfo propertyInfo2 = new PropertyInfo();
+        propertyInfo2.setName("DIII_ID");
+        propertyInfo2.setValue(boxItem.getDIII_ID());
+        propertyInfo2.setType(Long.class);
+        propertyInfos.add(propertyInfo2);
+
+        PropertyInfo propertyInfo3 = new PropertyInfo();
+        propertyInfo3.setName("Ist_ID");
+        propertyInfo3.setValue(boxItem.getIst_ID());
+        propertyInfo3.setType(Long.class);
+        propertyInfos.add(propertyInfo3);
+
+        PropertyInfo propertyInfo4 = new PropertyInfo();
+        propertyInfo4.setName("Sub_Ist_ID");
+        propertyInfo4.setValue(boxItem.getSub_Ist_ID());
+        propertyInfo4.setType(Long.class);
+        propertyInfos.add(propertyInfo4);
+
+        PropertyInfo propertyInfo5 = new PropertyInfo();
+        propertyInfo5.setName("Bu_ID");
+        propertyInfo5.setValue(UserSingleton.get().getUserInfo().getBu_ID());
+        propertyInfo5.setType(Integer.class);
+        propertyInfos.add(propertyInfo5);
+
+        PropertyInfo propertyInfo6 = new PropertyInfo();
+        propertyInfo6.setName("HR_Name");
+        propertyInfo6.setValue(UserSingleton.get().getHRName());
+        propertyInfo6.setType(String.class);
+        propertyInfos.add(propertyInfo6);
+
+        PropertyInfo propertyInfo7 = new PropertyInfo();
+        propertyInfo7.setName("Scan_Code");
+        propertyInfo7.setValue(scanCode);
+        propertyInfo7.setType(String.class);
+        propertyInfos.add(propertyInfo7);
+
+        PropertyInfo propertyInfo8 = new PropertyInfo();
+        propertyInfo8.setName("Item_ID");
+        propertyInfo8.setValue((int) boxItem.getItem_ID());
+        propertyInfo8.setType(Integer.class);
+        propertyInfos.add(propertyInfo8);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
     }
 
     //将物料入相应的库,零部件账
@@ -7392,6 +7594,61 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfos, "HR_Name", hrName);
         AddPropertyInfo(propertyInfos, "PalletScan", palletScan);
         AddPropertyInfo(propertyInfos, "ItemScan", itemScan);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                return Get_WS_Result(obj);
+            }
+        }
+
+        return null;
+    }
+
+    // created by code-x John
+    // start: 2026-05-21 10:22:18 CST
+    // end: 2026-05-21 10:22:18 CST
+    public static WsResult opTradePalletScanItem(int hrId, String hrName, String itemScan) {
+        String webMethodName = "op_Trade_Pallet_Scan_Item";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "HR_ID", hrId);
+        AddPropertyInfo(propertyInfos, "HR_Name", hrName);
+        AddPropertyInfo(propertyInfos, "ItemScan", itemScan);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                return Get_WS_Result(obj);
+            }
+        }
+
+        return null;
+    }
+
+    // created by code-x John
+    // start: 2026-05-21 10:22:18 CST
+    // end: 2026-05-21 10:22:18 CST
+    public static WsResult opTradePalletAddScanBox(int hrId, String hrName, String palletScan, String scanBoxJson) {
+        String webMethodName = "op_Trade_Pallet_Add_ScanBox";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "HR_ID", hrId);
+        AddPropertyInfo(propertyInfos, "HR_Name", hrName);
+        AddPropertyInfo(propertyInfos, "PalletScan", palletScan);
+        AddPropertyInfo(propertyInfos, "ScanBoxJson", scanBoxJson);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         if (envelope != null) {

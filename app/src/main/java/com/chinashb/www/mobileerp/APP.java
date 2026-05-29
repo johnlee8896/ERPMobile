@@ -5,6 +5,7 @@ import android.app.Application;
 import android.os.Bundle;
 
 import com.chinashb.www.mobileerp.upgrade.AppUpgradeCheckManager;
+import com.chinashb.www.mobileerp.utils.CrashLogUploadManager;
 import com.chinashb.www.mobileerp.utils.ExceptionCatchManager;
 import com.umeng.commonsdk.UMConfigure;
 
@@ -24,6 +25,7 @@ public class APP extends Application {
         super.onCreate();
         app = this;
         ExceptionCatchManager.getInstance().init(get());
+        CrashLogUploadManager.getInstance().init(this);
         AppUpgradeCheckManager.get().init(this);
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override

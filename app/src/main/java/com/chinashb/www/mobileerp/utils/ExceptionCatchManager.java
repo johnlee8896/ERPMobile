@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
+import android.text.TextUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,6 +15,10 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /***
  * @date 创建时间 2018/11/15 14:09
@@ -58,15 +63,21 @@ public class ExceptionCatchManager implements Thread.UncaughtExceptionHandler {
     @Override
     public void uncaughtException(Thread thread, Throwable throwable) {
         String crashFileName = saveToSDCard(throwable);
-        //如果需要上传文件可以把这个打开
-        //cacheCrashFile(crashFileName);
+        cacheCrashFile(crashFileName);
+        CrashLogUploadManager.getInstance().tryUploadPending(context);
         //让系统默认处理崩溃掉
-        defaultUncaughtExceptionHandler.uncaughtException(thread, throwable);
+        if (defaultUncaughtExceptionHandler != null) {
+            defaultUncaughtExceptionHandler.uncaughtException(thread, throwable);
+        }
     }
 
     private void cacheCrashFile(String crashFileName) {
+        if (context == null || TextUtils.isEmpty(crashFileName)) {
+            return;
+        }
         SharedPreferences sp = context.getSharedPreferences(CRASH, Context.MODE_PRIVATE);
         sp.edit().putString(CRASH_FILE_NAME, crashFileName).commit();
+        CrashLogUploadManager.getInstance().enqueueCrashFile(context, crashFileName);
     }
 
     private String saveToSDCard(Throwable throwable) {
@@ -80,22 +91,26 @@ public class ExceptionCatchManager implements Thread.UncaughtExceptionHandler {
         }*/
         stringBuffer.append(obtainSimpleInfo(context));
         stringBuffer.append(obtainExceptionInfo(throwable));
-        if (Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED)) {
-            File parentDir = new File(Environment.getExternalStorageDirectory() + File.separator + SHSHB_CRASH_LOG
-                    + File.separator);
-
-            if (!parentDir.exists()) {
-                parentDir.mkdir();
+        List<File> parentDirs = resolveCrashDirs();
+        for (int i = 0; i < parentDirs.size(); i++) {
+            File parentDir = parentDirs.get(i);
+            if (parentDir == null) {
+                continue;
+            }
+            if (!parentDir.exists() && !parentDir.mkdirs()) {
+                continue;
             }
             try {
-                fileName = parentDir.toString()
-                        + File.separator
-                        + getAppName() + getAssignTime(FORMAT_TIME).concat(".txt");
-                FileOutputStream fos = new FileOutputStream(fileName);
+                File targetFile = createCrashFile(parentDir);
+                if (targetFile == null) {
+                    continue;
+                }
+                FileOutputStream fos = new FileOutputStream(targetFile);
                 fos.write(stringBuffer.toString().getBytes());
                 fos.flush();
                 fos.close();
+                fileName = targetFile.getAbsolutePath();
+                break;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -107,6 +122,43 @@ public class ExceptionCatchManager implements Thread.UncaughtExceptionHandler {
         DateFormat dataFormat = new SimpleDateFormat(dateFormatStr);
         long currentTime = System.currentTimeMillis();
         return dataFormat.format(currentTime);
+    }
+
+    private List<File> resolveCrashDirs() {
+        List<File> result = new ArrayList<File>();
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            File externalStorageDirectory = Environment.getExternalStorageDirectory();
+            if (externalStorageDirectory != null) {
+                result.add(new File(externalStorageDirectory, SHSHB_CRASH_LOG));
+                result.add(new File(externalStorageDirectory, "shb/crash"));
+            }
+        }
+        if (context != null) {
+            File externalFilesDir = context.getExternalFilesDir(null);
+            if (externalFilesDir != null) {
+                result.add(new File(externalFilesDir, "shb/crash"));
+            }
+            File filesDir = context.getFilesDir();
+            if (filesDir != null) {
+                result.add(new File(filesDir, "shb/crash"));
+            }
+        }
+        return result;
+    }
+
+    private File createCrashFile(File parentDir) {
+        String appName = getAppName();
+        if (TextUtils.isEmpty(appName)) {
+            appName = "SHB_ERP";
+        }
+        String baseName = appName + "_" + new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault()).format(new Date());
+        File targetFile = new File(parentDir, baseName + ".txt");
+        int index = 1;
+        while (targetFile.exists()) {
+            targetFile = new File(parentDir, baseName + "_" + index + ".txt");
+            index++;
+        }
+        return targetFile;
     }
 
 

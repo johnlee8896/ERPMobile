@@ -143,6 +143,7 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
 
         boxItemAdapter = new InBoxItemAdapter(StockInActivity.this, boxItemEntityList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
+        mRecyclerView.setItemAnimator(null);
         mRecyclerView.setAdapter(boxItemAdapter);
         setViewsListener();
         if (UserSingleton.get().getUserInfo().getCompany_ID() == 29){
@@ -412,7 +413,18 @@ protected void onTextChangedSafe(CharSequence text) {
             mRecyclerView.setAdapter(boxItemAdapter);
             return;
         }
-        boxItemAdapter.notifyDataSetChanged();
+        if (mRecyclerView == null) {
+            boxItemAdapter.notifyDataSetChanged();
+            return;
+        }
+        mRecyclerView.post(new Runnable() {
+            @Override
+            public void run() {
+                if (boxItemAdapter != null) {
+                    boxItemAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     private void enqueueBoxScan(String content) {
@@ -788,9 +800,8 @@ protected void onTextChangedSafe(CharSequence text) {
 
             if (ws_result != null) {
                 CommonUtil.ShowWsResultToast(StockInActivity.this, ws_result, "入库完成");
-                warehouseInButton.setEnabled(true);
-
             }
+            warehouseInButton.setEnabled(true);
             isExecutingWarehouseIn = false;
 
             refreshBoxItemList();

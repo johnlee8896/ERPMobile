@@ -27,7 +27,7 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.logistics.StockLogisticsInActivity;
-import com.chinashb.www.mobileerp.shipment.AllShipmentAccountDeliveryManagement;
+import com.chinashb.www.mobileerp.shipment.NewAllShipmentAccountDeliveryManagement;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.ShbTcpTest;
 import com.chinashb.www.mobileerp.utils.AutoI18nUtil;
@@ -230,9 +230,9 @@ public class NewStockPartMainActivity extends BaseActivity implements WarehouseM
         } else if (WarehouseMenuRegistry.MENU_PART_SEND_INFO.equals(menuCode)) {
             ToastUtil.showToastShort("暂未开放");
         } else if (WarehouseMenuRegistry.MENU_PART_COMPANY29.equals(menuCode)) {
-            startActivity(new Intent(this, StockInCompany29Activity.class));
+            startActivity(new Intent(this, StockInZhuanKouActivity.class));
         } else if (WarehouseMenuRegistry.MENU_PART_SHIPMENT.equals(menuCode)) {
-            startActivity(new Intent(this, AllShipmentAccountDeliveryManagement.class));
+            startActivity(new Intent(this, NewAllShipmentAccountDeliveryManagement.class));
         } else {
             startActivity(new Intent(this, ShbTcpTest.class));
         }

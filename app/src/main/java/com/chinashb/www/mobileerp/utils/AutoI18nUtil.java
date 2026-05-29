@@ -107,18 +107,27 @@ public final class AutoI18nUtil {
 
         CharSequence contentDescription = view.getContentDescription();
         if (!TextUtils.isEmpty(contentDescription)) {
-            view.setContentDescription(translate(context, contentDescription));
+            CharSequence translatedContentDescription = translate(context, contentDescription);
+            if (!TextUtils.equals(contentDescription, translatedContentDescription)) {
+                view.setContentDescription(translatedContentDescription);
+            }
         }
 
         if (view instanceof TextView) {
             TextView textView = (TextView) view;
             CharSequence text = textView.getText();
             if (!TextUtils.isEmpty(text)) {
-                textView.setText(translate(context, text));
+                CharSequence translatedText = translate(context, text);
+                if (!TextUtils.equals(text, translatedText)) {
+                    textView.setText(translatedText);
+                }
             }
             CharSequence hint = textView.getHint();
             if (!TextUtils.isEmpty(hint)) {
-                textView.setHint(translate(context, hint));
+                CharSequence translatedHint = translate(context, hint);
+                if (!TextUtils.equals(hint, translatedHint)) {
+                    textView.setHint(translatedHint);
+                }
             }
         }
     }

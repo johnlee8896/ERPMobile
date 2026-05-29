@@ -171,7 +171,9 @@ def releaseUploadPassword = localProperties.getProperty('release.upload.password
 def releaseUploadEnabled = localProperties.getProperty('release.upload.enabled', 'true')
 def releaseUploadMode = localProperties.getProperty('release.upload.mode', 'multipart')
 def releaseUploadFormField = localProperties.getProperty('release.upload.formField', 'file')
+def releaseRequiredHostMarker = localProperties.getProperty('release.requiredHostMarker', 'group.COM')
 def releaseApkFile = file("$buildDir/outputs/apk/release/app-release.apk")
+def webServiceUtilFile = file("src/main/java/com/chinashb/www/mobileerp/funs/WebServiceUtil.java")
 
 def normalizeMultipartUploadUrl = { String rawUrl ->
     if (rawUrl == null) {
@@ -262,8 +264,34 @@ task uploadReleaseApk {
     }
 }
 
+task validateReleaseWebServiceConfig {
+    group = "verification"
+    description = "Verify release build points to the expected production webservice host marker."
+
+    doLast {
+        if (!webServiceUtilFile.exists()) {
+            throw new GradleException("WebServiceUtil.java not found: " + webServiceUtilFile.absolutePath)
+        }
+        String sourceText = webServiceUtilFile.getText('UTF-8')
+        def matcher = sourceText =~ /public\s+static\s+final\s+String\s+IP\s*=\s*"([^"]+)"/
+        if (!matcher.find()) {
+            throw new GradleException("Cannot find WebServiceUtil.IP definition in " + webServiceUtilFile.absolutePath)
+        }
+        String currentIp = matcher.group(1)
+        if (!currentIp.toLowerCase(java.util.Locale.US).contains(releaseRequiredHostMarker.toLowerCase(java.util.Locale.US))) {
+            throw new GradleException(
+                    "assembleRelease blocked: WebServiceUtil.IP=" + currentIp +
+                            " does not contain release.requiredHostMarker=" + releaseRequiredHostMarker +
+                            ". Please switch back to the formal production host before publishing."
+            )
+        }
+        println "release webservice host validated: " + currentIp
+    }
+}
+
 tasks.whenTaskAdded { task ->
     if (task.name == 'assembleRelease') {
+        task.dependsOn(validateReleaseWebServiceConfig)
         task.finalizedBy(uploadReleaseApk)
     }
 }
