@@ -95,4 +95,11 @@
         android:layout_marginTop="10dp"
         android:text="打印校准" />
 
+    <Button
+        android:id="@+id/dialog_printer_reset_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="清空状态并重连" />
+
 </LinearLayout>

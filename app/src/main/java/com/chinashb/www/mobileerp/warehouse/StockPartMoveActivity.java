@@ -64,6 +64,7 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
     private PickGoodsBean pickGoodsBean;
     private String backUpScanCode = "";//从备料来的标签，自动作移库提示
     private IssueOutBackUpBean backUpBean;
+    private long backUpMpiwcID;
     private boolean isProcessingBoxScan = false;
     private boolean isProcessingIstScan = false;
     private boolean isExecutingWarehouseMove = false;
@@ -114,9 +115,9 @@ public class StockPartMoveActivity extends BaseActivity implements View.OnClickL
         switchLayout = findViewById(R.id.stock_move_suggest_stock_Layout);
 
         boxitemList = new ArrayList<>();
-        if (savedInstanceState != null) {
-            boxitemList = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
-        }
+//        if (savedInstanceState != null) {
+//            boxitemList = (List<BoxItemEntity>) savedInstanceState.getSerializable("BoxItemList");
+//        }
         boxitemAdapter = new BoxMoveItemAdapter(StockPartMoveActivity.this, boxitemList);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));//这里用线性显示 类似于listview
         mRecyclerView.setAdapter(boxitemAdapter);
@@ -187,6 +188,7 @@ protected void onTextChangedSafe(CharSequence text) {
         });
 
         backUpScanCode = getIntent().getStringExtra(IntentConstant.Intent_Extra_Backup_ScanCode);
+        backUpMpiwcID = getIntent().getLongExtra(IntentConstant.Intent_Extra_Backup_mpiwc_id_for_move_cancel,0);
         backUpBean = getIntent().getParcelableExtra(IntentConstant.Intent_Extra_Backup_bean);
         if (!TextUtils.isEmpty(backUpScanCode)){
             parseScanResult(backUpScanCode);
@@ -468,28 +470,28 @@ protected void onTextChangedSafe(CharSequence text) {
 
     private class GetIstAsyncTask extends AsyncTask<String, Void, Void> {
         private final String requestScanString;
-        private IstPlaceEntity bi;
+        private IstPlaceEntity istPlaceEntity;
 
         GetIstAsyncTask(String requestScanString) {
             this.requestScanString = requestScanString;
         }
         @Override
         protected Void doInBackground(String... params) {
-            bi = WebServiceUtil.op_Check_Commit_IST_Barcode(requestScanString);
+            istPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(requestScanString);
 
             return null;
         }
 
         @Override
         protected void onPostExecute(Void result) {
-            if ((bi != null) && bi.getResult()) {
-                thePlace = bi;
-                if (bi.getResult()) {
+            if ((istPlaceEntity != null) && istPlaceEntity.getResult()) {
+                thePlace = istPlaceEntity;
+                if (istPlaceEntity.getResult()) {
                     for (int i = 0; i < boxitemList.size(); i++) {
                         if (boxitemList.get(i).getSelect()) {
-                            boxitemList.get(i).setIstName(bi.getIstName());
-                            boxitemList.get(i).setIst_ID(bi.getIst_ID());
-                            boxitemList.get(i).setSub_Ist_ID(bi.getSub_Ist_ID());
+                            boxitemList.get(i).setIstName(istPlaceEntity.getIstName());
+                            boxitemList.get(i).setIst_ID(istPlaceEntity.getIst_ID());
+                            boxitemList.get(i).setSub_Ist_ID(istPlaceEntity.getSub_Ist_ID());
                         }
                     }
                 }
@@ -501,7 +503,7 @@ protected void onTextChangedSafe(CharSequence text) {
                 handleMoveStockArea();
 
             } else {
-                Toast.makeText(StockPartMoveActivity.this, bi.getErrorInfo(), Toast.LENGTH_LONG).show();
+                Toast.makeText(StockPartMoveActivity.this, istPlaceEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
                 isProcessingIstScan = false;
             }
 
@@ -524,7 +526,19 @@ protected void onTextChangedSafe(CharSequence text) {
             WsResult lastResult = null;
             for (int i = 0; i < selectedList.size(); i++) {
                 BoxItemEntity bi = selectedList.get(i);
-                lastResult = WebServiceUtil.op_Commit_Move_Item(bi);
+                if (!TextUtils.isEmpty(backUpScanCode)){
+                    if (thePlace != null){
+                        lastResult = WebServiceUtil.op_Commit_Inv_Move_BackUp_Cancel(backUpMpiwcID,bi,thePlace.getIst_ID(),thePlace.getSub_Ist_ID());
+                    }else{
+//                        lastResult = WebServiceUtil.op_Commit_Inv_Move_BackUp_Cancel(bi);
+                        lastResult.setResult(false);
+                        lastResult.setErrorInfo("请扫描新库位，完成撤销备料！");
+
+                    }
+                }else{
+                    lastResult = WebServiceUtil.op_Commit_Move_Item(bi);
+                }
+
                 if (lastResult == null || !lastResult.getResult()) {
                     return lastResult;
                 }

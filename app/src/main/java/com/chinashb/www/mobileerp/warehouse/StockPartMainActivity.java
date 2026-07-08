@@ -395,7 +395,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         if (userInfo == null) {
             Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(StockPartMainActivity.this, StockDepartmentInActivity.class);
+            Intent intent = new Intent(StockPartMainActivity.this, StockPartDepartmentInActivity.class);
             startActivity(intent);
         }
     }

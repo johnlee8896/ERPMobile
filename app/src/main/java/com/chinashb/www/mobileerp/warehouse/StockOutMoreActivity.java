@@ -480,7 +480,9 @@ protected void onTextChangedSafe(CharSequence text) {
                 if (outDate == null){
                     outDate = new Date() ;
                 }
-                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
+//                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
+                //// TODO: 6/22/26
+                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(count) :"");
                 if (ws_result.getResult() ) {
                     successList.add(bi);
                 } else {
@@ -569,7 +571,9 @@ protected void onTextChangedSafe(CharSequence text) {
                     outDate = new Date() ;
                 }
 //                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
-                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item_To_Backup(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
+//                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item_To_Backup(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(0) :"");
+                //// TODO: 6/22/26 这里修改，为解决有时小标签 ，smli_id，传值正确，但scancode还是传上一个的问题
+                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item_To_Backup(mpiWcBean.getMPIWC_ID(), bi,outDate,scanCodeList.size() == size ? scanCodeList.get(count) :"");
                 if (ws_result.getResult() ) {
                     successList.add(bi);
                 } else {

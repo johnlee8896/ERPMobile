@@ -32,6 +32,7 @@ public class AppUpgradeCheckManager {
     }
 
     private static final long CHECK_INTERVAL_MS = 5 * 60 * 1000L;
+    private static final long PROMPT_INTERVAL_MS = 60 * 1000L;
     private static final String VERSION_SQL =
             "select top 1 VerID,Version,Convert(nvarchar(100),UpdateDate,23) As UpdateDate, Des " +
                     " from ERP_Mobile_Ver Where RequireUpdate=1 Order By VerID Desc";
@@ -44,7 +45,7 @@ public class AppUpgradeCheckManager {
     private boolean downloadUrlLoading;
     private boolean netReady;
     private long lastCheckTime;
-    private int lastPromptVersionCode = -1;
+    private long lastPromptTime;
     private int latestServerVersionCode = -1;
     private String latestUpdateLog = "";
     private String latestDownloadUrl = "";
@@ -136,9 +137,6 @@ public class AppUpgradeCheckManager {
                 pendingUpgradePrompt = false;
                 latestDownloadUrl = "";
             }
-            if (currentVersionCode >= lastPromptVersionCode) {
-                lastPromptVersionCode = -1;
-            }
         }
 
         notifyPendingListeners(localNetReady);
@@ -166,7 +164,7 @@ public class AppUpgradeCheckManager {
         if (downloadUrlLoading) {
             return false;
         }
-        return lastPromptVersionCode != serverVersionCode;
+        return System.currentTimeMillis() - lastPromptTime >= PROMPT_INTERVAL_MS;
     }
 
     private void loadDownloadUrlAndPrompt(Activity activity, String updateLog, int serverVersionCode) {
@@ -243,11 +241,11 @@ public class AppUpgradeCheckManager {
         }
 
         synchronized (this) {
-            if (lastPromptVersionCode == serverVersionCode) {
+            if (System.currentTimeMillis() - lastPromptTime < PROMPT_INTERVAL_MS) {
                 pendingUpgradePrompt = false;
                 return;
             }
-            lastPromptVersionCode = serverVersionCode;
+            lastPromptTime = System.currentTimeMillis();
             pendingUpgradePrompt = false;
         }
 

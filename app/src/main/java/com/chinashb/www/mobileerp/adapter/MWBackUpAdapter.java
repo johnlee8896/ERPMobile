@@ -154,6 +154,41 @@ public class MWBackUpAdapter extends BaseRecycleAdapter<IssueOutBackUpBean, MWBa
         }
     }
 
+    // by codex -- john 2026-06-25 15:24
+    /**
+     * 全选：将所有 item 的 checkbox 置为选中
+     */
+    public void selectAll() {
+        if (dataList == null || dataList.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < dataList.size(); i++) {
+            selectedStates.put(i, true);
+            dataList.get(i).setSelected(true);
+        }
+        notifyDataSetChanged();
+    }
+
+    /**
+     * 取消全选：将所有 item 的 checkbox 置为未选中
+     */
+    public void deselectAll() {
+        if (dataList == null || dataList.isEmpty()) {
+            return;
+        }
+        selectedStates.clear();
+        for (int i = 0; i < dataList.size(); i++) {
+            dataList.get(i).setSelected(false);
+        }
+        notifyDataSetChanged();
+    }
+
+    /** 是否有数据 */
+    public boolean hasData() {
+        return dataList != null && !dataList.isEmpty();
+    }
+    // by codex -- john end 15:24
+
 //    // 新增接口用于外部监听选中状态
 //    public interface OnCustomizedCheckedChangeListener {
 //        void onItemChecked(int position, boolean isChecked);

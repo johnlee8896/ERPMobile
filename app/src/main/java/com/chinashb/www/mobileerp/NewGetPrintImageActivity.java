@@ -5,17 +5,20 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +30,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -37,13 +41,21 @@ import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.LabelPrintImageBean;
+import com.chinashb.www.mobileerp.bean.SMLPrintBatchParamsBean;
+import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.printer.BTHDiscoveryActivity;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.zebra.printer.sdk.ZebraPrinter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +70,13 @@ public class NewGetPrintImageActivity extends BaseActivity {
 
     private static final String TAG = "NewGetPrintImage";
     private static final String PRINT_PREFS = "print_image_calibration";
+    private static final int SOURCE_TRIM_BORDER_PX = 2;
+    private static final int SOURCE_LEFT_CLEANUP_PX = 22;
+    // created by code-x John
+    // start: 2026-06-05 15:42:00 CST
+    // 批量打印测试省纸模式：当前只打印最多5张小标签，以及对应少量中/大标签；正式使用时可恢复
+    private static final int TEST_MAX_SMLI_PRINT_COUNT = 5;
+    // end: 2026-06-05 15:42:00 CST
     private static final int REQUEST_PERMISSION_CODE = 0x101;
     private static final int REQUEST_BLUETOOTH_CONNECT_CODE = 0x102;
     private static final LabelTypeOption[] LABEL_TYPE_OPTIONS = new LabelTypeOption[]{
@@ -89,6 +108,12 @@ public class NewGetPrintImageActivity extends BaseActivity {
     TextView resultTextView;
     @BindView(R.id.print_image_preview_image_view)
     ImageView previewImageView;
+    @BindView(R.id.print_batch_image_by_sml_button)
+    TextView printBatchImageBySmlButton;
+    @BindView(R.id.print_batch_image_by_scan_sml_button)
+    TextView printBatchImageByScanSmlLabelButton;
+    @BindView(R.id.print_batch_test_mode_check_box)
+    CheckBox printBatchTestModeCheckBox;
 
     private final int pageWidth = 1600;
     private final int qrPriorityLeftSafetyMargin = 36;
@@ -106,18 +131,22 @@ public class NewGetPrintImageActivity extends BaseActivity {
     private Button printerStatusButton;
     private Button printerConfigButton;
     private Button printerCalibrationButton;
+    private Button printerResetButton;
 
     private LabelTypeOption selectedOption = LABEL_TYPE_OPTIONS[0];
     private Bitmap currentPreviewBitmap;
     private static boolean bOpen = false;
     private static boolean bLanguageCPCL = false;
     private static boolean bLanguageESCPOS = false;
+    private String lastPrinterMacAddress;
     private int cpclPaperWidth = 640;
     private int cpclLabelHeight = 360;
     private int cpclHorizontalOffset = 0;
     private int cpclVerticalOffset = 0;
     private int cpclScalePercent = 100;
     private int escPosTargetWidth = 560;
+    private boolean testLimitBatchPrint = true;
+    private volatile boolean cancelPrintRequested = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -126,12 +155,14 @@ public class NewGetPrintImageActivity extends BaseActivity {
         ButterKnife.bind(this);
         loadCalibrationSettings();
         initTypeSpinner();
+        initBatchTestModeCheckBox();
         checkPermission();
         requestPermission();
         registerPrinterDisconnectReceiver();
         ZebraPrinter.SetLog(3);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -147,17 +178,80 @@ public class NewGetPrintImageActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK || data == null) {
-            return;
-        }
-        if (requestCode == REQUEST_BLUETOOTH_CONNECT_CODE) {
-            String printerMacAddress = data.getStringExtra(BTHDiscoveryActivity.EXTRA_DEVICE_ADDRESS);
-            if (TextUtils.isEmpty(printerMacAddress)) {
-                CommonUtil.ShowToast(this, "未获取到打印机地址", R.mipmap.warning);
+//        if (resultCode != RESULT_OK || data == null) {
+//            return;
+//        }
+//        if (requestCode == REQUEST_BLUETOOTH_CONNECT_CODE) {
+//            String printerMacAddress = data.getStringExtra(BTHDiscoveryActivity.EXTRA_DEVICE_ADDRESS);
+//            if (TextUtils.isEmpty(printerMacAddress)) {
+//                CommonUtil.ShowToast(this, "未获取到打印机地址", R.mipmap.warning);
+//                return;
+//            }
+//            connectPrinter(printerMacAddress);
+//        }
+
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            if (!TextUtils.isEmpty(result.getContents())) {
+                long smlID = parseScanResult(result.getContents());
+                if (smlID == -1){
+                    ToastUtil.showToastShort("生产记录标签解析失败！");
+                }else{
+                    printBatchBitmapBySMLCommon(smlID);
+                }
+            }
+        } else {
+            // This is important, otherwise the result will not be passed to the fragment
+            super.onActivityResult(requestCode, resultCode, data);
+            //蓝牙打印机连接，这里作一合并
+            if (resultCode != RESULT_OK || data == null) {
                 return;
             }
-            connectPrinter(printerMacAddress);
+            if (requestCode == REQUEST_BLUETOOTH_CONNECT_CODE) {
+                String printerMacAddress = data.getStringExtra(BTHDiscoveryActivity.EXTRA_DEVICE_ADDRESS);
+                if (TextUtils.isEmpty(printerMacAddress)) {
+                    CommonUtil.ShowToast(this, "未获取到打印机地址", R.mipmap.warning);
+                    return;
+                }
+                connectPrinter(printerMacAddress);
+            }
         }
+    }
+
+    private void printBatchBitmapBySMLCommon(long smlID) {
+        if (!bOpen) {
+            CommonUtil.ShowToast(this, "请先连接打印机", R.mipmap.warning);
+            showPrinterManagerDialog();
+            return;
+        }
+
+
+        new GetBatchImageBySMLAsyncTask().execute(smlID);
+    }
+
+    //这里主要扫描生产记录标签解析，若后续有别的类型，再往上加
+    private long parseScanResult(String content) {
+//        if (content.startsWith("SML/")){
+//            String[] strs = content.split("/");
+//            if (strs.length == 2){
+//                return Integer.parseInt(strs[1]);
+//            }else{
+//                return -1;
+//            }
+//
+//        }else {
+//            return -1;
+//        }
+
+
+        if (content != null && content.startsWith("SML/")) {
+            try {
+                return Long.parseLong(content.substring(4));
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        }
+        return -1;
     }
 
     private void initTypeSpinner() {
@@ -178,6 +272,14 @@ public class NewGetPrintImageActivity extends BaseActivity {
             public void onNothingSelected(AdapterView<?> parent) {
                 selectedOption = LABEL_TYPE_OPTIONS[0];
             }
+        });
+    }
+
+    private void initBatchTestModeCheckBox() {
+        printBatchTestModeCheckBox.setChecked(testLimitBatchPrint);
+        printBatchTestModeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            testLimitBatchPrint = isChecked;
+            saveBatchPrintModeSettings();
         });
     }
 
@@ -241,6 +343,39 @@ public class NewGetPrintImageActivity extends BaseActivity {
         showPrinterManagerDialog();
     }
 
+    @OnClick(R.id.print_batch_image_by_sml_button)
+    public void onPrintBatchImageSMLButtonClick() {
+
+        String idText = idEditText.getText().toString().trim();
+        if (TextUtils.isEmpty(idText)) {
+            CommonUtil.ShowToast(this, "请在输入框中输入生产记录ID", R.mipmap.warning);
+            return;
+        }
+
+        long objectId;
+        try {
+            objectId = Long.parseLong(idText);
+        } catch (Exception e) {
+            CommonUtil.ShowToast(this, "输入的生产记录ID格式错误", R.mipmap.warning);
+            return;
+        }
+
+//        if (!bOpen) {
+//            CommonUtil.ShowToast(this, "请先连接打印机", R.mipmap.warning);
+//            showPrinterManagerDialog();
+//            return;
+//        }
+//
+//        new GetBatchImageBySMLAsyncTask().execute(objectId);
+        printBatchBitmapBySMLCommon(objectId);
+    }
+
+    @OnClick(R.id.print_batch_image_by_scan_sml_button)
+    public void onPrintBatchImageByScanSmlButtonClick(){
+        new IntentIntegrator(NewGetPrintImageActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+
+    }
+
     private void showPrinterManagerDialog() {
         if (printerManagerDialog == null) {
             View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_zebra_printer_manage, null, false);
@@ -253,12 +388,14 @@ public class NewGetPrintImageActivity extends BaseActivity {
             printerStatusButton = dialogView.findViewById(R.id.dialog_printer_status_button);
             printerConfigButton = dialogView.findViewById(R.id.dialog_printer_configuration_button);
             printerCalibrationButton = dialogView.findViewById(R.id.dialog_printer_calibration_button);
+            printerResetButton = dialogView.findViewById(R.id.dialog_printer_reset_button);
 
             connectPrinterButton.setOnClickListener(v -> openPrinterDiscovery());
             disconnectPrinterButton.setOnClickListener(v -> disconnectPrinter());
             printerStatusButton.setOnClickListener(v -> queryPrinterStatus());
             printerConfigButton.setOnClickListener(v -> printConfigurationPage());
             printerCalibrationButton.setOnClickListener(v -> showCalibrationDialog());
+            printerResetButton.setOnClickListener(v -> resetPrinterStateAndReconnect());
             printerLanguageRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
                 if (!bOpen) {
                     return;
@@ -356,6 +493,8 @@ public class NewGetPrintImageActivity extends BaseActivity {
                 dismissProgressDialog();
                 if (openResult == ZebraPrinter.ZEBRA_E_SUCCESS) {
                     bOpen = true;
+                    lastPrinterMacAddress = printerMacAddress;
+                    saveLastPrinterMacAddress();
                     ZebraPrinter.SGD_GetVar("device.languages", printerLanguages);
                     String printerLanguage = printerLanguages.toString();
                     bLanguageCPCL = "line_print".equalsIgnoreCase(printerLanguage);
@@ -369,6 +508,69 @@ public class NewGetPrintImageActivity extends BaseActivity {
                     CommonUtil.ShowToast(NewGetPrintImageActivity.this, getString(R.string.not_support_printer), R.mipmap.warning);
                 } else {
                     CommonUtil.ShowToast(NewGetPrintImageActivity.this, getString(R.string.connect_failed), R.mipmap.warning);
+                }
+            });
+        }).start();
+    }
+
+    private void resetPrinterStateAndReconnect() {
+        if (TextUtils.isEmpty(lastPrinterMacAddress) && !bOpen) {
+            CommonUtil.ShowToast(this, "没有可重连的打印机地址，请先连接一次打印机", R.mipmap.warning);
+            return;
+        }
+        cancelPrintRequested = true;
+        showProgressDialog("正在清空打印状态并重连...");
+        new Thread(() -> {
+            boolean success = false;
+            String errorMessage = null;
+            StringBuffer printerLanguages = new StringBuffer();
+            try {
+                try {
+                    ZebraPrinter.WriteData("~JA\r\n".getBytes());
+                    Thread.sleep(300);
+                } catch (Exception ignored) {
+                }
+                try {
+                    ZebraPrinter.Close();
+                } catch (Exception ignored) {
+                }
+                bOpen = false;
+                bLanguageCPCL = false;
+                bLanguageESCPOS = false;
+                if (!TextUtils.isEmpty(lastPrinterMacAddress)) {
+                    int result = ZebraPrinter.Open(0, lastPrinterMacAddress);
+                    if (result == ZebraPrinter.ZEBRA_E_SUCCESS) {
+                        bOpen = true;
+                        ZebraPrinter.SGD_GetVar("device.languages", printerLanguages);
+                        String printerLanguage = printerLanguages.toString();
+                        bLanguageCPCL = "line_print".equalsIgnoreCase(printerLanguage);
+                        bLanguageESCPOS = "esc_pos".equalsIgnoreCase(printerLanguage);
+                        if (!bLanguageCPCL && !bLanguageESCPOS) {
+                            bLanguageCPCL = true;
+                        }
+                        success = true;
+                    } else {
+                        errorMessage = "重连打印机失败";
+                    }
+                } else {
+                    errorMessage = "没有可重连的打印机地址";
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "resetPrinterStateAndReconnect error", e);
+                errorMessage = "清空打印状态失败：" + e.getMessage();
+            }
+            final boolean finalSuccess = success;
+            final String finalErrorMessage = errorMessage;
+            runOnUiThread(() -> {
+                dismissProgressDialog();
+                cancelPrintRequested = false;
+                updatePrinterManagerUi();
+                if (finalSuccess) {
+                    CommonUtil.ShowToast(NewGetPrintImageActivity.this, "已清空状态并重连打印机", R.mipmap.smiley);
+                } else {
+                    CommonUtil.ShowToast(NewGetPrintImageActivity.this,
+                            TextUtils.isEmpty(finalErrorMessage) ? "清空打印状态失败" : finalErrorMessage,
+                            R.mipmap.warning);
                 }
             });
         }).start();
@@ -510,9 +712,10 @@ public class NewGetPrintImageActivity extends BaseActivity {
             return;
         }
 
-        showProgressDialog(getString(R.string.printing));
+        startPrintProgressDialog(getString(R.string.printing));
         new Thread(() -> {
             try {
+                ensurePrinterReadyOrThrow();
                 if (bLanguageCPCL) {
                     printBitmapByCpcl(bitmap);
                 } else if (bLanguageESCPOS) {
@@ -523,7 +726,11 @@ public class NewGetPrintImageActivity extends BaseActivity {
                 waitPrinterComplete();
                 runOnUiThread(() -> {
                     dismissProgressDialog();
-                    CommonUtil.ShowToast(NewGetPrintImageActivity.this, "打印完成", R.mipmap.smiley);
+                    if (cancelPrintRequested) {
+                        CommonUtil.ShowToast(NewGetPrintImageActivity.this, "已取消打印", R.mipmap.warning);
+                    } else {
+                        CommonUtil.ShowToast(NewGetPrintImageActivity.this, "打印完成", R.mipmap.smiley);
+                    }
                 });
             } catch (Exception e) {
                 Log.e(TAG, "printCurrentPreviewBitmap error", e);
@@ -552,7 +759,32 @@ public class NewGetPrintImageActivity extends BaseActivity {
         ZebraPrinter.CPCL_Print();
     }
 
+    private void printBitmapByCpclBatch(List<Bitmap> bitmapList) {
+        if (bitmapList == null || bitmapList.isEmpty()) {
+            return;
+        }
+        for (Bitmap bitmap : bitmapList) {
+            if (cancelPrintRequested) {
+                return;
+            }
+            ensurePrinterReadyOrThrow();
+            if (bitmap == null) {
+                continue;
+            }
+            // 批量时完全复用单张打印流程，避免多张任务共用同一套 CPCL 状态导致实际出纸数量异常。
+            printBitmapByCpcl(bitmap);
+            try {
+                waitPrinterComplete();
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return;
+            }
+        }
+    }
+
     private void printBitmapByEscPos(Bitmap bitmap) {
+        ensurePrinterReadyOrThrow();
         Bitmap preparedBitmap = prepareBitmapForEscPos(bitmap);
         ZebraPrinter.ESCPOS_PrinterInit();
         ZebraPrinter.ESCPOS_SetTextFont(0);
@@ -567,6 +799,8 @@ public class NewGetPrintImageActivity extends BaseActivity {
         if (sourceBitmap == null) {
             return null;
         }
+        sourceBitmap = trimOuterBorder(sourceBitmap);
+        sourceBitmap = cleanupLeftGuideArea(sourceBitmap);
         normalizeCalibrationSettings();
         float scale = Math.max(0.1f, cpclScalePercent / 100f);
         int safeLeftMargin = Math.max(qrPriorityLeftSafetyMargin, Math.max(0, cpclHorizontalOffset));
@@ -598,6 +832,8 @@ public class NewGetPrintImageActivity extends BaseActivity {
         if (sourceBitmap == null) {
             return null;
         }
+        sourceBitmap = trimOuterBorder(sourceBitmap);
+        sourceBitmap = cleanupLeftGuideArea(sourceBitmap);
         normalizeCalibrationSettings();
         float scale = Math.min(1f, escPosTargetWidth * 1f / sourceBitmap.getWidth());
         int scaledWidth = Math.max(1, Math.round(sourceBitmap.getWidth() * scale));
@@ -616,9 +852,10 @@ public class NewGetPrintImageActivity extends BaseActivity {
     }
 
     private void waitPrinterComplete() throws InterruptedException {
-        while (ZebraPrinter.GetPrinterState() == 1) {
+        while (!cancelPrintRequested && ZebraPrinter.GetPrinterState() == 1) {
             Thread.sleep(200);
         }
+        ensurePrinterReadyOrThrow();
     }
 
     private void updatePrinterManagerUi() {
@@ -632,6 +869,7 @@ public class NewGetPrintImageActivity extends BaseActivity {
         escPosRadioButton.setEnabled(bOpen);
         printerStatusButton.setEnabled(bOpen);
         printerConfigButton.setEnabled(bOpen);
+        printerResetButton.setEnabled(bOpen || !TextUtils.isEmpty(lastPrinterMacAddress));
 
         printerLanguageRadioGroup.setOnCheckedChangeListener(null);
         if (bLanguageCPCL) {
@@ -658,6 +896,16 @@ public class NewGetPrintImageActivity extends BaseActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(message);
         progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    private void startPrintProgressDialog(String message) {
+        cancelPrintRequested = false;
+        dismissProgressDialog();
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(message);
+        progressDialog.setCancelable(false);
+        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "取消", (dialog, which) -> cancelPrintRequested = true);
         progressDialog.show();
     }
 
@@ -719,6 +967,8 @@ public class NewGetPrintImageActivity extends BaseActivity {
         cpclVerticalOffset = preferences.getInt("cpclVerticalOffset", cpclVerticalOffset);
         cpclScalePercent = preferences.getInt("cpclScalePercent", cpclScalePercent);
         escPosTargetWidth = preferences.getInt("escPosTargetWidth", escPosTargetWidth);
+        testLimitBatchPrint = preferences.getBoolean("testLimitBatchPrint", true);
+        lastPrinterMacAddress = preferences.getString("lastPrinterMacAddress", null);
         normalizeCalibrationSettings();
     }
 
@@ -731,6 +981,20 @@ public class NewGetPrintImageActivity extends BaseActivity {
                 .putInt("cpclVerticalOffset", cpclVerticalOffset)
                 .putInt("cpclScalePercent", cpclScalePercent)
                 .putInt("escPosTargetWidth", escPosTargetWidth)
+                .apply();
+    }
+
+    private void saveBatchPrintModeSettings() {
+        getSharedPreferences(PRINT_PREFS, MODE_PRIVATE)
+                .edit()
+                .putBoolean("testLimitBatchPrint", testLimitBatchPrint)
+                .apply();
+    }
+
+    private void saveLastPrinterMacAddress() {
+        getSharedPreferences(PRINT_PREFS, MODE_PRIVATE)
+                .edit()
+                .putString("lastPrinterMacAddress", lastPrinterMacAddress)
                 .apply();
     }
 
@@ -756,6 +1020,71 @@ public class NewGetPrintImageActivity extends BaseActivity {
 
     private int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
+    }
+
+    private String normalizeWsJsonPayload(String payload) {
+        if (TextUtils.isEmpty(payload)) {
+            return payload;
+        }
+        String trimmed = payload.trim();
+        if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+            return trimmed;
+        }
+        try {
+            JsonElement jsonElement = new JsonParser().parse(trimmed);
+            if (jsonElement != null && jsonElement.isJsonPrimitive() && jsonElement.getAsJsonPrimitive().isString()) {
+                String innerJson = jsonElement.getAsString();
+                return TextUtils.isEmpty(innerJson) ? trimmed : innerJson.trim();
+            }
+        } catch (Exception ignored) {
+        }
+        return trimmed;
+    }
+
+    private Bitmap trimOuterBorder(Bitmap sourceBitmap) {
+        if (sourceBitmap == null) {
+            return null;
+        }
+        int trimPx = SOURCE_TRIM_BORDER_PX;
+        if (sourceBitmap.getWidth() <= trimPx * 2 + 40 || sourceBitmap.getHeight() <= trimPx * 2 + 40) {
+            return sourceBitmap;
+        }
+        try {
+            return Bitmap.createBitmap(
+                    sourceBitmap,
+                    trimPx,
+                    trimPx,
+                    sourceBitmap.getWidth() - trimPx * 2,
+                    sourceBitmap.getHeight() - trimPx * 2
+            );
+        } catch (Exception e) {
+            Log.w(TAG, "trimOuterBorder failed", e);
+            return sourceBitmap;
+        }
+    }
+
+    private Bitmap cleanupLeftGuideArea(Bitmap sourceBitmap) {
+        if (sourceBitmap == null) {
+            return null;
+        }
+        if (sourceBitmap.getWidth() <= SOURCE_LEFT_CLEANUP_PX + 40) {
+            return sourceBitmap;
+        }
+        try {
+            Bitmap mutableBitmap = sourceBitmap.copy(Bitmap.Config.ARGB_8888, true);
+            if (mutableBitmap == null) {
+                return sourceBitmap;
+            }
+            Canvas canvas = new Canvas(mutableBitmap);
+            android.graphics.Paint whitePaint = new android.graphics.Paint();
+            whitePaint.setColor(Color.WHITE);
+            whitePaint.setStyle(android.graphics.Paint.Style.FILL);
+            canvas.drawRect(0, 0, SOURCE_LEFT_CLEANUP_PX, mutableBitmap.getHeight(), whitePaint);
+            return mutableBitmap;
+        } catch (Exception e) {
+            Log.w(TAG, "cleanupLeftGuideArea failed", e);
+            return sourceBitmap;
+        }
     }
 
     private final BroadcastReceiver printerConnectReceiver = new BroadcastReceiver() {
@@ -799,7 +1128,10 @@ public class NewGetPrintImageActivity extends BaseActivity {
         protected Void doInBackground(String... strings) {
             wsResult = WebServiceUtil.opLabelGetPrintImage(labelType, objectId);
             if (wsResult != null && wsResult.getResult() && !TextUtils.isEmpty(wsResult.getInfo())) {
+//                String jsonPayload = normalizeWsJsonPayload(wsResult.getInfo());
+//                imageBean = JsonUtil.parseJsonToObject(jsonPayload, LabelPrintImageBean.class);
                 imageBean = JsonUtil.parseJsonToObject(wsResult.getInfo(), LabelPrintImageBean.class);
+
             }
             return null;
         }
@@ -824,6 +1156,356 @@ public class NewGetPrintImageActivity extends BaseActivity {
             showImageFromBean(imageBean);
             updateResultText(imageBean);
             CommonUtil.ShowToast(NewGetPrintImageActivity.this, "标签图片获取成功", R.mipmap.smiley);
+        }
+    }
+
+    private class GetBatchImageBySMLAsyncTask extends AsyncTask<Long, Void, Void>{
+        private WsResult wsResult;
+        private SMLPrintBatchParamsBean smlPrintBatchParamsBean;
+        @Override
+        protected Void doInBackground(Long... longIDs) {
+            long smlID = longIDs[0];
+            if (smlID > 0){
+
+                wsResult = WebServiceUtil.opGetBatchPrintImageBySMLID(smlID);
+                if (wsResult != null && wsResult.getResult() && !TextUtils.isEmpty(wsResult.getInfo())) {
+//                    String jsonPayload = normalizeWsJsonPayload(wsResult.getInfo());
+//                    smlPrintBatchParamsBean = JsonUtil.parseJsonToObject(jsonPayload, SMLPrintBatchParamsBean.class);
+
+//                    String jsonPayload = normalizeWsJsonPayload(wsResult.getInfo());
+                    smlPrintBatchParamsBean = JsonUtil.parseJsonToObject(wsResult.getInfo(), SMLPrintBatchParamsBean.class);
+                }
+            }else{
+//                ToastUtil.showWrongToastShort("该生产记录无效！");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            //这里循环执行，根据参数
+            if (smlPrintBatchParamsBean != null){
+                batchPrintImageBySML(smlPrintBatchParamsBean);
+            }else{
+                ToastUtil.showWrongToastShort("该生产记录相关的打印信息获取失败！");
+            }
+        }
+    }
+
+    private void batchPrintImageBySML(SMLPrintBatchParamsBean smlPrintBatchParamsBean) {
+        if (smlPrintBatchParamsBean == null) {
+            ToastUtil.showWrongToastShort("批量打印参数为空！");
+            return;
+        }
+        if (!bOpen) {
+            CommonUtil.ShowToast(this, "请先连接打印机", R.mipmap.warning);
+            showPrinterManagerDialog();
+            return;
+        }
+
+        int printerState = ZebraPrinter.GetPrinterState();
+        if (printerState == 2 || printerState == 3) {
+            Toast.makeText(this, R.string.printer_error_not_print, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        showProgressDialog("正在准备批量打印图片...");
+        new Thread(() -> {
+            try {
+                BatchPrintPrepareResult prepareResult = new BatchPrintPrepareResult();
+                appendBatchBitmapsGrouped(prepareResult, smlPrintBatchParamsBean);
+
+                if (prepareResult.bitmapList.isEmpty()) {
+                    runOnUiThread(() -> {
+                        dismissProgressDialog();
+                        resultTextView.setText(buildBatchPrintSummaryText(prepareResult));
+                        ToastUtil.showWrongToastShort("没有可打印的标签图片！");
+                    });
+                    return;
+                }
+
+                runOnUiThread(() -> {
+                    resultTextView.setText(buildBatchPrintSummaryText(prepareResult));
+                    startPrintProgressDialog("正在批量打印 " + prepareResult.bitmapList.size() + " 张标签...");
+                });
+
+                if (bLanguageCPCL) {
+                    printBitmapByCpclBatch(prepareResult.bitmapList);
+                } else if (bLanguageESCPOS) {
+                    for (Bitmap bitmap : prepareResult.bitmapList) {
+                        if (cancelPrintRequested) {
+                            break;
+                        }
+                        ensurePrinterReadyOrThrow();
+                        if (bitmap == null) {
+                            continue;
+                        }
+                        printBitmapByEscPos(bitmap);
+                        waitPrinterComplete();
+                    }
+                } else {
+                    throw new IllegalStateException("打印机语言未设置");
+                }
+
+                runOnUiThread(() -> {
+                    dismissProgressDialog();
+                    if (cancelPrintRequested) {
+                        CommonUtil.ShowToast(NewGetPrintImageActivity.this,
+                                "已取消后续打印，已发出的任务可能仍会继续出纸",
+                                R.mipmap.warning);
+                    } else {
+                        CommonUtil.ShowToast(NewGetPrintImageActivity.this,
+                                "批量打印完成，共 " + prepareResult.bitmapList.size() + " 张",
+                                R.mipmap.smiley);
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "batchPrintImageBySML error", e);
+                runOnUiThread(() -> {
+                    dismissProgressDialog();
+                    CommonUtil.ShowToast(NewGetPrintImageActivity.this,
+                            "批量打印失败：" + e.getMessage(),
+                            R.mipmap.warning);
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * 按组追加打印图片：小→中→大 循环。
+     *
+     * 三种模式：
+     * 1) 小中大：smmPerSMT组{ smlPerSMM个小标签 + 1个中标签 } + 1个大标签，循环
+     * 2) 小大：全部小标签 + 全部大标签（无中标签时）
+     * 3) 小：仅全部小标签
+     *
+     * 有余数时，剩余标签继续按同样组规则打印。
+     */
+    private void appendBatchBitmapsGrouped(BatchPrintPrepareResult prepareResult, SMLPrintBatchParamsBean params) {
+        List<Integer> smliIds = params.getSMLIIDList() != null ? params.getSMLIIDList() : new ArrayList<Integer>();
+        List<Integer> smmIds = params.getSMMIDList() != null ? params.getSMMIDList() : new ArrayList<Integer>();
+        List<Integer> smtIds = params.getSMTIDList() != null ? params.getSMTIDList() : new ArrayList<Integer>();
+
+        int smliCount = smliIds.size();
+        int smmCount = smmIds.size();
+        int smtCount = smtIds.size();
+
+        // 测试模式下的限制
+        int smliLimit = testLimitBatchPrint ? TEST_MAX_SMLI_PRINT_COUNT : Integer.MAX_VALUE;
+        int smmSmtLimit = testLimitBatchPrint ? 1 : Integer.MAX_VALUE;
+
+        // 维护各列表的当前索引和已打印计数
+        int smliIndex = 0, smmIndex = 0, smtIndex = 0;
+        int smliPrinted = 0, smmPrinted = 0, smtPrinted = 0;
+
+        if (smmCount == 0 && smtCount == 0) {
+            // 模式3：只有小标签
+            while (smliIndex < smliCount && smliPrinted < smliLimit) {
+                appendBitmapById(prepareResult, "SMLI", smliIds.get(smliIndex++));
+                smliPrinted++;
+            }
+        } else if (smmCount == 0) {
+            // 模式2：小 + 大，无中标签 → 先全部小，再全部大
+            while (smliIndex < smliCount && smliPrinted < smliLimit) {
+                appendBitmapById(prepareResult, "SMLI", smliIds.get(smliIndex++));
+                smliPrinted++;
+            }
+            while (smtIndex < smtCount && smtPrinted < smmSmtLimit) {
+                appendBitmapById(prepareResult, "SMT", smtIds.get(smtIndex++));
+                smtPrinted++;
+            }
+        } else {
+            // 模式1：小中大 — 全量模式，按组交错打印
+            int smlPerSMM = smliCount / smmCount;
+            int smmPerSMT = smtCount > 0 ? smmCount / smtCount : 0;
+
+            if (smtCount == 0) {
+                // 有中有小但无大：smlPerSMM个小 + 1个中 循环
+                while (smmIndex < smmCount && smmPrinted < smmSmtLimit) {
+                    for (int i = 0; i < smlPerSMM && smliIndex < smliCount && smliPrinted < smliLimit; i++) {
+                        appendBitmapById(prepareResult, "SMLI", smliIds.get(smliIndex++));
+                        smliPrinted++;
+                    }
+                    appendBitmapById(prepareResult, "SMM", smmIds.get(smmIndex++));
+                    smmPrinted++;
+                }
+                while (smliIndex < smliCount && smliPrinted < smliLimit) {
+                    appendBitmapById(prepareResult, "SMLI", smliIds.get(smliIndex++));
+                    smliPrinted++;
+                }
+            } else {
+                // 全量小中大
+                while (smtIndex < smtCount && smtPrinted < smmSmtLimit) {
+                    for (int g = 0; g < smmPerSMT && smmIndex < smmCount && smmPrinted < smmSmtLimit; g++) {
+                        for (int i = 0; i < smlPerSMM && smliIndex < smliCount && smliPrinted < smliLimit; i++) {
+                            appendBitmapById(prepareResult, "SMLI", smliIds.get(smliIndex++));
+                            smliPrinted++;
+                        }
+                        appendBitmapById(prepareResult, "SMM", smmIds.get(smmIndex++));
+                        smmPrinted++;
+                    }
+                    appendBitmapById(prepareResult, "SMT", smtIds.get(smtIndex++));
+                    smtPrinted++;
+                }
+                // 剩余大标签
+                while (smtIndex < smtCount && smtPrinted < smmSmtLimit) {
+                    appendBitmapById(prepareResult, "SMT", smtIds.get(smtIndex++));
+                    smtPrinted++;
+                }
+                // 剩余中标签+小标签
+                while (smmIndex < smmCount && smmPrinted < smmSmtLimit) {
+                    for (int i = 0; i < smlPerSMM && smliIndex < smliCount && smliPrinted < smliLimit; i++) {
+                        appendBitmapById(prepareResult, "SMLI", smliIds.get(smliIndex++));
+                        smliPrinted++;
+                    }
+                    appendBitmapById(prepareResult, "SMM", smmIds.get(smmIndex++));
+                    smmPrinted++;
+                }
+                // 剩余小标签
+                while (smliIndex < smliCount && smliPrinted < smliLimit) {
+                    appendBitmapById(prepareResult, "SMLI", smliIds.get(smliIndex++));
+                    smliPrinted++;
+                }
+            }
+        }
+
+        // 更新计划数量
+        prepareResult.markPlanned("SMLI", Math.min(smliCount, smliLimit));
+        if (smmCount > 0) {
+            prepareResult.markPlanned("SMM", Math.min(smmCount, smmSmtLimit));
+        }
+        if (smtCount > 0) {
+            prepareResult.markPlanned("SMT", Math.min(smtCount, smmSmtLimit));
+        }
+    }
+
+    private void appendBitmapById(BatchPrintPrepareResult prepareResult, String labelType, long objectId) {
+        if (objectId <= 0) {
+            return;
+        }
+        Bitmap bitmap = fetchLabelBitmap(labelType, objectId);
+        if (bitmap != null) {
+            prepareResult.bitmapList.add(bitmap);
+            prepareResult.markSuccess(labelType);
+        } else {
+            prepareResult.failures.add(labelType + ":" + objectId);
+        }
+    }
+
+    private void appendBatchBitmaps(BatchPrintPrepareResult prepareResult, String labelType, List<Integer> idList) {
+        if (prepareResult == null || idList == null || idList.isEmpty()) {
+            return;
+        }
+        int maxCount = resolveBatchPrintLimit(labelType, idList.size());
+        int printCount = 0;
+        for (Integer id : idList) {
+            if (id == null || id <= 0) {
+                continue;
+            }
+            Bitmap bitmap = fetchLabelBitmap(labelType, id.longValue());
+            if (bitmap != null) {
+                prepareResult.bitmapList.add(bitmap);
+                printCount++;
+                prepareResult.markSuccess(labelType);
+            } else {
+                prepareResult.failures.add(labelType + ":" + id);
+            }
+            if (printCount >= maxCount) {
+                break;
+            }
+        }
+        prepareResult.markPlanned(labelType, maxCount);
+    }
+
+    private int resolveBatchPrintLimit(String labelType, int sourceCount) {
+        if (!testLimitBatchPrint) {
+            return sourceCount;
+        }
+        if ("SMLI".equalsIgnoreCase(labelType)) {
+            return Math.min(sourceCount, TEST_MAX_SMLI_PRINT_COUNT);
+        }
+        if ("SMM".equalsIgnoreCase(labelType) || "SMT".equalsIgnoreCase(labelType)) {
+            return Math.min(sourceCount, 1);
+        }
+        return sourceCount;
+    }
+
+    private Bitmap fetchLabelBitmap(String labelType, long objectId) {
+        WsResult labelResult = WebServiceUtil.opLabelGetPrintImage(labelType, objectId);
+        if (labelResult == null || !labelResult.getResult() || TextUtils.isEmpty(labelResult.getInfo())) {
+            Log.w(TAG, "fetchLabelBitmap failed. labelType=" + labelType + ", objectId=" + objectId
+                    + ", error=" + (labelResult == null ? "null result" : labelResult.getErrorInfo()));
+            return null;
+        }
+        LabelPrintImageBean imageBean = JsonUtil.parseJsonToObject(labelResult.getInfo(), LabelPrintImageBean.class);
+        if (imageBean == null || TextUtils.isEmpty(imageBean.getImageBase64())) {
+            return null;
+        }
+        try {
+            byte[] imageBytes = Base64.decode(imageBean.getImageBase64(), Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        } catch (Exception e) {
+            Log.e(TAG, "decode label bitmap error. labelType=" + labelType + ", objectId=" + objectId, e);
+            return null;
+        }
+    }
+
+    private String buildBatchPrintSummaryText(BatchPrintPrepareResult prepareResult) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("批量打印准备结果").append("\n");
+        builder.append("测试模式：").append(testLimitBatchPrint ? "开启" : "关闭").append("\n");
+        builder.append("小标签 计划/成功：").append(prepareResult.plannedSMLI).append("/").append(prepareResult.successSMLI).append("\n");
+        builder.append("中标签 计划/成功：").append(prepareResult.plannedSMM).append("/").append(prepareResult.successSMM).append("\n");
+        builder.append("大标签 计划/成功：").append(prepareResult.plannedSMT).append("/").append(prepareResult.successSMT).append("\n");
+        builder.append("总张数：").append(prepareResult.bitmapList.size());
+        if (!prepareResult.failures.isEmpty()) {
+            builder.append("\n失败ID：").append(TextUtils.join(" , ", prepareResult.failures));
+        }
+        return builder.toString();
+    }
+
+    private void ensurePrinterReadyOrThrow() {
+        if (cancelPrintRequested) {
+            throw new IllegalStateException("打印已取消");
+        }
+        int printerState = ZebraPrinter.GetPrinterState();
+        if (printerState == 2) {
+            throw new IllegalStateException(getString(R.string.printer_cover_open));
+        }
+        if (printerState == 3) {
+            throw new IllegalStateException(getString(R.string.printer_media_out));
+        }
+    }
+
+    private static class BatchPrintPrepareResult {
+        final List<Bitmap> bitmapList = new ArrayList<>();
+        final List<String> failures = new ArrayList<>();
+        int plannedSMLI;
+        int plannedSMM;
+        int plannedSMT;
+        int successSMLI;
+        int successSMM;
+        int successSMT;
+
+        void markPlanned(String labelType, int count) {
+            if ("SMLI".equalsIgnoreCase(labelType)) {
+                plannedSMLI = count;
+            } else if ("SMM".equalsIgnoreCase(labelType)) {
+                plannedSMM = count;
+            } else if ("SMT".equalsIgnoreCase(labelType)) {
+                plannedSMT = count;
+            }
+        }
+
+        void markSuccess(String labelType) {
+            if ("SMLI".equalsIgnoreCase(labelType)) {
+                successSMLI++;
+            } else if ("SMM".equalsIgnoreCase(labelType)) {
+                successSMM++;
+            } else if ("SMT".equalsIgnoreCase(labelType)) {
+                successSMT++;
+            }
         }
     }
 }

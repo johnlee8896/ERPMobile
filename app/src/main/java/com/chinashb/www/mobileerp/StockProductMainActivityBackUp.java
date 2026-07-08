@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountTailInActivity;
 import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountOutActivity;
 import com.chinashb.www.mobileerp.warehouse.ScanIstFindProductActivity;
-import com.chinashb.www.mobileerp.warehouse.StockDepartmentInActivity;
+import com.chinashb.www.mobileerp.warehouse.StockPartDepartmentInActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,7 +97,7 @@ class StockProductMainActivityBackUp extends BaseActivity implements View.OnClic
         } else if (v == sendGoodsCommandButton) {
 
         } else if (v == departmentInButton) {
-            Intent intent = new Intent(this, StockDepartmentInActivity.class);
+            Intent intent = new Intent(this, StockPartDepartmentInActivity.class);
             //// TODO: 2019/9/6 区分是成品还是零件
             startActivity(intent);
         } else if (v == saleOutTextView) {

@@ -13,8 +13,19 @@
         app:app_title_text="备料管理页面" >
 
         <Button
+            android:id="@+id/mw_backup_title_select_all_button"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:layout_toLeftOf="@+id/mw_backup_title_confirm_Button"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:text="全选"
+            android:textSize="15sp" />
+        <Button
             android:id="@+id/mw_backup_title_confirm_Button"
-            android:layout_width="80dp"
+            android:layout_width="70dp"
             android:layout_height="40dp"
             android:layout_marginTop="@dimen/dimen_size_5"
             android:layout_alignParentRight="true"
@@ -23,6 +34,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dimen_size_10"
             android:textSize="15sp" />
+
     </com.chinashb.www.mobileerp.widget.TitleLayoutManagerView>
     <com.chinashb.www.mobileerp.widget.CustomRecyclerView
         android:id="@+id/mw_backup_recyclerView"

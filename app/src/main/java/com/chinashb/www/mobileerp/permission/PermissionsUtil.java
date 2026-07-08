@@ -140,6 +140,13 @@ public class PermissionsUtil extends BaseActivity {
 
     //显示权限被拒绝的对话框
     private void showMissingPermissionDialog() {
+        // If user checked "Don't ask again", stop showing our dialog too
+        if (permission != null && permission.length > 0
+                && !ActivityCompat.shouldShowRequestPermissionRationale(this, permission[0])) {
+            permissionsRefused();
+            return;
+        }
+
         if (tipInfo == null) {
             tipInfo = PermissionTipInfo.newInstance();
         }
@@ -165,9 +172,17 @@ public class PermissionsUtil extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //去设置页面设置完成之后再次请求看是否已打开权限
+        //从设置页面回来后检查权限是否已打开
         if (requestCode == REQUEST_SETTING_CODE) {
-            ActivityCompat.requestPermissions(this, permission, PERMISSION_REQUEST_CODE);
+            if (hasPermission(this, permission)) {
+                OnPermissionCallback listener = listenersMap.remove(key);
+                if (listener != null) {
+                    listener.onSuccess(permission);
+                }
+                finish();
+            } else {
+                permissionsRefused();
+            }
         }
     }
 

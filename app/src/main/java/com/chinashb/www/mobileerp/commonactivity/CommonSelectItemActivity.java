@@ -295,6 +295,9 @@ public class CommonSelectItemActivity extends BaseActivity {
                     List tempList = new ArrayList<BUItemBean>();
                     for (int i = 0; i < originalBUDataList.size(); i++) {
                         DepartmentBean departmentBean = (DepartmentBean) originalBUDataList.get(i);
+                        if (departmentBean == null || TextUtils.isEmpty(departmentBean.getDepartmentName()) ||TextUtils.isEmpty(departmentBean.getPDN())){
+                            continue;
+                        }
                         if (departmentBean.getDepartmentName().contains(keyWord) || departmentBean.getPDN().contains(keyWord)) {
                             tempList.add(departmentBean);
                         }

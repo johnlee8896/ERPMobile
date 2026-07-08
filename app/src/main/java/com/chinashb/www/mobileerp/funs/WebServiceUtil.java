@@ -16,6 +16,7 @@ import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
+import com.chinashb.www.mobileerp.bean.MWIssueItemOutParam;
 import com.chinashb.www.mobileerp.bean.PanDianItemBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.bean.SendGoodsSearchItemBean;
@@ -1379,7 +1380,7 @@ public class WebServiceUtil {
 
     }
 
-    private static SoapSerializationEnvelope invokeSupplierWS(ArrayList<PropertyInfo> propertyInfoList, String webMethodName) {
+    private static SoapSerializationEnvelope invokeSupplierWS_Special(ArrayList<PropertyInfo> propertyInfoList, String webMethodName) {
         SoapSerializationEnvelope envelope = null;
         // Create request
         SoapObject soapObject = new SoapObject(NAMESPACE, webMethodName);
@@ -1392,9 +1393,19 @@ public class WebServiceUtil {
         envelope.dotNet = true;
         envelope.bodyOut = soapObject;
 
+        // ============================================================
+// ✅ 核心修复：把 MWIssueItemOutParam 注册为 Array 的已知类型
+// 这一步告诉 KSOAP2："如果看到 Array，里面的元素是 MWIssueItemOutParam"
+        envelope.addMapping(NAMESPACE, "Array", MWIssueItemOutParam.class);
+// ============================================================
+
+        envelope.addMapping(NAMESPACE ,"MW_Issue_Item_Out_Param",MWIssueItemOutParam.class);
+        // 这一步告诉 KSOAP2："如果看到 MW_Out_ParamList，里面的元素是 MWIssueItemOutParam"
+        envelope.addMapping(NAMESPACE, "MW_Out_ParamList", MWIssueItemOutParam.class);
         // Set output SOAP object
-        envelope.setOutputSoapObject(soapObject);
         new MarshalDate().register(envelope);
+        //// TODO: 6/17/26 这个单独添加
+        envelope.setOutputSoapObject(soapObject);
 
 //        // Create HTTP call object
 ////        Current_Net_Link = "Intranet";
@@ -1435,6 +1446,43 @@ public class WebServiceUtil {
         return envelope;
     }
 
+
+    private static SoapSerializationEnvelope invokeSupplierWS(ArrayList<PropertyInfo> propertyInfoList, String webMethodName) {
+        SoapSerializationEnvelope envelope = null;
+        // Create request
+        SoapObject soapObject = new SoapObject(NAMESPACE, webMethodName);
+        for (PropertyInfo propertyInfo : propertyInfoList) {
+            soapObject.addProperty(propertyInfo);
+        }
+
+        // Create envelope
+        envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
+        envelope.dotNet = true;
+        envelope.bodyOut = soapObject;
+
+        // Set output SOAP object
+        new MarshalDate().register(envelope);
+        //// TODO: 6/17/26 这个单独添加
+        envelope.setOutputSoapObject(soapObject);
+
+        String finalUrl = UserSingleton.get().isTestEnvironment() ? URL_Test : URL;
+        if (UserSingleton.get().isCurrentInnerNetLink() || TextUtils.equals(Current_Net_Link, "Intranet")) {
+            finalUrl = UserSingleton.get().isTestEnvironment() ? "http://172.16.1.26:8100/Test_Wss_Test_Environment/Service.svc" : "http://172.16.1.26:8100/Test_Wss/Service.svc";
+
+        } else {
+//            finalUrl = UserSingleton.get().isServerBack() ? URL_BackUp : URL;
+
+        }
+        HttpTransportSE androidHttpTransport = new HttpTransportSE(finalUrl);
+        androidHttpTransport.debug = true;
+        try {
+            androidHttpTransport.call(SOAP_ACTION + webMethodName, envelope);
+            envelope.getResponse();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return envelope;
+    }
 
     //专门给工资查询使用，避免因为切换服务器而产生各样问题
     private static SoapSerializationEnvelope invokeSupplierWS_QueryWage(ArrayList<PropertyInfo> propertyInfoList, String webMethodName) {
@@ -1995,6 +2043,28 @@ public class WebServiceUtil {
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         AddPropertyInfo(propertyInfos, "LabelType", labelType);
         AddPropertyInfo(propertyInfos, "ID", id);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope == null) {
+            return null;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            return result;
+        }
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+
+    public static WsResult opGetBatchPrintImageBySMLID(long smlID) {
+        String webMethodName = "op_Label_Prepare_Print_Set_By_SML";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "HR_ID", UserSingleton.get().getHRID());
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "SML_ID", smlID);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         if (envelope == null) {
@@ -4796,6 +4866,79 @@ public class WebServiceUtil {
         return Result;
     }
 
+//    Function op_Commit_MW_New_Issue_Item_Improve_Batch2(MW_ID As Long, Exer As Integer,
+//                                                        MW_Out_ParamList As List(Of MW_Issue_Item_Out_Param),
+//    Bu_ID As Integer, HR_Name As String) As Web_Answer
+
+    public static WsResult op_Commit_MW_New_Issue_Item_Improve_Batch2(Long MW_ID, int Sender, List<MWIssueItemOutParam> mwIssueItemOutParamList) {
+        String webMethodName = "op_Commit_MW_New_Issue_Item_Improve_Batch2";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "MW_ID", MW_ID);
+        AddPropertyInfo(propertyInfos, "Exer", Sender);
+//        AddPropertyInfo(propertyInfos,"MW_Out_ParamList",mwIssueItemOutParamList);
+
+//        //// TODO: 6/17/26 这个单独添加
+//        PropertyInfo listProperty = new PropertyInfo();
+//        listProperty.setName("MW_Out_ParamList");
+//        listProperty.setValue(mwIssueItemOutParamList);
+//        listProperty.setType(MWIssueItemOutParam.class); // ✅ 不是 ArrayList.class
+//
+//        propertyInfos.add(listProperty);
+
+
+
+
+        //// TODO: 6/18/26 上面的仍然序列化有问题
+//        PropertyInfo ListProperty = new PropertyInfo();
+//        ListProperty.setName("MW_Out_ParamList");
+//
+//// ✅ 修改点：把 List 转成 JSON 字符串
+//        if (mwIssueItemOutParamList != null) {
+//            ListProperty.setValue(JsonUtil.objectToJson(mwIssueItemOutParamList));
+//        } else {
+//            ListProperty.setValue("[]");
+//        }
+//        ListProperty.setType(String.class); // ✅ 类型改为 String
+//        propertyInfos.add(ListProperty);
+
+
+//        PropertyInfo ListProperty = new PropertyInfo();
+//        ListProperty.setName("MW_Out_ParamList");
+//        // 3. 使用 Vector 包装 List（KSOAP2 只认 Vector 作为数组载体）
+//        Vector<MWIssueItemOutParam> vector = new Vector<>();
+//        if (mwIssueItemOutParamList != null) {
+//            vector.addAll(mwIssueItemOutParamList);
+//        }
+//
+//// 4. 设置值为 Vector
+//        ListProperty.setValue(vector);
+//
+//// 5. ⭐ 核心：类型必须是 MWIssueItemOutParam.class
+//// 告诉 KSOAP2：这是一个 MWIssueItemOutParam 类型的数组
+//        ListProperty.setType(MWIssueItemOutParam.class);
+//
+//// 6. 加入列表
+//        propertyInfos.add(ListProperty);
+
+        String paramJson = JsonUtil.objectToJson(mwIssueItemOutParamList);
+
+        AddPropertyInfo(propertyInfos,"MW_Out_ParamListString",paramJson);
+
+
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "HR_Name", UserSingleton.get().getHRName());
+
+
+//        SoapSerializationEnvelope envelope = invokeSupplierWS_Special(propertyInfos, webMethodName);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        WsResult ws_result = Get_WS_Result(obj);
+
+        return ws_result;
+    }
+
     public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty, Date outDate, String scanCode) {
         String webMethodName = "op_Commit_MW_New_Issue_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -4957,6 +5100,34 @@ public class WebServiceUtil {
 //
 //        return ws_result;
 //    }
+
+    //成品扫非托盘部门领料
+    public static WsResult opProductDepNotPalletIssue(int Bu_ID, DepartmentBean departmentBean,  long boxID, int Qty,String remark) {
+        String webMethodName = "op_Product_Dept_Not_Pallet_Issue";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
+        AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfos, "Dep_ID", departmentBean.getDepartmentID());
+        AddPropertyInfo(propertyInfos, "Box_ID", boxID);
+//        AddPropertyInfo(propertyInfos, "Exer", UserInfoEntity.ID);
+//        if (departmentBean != null) {
+//            AddPropertyInfo(propertyInfos, "EntityID", departmentBean.getDepartmentID());
+//            AddPropertyInfo(propertyInfos, "EntityName", departmentBean.getDepartmentName());
+//        }
+//        if (researchItemBean != null) {
+//            AddPropertyInfo(propertyInfos, "Fi_Product_Type_ID", researchItemBean.getFiPTID());
+//            AddPropertyInfo(propertyInfos, "Fi_Product_Status_ID", researchItemBean.getFSPDID());
+//            AddPropertyInfo(propertyInfos, "Out_Product_ID", researchItemBean.getProductID());
+//            AddPropertyInfo(propertyInfos, "Out_Program_ID", researchItemBean.getProgramID());
+//        }
+        AddPropertyInfo(propertyInfos, "Qty", Qty);
+        AddPropertyInfo(propertyInfos, "Remark", remark);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult ws_result = Get_WS_Result(obj);
+        return ws_result;
+    }
+
 
     //部门领料的出库？
     public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, DepartmentBean departmentBean, ResearchItemBean researchItemBean, BoxItemEntity boxItemEntity, String remark) {
@@ -5604,6 +5775,56 @@ public class WebServiceUtil {
         AddPropertyInfo(propertyInfos, "SMT_ID", box_item.getSMT_ID());
         AddPropertyInfo(propertyInfos, "Ist_ID", box_item.getIst_ID());
         AddPropertyInfo(propertyInfos, "Sub_Ist_ID", box_item.getSub_Ist_ID());
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        WsResult result = Get_WS_Result(obj);
+
+
+        return result;
+
+    }
+
+    //2026-06-09 john 这里是处理备料系统中撤回备料的操作，与普通的移库操作作区别
+//    public static WsResult op_Commit_Inv_Move_BackUp_Cancel(BoxItemEntity box_item) {
+//        String webMethodName = "op_Commit_Inv_Move_BackUp_Cancel";
+//        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+//
+//        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+//        AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
+//        AddPropertyInfo(propertyInfos, "SMLI_ID", box_item.getSMLI_ID());
+//        AddPropertyInfo(propertyInfos, "SMM_ID", box_item.getSMM_ID());
+//        AddPropertyInfo(propertyInfos, "SMT_ID", box_item.getSMT_ID());
+//        AddPropertyInfo(propertyInfos, "Ist_ID", box_item.getIst_ID());
+//        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", box_item.getSub_Ist_ID());
+//
+//        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+//
+//        SoapObject obj = (SoapObject) envelope.bodyIn;
+//
+//        WsResult result = Get_WS_Result(obj);
+//
+//
+//        return result;
+//
+//    }
+
+    //2026-06-25 john 这里是处理备料系统中撤回备料的操作，与普通的移库操作作区别,并处理移库后位置
+//    2026-06-29 john 加上mpiwc_id
+    public static WsResult op_Commit_Inv_Move_BackUp_Cancel(long MPIWC_ID,BoxItemEntity box_item,long istID,long subISTID) {
+        String webMethodName = "op_Commit_Inv_Move_BackUp_Cancel";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "MPIWC_ID", MPIWC_ID);
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
+        AddPropertyInfo(propertyInfos, "SMLI_ID", box_item.getSMLI_ID());
+        AddPropertyInfo(propertyInfos, "SMM_ID", box_item.getSMM_ID());
+        AddPropertyInfo(propertyInfos, "SMT_ID", box_item.getSMT_ID());
+        AddPropertyInfo(propertyInfos, "Ist_ID", istID);
+        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", subISTID);
 
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
 

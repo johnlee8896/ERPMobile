@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -245,7 +244,7 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
             qrContent = content.split("/");
             if (qrContent.length >= 2) {
 
-                if (content.startsWith("Pallet") && qrContent.length == 8) {
+                if (content.startsWith("Pallet") && qrContent.length >= 8) {
                     int boxId = Integer.parseInt(qrContent[1]);
                     if (boxIDList.contains(boxId)) {
                         ToastUtil.showToastShort("该托盘已在列表中，请勿重复扫描！");

@@ -13,6 +13,7 @@ import android.widget.Button;
 import com.chinashb.www.mobileerp.adapter.MWBackUpAdapter;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.IssueOutBackUpBean;
+import com.chinashb.www.mobileerp.bean.MWIssueItemOutParam;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
@@ -26,6 +27,7 @@ import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,9 +43,12 @@ import butterknife.ButterKnife;
 public class MWBackUpListActivity extends BaseActivity {
     @BindView(R.id.mw_backup_title_confirm_Button) Button executeAllButton;
     //    @BindView(R.id.select_mw_backup_title_manageView) TitleLayoutManagerView titleManageView;
+    // by codex -- john 2026-06-25 15:24 - 全选按钮功能
+    @BindView(R.id.mw_backup_title_select_all_button) Button selectAllButton;
     @BindView(R.id.mw_backup_recyclerView) CustomRecyclerView orderRecyclerView;
     @BindView(R.id.mw_backup_empty_layoutView) EmptyLayoutManageView emptyLayoutView;
     private int toBu_ID;
+    private boolean isAllSelected = false;
     private long mpiwc_ID;
     private MWBackUpAdapter adapter;
 //    private IssueOutBackUpBean backUpBean;
@@ -93,6 +98,7 @@ public class MWBackUpListActivity extends BaseActivity {
                     ToastUtil.showToastShort("进入到移库页面");
                     Intent intent = new Intent(MWBackUpListActivity.this, StockPartMoveActivity.class);
                     intent.putExtra(IntentConstant.Intent_Extra_Backup_ScanCode,backUpBean.getScanX());
+                    intent.putExtra(IntentConstant.Intent_Extra_Backup_mpiwc_id_for_move_cancel,mpiwc_ID);
                     intent.putExtra(IntentConstant.Intent_Extra_Backup_bean,backUpBean);
                     startActivityForResult(intent,IntentConstant.Intent_Request_Backup_To_PartMove_Activity);
                 }
@@ -107,6 +113,23 @@ public class MWBackUpListActivity extends BaseActivity {
 
 //            jumpBackToStockInActivity();
             handleAllOut();
+        });
+        selectAllButton.setOnClickListener(v -> {
+            if (isAllSelected) {
+                adapter.deselectAll();
+                resultBeanList.clear();
+                selectAllButton.setText("全选");
+                isAllSelected = false;
+            } else {
+                adapter.selectAll();
+                resultBeanList.clear();
+                List<IssueOutBackUpBean> list = adapter.getList();
+                if (list != null) {
+                    resultBeanList.addAll(list);
+                }
+                selectAllButton.setText("取消全选");
+                isAllSelected = true;
+            }
         });
 
     }
@@ -127,8 +150,12 @@ public class MWBackUpListActivity extends BaseActivity {
                 //借用一下这个变量
                 backUpBean.setToIst_ID(toIstID);
                 backUpBean.setToSub_Ist_ID(toSubIstID);
-                BackupMWReworkAsyncTask task = new BackupMWReworkAsyncTask();
-                task.execute();
+                // TODO: 6/16/26 不需要再执行了
+//                BackupMWReworkAsyncTask task = new BackupMWReworkAsyncTask();
+//                task.execute();
+
+                //2026-07-07 john 撤销成功后刷新界面
+                refreshAdapter();
 
             }else{
                 ToastUtil.showToastShort("撤回备料的移库失败！");
@@ -173,7 +200,9 @@ public class MWBackUpListActivity extends BaseActivity {
 //        }
 
         if (resultBeanList.size() > 0){
-            BackupMWOutAsyncTask task = new BackupMWOutAsyncTask();
+//            BackupMWOutAsyncTask task = new BackupMWOutAsyncTask();
+//            task.execute();
+            BackupOUtBatchAsyncTask task = new BackupOUtBatchAsyncTask();
             task.execute();
         }else{
             ToastUtil.showToastShort("未有待投料出库数据！");
@@ -244,6 +273,10 @@ public class MWBackUpListActivity extends BaseActivity {
                     adapter.setData(orderBeanList);
                     orderRecyclerView.setVisibility(View.VISIBLE);
                     emptyLayoutView.setVisibility(View.GONE);
+                    selectAllButton.setEnabled(true);
+                    selectAllButton.setText("全选");
+                    isAllSelected = false;
+                    resultBeanList.clear();
                 } else {
                     getNoData();
                 }
@@ -258,6 +291,93 @@ public class MWBackUpListActivity extends BaseActivity {
         ToastUtil.showToastShort("没有获取到相关数据！");
         emptyLayoutView.setVisibility(View.VISIBLE);
         orderRecyclerView.setVisibility(View.GONE);
+        selectAllButton.setEnabled(false);
+        selectAllButton.setText("全选");
+        isAllSelected = false;
+        resultBeanList.clear();
+
+    // by codex -- john end 15:24
+    }
+
+
+    private class BackupOUtBatchAsyncTask extends AsyncTask<String, Void, String> {
+        private ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(MWBackUpListActivity.this);
+            progressDialog.setMessage("备料一键出库中，请稍候...");
+            progressDialog.setCancelable(false);  // 不能点外部取消
+            progressDialog.show();
+        }
+        @Override
+        protected String doInBackground(String... strings) {
+
+            List<MWIssueItemOutParam> paramList = new ArrayList<>();
+            if (resultBeanList.size() > 0){
+                for (IssueOutBackUpBean backUpBean : resultBeanList){
+                    MWIssueItemOutParam param = new MWIssueItemOutParam();
+                    param.setItem_ID(backUpBean.getItemId());
+                    param.setIV_ID(backUpBean.getIV_ID());
+                    param.setLotID(backUpBean.getLotID());
+                    param.setLotNo(backUpBean.getLotNo());
+                    param.setIst_ID(backUpBean.getToIst_ID());
+                    param.setSub_Ist_ID(backUpBean.getToSub_Ist_ID());
+                    param.setSMLI_ID(backUpBean.getSMLI_ID());
+                    param.setSMM_ID(0L);
+                    param.setSMT_ID(backUpBean.getSMT_ID());
+                    param.setQty(backUpBean.getQty() + "");
+//                    param.setAcDate(new java.util.Date());
+                    // 格式化为 yyyy-MM-dd HH:mm:ss 这种常见的字符串格式传给服务器
+                    param.setAcDate(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+                    param.setScan_Code(backUpBean.getScanX());
+
+                    paramList.add(param);
+                }
+            }
+
+            WsResult wsResult = WebServiceUtil.op_Commit_MW_New_Issue_Item_Improve_Batch2(
+                    mpiwc_ID, UserSingleton.get().getHRID(), paramList);
+
+            if (wsResult.getResult()){
+//                stringBuilder.append(backUpBean.getScanX()).append("成功！\n");
+////                        resultBeanList.remove(backUpBean);
+////                        removedBeanList.add(backUpBean);
+////                originalBeanList.remove(backUpBean);
+//                return wsResult.getErrorInfo();
+                return "一键出库成功！";
+            }else {
+                return "失败！" + wsResult.getErrorInfo();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            // 关闭进度框
+            if (progressDialog != null && progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(MWBackUpListActivity.this)
+                    .setTitle("备料一键出库信息").setMessage(result)
+                    .setLeftText("确定");
+
+
+            builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                @Override
+                public void onViewClick(Dialog dialog, View v, int tag) {
+                    switch (tag) {
+                        case CommAlertDialog.TAG_CLICK_LEFT:
+                            //                        CommonUtil.doLogout(MWBackUpListActivity.this);
+                            dialog.dismiss();
+                            refreshAdapter();
+                            break;
+                    }
+                }
+            });
+            builder.create().show();
+        }
     }
 
     private class BackupMWOutAsyncTask  extends AsyncTask<String, Void, String> {

@@ -31,7 +31,12 @@
             android:name=".MobileMainActivity"
             android:screenOrientation="portrait" />
 
-        <!--转扣公司入库单独页面-->
+        <!--成品部门领料，扫非托盘领 页面-->
+        <activity
+            android:name=".warehouse.StockProductDepartmentInActivity"
+            android:screenOrientation="portrait" />
+
+        <!--转口公司入库单独页面-->
         <activity
             android:name=".warehouse.StockInZhuanKouActivity"
             android:screenOrientation="portrait" />
@@ -484,7 +489,7 @@
             android:name=".warehouse.StockQueryProductItemActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".warehouse.StockDepartmentInActivity"
+            android:name=".warehouse.StockPartDepartmentInActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity

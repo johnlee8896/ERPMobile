@@ -178,7 +178,7 @@ public class NewStockPartMainActivity extends BaseActivity implements WarehouseM
         } else if (WarehouseMenuRegistry.MENU_PART_FREEZE.equals(menuCode)) {
             startActivity(new Intent(this, StockFreezeActivity.class));
         } else if (WarehouseMenuRegistry.MENU_PART_DEPARTMENT_PICK.equals(menuCode)) {
-            startActivity(new Intent(this, StockDepartmentInActivity.class));
+            startActivity(new Intent(this, StockPartDepartmentInActivity.class));
         } else if (WarehouseMenuRegistry.MENU_PART_PRODUCT_QUERY.equals(menuCode)) {
             startActivity(new Intent(this, StockQueryProductActivity.class));
         } else if (WarehouseMenuRegistry.MENU_PART_QUERY.equals(menuCode)) {

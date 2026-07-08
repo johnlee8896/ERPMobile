@@ -87,6 +87,12 @@ public class SelectProductWCListActivity extends BaseActivity {
                 sql = " Select WC_Id,WC_Name  From P_WC Where Bu_ID = " + UserSingleton.get().getUserInfo().getBu_ID();
             }
 
+//            SELECT wc_id, wc_name
+//            FROM p_wc
+//            WHERE Bu_ID = 81
+//            ORDER BY CASE WHEN wc_name LIKE '[A-Z]%' THEN 0  ELSE 1  END,LEFT(wc_name, 1), TRY_CAST(SUBSTRING(wc_name, 2, LEN(wc_name)) AS INT),  wc_name ;
+            //2026-07-03 john 加排序
+            sql += " ORDER BY CASE WHEN wc_name LIKE '[A-Z]%' THEN 0  ELSE 1  END,LEFT(wc_name, 1), TRY_CAST(SUBSTRING(wc_name, 2, LEN(wc_name)) AS INT),  wc_name ;";
             WsResult result = WebServiceUtil.getDataTable(sql);
             if (result != null && result.getResult()) {
                 String jsonData = result.getErrorInfo();

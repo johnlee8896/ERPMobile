@@ -6,9 +6,17 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
+import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
+import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountOutActivity;
 import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountTailInActivity;
 import com.chinashb.www.mobileerp.warehouse.ScanIstFindProductActivity;
+import com.chinashb.www.mobileerp.warehouse.StockProductDepartmentInActivity;
+import com.google.gson.JsonObject;
+
+import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +43,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.product_main_product_rework_pallet_textView) TextView reworkPalletTextView;//成品整托返工
     @BindView(R.id.product_main_product_move_record_textView) TextView moveRecordTextView;//成品移库记录查询
     @BindView(R.id.product_main_check_inventory_common_all_box_textView) TextView checkInventoryCommonAllTextView;//成品标签统一盘点
+    @BindView(R.id.product_main_product_department_in_textView) TextView departmentInTextView;//成品部门领料
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +52,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         ButterKnife.bind(this);
 
         setViewsListener();
+        handleGetDepartment();
     }
 
     private void setViewsListener() {
@@ -59,6 +69,7 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         dpOrderTextView.setOnClickListener(this);
         reworkPalletTextView.setOnClickListener(this);
         moveRecordTextView.setOnClickListener(this);
+        departmentInTextView.setOnClickListener(this);
         checkInventoryCommonAllTextView.setOnClickListener(this);
     }
 
@@ -101,10 +112,36 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
             Intent intent = new Intent(this, ProductMoveRecordActivity.class);
             startActivity(intent);
 
-        }else if (v == checkInventoryCommonAllTextView) {
+        } else if (v == departmentInTextView) {
+            Intent intent = new Intent(this, StockProductDepartmentInActivity.class);
+            startActivity(intent);
+
+        } else if (v == checkInventoryCommonAllTextView) {
             Intent intent = new Intent(this, ProductCheckInventoryCommonAllActivity.class);
             startActivity(intent);
 
+        }
+    }
+
+    private void handleGetDepartment() {
+        String sql = "select department_id,department_name from department";
+        if (!(UserSingleton.get().getDepartmentMap() != null && UserSingleton.get().getDepartmentMap().keySet().size() > 0)) {
+            QueryAsyncTask query = new QueryAsyncTask();
+            query.execute(sql);
+            query.setLoadDataCompleteListener(new OnLoadDataListener() {
+                @Override
+                public void loadComplete(List<JsonObject> jsonObjectList) {
+                    if (jsonObjectList != null && jsonObjectList.size() > 0) {
+                        HashMap<Integer, String> departmentIDNameMap = new HashMap<>();
+                        for (JsonObject jsonObject : jsonObjectList) {
+                            int departmentID = jsonObject.get("department_id").getAsInt();
+                            String departmentName = jsonObject.get("department_name").getAsString();
+                            departmentIDNameMap.put(departmentID, departmentName);
+                        }
+                        UserSingleton.get().setDepartmentMap(departmentIDNameMap);
+                    }
+                }
+            });
         }
     }
 }

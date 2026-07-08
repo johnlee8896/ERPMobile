@@ -13,6 +13,7 @@ public class IntentConstant {
 
     public static final String Intent_Extra_Backup_ScanCode = "Extra_Backup_ScanCode";
     public static final String Intent_Extra_Backup_bean = "Extra_Backup_bean";
+    public static final String Intent_Extra_Backup_mpiwc_id_for_move_cancel = "xtra_Backup_mpiwc_id_for_move_cancel";
 
 
 
