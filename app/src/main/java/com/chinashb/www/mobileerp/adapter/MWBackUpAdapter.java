@@ -2,6 +2,7 @@ package com.chinashb.www.mobileerp.adapter;
 
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,13 +135,21 @@ public class MWBackUpAdapter extends BaseRecycleAdapter<IssueOutBackUpBean, MWBa
                 seventhInfoTextView.setText("备料员：");
                 itemCheckbox.setVisibility(View.VISIBLE);
 
-                firstNameTextView.setText(entity.getItemId() + " " + entity.getTemName());
+                // codex by john 2026-08-28 22:45 - 额外领料备料条目显示【额外】并用红色标识，普通条目恢复默认蓝色
+                if (entity.isExtra()) {
+                    firstNameTextView.setText("【额外】" + entity.getItemId() + " " + entity.getTemName());
+                    firstNameTextView.setTextColor(Color.RED);
+                } else {
+                    firstNameTextView.setText(entity.getItemId() + " " + entity.getTemName());
+                    firstNameTextView.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.login_title_color));
+                }
                 secondNameTextView.setText(entity.getItemVersion());
                 thirdNameTextView.setText(entity.getLotNo());
 
                 fourthNameTextView.setText(entity.getIstName());
                 fifthNameTextView.setText(entity.getScanX());
                 sixthNameTextView.setText(entity.getQty() + "");
+                seventhNameTextView.setText(entity.getHRName());
 
                 fifthNameTextView.setTextSize(14);
                 fifthNameTextView.setTextColor(Color.BLACK);
@@ -203,6 +212,5 @@ public class MWBackUpAdapter extends BaseRecycleAdapter<IssueOutBackUpBean, MWBa
         void onReworkClick(IssueOutBackUpBean backUpBean);
     }
 }
-
 
 

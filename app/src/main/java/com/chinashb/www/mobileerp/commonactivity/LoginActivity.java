@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -186,12 +185,7 @@ protected void onTextChangedSafe(CharSequence text) {
             }
         });
 
-        setHomeButton();
         initView();
-//        if (nameEditText.getText().length() > 0){
-//            passwordEditText.requestFocus();
-//            passwordEditText.setText("john1234@@");
-//        }
 
     }
 
@@ -351,23 +345,6 @@ protected void onTextChangedSafe(CharSequence text) {
 //        }
 //    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    protected void setHomeButton() {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
 
     protected void checkNamePwd() {
         String userName = nameEditText.getText().toString();

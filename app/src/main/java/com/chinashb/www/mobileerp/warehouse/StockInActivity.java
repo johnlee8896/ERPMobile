@@ -52,6 +52,14 @@ import java.util.List;
  * 扫描入库
  */
 public class StockInActivity extends BaseActivity implements View.OnClickListener {
+    public static final String EXTRA_PENDING_DIII_ID = "pending_picking_diii_id";
+    public static final String EXTRA_PENDING_SCAN_CODE = "pending_picking_scan_code";
+    public static final String EXTRA_PENDING_ITEM_ID = "pending_picking_item_id";
+    public static final String EXTRA_PENDING_SOURCE_BU_ID = "pending_picking_source_bu_id";
+    public static final String EXTRA_PENDING_ITEM_CODE = "pending_picking_item_code";
+    public static final String EXTRA_PENDING_ITEM_NAME = "pending_picking_item_name";
+    public static final String EXTRA_PENDING_LOT_NO = "pending_picking_lot_no";
+
     BroadcastReceiver mFoundReceiver = new BroadcastReceiver() {
 
         @Override
@@ -93,6 +101,8 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
     private boolean isProcessingBoxScan = false;
     private boolean isProcessingIstScan = false;
     private boolean isExecutingWarehouseIn = false;
+    private boolean launchedFromPendingPicking;
+    private long expectedPendingDiiiId;
     private final ArrayList<String> pendingBoxScanQueue = new ArrayList<>();
     private final ArrayList<Long> trackedScanDiiiIdList = new ArrayList<>();
     private final Runnable parseInputRunnable = new Runnable() {
@@ -150,8 +160,23 @@ public class StockInActivity extends BaseActivity implements View.OnClickListene
         if (UserSingleton.get().getUserInfo().getCompany_ID() == 29){
             ToastUtil.showToastShort("您当前车间是零部件公司，请用零部件公司入库界面！");
             finish();
+            return;
         }
+        initPendingPickingEntry();
 
+    }
+
+    private void initPendingPickingEntry() {
+        Intent intent = getIntent();
+        launchedFromPendingPicking = intent.hasExtra(EXTRA_PENDING_DIII_ID);
+        if (!launchedFromPendingPicking) {
+            return;
+        }
+        expectedPendingDiiiId = intent.getLongExtra(EXTRA_PENDING_DIII_ID, 0L);
+        String code = intent.getStringExtra(EXTRA_PENDING_SCAN_CODE);
+        if (!TextUtils.isEmpty(code)) {
+            enqueueBoxScan(code);
+        }
     }
 
     @Override
@@ -612,6 +637,9 @@ protected void onTextChangedSafe(CharSequence text) {
                     handler.sendMessage(message);
                 } else if (is_box_existed(scanBoxItemEntity)) {
                     Toast.makeText(StockInActivity.this, "该包装已经在装载列表中", Toast.LENGTH_LONG).show();
+                } else if (launchedFromPendingPicking
+                        && scanBoxItemEntity.getDIII_ID() != expectedPendingDiiiId) {
+                    Toast.makeText(StockInActivity.this, "扫码结果与所选来料明细不符", Toast.LENGTH_LONG).show();
                 } else {
                     if (isOpenSuggestStock) {
                         Message message = new Message();
@@ -629,7 +657,7 @@ protected void onTextChangedSafe(CharSequence text) {
             }
 
             inputEditText.setText("");
-            inputEditText.setHint("请继续使用扫描枪");
+            inputEditText.setHint(launchedFromPendingPicking ? "请扫描库位" : "请继续使用扫描枪");
             pendingScanText = "";
             if (scanBoxItemEntity != null && scanBoxItemEntity.getResult() && scanBoxItemEntity.getItem_ID() > 0) {
                 GetIsAlarmItemAsyncTask task = new GetIsAlarmItemAsyncTask();
@@ -793,6 +821,8 @@ protected void onTextChangedSafe(CharSequence text) {
         @Override
         protected void onPostExecute(Void result) {
             //tv.setText(fahren + "∞ F");
+            boolean allSuccess = !selectedList.isEmpty()
+                    && successList.size() == selectedList.size();
             if (!successList.isEmpty()) {
                 for (int i = 0; i < successList.size(); i++) {
                     removeTrackedScanCode(successList.get(i));
@@ -807,6 +837,10 @@ protected void onTextChangedSafe(CharSequence text) {
             isExecutingWarehouseIn = false;
 
             refreshBoxItemList();
+            if (launchedFromPendingPicking) {
+                setResult(allSuccess ? RESULT_OK : RESULT_CANCELED);
+                handler.postDelayed(StockInActivity.this::finish, 800);
+            }
             //pbScan.setVisibility(View.INVISIBLE);
         }
 

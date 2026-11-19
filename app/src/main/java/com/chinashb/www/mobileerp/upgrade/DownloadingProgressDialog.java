@@ -10,10 +10,10 @@ import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.R;
 
-/***
- * @date 创建时间 2018/5/23 10:53
- * @author 作者: W.YuLong
- * @description 下载进度的对话框
+import java.util.Locale;
+
+/**
+ * codex by john 2026-11-12 - 无 CDN 下载进度对话框
  */
 class DownloadingProgressDialog extends Dialog {
     private TextView descTextView;
@@ -40,11 +40,51 @@ class DownloadingProgressDialog extends Dialog {
                 WindowManager.LayoutParams.WRAP_CONTENT);
     }
 
+    public void showConnecting() {
+        progressBar.setIndeterminate(true);
+        descTextView.setText("正在连接下载服务器...");
+    }
+
+    public void showVerifying() {
+        progressBar.setIndeterminate(true);
+        descTextView.setText("正在校验升级包...");
+    }
+
+    public void showMessage(String message) {
+        progressBar.setIndeterminate(false);
+        descTextView.setText(message);
+    }
+
+    public void updateProgress(long progress, long max) {
+        if (max <= 0) {
+            progressBar.setIndeterminate(true);
+            descTextView.setText("正在连接下载服务器...");
+            return;
+        }
+        progressBar.setIndeterminate(false);
+        int safeMax = max > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) max;
+        int safeProgress = progress > safeMax ? safeMax : (int) progress;
+        progressBar.setMax(safeMax);
+        progressBar.setProgress(safeProgress);
+        int percent = (int) (progress * 100L / max);
+        descTextView.setText(String.format(Locale.getDefault(),
+                "正在下载中...%d%%  %s/%s",
+                percent, formatBytes(progress), formatBytes(max)));
+    }
+
     public void updateProgress(int progress, int max) {
-        progressBar.setMax(max);
-        int percent = (int) (progress * 100.0f / max);
-        descTextView.setText("正在下载中..." + percent + "%");
-        progressBar.setProgress(progress);
+        updateProgress((long) progress, (long) max);
+    }
+
+    private String formatBytes(long value) {
+        if (value >= 1024L * 1024L) {
+            return String.format(Locale.getDefault(), "%.1f MB",
+                    value / (1024.0 * 1024.0));
+        }
+        if (value >= 1024L) {
+            return String.format(Locale.getDefault(), "%.1f KB", value / 1024.0);
+        }
+        return value + " B";
     }
 
 }

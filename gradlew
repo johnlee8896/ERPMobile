@@ -24,6 +24,9 @@ cd "`dirname \"$PRG\"`/" >/dev/null
 APP_HOME="`pwd -P`"
 cd "$SAVED" >/dev/null
 
+# 2026-07-09 john: 系统默认 Java 25 与 Gradle 4.4 不兼容，强制使用 JDK 8
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_171.jdk/Contents/Home
+
 APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 

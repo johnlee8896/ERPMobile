@@ -21,6 +21,8 @@ import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.ProductNewCodeParser;
+import com.chinashb.www.mobileerp.funs.ProductPalletCodeParser;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
@@ -461,6 +463,21 @@ protected void onTextChangedSafe(CharSequence text) {
                 inputEditText.setText("");
                 return;
             }
+            if (!result.startsWith("Pallet") && ProductNewCodeParser.isNewProductCode(result)) {
+                inputEditText.setText("");
+                ProductNewCodeParser.resolve(result, new ProductNewCodeParser.Callback() {
+                    @Override
+                    public void onResolved(String legacyCode) {
+                        parseScanData(legacyCode);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        ToastUtil.showToastShort(message);
+                    }
+                });
+                return;
+            }
             String[] qrContent;
             qrContent = result.split("/");
             if (qrContent.length >= 2) {
@@ -472,19 +489,26 @@ protected void onTextChangedSafe(CharSequence text) {
                     task.execute();
                 }
                 //2024-05-29 john这里只处理成品的扫描
-                if (result.startsWith("Pallet") && qrContent.length == 8) {
+                if (result.startsWith("Pallet")) {
+                    ProductPalletCodeParser.PalletCode pallet =
+                            ProductPalletCodeParser.parse(result);
+                    if (pallet == null) {
+                        ToastUtil.showToastShort("成品托盘码格式不正确");
+                        inputEditText.setText("");
+                        return;
+                    }
                     if (!istHasSelect) {
                         ToastUtil.showToastShort("请先扫描库位码！");
                         inputEditText.setText("");
                         return;
                     }
-                    int boxId = Integer.parseInt(qrContent[1]);
+                    int boxId = pallet.boxId;
                     if (boxIDList.contains(boxId)) {
                         ToastUtil.showToastShort("该托盘已在列表中，请勿重复扫描！");
                     } else {
-                        tvItemName.setText("客户图号： " + qrContent[5]);
-                        tvItemCode.setText("BoxID/" + qrContent[1] + " " + qrContent[3]);
-                        eachBoxQtyEditText.setText(qrContent[7]);
+                        tvItemName.setText("客户图号： " + pallet.palletPartNo);
+                        tvItemCode.setText("BoxID/" + boxId + " " + pallet.codeNoBox);
+                        eachBoxQtyEditText.setText(pallet.actualBoxQty);
                         boxIDList.add(boxId);
                         currentBoxID = boxId;
                         GetERPIstNameByBoxIDAsyncTask task = new GetERPIstNameByBoxIDAsyncTask();

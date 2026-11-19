@@ -68,6 +68,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
     private Button btnExecuteBackUp;
     private Button btnQueryBackUp;
     private Button btnQueryBomBackUp;
+    private Button btnExtraBackup;
     private RecyclerView recyclerView;
     private IssueMoreItemAdapter issueMoreItemAdapter;
     private List<BoxItemEntity> boxItemEntityList;
@@ -84,6 +85,9 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
     private boolean isBackUP;
     private boolean isProcessingScan;
     private boolean isExecutingOut;
+    // 2026-10-29 john 最近已处理条码去重，防止输入框和摄像头回调先后触发同一提交
+    private String lastProcessedBarcode;
+    private long lastProcessedBarcodeTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +103,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         btnExecuteBackUp = findViewById(R.id.btn_exe_backup);
         btnQueryBackUp = findViewById(R.id.btn_query_backup);
         btnQueryBomBackUp = findViewById(R.id.btn_query_backup_bom);
+        btnExtraBackup = findViewById(R.id.btn_issue_more_add_backup_extra);
         titleLayoutManagerView = findViewById(R.id.supply_product_put_titleLayout);
 
         pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
@@ -129,9 +134,11 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
         setHomeButton();
 
         if (isBackUP){
+            btnExtraBackup.setVisibility(View.VISIBLE);
             btnWarehouseOut.setVisibility(View.GONE);
             selectDateButton.setVisibility(View.GONE);
         }else{
+            btnExtraBackup.setVisibility(View.GONE);
             btnExecuteBackUp.setVisibility(View.GONE);
             btnQueryBackUp.setVisibility(View.GONE);
             btnQueryBomBackUp.setVisibility(View.GONE);
@@ -158,7 +165,7 @@ public class StockOutMoreActivity extends BaseActivity implements OnViewClickLis
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-protected void onTextChangedSafe(CharSequence text) {
+                protected void onTextChangedSafe(CharSequence text) {
                 //                if (text.toString().endsWith("\n")) {
                 if (text.toString().length() > 0) {
 //                    ToastUtil.showToastLong("扫描结果:" + text.toString());
@@ -191,6 +198,13 @@ protected void onTextChangedSafe(CharSequence text) {
 
         });
 
+        btnExtraBackup.setOnClickListener(v -> {
+            Intent intent3 = new Intent(StockOutMoreActivity.this, StockOutMoreExtraActivity.class);
+            intent3.putExtra(IntentConstant.Intent_continue_put_extra_from_backup, isBackUP);
+            // codex by john 2026-08-28 22:45 - 额外领料备料需要把工单计划 mw 一起传过去，供页面显示标题和后续提交
+            intent3.putExtra("mw", mpiWcBean);
+            startActivity(intent3);
+        });
 
     }
 
@@ -328,6 +342,11 @@ protected void onTextChangedSafe(CharSequence text) {
         if (isProcessingScan) {
             return;
         }
+        long now = System.currentTimeMillis();
+        if (!TextUtils.isEmpty(content) && content.equals(lastProcessedBarcode)
+                && now - lastProcessedBarcodeTime < 1500L) {
+            return;
+        }
         System.out.println("========================扫描结果:" + content);
         //简单分析判别错误条码
         if (content.contains("/")) {
@@ -338,6 +357,8 @@ protected void onTextChangedSafe(CharSequence text) {
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
+                        lastProcessedBarcode = content;
+                        lastProcessedBarcodeTime = System.currentTimeMillis();
                         scanedString = content;
                         isProcessingScan = true;
                         GetIssueMoreBoxAsyncTask task = new GetIssueMoreBoxAsyncTask();
@@ -363,24 +384,33 @@ protected void onTextChangedSafe(CharSequence text) {
 
         @Override
         protected Void doInBackground(String... params) {
-            Long MW_ID = mpiWcBean.getMPIWC_ID();
-            BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_MW_Issue_Item_Barcode(MW_ID, scanedString);
-            this.boxItemEntity = boxItemEntity;
-            if (boxItemEntity.getResult()) {
-                if (!isBoxExist(boxItemEntity)) {
-                    boxItemEntity.setSelect(true);
-                    setNeedQty(boxItemEntity);
+            // codex by john 2026-09-16 11:12 - 扫码解析加 try-catch 兜底，避免后端字段异常导致闪退
+            try {
+                Long MW_ID = mpiWcBean.getMPIWC_ID();
+                BoxItemEntity boxItemEntity = WebServiceUtil.op_Check_Commit_MW_Issue_Item_Barcode(MW_ID, scanedString);
+                this.boxItemEntity = boxItemEntity;
+                if (boxItemEntity.getResult()) {
+                    if (!isBoxExist(boxItemEntity)) {
+                        boxItemEntity.setSelect(true);
+                        setNeedQty(boxItemEntity);
 
-                    currentItemId = boxItemEntity.getItem_ID();
-                    if (boxItemEntity.getQty() < 0){
-                        scanNormal = false;
+                        currentItemId = boxItemEntity.getItem_ID();
+                        if (boxItemEntity.getQty() < 0){
+                            scanNormal = false;
 
+                        }
+                        shouldTrackScanCode = true;
+                    } else {
+                        boxItemEntity.setResult(false);
+                        boxItemEntity.setErrorInfo("该包装已经在列表中");
                     }
-                    shouldTrackScanCode = true;
-                } else {
-                    boxItemEntity.setResult(false);
-                    boxItemEntity.setErrorInfo("该包装已经在列表中");
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+                BoxItemEntity failed = new BoxItemEntity();
+                failed.setResult(false);
+                failed.setErrorInfo("扫码解析失败：" + e.getMessage());
+                this.boxItemEntity = failed;
             }
             return null;
         }

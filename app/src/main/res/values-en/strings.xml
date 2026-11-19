@@ -26,7 +26,7 @@
 
     <!-- Printer Related -->
     <string name="discovery_printer">Discover Printers</string>
-    <string name="paired_printer_list">Recently Used Printers</string>
+    <string name="paired_printer_list">System Paired Printers</string>
     <string name="print_text">Print Text</string>
     <string name="print_1D_barcode">Print 1D Barcode</string>
     <string name="print_2D_barcode">Print 2D Barcode</string>

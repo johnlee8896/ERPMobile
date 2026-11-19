@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +21,8 @@ import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.ProductNewCodeParser;
+import com.chinashb.www.mobileerp.funs.ProductPalletCodeParser;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
@@ -192,6 +193,21 @@ protected void onTextChangedSafe(CharSequence text) {
 
     private void parseScanResult(String content) {
         System.out.println("===== content = " + content);
+        if (!content.startsWith("Pallet") && ProductNewCodeParser.isNewProductCode(content)) {
+            inputEditText.setText("");
+            ProductNewCodeParser.resolve(content, new ProductNewCodeParser.Callback() {
+                @Override
+                public void onResolved(String legacyCode) {
+                    parseScanResult(legacyCode);
+                }
+
+                @Override
+                public void onError(String message) {
+                    ToastUtil.showToastShort(message);
+                }
+            });
+            return;
+        }
 //        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
         if (content.contains("/")) {
@@ -199,8 +215,14 @@ protected void onTextChangedSafe(CharSequence text) {
             qrContent = content.split("/");
             if (qrContent.length >= 2) {
 
-                if (content.startsWith("Pallet") && qrContent.length == 8) {
-                    int boxId = Integer.parseInt(qrContent[1]);
+                if (content.startsWith("Pallet")) {
+                    ProductPalletCodeParser.PalletCode pallet =
+                            ProductPalletCodeParser.parse(content);
+                    if (pallet == null) {
+                        ToastUtil.showToastShort("成品托盘码格式不正确");
+                        return;
+                    }
+                    int boxId = pallet.boxId;
                     if (boxIDList.contains(boxId)) {
                         ToastUtil.showToastShort("该托盘已在列表中，请勿重复扫描！");
                     } else {
@@ -217,8 +239,8 @@ protected void onTextChangedSafe(CharSequence text) {
                                 tempBoxInfoSBuilder.append("物料信息\n");
                             }
 
-                            tempBoxInfoSBuilder.append(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
-                            //                        itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
+                            tempBoxInfoSBuilder.append(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s",
+                                    boxId, pallet.codeNoBox, pallet.palletPartNo, pallet.actualBoxQty));
                             itemInfoTextView.setText(tempBoxInfoSBuilder.toString());
                             inputEditText.setText("");
                             hasScanItem = true;

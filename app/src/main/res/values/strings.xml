@@ -35,7 +35,7 @@
 
 <!--    打印机相关-->
     <string name="discovery_printer">查找打印机</string>
-    <string name="paired_printer_list">最近使用打印机列表</string>
+    <string name="paired_printer_list">系统已配对打印机列表</string>
     <string name="print_text">打印文本</string>
     <string name="print_1D_barcode">打印一维码</string>
     <string name="print_2D_barcode">打印二维码</string>

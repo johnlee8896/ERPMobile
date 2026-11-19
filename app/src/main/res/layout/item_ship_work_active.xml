@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_margin="@dimen/dimen_size_10"
+    android:padding="@dimen/dimen_size_10">
+
+    <TextView
+        android:id="@+id/item_ship_work_no_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/login_title_color"
+        android:textSize="@dimen/text_size_15"
+        tools:text="作业号 3" />
+
+    <TextView
+        android:id="@+id/item_ship_work_status_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_14"
+        tools:text="状态 Preparing" />
+
+    <TextView
+        android:id="@+id/item_ship_work_stage_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_14"
+        tools:text="发货区 长久待发区01" />
+
+    <TextView
+        android:id="@+id/item_ship_work_track_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_14"
+        tools:text="物流单号 GW20261008-3" />
+
+    <TextView
+        android:id="@+id/item_ship_work_count_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/color_orange_FF6A00"
+        android:textSize="@dimen/text_size_14"
+        tools:text="已锁定3 已入区0 已扫描0 已发运0" />
+
+</LinearLayout>

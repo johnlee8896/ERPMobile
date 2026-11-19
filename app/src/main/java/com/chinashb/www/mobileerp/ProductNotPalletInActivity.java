@@ -20,6 +20,8 @@ import com.chinashb.www.mobileerp.bean.entity.WCSubProductEntity;
 import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.ProductNewCodeParser;
+import com.chinashb.www.mobileerp.funs.ProductPalletCodeParser;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
@@ -178,18 +180,40 @@ protected void onTextChangedSafe(CharSequence text) {
         if (TextUtils.isEmpty(content)) {
             return;
         }
+        if (!content.startsWith("Pallet") && ProductNewCodeParser.isNewProductCode(content)) {
+            inputEditText.setText("");
+            ProductNewCodeParser.resolve(content, new ProductNewCodeParser.Callback() {
+                @Override
+                public void onResolved(String legacyCode) {
+                    parseContent(legacyCode);
+                }
+
+                @Override
+                public void onError(String message) {
+                    ToastUtil.showToastShort(message);
+                }
+            });
+            return;
+        }
         System.out.println("============ scan content = " + content);
         if (content.contains("/")) {
             String[] qrContent;
             qrContent = content.split("/");
             if (qrContent.length >= 2) {
 
-                if (content.startsWith("Pallet") && qrContent.length == 8) {
-                    boxId = Integer.parseInt(qrContent[1]);
+                if (content.startsWith("Pallet")) {
+                    ProductPalletCodeParser.PalletCode pallet =
+                            ProductPalletCodeParser.parse(content);
+                    if (pallet == null) {
+                        ToastUtil.showToastShort("成品托盘码格式不正确");
+                        return;
+                    }
+                    boxId = pallet.boxId;
 //                    if (boxIDList.contains(boxId)){
 //                        ToastUtil.showToastShort("该托盘已入库，请勿重复入库！");
 //                    }else{
-                    itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s",qrContent[1],qrContent[3],qrContent[5],qrContent[7]));
+                    itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s",
+                            boxId, pallet.codeNoBox, pallet.palletPartNo, pallet.actualBoxQty));
                     inputEditText.setText("");
                     hasScanItem = true;
 //                    }

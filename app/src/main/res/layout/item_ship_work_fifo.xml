@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/white"
+    android:layout_margin="@dimen/dimen_size_10"
+    android:padding="@dimen/dimen_size_10"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_ship_work_fifo_product_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/login_title_color"
+            android:textSize="@dimen/text_size_15"
+            tools:text="物料 Product_ID" />
+
+        <TextView
+            android:id="@+id/item_ship_work_fifo_qty_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_14"
+            tools:text="需求 1152  已锁 1托/1152  本次可锁 0托/0" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/item_ship_work_fifo_quantity_editText"
+        android:layout_width="72dp"
+        android:layout_height="40dp"
+        android:layout_marginRight="6dp"
+        android:gravity="center"
+        android:hint="数量"
+        android:inputType="numberDecimal"
+        android:maxLines="1" />
+
+    <Button
+        android:id="@+id/item_ship_work_fifo_lock_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="锁定FIFO" />
+
+</LinearLayout>

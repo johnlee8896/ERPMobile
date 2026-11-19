@@ -36,6 +36,7 @@ public class IntentConstant {
 
     public static final String Intent_continue_put_directly = "continue_put_directly";
     public static final String Intent_continue_put_from_backup = "continue_put_from_backup";
+    public static final String Intent_continue_put_extra_from_backup = "continue_put_extra_from_backup";
     public static String Intent_Extra_mpiWcBean = "intent_mpiWcBean";
     public static String Intent_PlanItemDetailBean = "PlanItemDetailBean";
     public static String Intent_Scan_box_item_Bean = "Scan_box_item_Bean";

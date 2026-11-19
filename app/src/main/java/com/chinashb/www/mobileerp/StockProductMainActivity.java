@@ -13,6 +13,8 @@ import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountOutActivity;
 import com.chinashb.www.mobileerp.warehouse.BuWarehouseAccountTailInActivity;
 import com.chinashb.www.mobileerp.warehouse.ScanIstFindProductActivity;
 import com.chinashb.www.mobileerp.warehouse.StockProductDepartmentInActivity;
+import com.chinashb.www.mobileerp.warehouse.ProductShipWorkMainActivity;
+import com.chinashb.www.mobileerp.warehouse.ProductShipWorkCreateActivity;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
@@ -44,6 +46,8 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
     @BindView(R.id.product_main_product_move_record_textView) TextView moveRecordTextView;//成品移库记录查询
     @BindView(R.id.product_main_check_inventory_common_all_box_textView) TextView checkInventoryCommonAllTextView;//成品标签统一盘点
     @BindView(R.id.product_main_product_department_in_textView) TextView departmentInTextView;//成品部门领料
+    @BindView(R.id.product_main_product_ship_work_new_textView) TextView shipWorkNewTextView;//成品发货管理新
+    @BindView(R.id.product_main_product_ship_work_h5oa_textView) TextView shipWorkH5OaTextView;//成品发货管理H5OA
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +74,8 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
         reworkPalletTextView.setOnClickListener(this);
         moveRecordTextView.setOnClickListener(this);
         departmentInTextView.setOnClickListener(this);
+        shipWorkNewTextView.setOnClickListener(this);
+        shipWorkH5OaTextView.setOnClickListener(this);
         checkInventoryCommonAllTextView.setOnClickListener(this);
     }
 
@@ -114,6 +120,14 @@ public class StockProductMainActivity extends BaseActivity implements View.OnCli
 
         } else if (v == departmentInTextView) {
             Intent intent = new Intent(this, StockProductDepartmentInActivity.class);
+            startActivity(intent);
+
+        } else if (v == shipWorkNewTextView) {
+            Intent intent = new Intent(this, ProductShipWorkMainActivity.class);
+            startActivity(intent);
+
+        } else if (v == shipWorkH5OaTextView) {
+            Intent intent = new Intent(this, ProductShipWorkCreateActivity.class);
             startActivity(intent);
 
         } else if (v == checkInventoryCommonAllTextView) {

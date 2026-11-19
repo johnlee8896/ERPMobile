@@ -18,8 +18,14 @@ import com.chinashb.www.mobileerp.bean.BUItemBean;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
 import com.chinashb.www.mobileerp.bean.MWIssueItemOutParam;
 import com.chinashb.www.mobileerp.bean.PanDianItemBean;
+import com.chinashb.www.mobileerp.bean.ProductFeeRdmBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.bean.SendGoodsSearchItemBean;
+import com.chinashb.www.mobileerp.bean.ShipWorkActiveBean;
+import com.chinashb.www.mobileerp.bean.ShipWorkLineBean;
+import com.chinashb.www.mobileerp.bean.ShipWorkOrderBean;
+import com.chinashb.www.mobileerp.bean.ShipWorkPalletBean;
+import com.chinashb.www.mobileerp.bean.ShipWorkStageAreaBean;
 import com.chinashb.www.mobileerp.bean.StockInPurchaseOrderBean;
 import com.chinashb.www.mobileerp.bean.StockPermittedBean;
 import com.chinashb.www.mobileerp.bean.WarehouseMenuPermissionBean;
@@ -578,6 +584,66 @@ public class WebServiceUtil {
         }
 
         return null;
+    }
+
+    // codex by john 2026-09-10 10:52 - 物流来料检索
+    public static WsResult getLogisticsInfoByMobile(int Bu_ID, int HR_ID, int DateOptionID, int MaterialType, String Keys, boolean OnlyCurrentCompany, int SourceID) {
+        String webMethodName = "Get_Logistics_Info_By_Mobile";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfos, "HR_ID", HR_ID);
+        AddPropertyInfo(propertyInfos, "DateOptionID", DateOptionID);
+        AddPropertyInfo(propertyInfos, "MaterialType", MaterialType);
+        AddPropertyInfo(propertyInfos, "Keys", Keys);
+        AddPropertyInfo(propertyInfos, "OnlyCurrentCompany", OnlyCurrentCompany);
+        AddPropertyInfo(propertyInfos, "SourceID", SourceID);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope != null) {
+            if (envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            } else {
+                SoapObject obj = (SoapObject) envelope.bodyIn;
+                WsResult ws_result = Get_WS_Result(obj);
+                return ws_result;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 来料待入库拣货列表。
+     * Bu_ID/HR_ID 使用当前登录信息，Keys 为空时传空字符串。
+     */
+    public static WsResult op_Get_Logistics_Pending_Warehouse_Picking_Data(
+            int Bu_ID, int HR_ID, String Keys) {
+        String webMethodName = "op_Get_Logistics_Pending_Warehouse_Picking_Data";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfos, "HR_ID", HR_ID);
+        AddPropertyInfo(propertyInfos, "Keys", Keys == null ? "" : Keys);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope == null) {
+            return null;
+        }
+        if (envelope.bodyIn == null) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo("网络请求失败");
+            return result;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            return result;
+        }
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
     }
 
     //正常成品标签托盘 移库
@@ -1907,7 +1973,8 @@ public class WebServiceUtil {
     //拣货任务
     public static WsResult getPickGoodsData(Date startDate,Date endDate) {
         boolean result = false;
-        String webMethodName = "Get_Pick_Goods_Data_JsonString";
+//        String webMethodName = "Get_Pick_Goods_Data_JsonString";
+        String webMethodName = "Get_Pick_Goods_Data_JsonString_Improve";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
         PropertyInfo propertyInfo = new PropertyInfo();
@@ -1945,7 +2012,8 @@ public class WebServiceUtil {
     //拣货任务,加上班次查询
     public static WsResult getPickGoodsDataNewByShift(Date startDate,Date endDate,int shiftMode) {
         boolean result = false;
-        String webMethodName = "Get_Pick_Goods_Data_JsonString_ByShift";
+//        String webMethodName = "Get_Pick_Goods_Data_JsonString_ByShift";
+        String webMethodName = "Get_Pick_Goods_Data_JsonString_ByShift_Improve";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
 
         PropertyInfo propertyInfo = new PropertyInfo();
@@ -4801,9 +4869,10 @@ public class WebServiceUtil {
         box_item.setIst_ID(Long.parseLong(obj.getProperty("Ist_ID").toString()));
         box_item.setSub_Ist_ID(Long.parseLong(obj.getProperty("Sub_Ist_ID").toString()));
         box_item.setIstName(obj.getProperty("IstName").toString());
-        box_item.setBoxName(obj.getProperty("BoxName").toString());
-        box_item.setBoxNo(obj.getProperty("BoxNo").toString());
-        box_item.setFreezeStatus(obj.getProperty("FreezeStatus").toString());
+        // codex by john 2026-09-16 11:03 - BoxName/BoxNo/FreezeStatus 后端可能返回 null，改用 isNothing2String 兜底，避免空指针
+        box_item.setBoxName(isNothing2String(obj.getProperty("BoxName"), ""));
+        box_item.setBoxNo(isNothing2String(obj.getProperty("BoxNo"), ""));
+        box_item.setFreezeStatus(isNothing2String(obj.getProperty("FreezeStatus"), ""));
 
         box_item.setLotDescription(isNothing2String(obj.getProperty("LotDescription"), ""));
         box_item.setSmlRemark(isNothing2String(obj.getProperty("SMLRemark"), ""));
@@ -4862,6 +4931,15 @@ public class WebServiceUtil {
         String sqty = String.valueOf(bi.getQty());
 //        WsResult Result = op_Commit_MW_Issue_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
         WsResult Result = op_Commit_MW_Issue_Item_To_Backup(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty, outDate, scan_code);
+
+        return Result;
+    }
+
+    //额外领料的备料
+    public static WsResult op_Commit_MW_Issue_Item_To_Backup_EXtra(Long MW_ID, BoxItemEntity bi, Date outDate, String scan_code,String Remark) {
+        String sqty = String.valueOf(bi.getQty());
+//        WsResult Result = op_Commit_MW_Issue_Item(MW_ID, UserInfoEntity.ID, bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty);
+        WsResult Result = op_Commit_MW_Issue_Item_To_Backup_Extra(MW_ID, UserSingleton.get().getHRID(), bi.getItem_ID(), bi.getIV_ID(), bi.getLotID(), bi.getLotNo(), bi.getIst_ID(), bi.getSub_Ist_ID(), bi.getSMLI_ID(), bi.getSMM_ID(), bi.getSMT_ID(), sqty, outDate, scan_code,Remark);
 
         return Result;
     }
@@ -4939,6 +5017,116 @@ public class WebServiceUtil {
         return ws_result;
     }
 
+    public static WsResult op_Commit_MW_New_Issue_Item_Improve_Batch3(Long MW_ID, int Sender, List<MWIssueItemOutParam> mwIssueItemOutParamList) {
+        String webMethodName = "op_Commit_MW_New_Issue_Item_Improve_Batch3";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "MW_ID", MW_ID);
+        AddPropertyInfo(propertyInfos, "Exer", Sender);
+//        AddPropertyInfo(propertyInfos,"MW_Out_ParamList",mwIssueItemOutParamList);
+
+//        //// TODO: 6/17/26 这个单独添加
+//        PropertyInfo listProperty = new PropertyInfo();
+//        listProperty.setName("MW_Out_ParamList");
+//        listProperty.setValue(mwIssueItemOutParamList);
+//        listProperty.setType(MWIssueItemOutParam.class); // ✅ 不是 ArrayList.class
+//
+//        propertyInfos.add(listProperty);
+
+
+
+
+        //// TODO: 6/18/26 上面的仍然序列化有问题
+//        PropertyInfo ListProperty = new PropertyInfo();
+//        ListProperty.setName("MW_Out_ParamList");
+//
+//// ✅ 修改点：把 List 转成 JSON 字符串
+//        if (mwIssueItemOutParamList != null) {
+//            ListProperty.setValue(JsonUtil.objectToJson(mwIssueItemOutParamList));
+//        } else {
+//            ListProperty.setValue("[]");
+//        }
+//        ListProperty.setType(String.class); // ✅ 类型改为 String
+//        propertyInfos.add(ListProperty);
+
+
+//        PropertyInfo ListProperty = new PropertyInfo();
+//        ListProperty.setName("MW_Out_ParamList");
+//        // 3. 使用 Vector 包装 List（KSOAP2 只认 Vector 作为数组载体）
+//        Vector<MWIssueItemOutParam> vector = new Vector<>();
+//        if (mwIssueItemOutParamList != null) {
+//            vector.addAll(mwIssueItemOutParamList);
+//        }
+//
+//// 4. 设置值为 Vector
+//        ListProperty.setValue(vector);
+//
+//// 5. ⭐ 核心：类型必须是 MWIssueItemOutParam.class
+//// 告诉 KSOAP2：这是一个 MWIssueItemOutParam 类型的数组
+//        ListProperty.setType(MWIssueItemOutParam.class);
+//
+//// 6. 加入列表
+//        propertyInfos.add(ListProperty);
+
+        String paramJson = JsonUtil.objectToJson(mwIssueItemOutParamList);
+
+        AddPropertyInfo(propertyInfos,"MW_Out_ParamListString",paramJson);
+
+
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "HR_Name", UserSingleton.get().getHRName());
+
+
+//        SoapSerializationEnvelope envelope = invokeSupplierWS_Special(propertyInfos, webMethodName);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        WsResult ws_result = Get_WS_Result(obj);
+
+        return ws_result;
+    }
+
+    public static WsResult op_Commit_MW_New_Issue_Item_Improve_Batch4(Long MW_ID, int Sender, List<MWIssueItemOutParam> mwIssueItemOutParamList) {
+        String webMethodName = "op_Commit_MW_New_Issue_Item_Improve_Batch4";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "MW_ID", MW_ID);
+        AddPropertyInfo(propertyInfos, "Exer", Sender);
+
+        String paramJson = JsonUtil.objectToJson(mwIssueItemOutParamList);
+        AddPropertyInfo(propertyInfos, "MW_Out_ParamListString", paramJson);
+
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "HR_Name", UserSingleton.get().getHRName());
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        WsResult ws_result = Get_WS_Result(obj);
+
+        return ws_result;
+    }
+
+
+    /**
+     * 从服务器获取当前应使用的 Batch 方法名，如 "Batch3" 或 "Batch4"。
+     * 返回 null 表示获取失败，调用方应 fallback 到默认值。
+     */
+    public static String getCommitMWNewIssueItemImproveBatchMethod() {
+        String webMethodName = "get_commit_MW_New_Issue_Item_Improve_Batch_Method";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope == null || envelope.bodyIn == null) {
+            return null;
+        }
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult wsResult = Get_WS_Result(obj);
+        if (wsResult.getResult()) {
+            return wsResult.getErrorInfo();
+        }
+        return null;
+    }
+
     public static WsResult op_Commit_MW_Issue_Item(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty, Date outDate, String scanCode) {
         String webMethodName = "op_Commit_MW_New_Issue_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -5014,6 +5202,61 @@ public class WebServiceUtil {
     }
 
 
+
+
+    //    投料出库到备料区
+    public static WsResult op_Commit_MW_Issue_Item_To_Backup_Extra(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty, Date outDate, String scanCode, String Remark) {
+        String webMethodName = "Handle_MW_Issues_Extra_Out_To_Backup_Area";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "MW_ID", MW_ID);
+        AddPropertyInfo(propertyInfos, "Exer", Sender);
+        AddPropertyInfo(propertyInfos, "Item_ID", Item_ID);
+        AddPropertyInfo(propertyInfos, "IV_ID", IV_ID);
+        AddPropertyInfo(propertyInfos, "LotID", LotID);
+        AddPropertyInfo(propertyInfos, "LotNo", LotNo);
+        AddPropertyInfo(propertyInfos, "Ist_ID", Ist_ID);
+        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", Sub_Ist_ID);
+        AddPropertyInfo(propertyInfos, "SMLI_ID", SMLI_ID);
+        AddPropertyInfo(propertyInfos, "SMM_ID", SMM_ID);
+        AddPropertyInfo(propertyInfos, "SMT_ID", SMT_ID);
+        AddPropertyInfo(propertyInfos, "Qty", Qty);
+        //extra 这里多一remark
+        AddPropertyInfo(propertyInfos, "Remark", Remark);
+
+
+        AddPropertyInfo(propertyInfos, "AcDate", outDate);
+
+        AddPropertyInfo(propertyInfos, "Scan_Code", scanCode);
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "HR_Name", UserSingleton.get().getHRName());
+
+        System.out.println("================ MW_ID = " + MW_ID + " exer = " + Sender + " item_id = " + Item_ID);
+        System.out.println("================ IV_ID = " + IV_ID + " LotID = " + LotID + " LotNo = " + LotNo);
+        System.out.println("================ Ist_ID = " + Ist_ID + " Sub_Ist_ID = " + Sub_Ist_ID + " SMLI_ID = " + SMLI_ID + " scancode = " + scanCode) ;
+        System.out.println("================ SMM_ID = " + SMM_ID + " SMT_ID = " + SMT_ID + " Qty = " + Qty + " acdate = " + outDate + " Remark = " + Remark);
+
+        // codex by john 2026-09-04 13:28 - 单独给额外领料备料方法加 SoapFault/异常兜底，不影响通用 op_Commit_MW_Issue_Item_To_Backup
+        try {
+            SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+            if (envelope != null && envelope.bodyIn instanceof SoapFault) {
+                WsResult result = new WsResult();
+                result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+                result.setResult(false);
+                return result;
+            }
+            SoapObject obj = (SoapObject) envelope.bodyIn;
+            WsResult ws_result = Get_WS_Result(obj);
+            return ws_result;
+        } catch (Exception e) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo(e.getMessage());
+            return result;
+        }
+    }
+
+
 //    Function Handle_MW_Issues_Out_To_Backup_Area(MW_ID As Long, Exer As Integer,
 //                                                 Item_ID As Long, IV_ID As Long,
 //                                                 LotID As Long, LotNo As String,
@@ -5065,6 +5308,45 @@ public class WebServiceUtil {
 
     }
 
+    //额外备料的出库，包含一些状态的刷新处理，因额外出库旧系统与新系统可能都在用，这里先不作统一
+    public static WsResult op_Commit_MW_Issue_Extra_Item_ForBackUp(Long MW_ID, int Sender, Long Item_ID, Long IV_ID, Long LotID, String LotNo, Long Ist_ID, Long Sub_Ist_ID, Long SMLI_ID, Long SMM_ID, Long SMT_ID, String Qty, String remark, Date outDate, String scanCode) {
+        // codex by john 2026-09-08 16:36 - 服务端 WSDL 操作名是 op_Commit_MW_New_Issue_Extra_Item_ForBackUp，少了 New 会报 ActionNotSupported
+        String webMethodName = "op_Commit_MW_New_Issue_Extra_Item_ForBackUp";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+
+        AddPropertyInfo(propertyInfos, "MW_ID", MW_ID);
+        AddPropertyInfo(propertyInfos, "Exer", Sender);
+        AddPropertyInfo(propertyInfos, "Item_ID", Item_ID);
+        AddPropertyInfo(propertyInfos, "IV_ID", IV_ID);
+        AddPropertyInfo(propertyInfos, "LotID", LotID);
+        AddPropertyInfo(propertyInfos, "LotNo", LotNo);
+        AddPropertyInfo(propertyInfos, "Ist_ID", Ist_ID);
+        AddPropertyInfo(propertyInfos, "Sub_Ist_ID", Sub_Ist_ID);
+        AddPropertyInfo(propertyInfos, "SMLI_ID", SMLI_ID);
+        AddPropertyInfo(propertyInfos, "SMM_ID", SMM_ID);
+        AddPropertyInfo(propertyInfos, "SMT_ID", SMT_ID);
+        AddPropertyInfo(propertyInfos, "Qty", Qty);
+        AddPropertyInfo(propertyInfos, "Remark", remark);
+        AddPropertyInfo(propertyInfos, "AcDate", outDate);
+
+        AddPropertyInfo(propertyInfos, "Scan_Code", scanCode);
+        AddPropertyInfo(propertyInfos, "Bu_ID", UserSingleton.get().getUserInfo().getBu_ID());
+        AddPropertyInfo(propertyInfos, "HR_Name", UserSingleton.get().getHRName());
+
+        System.out.println("op_Commit_MW_Issue_Extra_Item_ForBackUp MW_ID = " + MW_ID + " Exer=" + Sender + " item_id = " + Item_ID + " IV_ID=" + IV_ID);
+        System.out.println("op_Commit_MW_Issue_Extra_Item_ForBackUp LotID = " + LotID + " LotNo=" + LotNo + " Ist_ID=" + Ist_ID);
+        System.out.println("op_Commit_MW_Issue_Extra_Item_ForBackUp Sub_Ist_ID = " + Sub_Ist_ID + " SMLI_ID = " + SMLI_ID + " SMM_ID=" + SMM_ID);
+        System.out.println("op_Commit_MW_Issue_Extra_Item_ForBackUp SMT_ID = " + SMT_ID + " Qty = " + Qty + " Remark=" + remark + " acDate = " + outDate.getTime());
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+
+        WsResult ws_result = Get_WS_Result(obj);
+
+        return ws_result;
+
+    }
+
 
 //    public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, HashMap<String, String> SelectDep, HashMap<String, String> SelectReaseach, BoxItemEntity bi) {
 //        String sqty = String.valueOf(bi.getQty());
@@ -5102,13 +5384,14 @@ public class WebServiceUtil {
 //    }
 
     //成品扫非托盘部门领料
-    public static WsResult opProductDepNotPalletIssue(int Bu_ID, DepartmentBean departmentBean,  long boxID, int Qty,String remark) {
+    public static WsResult opProductDepNotPalletIssue(int Bu_ID, DepartmentBean departmentBean,  long boxID, int Qty,String remark,String currentNRDMItemSubNumber,int FiPTID) {
         String webMethodName = "op_Product_Dept_Not_Pallet_Issue";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
         AddPropertyInfo(propertyInfos, "SenderID", UserSingleton.get().getHRID());
         AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
         AddPropertyInfo(propertyInfos, "Dep_ID", departmentBean.getDepartmentID());
         AddPropertyInfo(propertyInfos, "Box_ID", boxID);
+
 //        AddPropertyInfo(propertyInfos, "Exer", UserInfoEntity.ID);
 //        if (departmentBean != null) {
 //            AddPropertyInfo(propertyInfos, "EntityID", departmentBean.getDepartmentID());
@@ -5122,6 +5405,8 @@ public class WebServiceUtil {
 //        }
         AddPropertyInfo(propertyInfos, "Qty", Qty);
         AddPropertyInfo(propertyInfos, "Remark", remark);
+        AddPropertyInfo(propertyInfos, "Fi_Product_Type_ID", FiPTID );
+        AddPropertyInfo(propertyInfos, "Fi_Product_Item_Sub", currentNRDMItemSubNumber);
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
         WsResult ws_result = Get_WS_Result(obj);
@@ -5130,7 +5415,7 @@ public class WebServiceUtil {
 
 
     //部门领料的出库？
-    public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, DepartmentBean departmentBean, ResearchItemBean researchItemBean, BoxItemEntity boxItemEntity, String remark) {
+    public static WsResult op_Commit_Dep_Out_Item(int Bu_ID, DepartmentBean departmentBean, ResearchItemBean researchItemBean, BoxItemEntity boxItemEntity, String remark,String currentNRDMItemSubNumber,int FiPTID ) {
         String sqty = String.valueOf(boxItemEntity.getQty());
         String webMethodName = "op_Commit_Dep_Out_Item";
         ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
@@ -5141,8 +5426,10 @@ public class WebServiceUtil {
             AddPropertyInfo(propertyInfos, "EntityID", departmentBean.getDepartmentID());
             AddPropertyInfo(propertyInfos, "EntityName", departmentBean.getDepartmentName());
         }
+//        2026-07-28 john这里作一处理，如果
+            AddPropertyInfo(propertyInfos, "Fi_Product_Type_ID", FiPTID);
         if (researchItemBean != null) {
-            AddPropertyInfo(propertyInfos, "Fi_Product_Type_ID", researchItemBean.getFiPTID());
+//            AddPropertyInfo(propertyInfos, "Fi_Product_Type_ID", researchItemBean.getFiPTID());
             AddPropertyInfo(propertyInfos, "Fi_Product_Status_ID", researchItemBean.getFSPDID());
             AddPropertyInfo(propertyInfos, "Out_Product_ID", researchItemBean.getProductID());
             AddPropertyInfo(propertyInfos, "Out_Program_ID", researchItemBean.getProgramID());
@@ -5162,6 +5449,8 @@ public class WebServiceUtil {
         }
         AddPropertyInfo(propertyInfos, "Qty", sqty);
         AddPropertyInfo(propertyInfos, "Remark", remark);
+
+        AddPropertyInfo(propertyInfos, "Fi_Product_Item_Sub", currentNRDMItemSubNumber);
         SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
         SoapObject obj = (SoapObject) envelope.bodyIn;
         WsResult ws_result = Get_WS_Result(obj);
@@ -5693,6 +5982,162 @@ public class WebServiceUtil {
 
     }
 
+    /**
+     * 盘点范围先定：列出待扫描草稿作业。
+     * 2026-10-24 john
+     */
+    public static WsResult op_CheckInventory_ScopeListV2(int Bu_ID, int Warehouse_ID, int Ac_Type,
+                                                          String UserName, String Password) {
+        String webMethodName = "op_CheckInventory_ScopeListV2_New";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfos, "Warehouse_ID", Warehouse_ID);
+        AddPropertyInfo(propertyInfos, "Ac_Type", Ac_Type);
+        AddPropertyInfo(propertyInfos, "HR_ID", UserSingleton.get().getHRID());
+//        AddPropertyInfo(propertyInfos, "UserName", UserName);
+//        AddPropertyInfo(propertyInfos, "Password", Password);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult result = getWS_Result(obj);
+        System.out.println("### InventoryScope RETURN " + webMethodName + " Result=" + result.getResult());
+        System.out.println("### InventoryScope Info " + result.getInfo());
+        System.out.println("### InventoryScope ErrorInfo " + result.getErrorInfo());
+        return result;
+    }
+
+    /**
+     * 盘点范围先定：查看已扫描/冻结范围。
+     * 2026-10-24 john
+     */
+    public static WsResult op_CheckInventory_ScopeLocationsV2(int CountSession_ID, int Bu_ID, int Warehouse_ID,
+                                                              int Ac_Type, String UserName, String Password) {
+        String webMethodName = "op_CheckInventory_ScopeLocationsV2_New";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "CountSession_ID", CountSession_ID);
+        AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfos, "Warehouse_ID", Warehouse_ID);
+        AddPropertyInfo(propertyInfos, "Ac_Type", Ac_Type);
+        AddPropertyInfo(propertyInfos, "HR_ID", UserSingleton.get().getHRID());
+//        AddPropertyInfo(propertyInfos, "UserName", UserName);
+//        AddPropertyInfo(propertyInfos, "Password", Password);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult result = getWS_Result(obj);
+        System.out.println("### InventoryScope RETURN " + webMethodName + " Result=" + result.getResult());
+        System.out.println("### InventoryScope Info " + result.getInfo());
+        System.out.println("### InventoryScope ErrorInfo " + result.getErrorInfo());
+        return result;
+    }
+
+    /**
+     * 盘点范围先定：扫描区域或子库位条码并加入草稿范围。
+     * 2026-10-24 john
+     */
+    public static WsResult op_CheckInventory_ScopeScanV2(String X, int CountSession_ID, int Bu_ID,
+                                                         int Warehouse_ID, int Ac_Type,
+                                                         String UserName, String Password) {
+        String webMethodName = "op_CheckInventory_ScopeScanV2_New";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "X", X);
+        AddPropertyInfo(propertyInfos, "CountSession_ID", CountSession_ID);
+        AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfos, "Warehouse_ID", Warehouse_ID);
+        AddPropertyInfo(propertyInfos, "Ac_Type", Ac_Type);
+        AddPropertyInfo(propertyInfos, "HR_ID", UserSingleton.get().getHRID());
+//        AddPropertyInfo(propertyInfos, "UserName", UserName);
+//        AddPropertyInfo(propertyInfos, "Password", Password);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult result = getWS_Result(obj);
+        System.out.println("### InventoryScope RETURN " + webMethodName + " Result=" + result.getResult());
+        System.out.println("### InventoryScope Info " + result.getInfo());
+        System.out.println("### InventoryScope ErrorInfo " + result.getErrorInfo());
+        return result;
+    }
+
+    /**
+     * 2026-10-29 john 新盘点 V3 _New 统一调用：QueryJson + HR_ID。
+     * 不信任 JSON 内身份字段，HR_ID 由当前登录人员提供。
+     */
+    private static WsResult callCheckInventoryV3(String webMethodName, String queryJson) {
+        System.out.println("### InventoryV3 CALL " + webMethodName);
+        System.out.println("### InventoryV3 QueryJson " + queryJson);
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "QueryJson", queryJson);
+        AddPropertyInfo(propertyInfos, "HR_ID", UserSingleton.get().getHRID());
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope == null || envelope.bodyIn == null) {
+            WsResult fail = new WsResult();
+            fail.setResult(false);
+            fail.setErrorInfo("网络请求失败");
+            System.out.println("### InventoryV3 RETURN " + webMethodName + " Result=false ErrorInfo=网络请求失败");
+            return fail;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult fail = new WsResult();
+            fail.setResult(false);
+            fail.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            System.out.println("### InventoryV3 RETURN " + webMethodName + " SoapFault=" + fail.getErrorInfo());
+            return fail;
+        }
+        WsResult result = Get_WS_Result((SoapObject) envelope.bodyIn);
+        System.out.println("### InventoryV3 RETURN " + webMethodName + " Result=" + result.getResult());
+        System.out.println("### InventoryV3 ErrorInfo " + result.getErrorInfo());
+        System.out.println("### InventoryV3 Info " + result.getInfo());
+        return result;
+    }
+
+    public static WsResult op_CheckInventory_JobQueryV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_JobQueryV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_JobActionV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_JobActionV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_ListV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_ListV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_TaskLabelResolveV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_TaskLabelResolveV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_ScanLocationV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_ScanLocationV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_LocationResultV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_LocationResultV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_ResolveItemV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_ResolveItemV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_ItemSearchV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_ItemSearchV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_SaveV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_SaveV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_CompleteV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_CompleteV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_CorrectV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_CorrectV3_New", queryJson);
+    }
+
+    public static WsResult op_CheckInventory_VoidV3_New(String queryJson) {
+        return callCheckInventoryV3("op_CheckInventory_VoidV3_New", queryJson);
+    }
 
     public static WsResult op_Commit_Stock_Result_V3(String Exer_Name, int CI_ID, String X,
                                                      Long Ist_ID, Long Sub_Ist_ID, Long SMT_ID, Long SMM_ID, Long SMLI_ID,
@@ -5899,6 +6344,33 @@ public class WebServiceUtil {
         return result;
     }
 
+
+    public static WsResult op_Get_MW_Assist_Items(int Bu_ID, long PItem_ID) {
+        String webMethodName = "op_Get_MW_Assist_Items";
+        ArrayList<PropertyInfo> propertyInfos = new ArrayList<>();
+        AddPropertyInfo(propertyInfos, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfos, "PItem_ID", PItem_ID);
+
+        System.out.println("### op_Get_MW_Assist_Items Bu_ID=" + Bu_ID + " PItem_ID=" + PItem_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfos, webMethodName);
+        if (envelope == null || envelope.bodyIn == null) {
+            WsResult fail = new WsResult();
+            fail.setResult(false);
+            fail.setErrorInfo("网络请求失败");
+            return fail;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult fail = new WsResult();
+            fail.setResult(false);
+            fail.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            return fail;
+        }
+        WsResult result = Get_WS_Result((SoapObject) envelope.bodyIn);
+        System.out.println("### op_Get_MW_Assist_Items Result=" + result.getResult());
+        System.out.println("### op_Get_MW_Assist_Items ErrorInfo=" + result.getErrorInfo());
+        System.out.println("### op_Get_MW_Assist_Items Info=" + result.getInfo());
+        return result;
+    }
 
     public static WsResult op_Commit_Freeze_Inv_By_Lot_Mobile(long lotid) {
         String webMethodName = "op_Commit_Freeze_Inv_By_Lot_Mobile";
@@ -8160,6 +8632,400 @@ public class WebServiceUtil {
 
     public static WsResult op_Undo_Scan(String code, String type) {
         return null;
+    }
+
+    public static List<ProductFeeRdmBean> getProductFeeRdm(int HR_ID, int Bu_ID) {
+        String webMethodName = "Get_Product_Fee_RDM";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "HR_ID", HR_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult wsResult = Get_WS_Result(obj);
+
+        if (wsResult != null && wsResult.getResult()) {
+            String json = wsResult.getErrorInfo();
+            Type type = new TypeToken<List<ProductFeeRdmBean>>() {}.getType();
+            return JsonUtil.parseJsonToObject(json, type);
+        }
+        return null;
+    }
+
+    public static WsResult judgePartRdmOperationCorrect(int HR_ID, int Bu_ID, int Ac_Title_ID, int Ac_Entity, String Fi_Product_Item, String Fi_Product_Sub_Item) {
+        String webMethodName = "Judge_Part_RDM_Operation_Correct";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "HR_ID", HR_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfoList, "Ac_Title_ID", Ac_Title_ID);
+        AddPropertyInfo(propertyInfoList, "Ac_Entity", Ac_Entity);
+        AddPropertyInfo(propertyInfoList, "Fi_Product_Item", Fi_Product_Item);
+        AddPropertyInfo(propertyInfoList, "Fi_Product_Sub_Item", Fi_Product_Sub_Item);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult wsResult = Get_WS_Result(obj);
+        return wsResult;
+    }
+
+    public static WsResult judgeProductRdmOperationCorrect(int HR_ID, int Bu_ID, int Ac_Title_ID, int Ac_Entity, String Fi_Product_Item, String Fi_Product_Sub_Item) {
+        String webMethodName = "Judge_Product_RDM_Operation_Correct";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "HR_ID", HR_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfoList, "Ac_Title_ID", Ac_Title_ID);
+        AddPropertyInfo(propertyInfoList, "Ac_Entity", Ac_Entity);
+        AddPropertyInfo(propertyInfoList, "Fi_Product_Item", Fi_Product_Item);
+        AddPropertyInfo(propertyInfoList, "Fi_Product_Sub_Item", Fi_Product_Sub_Item);
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        WsResult wsResult = Get_WS_Result(obj);
+        return wsResult;
+    }
+
+    // ===================== 成品发货 (DP Ship Work) =====================
+
+    /**
+     * codex by john 2026-11-19 - 新版成品标签短链接服务端解析
+     */
+    public static WsResult op_Product_New_Code_Pase_Pallet(int Bu_ID, int HR_ID,
+                                                           String ScanCode) {
+        String webMethodName = "op_Product_New_Code_Pase_Pallet";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfoList, "HR_ID", HR_ID);
+        AddPropertyInfo(propertyInfoList, "ScanCode", ScanCode == null ? "" : ScanCode);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        return parseWebAnswer(envelope);
+    }
+
+    /**
+     * codex by john 2026-11-13 - 成品发货 Android 统一查询入口
+     */
+    public static WsResult opAndroidDpShipWorkQuery(int HR_ID, int Bu_ID,
+                                                    String QueryType, String QueryJson) {
+        String webMethodName = "op_Android_DP_ShipWork_Query";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "HR_ID", HR_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfoList, "QueryType", QueryType == null ? "" : QueryType);
+        AddPropertyInfo(propertyInfoList, "QueryJson", QueryJson == null ? "{}" : QueryJson);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        return parseWebAnswer(envelope);
+    }
+
+    /**
+     * codex by john 2026-11-13 - 成品发货 Android 统一动作入口
+     */
+    public static WsResult opAndroidDpShipWorkAction(int HR_ID, int Bu_ID,
+                                                     String ActionType, String ActionJson) {
+        String webMethodName = "op_Android_DP_ShipWork_Action";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "HR_ID", HR_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfoList, "ActionType", ActionType == null ? "" : ActionType);
+        AddPropertyInfo(propertyInfoList, "ActionJson", ActionJson == null ? "{}" : ActionJson);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        return parseWebAnswer(envelope);
+    }
+
+    public static WsResult opDpShipWorkListOrders(int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_ListOrders";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkListPallets(long Work_ID, int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_ListPallets";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Work_ID", Work_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkListLines(long DO_ID, int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_ListLines";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "DO_ID", DO_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkListActive(int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_ListActive";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static List<ShipWorkActiveBean> getShipWorkActiveList() {
+        WsResult result = opDpShipWorkListActive(UserSingleton.get().getUserInfo().getBu_ID());
+        if (result == null || !result.getResult()) {
+            return null;
+        }
+        String json = result.getInfo();
+        if (json == null || json.isEmpty() || "null".equalsIgnoreCase(json)) {
+            return null;
+        }
+        Type type = new TypeToken<List<ShipWorkActiveBean>>() {}.getType();
+        return JsonUtil.parseJsonToObject(json, type);
+    }
+
+    public static List<ShipWorkOrderBean> getShipWorkOrderList() {
+        WsResult result = opDpShipWorkListOrders(UserSingleton.get().getUserInfo().getBu_ID());
+        if (result == null || !result.getResult()) {
+            return null;
+        }
+        String json = result.getInfo();
+        if (json == null || json.isEmpty() || "null".equalsIgnoreCase(json)) {
+            return null;
+        }
+        Type type = new TypeToken<List<ShipWorkOrderBean>>() {}.getType();
+        return JsonUtil.parseJsonToObject(json, type);
+    }
+
+    public static List<ShipWorkLineBean> getShipWorkLineList(long DO_ID) {
+        WsResult result = opDpShipWorkListLines(DO_ID, UserSingleton.get().getUserInfo().getBu_ID());
+        if (result == null || !result.getResult()) {
+            return null;
+        }
+        String json = result.getInfo();
+        if (json == null || json.isEmpty() || "null".equalsIgnoreCase(json)) {
+            return null;
+        }
+        Type type = new TypeToken<List<ShipWorkLineBean>>() {}.getType();
+        return JsonUtil.parseJsonToObject(json, type);
+    }
+
+    public static List<ShipWorkPalletBean> getShipWorkPalletList(long Work_ID) {
+        WsResult result = opDpShipWorkListPallets(Work_ID, UserSingleton.get().getUserInfo().getBu_ID());
+        if (result == null || !result.getResult()) {
+            return null;
+        }
+        String json = result.getInfo();
+        if (json == null || json.isEmpty() || "null".equalsIgnoreCase(json)) {
+            return null;
+        }
+        Type type = new TypeToken<List<ShipWorkPalletBean>>() {}.getType();
+        return JsonUtil.parseJsonToObject(json, type);
+    }
+
+    public static List<ShipWorkStageAreaBean> getShipWorkStageAreaList(long Warehouse_ID, int Bu_ID) {
+        WsResult result = opDpShipWorkListStageAreas(Warehouse_ID, Bu_ID);
+        if (result == null || !result.getResult()) {
+            return null;
+        }
+        String json = result.getInfo();
+        if (json == null || json.isEmpty() || "null".equalsIgnoreCase(json)) {
+            return null;
+        }
+        Type type = new TypeToken<List<ShipWorkStageAreaBean>>() {}.getType();
+        return JsonUtil.parseJsonToObject(json, type);
+    }
+
+    public static WsResult opDpShipWorkListStageAreas(long Warehouse_ID, int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_ListStageAreas";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Warehouse_ID", Warehouse_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkConfigureStageArea(long Warehouse_ID, int Bu_ID, long IST_ID, int Operator_ID) {
+        String webMethodName = "op_DP_ShipWork_ConfigureStageArea";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Warehouse_ID", Warehouse_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        AddPropertyInfo(propertyInfoList, "IST_ID", IST_ID);
+        AddPropertyInfo(propertyInfoList, "Operator_ID", Operator_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkCreate(long DO_ID, long Delivery_ID, long Warehouse_ID, long Stage_Area_ID, int Operator_ID, int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_Create";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "DO_ID", DO_ID);
+        AddPropertyInfo(propertyInfoList, "Delivery_ID", Delivery_ID);
+        AddPropertyInfo(propertyInfoList, "Warehouse_ID", Warehouse_ID);
+        AddPropertyInfo(propertyInfoList, "Stage_Area_ID", Stage_Area_ID);
+        AddPropertyInfo(propertyInfoList, "Operator_ID", Operator_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkLockFIFO(long Work_ID, long DPI_ID, double Quantity, int Operator_ID, int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_LockFIFO";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Work_ID", Work_ID);
+        AddPropertyInfo(propertyInfoList, "DPI_ID", DPI_ID);
+        AddPropertyInfo(propertyInfoList, "Quantity", Quantity);
+        AddPropertyInfo(propertyInfoList, "Operator_ID", Operator_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkScan(long Work_ID, String Barcode, boolean Ship_Scan, int Operator_ID, int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_Scan";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Work_ID", Work_ID);
+        AddPropertyInfo(propertyInfoList, "Barcode", Barcode);
+        AddPropertyInfo(propertyInfoList, "Ship_Scan", Ship_Scan);
+        AddPropertyInfo(propertyInfoList, "Operator_ID", Operator_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkMoveToStage(long Work_ID, int Operator_ID, int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_MoveToStage";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Work_ID", Work_ID);
+        AddPropertyInfo(propertyInfoList, "Operator_ID", Operator_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkReturn(long Work_ID, String Barcode, int Operator_ID, int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_Return";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Work_ID", Work_ID);
+        AddPropertyInfo(propertyInfoList, "Barcode", Barcode);
+        AddPropertyInfo(propertyInfoList, "Operator_ID", Operator_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkOQC(long Work_ID, long Work_Pallet_ID, boolean Passed, String Remark, int Operator_ID, int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_OQC";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Work_ID", Work_ID);
+        AddPropertyInfo(propertyInfoList, "Work_Pallet_ID", Work_Pallet_ID);
+        AddPropertyInfo(propertyInfoList, "Passed", Passed);
+        AddPropertyInfo(propertyInfoList, "Remark", Remark);
+        AddPropertyInfo(propertyInfoList, "Operator_ID", Operator_ID);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opDpShipWorkPost(long Work_ID, int Operator_ID, String SheetNo, int Bu_ID) {
+        String webMethodName = "op_DP_ShipWork_Post";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "Work_ID", Work_ID);
+        AddPropertyInfo(propertyInfoList, "Operator_ID", Operator_ID);
+        AddPropertyInfo(propertyInfoList, "SheetNo", SheetNo);
+        AddPropertyInfo(propertyInfoList, "Bu_ID", Bu_ID);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        SoapObject obj = (SoapObject) envelope.bodyIn;
+        return Get_WS_Result(obj);
+    }
+
+    public static WsResult opH5DpShipWorkQuery(String queryJson) {
+        return callH5DpShipWork("op_H5_DP_ShipWork_Query", queryJson);
+    }
+
+    public static WsResult opH5DpShipWorkAction(String actionJson) {
+        return callH5DpShipWork("op_H5_DP_ShipWork_Action", actionJson);
+    }
+
+    private static WsResult callH5DpShipWork(String webMethodName, String queryJson) {
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "QueryJson", queryJson);
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        if (envelope == null || envelope.bodyIn == null) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo("网络请求失败");
+            return result;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            return result;
+        }
+        return Get_WS_Result((SoapObject) envelope.bodyIn);
+    }
+
+    /**
+     * codex by john 2026-11-12 - 无 CDN 升级检查 V2
+     */
+    public static WsResult checkMobileUpgradeV2(String accountNo, String deviceId,
+                                                String phoneModel, String osVersion,
+                                                long currentVersionCode, String currentVersionName,
+                                                String networkType) {
+        String webMethodName = "CheckMobileUpgradeV2";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "accountNo", safeValue(accountNo));
+        AddPropertyInfo(propertyInfoList, "deviceId", safeValue(deviceId));
+        AddPropertyInfo(propertyInfoList, "phoneModel", safeValue(phoneModel));
+        AddPropertyInfo(propertyInfoList, "osVersion", safeValue(osVersion));
+        AddPropertyInfo(propertyInfoList, "currentVersionCode", currentVersionCode);
+        AddPropertyInfo(propertyInfoList, "currentVersionName", safeValue(currentVersionName));
+        AddPropertyInfo(propertyInfoList, "networkType", safeValue(networkType));
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        return parseWebAnswer(envelope);
+    }
+
+    /**
+     * codex by john 2026-11-12 - 无 CDN 升级事件上报 V2
+     */
+    public static WsResult reportMobileUpgradeEventV2(String sessionId, long versionCode,
+                                                       String eventType, String message) {
+        String webMethodName = "ReportMobileUpgradeEventV2";
+        ArrayList<PropertyInfo> propertyInfoList = new ArrayList<>();
+        AddPropertyInfo(propertyInfoList, "sessionId", safeValue(sessionId));
+        AddPropertyInfo(propertyInfoList, "versionCode", versionCode);
+        AddPropertyInfo(propertyInfoList, "eventType", safeValue(eventType));
+        AddPropertyInfo(propertyInfoList, "message", safeValue(message));
+
+        SoapSerializationEnvelope envelope = invokeSupplierWS(propertyInfoList, webMethodName);
+        return parseWebAnswer(envelope);
+    }
+
+    private static WsResult parseWebAnswer(SoapSerializationEnvelope envelope) {
+        if (envelope == null || envelope.bodyIn == null) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo("网络请求失败");
+            return result;
+        }
+        if (envelope.bodyIn instanceof SoapFault) {
+            WsResult result = new WsResult();
+            result.setResult(false);
+            result.setErrorInfo(((SoapFault) envelope.bodyIn).faultstring);
+            return result;
+        }
+        return Get_WS_Result((SoapObject) envelope.bodyIn);
+    }
+
+    private static String safeValue(String value) {
+        return value == null ? "" : value;
     }
 
     public static WsResult op_Check_DeliveryOrder(String code) {

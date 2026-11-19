@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/product_ship_work_order_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="选择发货指令" />
+
+    <TextView
+        android:id="@+id/product_ship_work_order_customer_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:textColor="@color/login_title_color"
+        android:textSize="@dimen/text_size_15"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_6"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/product_ship_work_order_search_editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="搜索跟踪号或指令ID" />
+
+        <Button
+            android:id="@+id/product_ship_work_order_search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查询" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/product_ship_work_order_status_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_6"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:textColor="@color/color_orange_FF6A00"
+        android:textSize="@dimen/text_size_14" />
+
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/product_ship_work_order_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:app_layout_style="list_vertical" />
+
+</LinearLayout>

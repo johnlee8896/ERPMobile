@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimen_size_10"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_size_10">
+
+    <android.support.constraint.Barrier
+        android:id="@+id/item_logistics_barrier"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:barrierDirection="right"
+        app:constraint_referenced_ids="first_info_textView,second_info_textView,third_info_textView,fourth_info_textView,fifth_info_textView,sixth_info_textView,seventh_info_textView,eighth_info_textView,ninth_info_textView,tenth_info_textView,eleventh_info_textView,twelfth_info_textView"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        android:id="@+id/first_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="过程状态:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/first_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/login_title_color"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/first_info_textView" />
+
+    <TextView
+        android:id="@+id/second_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="发出日期:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/first_info_textView" />
+    <TextView
+        android:id="@+id/second_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/second_info_textView" />
+
+    <TextView
+        android:id="@+id/third_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="接收时间:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/second_info_textView" />
+    <TextView
+        android:id="@+id/third_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/third_info_textView" />
+
+    <TextView
+        android:id="@+id/fourth_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="供应商:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/third_info_textView" />
+    <TextView
+        android:id="@+id/fourth_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/fourth_info_textView" />
+
+    <TextView
+        android:id="@+id/fifth_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="Item_ID:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/fourth_info_textView" />
+    <TextView
+        android:id="@+id/fifth_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/fifth_info_textView" />
+
+    <TextView
+        android:id="@+id/sixth_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="名称:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/fifth_info_textView" />
+    <TextView
+        android:id="@+id/sixth_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/sixth_info_textView" />
+
+    <TextView
+        android:id="@+id/seventh_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="物料编码:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/sixth_info_textView" />
+    <TextView
+        android:id="@+id/seventh_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/seventh_info_textView" />
+
+    <TextView
+        android:id="@+id/eighth_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="版本:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/seventh_info_textView" />
+    <TextView
+        android:id="@+id/eighth_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/eighth_info_textView" />
+
+    <TextView
+        android:id="@+id/ninth_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="生产批次:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/eighth_info_textView" />
+    <TextView
+        android:id="@+id/ninth_text_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ninth_info_textView" />
+
+    <TextView
+        android:id="@+id/tenth_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="数量:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/ninth_info_textView" />
+    <TextView
+        android:id="@+id/tenth_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/tenth_info_textView" />
+
+    <TextView
+        android:id="@+id/eleventh_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="件数:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/tenth_info_textView" />
+    <TextView
+        android:id="@+id/eleventh_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/eleventh_info_textView" />
+
+    <TextView
+        android:id="@+id/twelfth_info_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:text="检验备注:"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15"
+        app:layout_constraintStart_toStartOf="@id/first_info_textView"
+        app:layout_constraintTop_toBottomOf="@id/eleventh_info_textView" />
+    <TextView
+        android:id="@+id/twelfth_text_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@id/item_logistics_barrier"
+        app:layout_constraintTop_toTopOf="@id/twelfth_info_textView" />
+
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="@color/white"
+    android:layout_marginLeft="@dimen/dimen_size_10"
+    android:layout_marginRight="@dimen/dimen_size_10"
+    android:layout_marginTop="@dimen/dimen_size_6"
+    android:padding="@dimen/dimen_size_10">
+
+    <TextView
+        android:id="@+id/item_ship_work_customer_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/color_dark_blue_1A2D53"
+        android:textSize="@dimen/text_size_15"
+        android:textStyle="bold"
+        tools:text="3个待发指令 Tesla Fremont" />
+
+    <ImageView
+        android:id="@+id/item_ship_work_customer_indicator"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:contentDescription="展开/收起"
+        tools:src="@drawable/expander_ic_mini_collapsed" />
+
+</LinearLayout>

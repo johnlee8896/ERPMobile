@@ -233,8 +233,30 @@
             android:layout_marginRight="@dimen/dimen_size_20"
             android:background="@drawable/shape_conner_blue_button_bg"
             android:gravity="center"
-            android:layout_marginBottom="50dp"
             android:text="成品部门领料" />
+
+        <TextView
+            android:id="@+id/product_main_product_ship_work_new_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:text="成品发货管理New" />
+
+        <TextView
+            android:id="@+id/product_main_product_ship_work_h5oa_textView"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:background="@drawable/shape_conner_blue_button_bg"
+            android:gravity="center"
+            android:layout_marginBottom="50dp"
+            android:text="成品发货管理H5OA" />
 
 <!--        <TextView-->
 <!--            android:id="@+id/product_main_product_check_inv_textView"-->

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/background_light">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/product_ship_work_create_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="选择发货指令" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10">
+
+        <EditText
+            android:id="@+id/product_ship_work_search_editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="搜索客户/单号" />
+
+        <Button
+            android:id="@+id/product_ship_work_search_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查询" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/product_ship_work_order_title_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:text="发货指令"
+        android:textStyle="bold" />
+
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/product_ship_work_order_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:app_layout_style="list_vertical" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10">
+
+        <Button
+            android:id="@+id/product_ship_work_stage_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="选择发货区" />
+
+        <TextView
+            android:id="@+id/product_ship_work_stage_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_10"
+            android:gravity="center_vertical"
+            android:text="未选择" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/product_ship_work_create_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_marginBottom="@dimen/dimen_size_20"
+        android:text="建立发货作业" />
+
+</LinearLayout>

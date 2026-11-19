@@ -21,6 +21,8 @@ import com.chinashb.www.mobileerp.bean.entity.WCSubProductEntity;
 import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.ProductNewCodeParser;
+import com.chinashb.www.mobileerp.funs.ProductPalletCodeParser;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
@@ -232,6 +234,32 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
         if (TextUtils.isEmpty(content)) {
             return;
         }
+        // 本地先判断旧格式，Pallet 只走旧解析，不进入新标签网络解析
+        if (!content.startsWith("Pallet") && ProductNewCodeParser.isNewProductCode(content)) {
+            inputEditText.setText("");
+            ProductNewCodeParser.resolve(content, new ProductNewCodeParser.Callback() {
+                @Override
+                public void onResolved(String legacyCode) {
+                    parseContent(legacyCode);
+                }
+
+                @Override
+                public void onError(String message) {
+                    ToastUtil.showToastShort(message);
+                }
+            });
+            return;
+        }
+
+        // 旧解析方式保留记录：
+        // String[] qrContent = content.split("/");
+        // if (content.startsWith("Pallet") && qrContent.length >= 8) {
+        //     int boxId = Integer.parseInt(qrContent[1]);
+        //     托盘序列号 = qrContent[3];
+        //     客户图号 = qrContent[5];
+        //     箱子数量 = qrContent[7];
+        // }
+        // 现在改为按固定标记 /No/、/PartNo/、/Q/ 精确切段。
         if (content.contains("/") && content.length() > 7){
             GetTransferScanContentAsyncTask transferScanContentAsyncTask = new GetTransferScanContentAsyncTask();
             transferScanContentAsyncTask.execute(content);
@@ -244,8 +272,14 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
             qrContent = content.split("/");
             if (qrContent.length >= 2) {
 
-                if (content.startsWith("Pallet") && qrContent.length >= 8) {
-                    int boxId = Integer.parseInt(qrContent[1]);
+                if (content.startsWith("Pallet")) {
+                    ProductPalletCodeParser.PalletCode pallet =
+                            ProductPalletCodeParser.parse(content);
+                    if (pallet == null) {
+                        ToastUtil.showToastShort("成品托盘码格式不正确");
+                        return;
+                    }
+                    int boxId = pallet.boxId;
                     if (boxIDList.contains(boxId)) {
                         ToastUtil.showToastShort("该托盘已在列表中，请勿重复扫描！");
                     } else {
@@ -262,8 +296,8 @@ public class ProductInScanCodeBoxActivity extends BaseActivity implements View.O
                                 tempBoxInfoSBuilder.append("物料信息\n");
                             }
 
-                            tempBoxInfoSBuilder.append(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s\n", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
-                            //                        itemInfoTextView.setText(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s", qrContent[1], qrContent[3], qrContent[5], qrContent[7]));
+                            tempBoxInfoSBuilder.append(String.format("托盘ID:%s,托盘序列号：%s,客户图号：%s,箱子数量:%s\n",
+                                    boxId, pallet.codeNoBox, pallet.palletPartNo, pallet.actualBoxQty));
                             itemInfoTextView.setText(tempBoxInfoSBuilder.toString());
                             inputEditText.setText("");
                             hasScanItem = true;

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/product_ship_work_delivery_create_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="新建物流单" />
+
+    <RadioGroup
+        android:id="@+id/product_ship_work_delivery_mode_radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/product_ship_work_delivery_copy_last_radioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:checked="true"
+            android:text="复制最近一次" />
+
+        <RadioButton
+            android:id="@+id/product_ship_work_delivery_new_radioButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="全新建立" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/product_ship_work_delivery_status_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_6"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:textColor="@color/color_orange_FF6A00"
+        android:textSize="@dimen/text_size_14" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/product_ship_work_delivery_form_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/dimen_size_10"
+            android:paddingRight="@dimen/dimen_size_10" />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/product_ship_work_delivery_submit_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_8"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_marginBottom="@dimen/dimen_size_16"
+        android:text="创建并返回选择" />
+
+</LinearLayout>

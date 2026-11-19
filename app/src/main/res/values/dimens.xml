@@ -14,13 +14,18 @@
 
     <!--view边距-->
     <dimen name="dimen_size_5">5dp</dimen>
+    <dimen name="dimen_size_3">3dp</dimen>
     <dimen name="dimen_size_6">6dp</dimen>
+    <dimen name="dimen_size_7">7dp</dimen>
+    <dimen name="dimen_size_8">8dp</dimen>
     <dimen name="dimen_size_10">10dp</dimen>
     <dimen name="dimen_size_12">12dp</dimen>
+    <dimen name="dimen_size_14">14dp</dimen>
     <dimen name="dimen_size_15">15dp</dimen>
     <dimen name="dimen_size_16">16dp</dimen>
     <dimen name="dimen_size_18">18dp</dimen>
     <dimen name="dimen_size_20">20dp</dimen>
+    <dimen name="dimen_size_24">24dp</dimen>
     <dimen name="dimen_size_25">25dp</dimen>
     <dimen name="dimen_size_30">30dp</dimen>
     <dimen name="dimen_size_35">35dp</dimen>
@@ -35,6 +40,7 @@
 
     <!--字体大小-->
     <dimen name="text_size_14">14sp</dimen>
+    <dimen name="text_size_13">13sp</dimen>
     <dimen name="text_size_15">15sp</dimen>
     <dimen name="text_size_16">16sp</dimen>
     <dimen name="text_size_17">17sp</dimen>

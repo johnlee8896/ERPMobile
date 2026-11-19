@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_50"
+        app:app_title_text="物流来料检索" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10">
+
+        <Button
+            android:id="@+id/btn_date_today"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_date_option_bg"
+            android:text="当天"
+            android:textColor="@drawable/selector_date_option_text_color"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_date_week"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_date_option_bg"
+            android:text="本周"
+            android:textColor="@drawable/selector_date_option_text_color"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_date_month"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_date_option_bg"
+            android:text="本月"
+            android:textColor="@drawable/selector_date_option_text_color"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_date_three_month"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/selector_date_option_bg"
+            android:text="三个月"
+            android:textColor="@drawable/selector_date_option_text_color"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- codex by john 2026-09-10 14:54 - 过程状态筛选 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_5">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:gravity="center_vertical"
+            android:text="过程状态:"
+            android:textSize="14sp" />
+
+        <Spinner
+            android:id="@+id/spinner_process_status"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="@drawable/spinner_process_status_bg"
+            android:paddingLeft="@dimen/dimen_size_10"
+            android:paddingRight="@dimen/dimen_size_10" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dimen_size_10"
+        android:paddingRight="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_5">
+
+        <EditText
+            android:id="@+id/et_logistics_keyword"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:hint="输入关键字（默认查最近三个月所有状态）"
+            android:singleLine="true"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/btn_logistics_search"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="检索"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/pb_logistics_loading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone" />
+
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/rv_logistics_income_check"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        app:app_item_decoration_type="ITEM_SPACE"
+        app:app_layout_style="list_vertical"
+        tools:listitem="@layout/item_logistics_income_layout" />
+
+</LinearLayout>

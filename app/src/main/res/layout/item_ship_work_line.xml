@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="#F3F3F3"
+    android:layout_marginLeft="@dimen/dimen_size_30"
+    android:layout_marginRight="@dimen/dimen_size_10"
+    android:layout_marginTop="@dimen/dimen_size_5"
+    android:paddingLeft="@dimen/dimen_size_10"
+    android:paddingTop="@dimen/dimen_size_6"
+    android:paddingBottom="@dimen/dimen_size_6">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_ship_work_line_product_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/login_title_color"
+            android:textSize="@dimen/text_size_14"
+            tools:text="物料 Product_ID" />
+
+        <TextView
+            android:id="@+id/item_ship_work_line_qty_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_14"
+            tools:text="需求 1152 可发 0 已预留 1152" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/item_ship_work_line_query_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:paddingLeft="@dimen/dimen_size_6"
+        android:paddingRight="@dimen/dimen_size_6"
+        android:text="查询库存"
+        android:textSize="@dimen/text_size_14" />
+
+    <TextView
+        android:id="@+id/item_ship_work_line_status_textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dimen_size_6"
+        android:textColor="@color/color_orange_FF6A00"
+        android:textSize="@dimen/text_size_14"
+        tools:text="库存足够" />
+
+</LinearLayout>

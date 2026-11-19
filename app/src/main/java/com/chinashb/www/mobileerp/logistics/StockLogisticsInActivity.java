@@ -302,17 +302,6 @@ protected void onTextChangedSafe(CharSequence text) {
         if (TextUtils.isEmpty(content)) {
             return;
         }
-//        content = "VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114";
-
-
-
-
-
-
-//        content = content.trim();
-//        content = content.replace(" ",""); 不能随便去空格，因有些 D00 A5样式
-        System.out.println("============ scan content = " + content);
-        // VB/MT/579807/S/3506/IV/38574/P/T17-1130-1 A0/D/20190619/L/19061903/N/49/Q/114
         if (content.contains("\n")) {
             content = content.replace("\n", "");
         }
@@ -519,18 +508,6 @@ protected void onTextChangedSafe(CharSequence text) {
 
             //// TODO: 2020/10/19 test
             String s = JsonUtil.objectToJson(boxItemEntity);
-
-//            //// TODO: 2020/1/9 这里先处理，为避免因供应商选错，而导致入错账的问题
-//            if (boxItemEntity != null) {
-//                //如果来料里设置的公司与该操作员的公司不符
-//                if (boxItemEntity.getBu_ID() != UserSingleton.get().getUserInfo().getBu_ID()) {
-////                    ToastUtil.showToastLong("您当前公司与来料入库公司不符合，请确认来料是否入到该公司！");
-//                    Message message = new Message();
-//                    message.what = 0;
-//                    handler.sendMessage(message);
-//                    return null;
-//                }
-//            }
 
             scanBoxItemEntity = boxItemEntity;
             if (boxItemEntity.getResult()) {

@@ -1,6 +1,7 @@
 package com.chinashb.www.mobileerp.basicobject;
 
 import android.text.Html;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -289,17 +290,66 @@ public class MpiWcBean implements Serializable {
     }
 
     public void setMwNameTextView(TextView tv) {
-        if (HtmlMwName == null){
-            return;
-        }
         if (tv != null) {
-            if (!HtmlMwName.equals("")) {
-                tv.setText(Html.fromHtml(HtmlMwName));
+            String shiftCode = getShiftCode();
+            if (!TextUtils.isEmpty(HtmlMwName)) {
+                tv.setText(Html.fromHtml(HtmlMwName + getShiftHtml(shiftCode)));
             } else {
-                tv.setText(MwName);
+                String base = TextUtils.isEmpty(MwName) ? "" : MwName;
+                tv.setText(Html.fromHtml(base + getShiftHtml(shiftCode)));
             }
         }
+    }
 
+    // codex by john 2026-11-17 - D=白班，N=晚班，便于英文/马来文界面识别
+    private String getShiftCode() {
+        String shiftName = Shift_Name == null ? "" : Shift_Name.trim();
+        if (TextUtils.isEmpty(shiftName)) {
+            shiftName = extractShiftNameFromTitle();
+        }
+        boolean day = Shift_No == 1
+                || shiftName.contains("白")
+                || "D".equalsIgnoreCase(shiftName)
+                || "Day".equalsIgnoreCase(shiftName)
+                || "Siang".equalsIgnoreCase(shiftName);
+        boolean night = Shift_No == 2
+                || shiftName.contains("晚")
+                || shiftName.contains("夜")
+                || "N".equalsIgnoreCase(shiftName)
+                || "Night".equalsIgnoreCase(shiftName)
+                || "Malam".equalsIgnoreCase(shiftName);
+        if (day) {
+            return "D";
+        }
+        if (night) {
+            return "N";
+        }
+        return "";
+    }
+
+    private String extractShiftNameFromTitle() {
+        String raw = !TextUtils.isEmpty(HtmlMwName) ? HtmlMwName : MwName;
+        if (TextUtils.isEmpty(raw)) {
+            return "";
+        }
+        String plain = Html.fromHtml(raw).toString();
+        int start = plain.indexOf("班次=");
+        if (start < 0) {
+            return "";
+        }
+        int valueStart = start + "班次=".length();
+        int end = plain.indexOf(',', valueStart);
+        if (end < 0) {
+            end = plain.length();
+        }
+        return plain.substring(valueStart, end).trim();
+    }
+
+    private String getShiftHtml(String shiftCode) {
+        if (TextUtils.isEmpty(shiftCode)) {
+            return "";
+        }
+        return " <font color='#FF0000'>(" + shiftCode + ")</font>";
     }
 
 }

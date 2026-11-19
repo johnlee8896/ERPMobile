@@ -34,7 +34,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@android:color/background_light"
-                android:stretchColumns="1,3">
+                android:stretchColumns="1,3"
+                android:shrinkColumns="1,3">
 
                 <TableRow
                     android:layout_width="match_parent"
@@ -247,6 +248,30 @@
                         android:layout_gravity="left"
                         android:background="@drawable/squarebutton"
                         android:text="@string/part_inv_check"
+                        android:textColor="#ffffff"
+                        android:textSize="14sp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/box_2" />
+
+                    <Button
+                        android:id="@+id/btn_check_part_inv_new"
+                        android:layout_width="100dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="零件盘点（新）"
                         android:textColor="#ffffff"
                         android:textSize="14sp" />
                 </TableRow>
@@ -465,6 +490,56 @@
                         android:layout_gravity="left"
                         android:background="@drawable/squarebutton"
                         android:text="扫描入库(可指定日期)"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+                </TableRow>
+
+                <!-- codex by john 2026-11-12 - 来料待入库拣货按钮 -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_pending_warehouse_picking"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="来料待入拣货"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+                </TableRow>
+
+                <!-- codex by john 2026-11-12 - 物料使用线别查询按钮 -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_item_usage_line_query"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="物料线别查询"
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
                 </TableRow>
@@ -716,6 +791,56 @@
                         android:layout_gravity="left"
                         android:text="物流接收（新）"
                         android:background="@drawable/squarebutton"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+                </TableRow>
+
+                <!-- codex by john 2026-09-10 10:52 - 物流来料检索按钮 -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_logistics_income_check"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="物流来料检索"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp" />
+                </TableRow>
+
+                <!-- codex by john 2026-09-16 16:04 - 冻结投料按钮 -->
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@mipmap/xenogenesis_2" />
+
+                    <Button
+                        android:id="@+id/btn_freeze_feed"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_gravity="left"
+                        android:background="@drawable/squarebutton"
+                        android:text="冻结投料"
                         android:textColor="#ffffff"
                         android:textSize="15sp" />
                 </TableRow>

@@ -41,6 +41,10 @@
         <item>双绕线</item>
         <item>自制件未按先进先出入库</item>
         <item>前一批物料需要配用</item>
+        <item>客户端不良换货</item>
+        <item>样件</item>
+        <item>客户验证</item>
+        <item>技术验证</item>
     </string-array>
 <!--        <item>丝杆批次异常</item>-->
 

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+            android:id="@+id/product_ship_work_oqc_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:app_title_text="整单OQC终检" />
+
+        <TextView
+            android:id="@+id/product_ship_work_oqc_summary_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_15" />
+
+        <TextView
+            android:id="@+id/product_ship_work_oqc_result_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_6"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:textColor="@color/color_orange_FF6A00"
+            android:textSize="@dimen/text_size_14" />
+
+        <CheckBox
+            android:id="@+id/product_ship_work_oqc_document_checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text="发货指令与物流单一致" />
+
+        <CheckBox
+            android:id="@+id/product_ship_work_oqc_pallet_count_checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:text="发货区托盘数与备料清单一致" />
+
+        <CheckBox
+            android:id="@+id/product_ship_work_oqc_batch_checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:text="产品、批次和数量抽检合格" />
+
+        <CheckBox
+            android:id="@+id/product_ship_work_oqc_appearance_checkBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:text="托盘及外包装外观抽检合格" />
+
+        <EditText
+            android:id="@+id/product_ship_work_oqc_remark_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:hint="不合格时必须填写原因"
+            android:minLines="2" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/product_ship_work_oqc_pass_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="整单合格" />
+
+            <Button
+                android:id="@+id/product_ship_work_oqc_fail_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="整单不合格" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/product_ship_work_oqc_return_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="退回异常托盘" />
+
+            <Button
+                android:id="@+id/product_ship_work_oqc_ship_scan_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="进入发货复扫"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/product_ship_work_oqc_status_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_6"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:textColor="@color/color_orange_FF6A00"
+            android:textSize="@dimen/text_size_14" />
+
+    </LinearLayout>
+</ScrollView>

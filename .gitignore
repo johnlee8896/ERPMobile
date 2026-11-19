@@ -38,3 +38,6 @@ proguard/
 
 # Keystore files
 *.jks
+
+# Local upload secrets
+.signing/

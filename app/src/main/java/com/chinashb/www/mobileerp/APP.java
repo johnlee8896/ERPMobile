@@ -5,9 +5,12 @@ import android.app.Application;
 import android.os.Bundle;
 
 import com.chinashb.www.mobileerp.upgrade.AppUpgradeCheckManager;
+import com.chinashb.www.mobileerp.upgrade.UpgradeEventQueue;
+import com.chinashb.www.mobileerp.upgrade.UpgradeStateStore;
 import com.chinashb.www.mobileerp.utils.CrashLogUploadManager;
 import com.chinashb.www.mobileerp.utils.ExceptionCatchManager;
 import com.umeng.commonsdk.UMConfigure;
+import com.liulishuo.filedownloader.FileDownloader;
 
 import java.lang.ref.WeakReference;
 
@@ -19,6 +22,7 @@ import java.lang.ref.WeakReference;
 public class APP extends Application {
     private static APP app;
     private static WeakReference<Activity> topActivityRef;
+    private int startedActivityCount;
 
     @Override
     public void onCreate() {
@@ -26,7 +30,14 @@ public class APP extends Application {
         app = this;
         ExceptionCatchManager.getInstance().init(get());
         CrashLogUploadManager.getInstance().init(this);
+        // codex by john 2026-11-12 - 必须在任何下载任务前把 FileDownloader 固定为单连接
+        FileDownloader.setupOnApplicationOnCreate(this)
+                .maxNetworkThreadCount(1)
+                .commit();
+        UpgradeStateStore.init(this);
+        UpgradeEventQueue.get().init(this);
         AppUpgradeCheckManager.get().init(this);
+        AppUpgradeCheckManager.get().reportInstallSuccessIfNeeded();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -34,6 +45,8 @@ public class APP extends Application {
 
             @Override
             public void onActivityStarted(Activity activity) {
+                startedActivityCount++;
+                AppUpgradeCheckManager.get().startPeriodicCheck();
             }
 
             @Override
@@ -48,6 +61,11 @@ public class APP extends Application {
 
             @Override
             public void onActivityStopped(Activity activity) {
+                startedActivityCount--;
+                if (startedActivityCount <= 0) {
+                    startedActivityCount = 0;
+                    AppUpgradeCheckManager.get().stopPeriodicCheck();
+                }
             }
 
             @Override

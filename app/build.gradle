@@ -165,9 +165,24 @@ dependencies {
 // created by code-x John
 // start: 2026-04-30 08:48:44 CST
 // end: 2026-04-30 08:48:44 CST
-def releaseUploadUrl = localProperties.getProperty('release.upload.url', 'http://116.236.16.218:8001/Download/UploadApk.ashx')
-def releaseUploadUser = localProperties.getProperty('release.upload.user', '')
-def releaseUploadPassword = localProperties.getProperty('release.upload.password', '')
+def releaseUploadUrl = localProperties.getProperty('release.upload.url', 'http://116.236.16.218:8001/UploadApk.ashx')
+def releaseUploadPasswordFile = localProperties.getProperty('release.upload.password.file', '.signing/apk_upload_password.txt')
+def resolveReleaseUploadPassword = {
+    String envPassword = System.getenv('APK_UPLOAD_PASSWORD')
+    if (envPassword != null && !envPassword.trim().isEmpty()) {
+        return envPassword.trim()
+    }
+    File secretFile = project.rootProject.file(releaseUploadPasswordFile)
+    if (secretFile.exists()) {
+        String filePassword = secretFile.getText('UTF-8').trim()
+        if (!filePassword.isEmpty()) {
+            return filePassword
+        }
+    }
+    return ''
+}
+
+def releaseUploadPassword = resolveReleaseUploadPassword()
 def releaseUploadEnabled = localProperties.getProperty('release.upload.enabled', 'true')
 def releaseUploadMode = localProperties.getProperty('release.upload.mode', 'multipart')
 def releaseUploadFormField = localProperties.getProperty('release.upload.formField', 'file')
@@ -181,12 +196,26 @@ def normalizeMultipartUploadUrl = { String rawUrl ->
     }
     String trimmedUrl = rawUrl.trim()
     String lowerUrl = trimmedUrl.toLowerCase(java.util.Locale.US)
+    if (lowerUrl.contains("uploadapk.ashx")) {
+        return trimmedUrl
+    }
+    if (lowerUrl.endsWith(".apk") && !trimmedUrl.contains('?')) {
+        int schemeEnd = trimmedUrl.indexOf("://") + 3
+        int pathStart = trimmedUrl.indexOf('/', schemeEnd)
+        if (pathStart >= 0) {
+            String origin = trimmedUrl.substring(0, pathStart)
+            String path = trimmedUrl.substring(pathStart)
+            String fileName = path.substring(path.lastIndexOf('/') + 1)
+            return origin + "/UploadApk.ashx?fileName=" + java.net.URLEncoder.encode(fileName, "UTF-8")
+        }
+        return trimmedUrl
+    }
     int lastSlashIndex = trimmedUrl.lastIndexOf('/')
     if (lastSlashIndex < 0) {
         return trimmedUrl
     }
     String directoryUrl = trimmedUrl.substring(0, lastSlashIndex + 1)
-    if (lowerUrl.endsWith("/upload.html") || lowerUrl.endsWith(".apk")) {
+    if (lowerUrl.endsWith("/upload.html")) {
         return directoryUrl + "UploadApk.ashx"
     }
     return trimmedUrl
@@ -218,27 +247,27 @@ task uploadReleaseApk {
         try {
             def curlArgs = [
                     'curl',
-                    '--fail',
+                    '--fail-with-body',
                     '--show-error',
                     '--silent'
             ]
-            if (releaseUploadUser && releaseUploadPassword) {
-                curlArgs.addAll([
-                        '--anyauth',
-                        '--user', "${releaseUploadUser}:${releaseUploadPassword}"
-                ])
+            if (releaseUploadPassword) {
+                curlArgs.addAll(['-H', "X-Upload-Password: ${releaseUploadPassword}"])
             }
             if ("multipart".equalsIgnoreCase(releaseUploadMode)) {
                 curlArgs.addAll([
+                        '-F', "uploadPassword=${releaseUploadPassword}",
                         '-F', "${releaseUploadFormField}=@${releaseApkFile.absolutePath};filename=app-release.apk",
+                        '-F', "versionCode=${cfg.versionCode}",
+                        '-F', "versionName=${cfg.versionName}",
                         resolvedUploadUrl
                 ])
                 exec {
                     commandLine curlArgs
                 }
             } else {
-                if (!releaseUploadUser || !releaseUploadPassword) {
-                    throw new GradleException("release.upload.user and release.upload.password are required for put mode")
+                if (!releaseUploadPassword) {
+                    throw new GradleException("release.upload.password is required")
                 }
                 curlArgs.addAll([
                         '--upload-file', releaseApkFile.absolutePath,

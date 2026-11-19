@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -22,16 +21,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinashb.www.mobileerp.BaseActivity;
-import com.chinashb.www.mobileerp.OnQRScanListenerImpl;
-import com.chinashb.www.mobileerp.QRCodeScanActivity;
 import com.chinashb.www.mobileerp.R;
 import com.chinashb.www.mobileerp.adapter.IssueMoreItemAdapter;
 import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.UserAllInfoEntity;
-import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
+import com.chinashb.www.mobileerp.bean.ProductFeeRdmBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
@@ -55,7 +52,9 @@ import com.google.zxing.integration.android.IntentResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 部门领料
@@ -83,6 +82,13 @@ public class StockPartDepartmentInActivity extends BaseActivity {
     private String scanstring;
     private DepartmentBean departmentBean;
     private ResearchItemBean researchItemBean;
+    private ProductFeeRdmBean productFeeRdmBean;
+    private List<ProductFeeRdmBean> productFeeRdmBeanList;
+    private Button selectSubResearchProgramButton;
+    private TextView tvSubReseachProgram;
+    private String selectedSubProgramCode;
+    private String selectedSubProgramName;
+    private Map<String, String> subResearchProgramMap;
     private TextView useTextView;
     private TextView titleTextView;
 
@@ -93,8 +99,10 @@ public class StockPartDepartmentInActivity extends BaseActivity {
     private boolean hasSelectUse = false;
     private String operatorName;
     private String description;
+    private String baseDescription = "";
     private boolean hasScanHrCode;
     private float originalScanQty;
+    private String currentNRDMItemSubNumber = "";
 
     private CommonSelectInputDialog hrNODialog;
 
@@ -103,18 +111,82 @@ public class StockPartDepartmentInActivity extends BaseActivity {
         public <T> void onClickAction(View v, String tag, T t) {
             if (t != null) {
                 String hrNO = (String) t;
-                if (StringUtils.isStringValid(hrNO)){
+                if (StringUtils.isStringValid(hrNO)) {
                     GetHrEntityAsyncTask hrEntityAsyncTask = new GetHrEntityAsyncTask();
                     hrEntityAsyncTask.execute(hrNO);
-                }else {
+                } else {
                     ToastUtil.showToastShort("工号解析失败！");
                 }
+                if (hrNODialog != null && hrNODialog.isShowing()) {
+                    hrNODialog.dismiss();
+                }
             }
-            if (hrNODialog != null && hrNODialog.isShowing()) {
-                hrNODialog.dismiss();
+        }};
+
+    private class JudgeRdmOperationCorrectTask extends AsyncTask<Void, Void, WsResult> {
+        @Override
+        protected WsResult doInBackground(Void... params) {
+            String productItem = (productFeeRdmBean != null) ? productFeeRdmBean.getNumber() : "";
+            String subItem = (selectedSubProgramCode != null) ? selectedSubProgramCode : "";
+            int entityId = (departmentBean != null) ? departmentBean.getDepartmentID() : 0;
+            return WebServiceUtil.judgePartRdmOperationCorrect(
+                    UserSingleton.get().getHRID(),
+                    UserSingleton.get().getUserInfo().getBu_ID(),
+                    52,
+                    entityId,
+                    productItem,
+                    subItem);
+        }
+
+        @Override
+        protected void onPostExecute(WsResult result) {
+            if (result != null && result.getResult()) {
+                new WarehouseOutAsyncTask().execute();
+            } else {
+                String errMsg = (result != null) ? result.getErrorInfo() : "校验失败";
+                CommonUtil.ShowToast(StockPartDepartmentInActivity.this, errMsg, R.mipmap.warning);
             }
         }
-    };
+    }
+
+    private class GetProductFeeRdmAsyncTask extends AsyncTask<Void, Void, List<ProductFeeRdmBean>> {
+        @Override
+        protected List<ProductFeeRdmBean> doInBackground(Void... params) {
+            return WebServiceUtil.getProductFeeRdm(
+                    UserSingleton.get().getHRID(),
+                    UserSingleton.get().getUserInfo().getBu_ID());
+        }
+
+        @Override
+        protected void onPostExecute(List<ProductFeeRdmBean> list) {
+            if (list == null || list.isEmpty()) {
+                ToastUtil.showToastShort("获取研发项目列表失败！");
+                return;
+            }
+            productFeeRdmBeanList = list;
+            // 用研发类型作为显示内容，弹出选择对话框
+            final String[] typeNames = new String[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                typeNames[i] = list.get(i).getResearchType();
+            }
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(StockPartDepartmentInActivity.this);
+            builder.setTitle("选择研发项目");
+            builder.setItems(typeNames, (dialog, which) -> {
+                productFeeRdmBean = productFeeRdmBeanList.get(which);
+                // 重置子项目选择
+                selectedSubProgramCode = null;
+                selectedSubProgramName = null;
+                tvSubReseachProgram.setText("研发子项目");
+                // 显示 编号 -- 研发类型
+                tvReseachProgram.setText(productFeeRdmBean.getNumber() + "  --  " + productFeeRdmBean.getResearchType());
+                selectSubResearchProgramButton.setVisibility(View.VISIBLE);
+                tvSubReseachProgram.setVisibility(View.VISIBLE);
+            });
+            builder.show();
+        }
+    }
+
+
 
     private boolean isCurrentSmallPackage = false;
 
@@ -188,6 +260,7 @@ public class StockPartDepartmentInActivity extends BaseActivity {
     }
 
     protected void bindView(Bundle savedInstanceState) {
+        initSubResearchProgramMap();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_part_stock_out_dep_layout);
         mContext = this;
@@ -204,8 +277,11 @@ public class StockPartDepartmentInActivity extends BaseActivity {
         selectDepartmentButton = (Button) findViewById(R.id.btn_stock_out_dep_select_dep);
         selectResearchProgramButton = (Button) findViewById(R.id.btn_stock_out_dep_select_program);
         scanAddTrayButton = (Button) findViewById(R.id.btn_issue_more_add_extra);
+        selectSubResearchProgramButton = (Button) findViewById(R.id.btn_stock_out_dep_select_sub_program);
+        tvSubReseachProgram = (TextView) findViewById(R.id.tv_stock_out_dep_select_sub_program);
         outStockButton = (Button) findViewById(R.id.btn_exe_warehouse_out);
         scanHRCodeButton = findViewById(R.id.deparment_in_scan_hr_code_button);
+        scanHRCodeButton.setVisibility(View.GONE);
         inputHRNOButton = findViewById(R.id.deparment_in_input_hrno_button);
         selectUseButton = findViewById(R.id.deparment_in_select_use_button);
         useTextView = findViewById(R.id.department_in_use_textView);
@@ -265,34 +341,21 @@ public class StockPartDepartmentInActivity extends BaseActivity {
         selectResearchProgramButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(StockDepartmentInActivity.this, SelectItemActivity.class);
-                Intent intent = new Intent(StockPartDepartmentInActivity.this, CommonSelectItemActivity.class);
-
-                String sql = "Select Product.Product_ID,PS_Version.PS_ID,Product.Abb,Fi_Standard_Product_Type.FiPT_ID," +
-                        "Fi_Standard_Product_Type.TypeName As Program, St.FSPD_ID,St.Fi_Standard_Product_Developing_Status As Status,Program.Program_ID " +
-                        "From Product Inner Join PS_Version On PS_Version.Product_ID=Product.Product_ID And Product.Current_PS=PS_Version.PS_ID " +
-                        "Inner Join Program On Product.Program_ID=Program.Program_ID " +
-                        " Inner Join Fi_Standard_Product On Product.Product_ID=Fi_Standard_Product.Product_ID " +
-                        " Inner Join Fi_Standard_product_Type On Fi_Standard_Product.Fi_Standard_Product_Type=Fi_Standard_Product_Type.FiPT_ID  " +
-                        " Inner Join Fi_Standard_Product_Developing_Status As St On Fi_Standard_Product.Fi_Standard_Product_Developing_Status=St.FSPD_ID " +
-                        " Where Fi_Standard_product_Type.Obsolete=0 And Program.Company_ID=" + UserSingleton.get().getUserInfo().getCompany_ID() +
-                        " And Program.Bu_ID=" + UserSingleton.get().getUserInfo().getBu_ID() + " And Fi_Standard_Product_Type.Obsolete=0  ";
-
-                List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(10, 10, 120, 10, 120, 10, 120, 10));
-                List<String> ColCaption = new ArrayList<String>(Arrays.asList("Product_ID", "PS_ID", "产品通称", "FiPT_ID", "研发项目", "FSPD_ID", "研发状态", "Program_ID"));
-                List<String> HiddenCol = new ArrayList<String>(Arrays.asList("Product_ID", "PS_ID", "FiPT_ID", "FSPD_ID", "Program_ID"));
-
-                String Title = "选择研发项目";
-                intent.putExtra("Title", Title);
-                intent.putExtra("SQL", sql);
-                intent.putExtra("ColWidthList", (Serializable) ColWith);
-                intent.putExtra("ColCaptionList", (Serializable) ColCaption);
-                intent.putExtra("hiddenColList", (Serializable) HiddenCol);
-                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_ReSearch_Program);
-
-                startActivityForResult(intent, 200);
+                // 调用新的 getProductFeeRdm 接口获取研发项目列表
+                new GetProductFeeRdmAsyncTask().execute();
             }
 
+        });
+
+        selectSubResearchProgramButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (productFeeRdmBean == null) {
+                    ToastUtil.showToastShort("请先选择研发项目！");
+                    return;
+                }
+                showSubResearchProgramDialog();
+            }
         });
 
         scanAddTrayButton.setOnClickListener(new View.OnClickListener() {
@@ -315,6 +378,14 @@ public class StockPartDepartmentInActivity extends BaseActivity {
                         CommonUtil.ShowToast(StockPartDepartmentInActivity.this, "没有选择部门", R.mipmap.warning);
                         return;
                     }
+                    //只有滁州和上海判断研发领料项目
+                    if (UserSingleton.get().getUserInfo().getCompany_ID() == 1 || UserSingleton.get().getUserInfo().getCompany_ID() == 14 ){
+                        if (TextUtils.isEmpty(selectedSubProgramCode)) {
+                            CommonUtil.ShowToast(StockPartDepartmentInActivity.this, "没有选择研发子项目", R.mipmap.warning);
+                            return;
+                        }
+                    }
+
                     //// TODO: 2019/7/5 研发项目是非必填，有的为空
 //                    if (researchItemBean == null) {
 //                        CommonUtil.ShowToast(StockDepartmentInActivity.this, "没有选择研发项目", R.mipmap.warning);
@@ -324,9 +395,11 @@ public class StockPartDepartmentInActivity extends BaseActivity {
 
                     //// TODO: 2020/4/21 这里可以与isLogin的公共判断方法合并
                     if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
-
-                        WarehouseOutAsyncTask task = new WarehouseOutAsyncTask();
-                        task.execute();
+                        if (UserSingleton.get().getUserInfo().getCompany_ID() == 1 || UserSingleton.get().getUserInfo().getCompany_ID() == 14 ){
+                            new JudgeRdmOperationCorrectTask().execute();
+                        }else{
+                            new WarehouseOutAsyncTask().execute();
+                        }
                     } else {
                         CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockPartDepartmentInActivity.this)
                                 .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
@@ -353,7 +426,7 @@ public class StockPartDepartmentInActivity extends BaseActivity {
         });
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-protected void onTextChangedSafe(CharSequence text) {
+            protected void onTextChangedSafe(CharSequence text) {
                 //                if (text.toString().endsWith("\n")) {
                 if (text.toString().length() > 0) {
 //                    ToastUtil.showToastLong("扫描结果:" + text.toString());
@@ -408,13 +481,13 @@ protected void onTextChangedSafe(CharSequence text) {
 
         });
 
-        scanHRCodeButton.setOnClickListener(v -> {
-            if (StringUtils.isStringValid(operatorName)) {
-                ToastUtil.showToastShort("操作员信息已获取，无须再扫描工牌！");
-            } else {
-                startScanHR();
-            }
-        });
+//        scanHRCodeButton.setOnClickListener(v -> {
+//            if (StringUtils.isStringValid(operatorName)) {
+//                ToastUtil.showToastShort("操作员信息已获取，无须再扫描工牌！");
+//            } else {
+//                startScanHR();
+//            }
+//        });
 
         inputHRNOButton.setOnClickListener(v -> {
             if (StringUtils.isStringValid(operatorName)) {
@@ -435,51 +508,42 @@ protected void onTextChangedSafe(CharSequence text) {
         });
     }
 
-    private void startScanHR() {
-        QRCodeScanActivity.startQRCodeScanner(this, new OnQRScanListenerImpl() {
-            @Override
-            public void onScanQRCodeSuccess(String result) {
-                if (result.startsWith("http")) {
-//                    WebViewActivity.gotoWebViewActivity(LoginActivity.this, result);
-                } else {
-//                    CommAlertDialog.with(LoginActivity.this).setTitle("扫描结果展示")
-//                            .setMessage(result)
-//                            .setMiddleText("确定")
-//                            .setCancelAble(false).setTouchOutsideCancel(false)
-//                            .setClickButtonDismiss(true)
-//                            .create().show();
+//    private void startScanHR() {
+//        QRCodeScanActivity.startQRCodeScanner(this, new OnQRScanListenerImpl() {
+//            @Override
+//            public void onScanQRCodeSuccess(String result) {
+//                if (result.startsWith("http")) {
+////                    WebViewActivity.gotoWebViewActivity(LoginActivity.this, result);
+//                } else {
+////                    CommAlertDialog.with(LoginActivity.this).setTitle("扫描结果展示")
+////                            .setMessage(result)
+////                            .setMiddleText("确定")
+////                            .setCancelAble(false).setTouchOutsideCancel(false)
+////                            .setClickButtonDismiss(true)
+////                            .create().show();
+//
+//                    String[] qrContent;
+//                    UserInfoEntity userInfo = new UserInfoEntity();
+//                    if (result.contains("/")) {
+//                        qrContent = result.split("/");
+//                        if (qrContent.length >= 4) {
+//                            userInfo.setHR_ID(Integer.parseInt(qrContent[2]));
+//                            userInfo.setHrNum(qrContent[4]);
+//                            GetHrNameAsyncTask task = new GetHrNameAsyncTask();
+//                            task.execute(qrContent[2]);
+////                SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
+////                            Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
+////                            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
+////                            startActivity(intent);
+////                            finish();
+//                        }
+//
+//                    }
+//                }
+//            }
+//        });
+//    }
 
-                    String[] qrContent;
-                    UserInfoEntity userInfo = new UserInfoEntity();
-                    if (result.contains("/")) {
-                        qrContent = result.split("/");
-                        if (qrContent.length >= 4) {
-                            userInfo.setHR_ID(Integer.parseInt(qrContent[2]));
-                            userInfo.setHrNum(qrContent[4]);
-                            GetHrNameAsyncTask task = new GetHrNameAsyncTask();
-                            task.execute(qrContent[2]);
-//                SPSingleton.get().putString(SPDefine.SP_login_user_name, nameEditText.getText().toString());
-//                            Intent intent = new Intent(LoginActivity.this, MobileMainActivity.class);
-//                            intent.putExtra(IntentConstant.Intent_Extra_hr_id, Integer.parseInt(qrContent[2]));
-//                            startActivity(intent);
-//                            finish();
-                        }
-
-                    }
-                }
-            }
-        });
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     protected void setHomeButton() {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -528,8 +592,17 @@ protected void onTextChangedSafe(CharSequence text) {
     protected void ActivityResultSelectResearchProgram(Intent data) {
         if (data != null) {
             researchItemBean = data.getParcelableExtra("SelectItem");
+            // 切换研发项目后重置子项目选择
+            selectedSubProgramCode = null;
+            selectedSubProgramName = null;
+            tvSubReseachProgram.setText("研发子项目");
             if (researchItemBean != null) {
                 tvReseachProgram.setText(researchItemBean.getAbb() + "  --  " + researchItemBean.getProgram());
+                selectSubResearchProgramButton.setVisibility(View.VISIBLE);
+                tvSubReseachProgram.setVisibility(View.VISIBLE);
+            } else {
+                selectSubResearchProgramButton.setVisibility(View.GONE);
+                tvSubReseachProgram.setVisibility(View.GONE);
             }
         }
     }
@@ -677,7 +750,8 @@ protected void onTextChangedSafe(CharSequence text) {
 //                boxItemEntity.setLotDescription(description);
 //                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), SelectDep, SelectReaseach, bi);
 
-                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity, description);
+//                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity, description);
+                ws_result = WebServiceUtil.op_Commit_Dep_Out_Item(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, researchItemBean, boxItemEntity, description,currentNRDMItemSubNumber,productFeeRdmBean != null ? productFeeRdmBean.getFiptID() : 0);
                 if (ws_result.getResult()) {
                     boxItemEntityList.remove(boxItemEntity);
                     //如果实际出库数量小于扫描出的要再处理
@@ -708,12 +782,15 @@ protected void onTextChangedSafe(CharSequence text) {
                 } else {
                     //// TODO: 2019/7/15 哪些页面是执行成功后要跳离的？
                     CommonUtil.ShowToast(StockPartDepartmentInActivity.this, "成功出库", R.mipmap.smiley, Toast.LENGTH_SHORT);
-                    description = "";
+                    // 2026-10-23 john 改动：出库成功后保留部门、工号等录入值，
+                    // 只清用途，连续下一箱时无需重新选部门/输工号。
+                    description = baseDescription;
                     hasSelectUse = false;
                     //// TODO: 11/11/24 这里不必每次finish 
 //                    finish();
                 }
             }
+            currentNRDMItemSubNumber = "";
         }
 
         @Override
@@ -793,6 +870,7 @@ protected void onTextChangedSafe(CharSequence text) {
             }
             operatorName = userAllInfoEntity.getHRName();
             description = departmentName + "-" + operatorName + "领料";
+            baseDescription = description;
             inputEditText.setText("");
             hasScanHrCode = true;
         }
@@ -867,19 +945,27 @@ protected void onTextChangedSafe(CharSequence text) {
 //            titleTextView.setText("操作员：" + UserSingleton.get().getDepartmentMap().get(userInfoEntity) userInfoEntity.getHR_Name());
             if (userAllInfoEntity != null){
                 String departmentName;
-                if (userAllInfoEntity.getHRDepartment() == null || TextUtils.isEmpty(userAllInfoEntity.getHRDepartment().toString())) {
-                    departmentName = UserSingleton.get().getDepartmentMap().get(userAllInfoEntity.getDepartmentID());
-                } else {
-                    departmentName = userAllInfoEntity.getHRDepartment().toString();
-                }
+//                if (userAllInfoEntity.getHRDepartment() == null || TextUtils.isEmpty(userAllInfoEntity.getHRDepartment().toString())) {
+//                    departmentName = UserSingleton.get().getDepartmentMap().get(userAllInfoEntity.getDepartmentID());
+//                } else {
+//                    departmentName = userAllInfoEntity.getHRDepartment().toString();
+//                }
+                //2026-10-23 john 改动，只取map中的，以杨荣臻为例，他hr表中getHRDepartment是金工，但实际根据id查已经是设备了，设备是对的
+                departmentName = UserSingleton.get().getDepartmentMap().get(userAllInfoEntity.getDepartmentID());
+
+
                 titleTextView.setText("操作员：" + departmentName + "-" + userAllInfoEntity.getHRName());
-                if (departmentBean == null) {
-                    departmentBean = new DepartmentBean();
-                    departmentBean.setDepartmentID(userAllInfoEntity.getDepartmentID());
-                    departmentBean.setDepartmentName(departmentName);
-                }
+                //// TODO: 10/23/26 注意这里的department是根据工号得出的，有可能与实际不对，所以必须自己选一下部门
+
+//                if (departmentBean == null) {
+//                    departmentBean = new DepartmentBean();
+//                    departmentBean.setDepartmentID(userAllInfoEntity.getDepartmentID());
+//                    departmentBean.setDepartmentName(departmentName);
+//                }
+
                 operatorName = userAllInfoEntity.getHRName();
                 description = departmentName + "-" + operatorName + "领料";
+                baseDescription = description;
                 inputEditText.setText("");
                 hasScanHrCode = true;
             }else{
@@ -890,4 +976,40 @@ protected void onTextChangedSafe(CharSequence text) {
 
 
     }
+
+    private void initSubResearchProgramMap() {
+        subResearchProgramMap = new LinkedHashMap<>();
+        subResearchProgramMap.put("-SY-002", "环境可靠性试验");
+        subResearchProgramMap.put("-SY-003", "耐久可靠性试验");
+        subResearchProgramMap.put("-SY-004", "机械负荷试验");
+        subResearchProgramMap.put("-SY-005", "电机电气性能试验");
+        subResearchProgramMap.put("-SY-006", "常规性能试验");
+        subResearchProgramMap.put("-QT-007", "其他试验项目");
+        subResearchProgramMap.put("-GY-008", "技术及工艺验证项目");
+    }
+
+    private void showSubResearchProgramDialog() {
+        final String[] codes = subResearchProgramMap.keySet().toArray(new String[0]);
+        final String[] names = new String[codes.length];
+        for (int i = 0; i < codes.length; i++) {
+            names[i] = codes[i] + "  " + subResearchProgramMap.get(codes[i]);
+        }
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(StockPartDepartmentInActivity.this);
+        builder.setTitle("选择研发子项目");
+        builder.setItems(names, (dialog, which) -> {
+            selectedSubProgramCode = codes[which];
+            selectedSubProgramName = subResearchProgramMap.get(selectedSubProgramCode);
+            String displayText = selectedSubProgramCode + "  " + selectedSubProgramName;
+            tvSubReseachProgram.setText(displayText);
+            // 拼接显示：编号-子项目编号 如 RD2509-CZ-QT-007
+            if (productFeeRdmBean != null) {
+                String number = productFeeRdmBean.getNumber();
+                currentNRDMItemSubNumber = number;
+                tvReseachProgram.setText(number + "  --  " + productFeeRdmBean.getResearchType() + "  |  " + number + "-" + selectedSubProgramCode);
+            }
+        });
+        builder.show();
+    }
+
 }

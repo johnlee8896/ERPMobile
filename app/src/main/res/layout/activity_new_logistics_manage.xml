@@ -138,6 +138,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/new_logistics_scan_info_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#FFFFFF"
@@ -181,6 +182,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/new_logistics_sender_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -234,6 +236,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/new_logistics_receiver_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -287,6 +290,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/new_logistics_logistics_info_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -385,6 +389,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/new_logistics_detail_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

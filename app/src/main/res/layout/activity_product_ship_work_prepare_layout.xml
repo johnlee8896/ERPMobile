@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/product_ship_work_prepare_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="备料扫描与移库" />
+
+    <TextView
+        android:id="@+id/product_ship_work_prepare_summary_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_8"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_8"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/product_ship_work_prepare_pallet_editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="扫描或输入托盘码" />
+
+        <Button
+            android:id="@+id/product_ship_work_prepare_pallet_camera_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="相机" />
+
+        <Button
+            android:id="@+id/product_ship_work_prepare_pallet_scan_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="初扫" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/product_ship_work_prepare_location_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_10"
+        android:layout_marginTop="@dimen/dimen_size_6"
+        android:layout_marginRight="@dimen/dimen_size_10"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/product_ship_work_prepare_location_editText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="扫描实际待发库位" />
+
+        <Button
+            android:id="@+id/product_ship_work_prepare_location_camera_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="相机" />
+
+        <Button
+            android:id="@+id/product_ship_work_prepare_move_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="移库" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/product_ship_work_prepare_status_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_6"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:textColor="@color/color_orange_FF6A00"
+        android:textSize="@dimen/text_size_14" />
+
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/product_ship_work_prepare_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:app_layout_style="list_vertical" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/product_ship_work_prepare_lock_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="继续锁定" />
+
+        <Button
+            android:id="@+id/product_ship_work_prepare_return_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="退回托盘" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/product_ship_work_prepare_oqc_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_6"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_marginBottom="@dimen/dimen_size_16"
+        android:text="进入整单OQC"
+        android:visibility="gone" />
+
+</LinearLayout>

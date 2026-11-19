@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_margin="@dimen/dimen_size_10"
+    android:padding="@dimen/dimen_size_10">
+
+    <TextView
+        android:id="@+id/item_ship_work_pallet_code_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/login_title_color"
+        android:textSize="@dimen/text_size_15"
+        tools:text="箱码 GNQ8U65592X023840150" />
+
+    <TextView
+        android:id="@+id/item_ship_work_pallet_info_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_14"
+        tools:text="状态 Locked  OQC 未检  数量 384" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dimen_size_6">
+
+        <Button
+            android:id="@+id/item_ship_work_pallet_return_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="退回" />
+
+        <Button
+            android:id="@+id/item_ship_work_pallet_pass_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="合格" />
+
+        <Button
+            android:id="@+id/item_ship_work_pallet_fail_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="不合格" />
+    </LinearLayout>
+
+</LinearLayout>

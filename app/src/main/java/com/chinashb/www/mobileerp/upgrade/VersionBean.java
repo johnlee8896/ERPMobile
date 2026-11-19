@@ -31,6 +31,8 @@ public class VersionBean {
     @SerializedName("app_description") private String description;
     @SerializedName("version_name") private String versionName;
     @SerializedName("update_tag") private int updateTag;
+    @SerializedName("apk_size") private long apkSize;
+    @SerializedName("sha256") private String sha256;
 
     public int getId() {
         return id;
@@ -94,5 +96,21 @@ public class VersionBean {
 
     public void setUpdateTag(int updateTag) {
         this.updateTag = updateTag;
+    }
+
+    public long getApkSize() {
+        return apkSize;
+    }
+
+    public void setApkSize(long apkSize) {
+        this.apkSize = apkSize;
+    }
+
+    public String getSha256() {
+        return sha256;
+    }
+
+    public void setSha256(String sha256) {
+        this.sha256 = sha256;
     }
 }

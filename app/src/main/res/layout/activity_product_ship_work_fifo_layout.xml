@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/product_ship_work_fifo_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="FIFO整托锁定" />
+
+    <TextView
+        android:id="@+id/product_ship_work_fifo_summary_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15" />
+
+    <TextView
+        android:id="@+id/product_ship_work_fifo_status_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_6"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:textColor="@color/color_orange_FF6A00"
+        android:textSize="@dimen/text_size_14" />
+
+    <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+        android:id="@+id/product_ship_work_fifo_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:app_layout_style="list_vertical" />
+
+    <Button
+        android:id="@+id/product_ship_work_fifo_prepare_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_10"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:layout_marginBottom="@dimen/dimen_size_20"
+        android:text="进入备料"
+        android:visibility="gone" />
+
+</LinearLayout>

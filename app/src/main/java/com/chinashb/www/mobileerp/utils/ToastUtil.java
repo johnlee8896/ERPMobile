@@ -1,6 +1,8 @@
 package com.chinashb.www.mobileerp.utils;
 
 import android.view.Gravity;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.support.annotation.StringRes;
@@ -56,10 +58,27 @@ public class ToastUtil {
         }
     }
 
-    public static void showToastCertainTime(CharSequence text,int seconds) {
-        if (!TextUtils.isEmpty(text)) {
-            showAutoStateToast(text, seconds);
+    /**
+     * 固定显示3秒的 Toast（Android LENGTH_LONG 约3.5s，LENGTH_SHORT 约2s）。
+     */
+    public static void showToast3Sec(CharSequence text) {
+        if (TextUtils.isEmpty(text)) {
+            return;
         }
+        CharSequence translatedText = AutoI18nUtil.translate(APP.get(), text);
+        Toast toast = Toast.makeText(APP.get(), translatedText, Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+        new Handler(Looper.getMainLooper()).postDelayed(toast::cancel, 3000);
+    }
+
+    /**
+     * @deprecated 直接传秒数给 Toast.makeText 无效（仅支持 LENGTH_SHORT/LENGTH_LONG），
+     * 请用 {@link #showToast3Sec(CharSequence)} 或 {@link #showToastLong(CharSequence)}。
+     */
+    @Deprecated
+    public static void showToastCertainTime(CharSequence text, int seconds) {
+        showToastLong(text);
     }
 
     public static void showToastLong(@StringRes int textId) {

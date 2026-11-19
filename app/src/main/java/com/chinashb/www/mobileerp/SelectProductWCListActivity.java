@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.chinashb.www.mobileerp.adapter.ProductWCListAdapter;
@@ -12,8 +15,10 @@ import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.entity.WcIdNameEntity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.AppUtil;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -37,6 +42,8 @@ public class SelectProductWCListActivity extends BaseActivity {
     private ProductWCListAdapter adapter;
     private ArrayList<WcIdNameEntity> wcIdNameEntityList;
     private int work_line_from = 0;
+    private EditText wcListSearchKeywordEditText;
+    private ArrayList<WcIdNameEntity> originalWcList;
 
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override public <T> void onClickAction(View v, String tag, T t) {
@@ -63,6 +70,9 @@ public class SelectProductWCListActivity extends BaseActivity {
         }
         adapter = new ProductWCListAdapter(onViewClickListener);
         recyclerView.setAdapter(adapter);
+
+        wcListSearchKeywordEditText = findViewById(R.id.wcListSearchKeywordEditText);
+        setupSearch();
 
         GetWCListsAsyncTask task = new GetWCListsAsyncTask();
         task.execute();
@@ -111,6 +121,7 @@ public class SelectProductWCListActivity extends BaseActivity {
 
         @Override
         protected void onPostExecute(Void result) {
+            originalWcList = wcIdNameEntityList;
             adapter.setData(wcIdNameEntityList);
         }
 
@@ -123,4 +134,73 @@ public class SelectProductWCListActivity extends BaseActivity {
         }
 
     }
+
+    private void setupSearch() {
+        wcListSearchKeywordEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+            protected void onTextChangedSafe(CharSequence s) {
+                if (originalWcList == null) {
+                    return;
+                }
+                if (s.length() == 0) {
+                    adapter.setData(originalWcList);
+                } else {
+                    adapter.setData(getFilterList(s.toString()));
+                }
+            }
+        });
+
+        wcListSearchKeywordEditText.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                String input = wcListSearchKeywordEditText.getText().toString();
+                AppUtil.forceHideInputMethod(SelectProductWCListActivity.this);
+                doSearch(input);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void doSearch(String keyword) {
+        if (originalWcList == null) {
+            return;
+        }
+        if (!TextUtils.isEmpty(keyword)) {
+            adapter.setData(getFilterList(keyword));
+        } else {
+            adapter.setData(originalWcList);
+        }
+    }
+
+    /**
+     * 大小写不敏感搜索，支持空格分隔多关键字逐级缩小范围。
+     * 例如输入"装 A1"：先找出所有含"装"的产线，再从中找含"A1"的。
+     */
+    private ArrayList<WcIdNameEntity> getFilterList(String keyword) {
+        ArrayList<WcIdNameEntity> filtered = new ArrayList<>();
+        if (originalWcList == null) {
+            return filtered;
+        }
+        // 按空格拆分为多个关键字，每个关键字独立匹配（大小写不敏感）
+        String[] keywords = keyword.trim().split("\\s+");
+        for (WcIdNameEntity entity : originalWcList) {
+            String wcName = entity.getWcName();
+            if (wcName == null) {
+                continue;
+            }
+            String lowerName = wcName.toLowerCase();
+            boolean match = true;
+            for (String kw : keywords) {
+                if (!lowerName.contains(kw.toLowerCase())) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                filtered.add(entity);
+            }
+        }
+        return filtered;
+    }
+
 }

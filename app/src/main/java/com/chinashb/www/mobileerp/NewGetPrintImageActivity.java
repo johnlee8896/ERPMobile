@@ -781,6 +781,13 @@ public class NewGetPrintImageActivity extends BaseActivity {
                 return;
             }
         }
+        // 批量打印结束后发 FORM 指令，让最后一张标签正常走到撕纸位，避免打印机在末尾卡纸。
+        try {
+            waitPrinterComplete();
+            ZebraPrinter.CPCL_Form();
+        } catch (Exception e) {
+            Log.w(TAG, "CPCL FormFeed after batch print failed", e);
+        }
     }
 
     private void printBitmapByEscPos(Bitmap bitmap) {

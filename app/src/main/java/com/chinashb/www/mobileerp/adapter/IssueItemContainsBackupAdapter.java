@@ -67,6 +67,7 @@ public class IssueItemContainsBackupAdapter extends RecyclerView.Adapter<IssueIt
             holder.hasBackUpTextView.setText("是");
             holder.hasBackUpTextView.setTextColor(Color.RED);
         }else{
+
             holder.hasBackUpTextView.setText("否");
             holder.hasBackUpTextView.setTextColor(Color.BLACK);
         }

@@ -44,6 +44,9 @@ public class IssueOutBackUpBean implements Parcelable {
     //增加 To_Ist_ID,To_Sub_Ist_ID
     @SerializedName("To_Ist_ID") private long toIst_ID;
     @SerializedName("To_Sub_Ist_ID") private long toSub_Ist_ID;
+    // codex by john 2026-08-28 22:45 - 额外领料备料标记，用于列表区分显示和一键出库区分处理
+    // codex by john 2026-09-04 15:27 - 改为 int：服务端 SQL CAST 成 int 返回 0/1，Gson 无法把数字反序列化成 boolean
+    @SerializedName("Is_Extra") private int isExtra;
 
     private boolean selected;
 
@@ -66,6 +69,7 @@ public class IssueOutBackUpBean implements Parcelable {
         SMT_ID = in.readLong();
         toIst_ID = in.readLong();
         toSub_Ist_ID = in.readLong();
+        isExtra = in.readInt();
         selected = in.readByte() != 0;
     }
 
@@ -89,6 +93,7 @@ public class IssueOutBackUpBean implements Parcelable {
         dest.writeLong(SMT_ID);
         dest.writeLong(toIst_ID);
         dest.writeLong(toSub_Ist_ID);
+        dest.writeInt(isExtra);
         dest.writeByte((byte) (selected ? 1 : 0));
     }
 
@@ -277,6 +282,16 @@ public class IssueOutBackUpBean implements Parcelable {
 
     public IssueOutBackUpBean setToSub_Ist_ID(long toSub_Ist_ID) {
         this.toSub_Ist_ID = toSub_Ist_ID;
+        return this;
+    }
+
+    // codex by john 2026-08-28 22:45 - 是否额外领料备料
+    public boolean isExtra() {
+        return isExtra == 1;
+    }
+
+    public IssueOutBackUpBean setExtra(boolean extra) {
+        this.isExtra = extra ? 1 : 0;
         return this;
     }
 }

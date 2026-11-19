@@ -36,6 +36,7 @@ import com.chinashb.www.mobileerp.talk.MessageManageActivity;
 import com.chinashb.www.mobileerp.task.TaskCreateSimpleActivity;
 import com.chinashb.www.mobileerp.task.TasksActivity;
 import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.MWPrefKeys;
 import com.chinashb.www.mobileerp.utils.LanguageHelper;
 import com.chinashb.www.mobileerp.utils.StringConstantUtil;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -75,6 +76,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
     private ImageView avatarImageView;
     private TextView testEnvironmentTextView;
     private TextView printTextView;
+    private TextView zebra328PlusDebugTextView;
     private TextView getImageTextView;
     private TextView workReportingTextView;
     private TextView languageSwitchTextView;
@@ -148,6 +150,8 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
 
         GetStockPermittedListAsyncTask permittedListAsyncTask = new GetStockPermittedListAsyncTask();
         permittedListAsyncTask.execute();
+        // 2026-07-10 静默拉取备料一键出库 Batch 方法名，失败不提示
+        new GetMWBatchMethodAsyncTask().execute();
 
         if (UserSingleton.get().getHRID() == 26009 || UserSingleton.get().getHRID() == 21618) {
             nucleinTextView.setVisibility(View.VISIBLE);
@@ -190,6 +194,28 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         super.onResume();
     }
 
+
+    /**
+     * 静默从服务器拉取备料一键出库方法名并缓存到 SharedPreferences，
+     * 失败不做任何提示，由消费方 fallback 到默认值 Batch4。
+     */
+    private class GetMWBatchMethodAsyncTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+            return WebServiceUtil.getCommitMWNewIssueItemImproveBatchMethod();
+        }
+
+        @Override
+        protected void onPostExecute(String method) {
+            if (method != null && !method.isEmpty()) {
+                getSharedPreferences(MWPrefKeys.KEY_MW_BATCH_METHOD, MODE_PRIVATE)
+                        .edit()
+                        .putString(MWPrefKeys.KEY_MW_BATCH_METHOD, method)
+                        .apply();
+            }
+        }
+    }
+
     private void initVersion() {
         versionTextView.setText(getString(R.string.system_version_format, getAppVersionName(MobileMainActivity.this)));
     }
@@ -213,6 +239,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         versionTextView = findViewById(R.id.main_version_button);
         testEnvironmentTextView = findViewById(R.id.tv_current_test_environment);
         printTextView = findViewById(R.id.main_print_button);
+        zebra328PlusDebugTextView = findViewById(R.id.main_zebra_328plus_debug_button);
         getImageTextView = findViewById(R.id.main_get_image_button);
         workReportingTextView = findViewById(R.id.main_work_reporting_button);
         languageSwitchTextView = findViewById(R.id.main_select_switch_language_button);
@@ -234,6 +261,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
         nucleinTextView.setOnClickListener(this);
         versionTextView.setOnClickListener(this);
         printTextView.setOnClickListener(this);
+        zebra328PlusDebugTextView.setOnClickListener(this);
         getImageTextView.setOnClickListener(this);
         workReportingTextView.setOnClickListener(this);
         languageSwitchTextView.setOnClickListener(this);
@@ -254,7 +282,7 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
                 "inner join bu on bu.company_id=Dep_Service_Company.company_id " +
                 "inner join company on company.company_id=Dep_Service_Company.Company_ID " +
                 " where hr_adm.HR_ID=" + UserSingleton.get().getHRID() + " and hr_adm.deleted=0 " +
-                " and bu.enabled=1 and bu.is_obsolete=0 ";
+                " and bu.enabled=1 and isnull(bu.is_obsolete,0)=0 ";
         sql = "Select * From (" + sql + ") As U " +
                 "Order by Company_ID, BU_ID ";
         return sql;
@@ -489,6 +517,9 @@ public class MobileMainActivity extends BaseActivity implements View.OnClickList
             startActivity(intent);
         }else if (view == printTextView) {
             Intent intent = new Intent(this, MobilePrinterActivity.class);
+            startActivity(intent);
+        }else if (view == zebra328PlusDebugTextView) {
+            Intent intent = new Intent(this, Zebra328PlusDebugActivity.class);
             startActivity(intent);
         }else if (view == getImageTextView) {
             Intent intent = new Intent(this, NewGetPrintImageActivity.class);

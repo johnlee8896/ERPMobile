@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="纸张宽度（dot）"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_zebra328_paper_width_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="标签高度（dot）"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_zebra328_label_height_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="打印速度（0-5，5最快）"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_zebra328_print_speed_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="左边距（dot）"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_zebra328_left_margin_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="打印后出纸长度（dot）"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/dialog_zebra328_post_feed_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" />
+
+        <CheckBox
+            android:id="@+id/dialog_zebra328_continuous_paper_check_box"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:checked="true"
+            android:text="连续纸模式（不使用FORM，打印后直接走纸）"
+            android:textColor="#222222"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="#555555"
+            android:text="ZR328 2 英寸宽度参考值约 576 dot。连续纸建议出纸 120-160 dot。"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+</ScrollView>

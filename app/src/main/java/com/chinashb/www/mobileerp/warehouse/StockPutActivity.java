@@ -21,7 +21,7 @@ import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
 import com.chinashb.www.mobileerp.basicobject.MpiWcBean;
 import com.chinashb.www.mobileerp.basicobject.PlanInnerDetailEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
-import com.chinashb.www.mobileerp.bean.AssistItemBean;
+import com.chinashb.www.mobileerp.bean.AssistItemNewBean;
 import com.chinashb.www.mobileerp.bean.ExtraHRBean;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
@@ -250,13 +250,39 @@ public class StockPutActivity extends BaseActivity {
     }
 
     private void getAssistList() {
-        String assistSql = "Select IA_ID, Item_Assist.Item_ID, Item.Item_Name as 名称, Item.Item As 物料编码, Item.Item_Spec2 As 规格, Item.Item_Unit As 单位," +
-                "Qty As 单机用量, Remark as 备注 " +
-                " From Item_Assist " +
-                " Inner Join Item On Item_Assist.Item_ID=Item.Item_ID " +
-                " Where Item_Assist.PItem_ID=" + mpiWcBean.getItem_ID();
+        // 2026-10-29 john 原SQL注掉，保留备用
+//        String assistSql = "Select IA_ID, Item_Assist.Item_ID, Item.Item_Name as 名称, Item.Item As 物料编码, Item.Item_Spec2 As 规格, Item.Item_Unit As 单位," +
+//                "Qty As 单机用量, Remark as 备注 " +
+//                " From Item_Assist " +
+//                " Inner Join Item On Item_Assist.Item_ID=Item.Item_ID " +
+//                " Where Item_Assist.PItem_ID=" + mpiWcBean.getItem_ID();
+
+        // 2026-10-29 john 新SQL改走服务端接口 op_Get_MW_Assist_Items
+//        String assistSql = ";With InsertTimes As (" +
+//                "Select Lot_ID, Min(Insert_Time) As FirstInsertTime " +
+//                "From RealInsertTime_Lot_Manage With(NoLock) " +
+//                "Group By Lot_ID" +
+//                ") " +
+//                "Select IA.IA_ID, IA.Item_ID, I.Item_Name As 名称, I.Item As 物料编码, IsNull(I.Item_Spec2,'') As 规格, IsNull(I.Item_Unit,'') As 单位, IA.Qty As 单机用量, IsNull(IA.Remark,'') As 备注, " +
+//                "IsNull(Inv.StorageLocation,'') As 储位, IsNull(Inv.LotNo,'') As 批次, Inv.InboundTime As 入库时间, IsNull(Inv.InventoryQty,0) As 库存数量 " +
+//                "From Item_Assist IA With(NoLock) " +
+//                "Inner Join Item I With(NoLock) On I.Item_ID=IA.Item_ID " +
+//                "Outer Apply (" +
+//                "Select Top 1 " +
+//                "Case When IsNull(S.Ist_Name,'')='' Then IsNull(SS.Ist_Name,'') When IsNull(SS.Ist_Name,'')='' Then S.Ist_Name Else S.Ist_Name+'.'+SS.Ist_Name End As StorageLocation, " +
+//                "L.LotNo As LotNo, V.Qty As InventoryQty, IsNull(R.FirstInsertTime,L.LotDate) As InboundTime " +
+//                "From [Account_Storage_Part2_01_Inv] V With(NoLock) " +
+//                "Inner Join Lot L With(NoLock) On L.LotID=V.LotID " +
+//                "Inner Join Item_Storage S With(NoLock) On S.Ist_ID=V.Ist_ID " +
+//                "Inner Join Item_Storage_Sub SS With(NoLock) On SS.Sub_Ist_ID=V.Sub_Ist_ID " +
+//                "Left Join InsertTimes R On R.Lot_ID=V.LotID " +
+//                "Where V.Item_ID=IA.Item_ID And V.Bu_ID=1 And IsNull(V.Qty,0)>0 And L.LotStatus_ID=101 " +
+//                "Order By Case When R.FirstInsertTime Is Null Then 1 Else 0 End, R.FirstInsertTime, L.LotDate, L.LotID, V.Sub_IST_ID" +
+//                ") Inv " +
+//                "Where IA.PItem_ID=" + mpiWcBean.getItem_ID() + " " +
+//                "Order By Case When Inv.InboundTime Is Null Then 1 Else 0 End, Inv.InboundTime, IA.IA_ID";
         GetAssistListAsyncTask task = new GetAssistListAsyncTask();
-        task.execute(assistSql);
+        task.execute();
 
     }
 
@@ -556,15 +582,14 @@ public class StockPutActivity extends BaseActivity {
 //        }
 //
 //    }
-    private class GetAssistListAsyncTask extends AsyncTask<String, String, String> {
+    private class GetAssistListAsyncTask extends AsyncTask<Void, Void, String> {
 
         @Override
-        protected String doInBackground(String... strings) {
-            String sql = strings[0];
-            WsResult result = WebServiceUtil.getDataTable(sql);
+        protected String doInBackground(Void... voids) {
+            WsResult result = WebServiceUtil.op_Get_MW_Assist_Items(
+                    UserSingleton.get().getUserInfo().getBu_ID(), mpiWcBean.getItem_ID());
             if (result != null && result.getResult()) {
-                String jsonData = result.getErrorInfo();
-                return jsonData;
+                return result.getInfo();
             }
             return "";
         }
@@ -573,12 +598,13 @@ public class StockPutActivity extends BaseActivity {
         protected void onPostExecute(String jsonData) {
             super.onPostExecute(jsonData);
             Gson gson = new Gson();
-            List<AssistItemBean> commonDataList = gson.fromJson(jsonData, new TypeToken<List<AssistItemBean>>() {
+            // 2026-10-29 john 新SQL改用 AssistItemNewBean 解析，原 AssistItemBean 保留
+            List<AssistItemNewBean> commonDataList = gson.fromJson(jsonData, new TypeToken<List<AssistItemNewBean>>() {
             }.getType());
 
             if (commonDataList != null && commonDataList.size() > 0) {
-                if (commonDataList.get(0) instanceof AssistItemBean) {
-                    commonDataList = gson.fromJson(jsonData, new TypeToken<List<AssistItemBean>>() {
+                if (commonDataList.get(0) instanceof AssistItemNewBean) {
+                    commonDataList = gson.fromJson(jsonData, new TypeToken<List<AssistItemNewBean>>() {
                     }.getType());
 
                     if (commonDataList != null && commonDataList.size() > 0) {

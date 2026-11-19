@@ -25,7 +25,7 @@
 
     <!-- Printer -->
     <string name="discovery_printer">尋找印表機</string>
-    <string name="paired_printer_list">最近使用印表機列表</string>
+    <string name="paired_printer_list">系統已配對印表機列表</string>
     <string name="print_text">列印文字</string>
     <string name="print_1D_barcode">列印一維條碼</string>
     <string name="print_2D_barcode">列印二維條碼</string>

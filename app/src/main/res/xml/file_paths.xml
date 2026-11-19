@@ -11,6 +11,9 @@
         <files-path
             name="files"
             path="" />
+        <external-files-path
+            name="upgrade"
+            path="upgrade/" />
         <cache-path
             name="cache"
             path="" />

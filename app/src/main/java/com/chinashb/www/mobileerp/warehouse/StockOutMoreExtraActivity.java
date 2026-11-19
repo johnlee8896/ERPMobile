@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -28,6 +27,7 @@ import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.AppUtil;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
 import com.chinashb.www.mobileerp.utils.OnViewClickListener;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
@@ -36,10 +36,10 @@ import com.chinashb.www.mobileerp.widget.CommAlertDialog;
 import com.chinashb.www.mobileerp.widget.CommonSelectInputDialog;
 import com.chinashb.www.mobileerp.widget.OnDialogViewClickListener;
 import com.chinashb.www.mobileerp.widget.TimePickerManager;
+import com.chinashb.www.mobileerp.widget.TitleLayoutManagerView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,13 +48,18 @@ import java.util.List;
 public class StockOutMoreExtraActivity extends BaseActivity {
 
     private MpiWcBean themw;
+    // codex by john 2026-08-30 11:25 - 是否额外领料备料模式
+    private boolean isBackup;
 
+    private TitleLayoutManagerView titleLayoutManagerView;
     private TextView txtMw_Title;
+    private TextView tvIssueMoreExtraTitle;
 
     private Button btnAddTray;
     private Button btnRemark;
     private Button btnWarehouseOut;
     private Button selectDateButton;
+    private Button btnExtraBackup;
 
     private RecyclerView mRecyclerView;
     private EditText inputEditText;
@@ -69,6 +74,12 @@ public class StockOutMoreExtraActivity extends BaseActivity {
     private CommonSelectInputDialog remarkDialog;
     private Date outDate;
     private TimePickerManager timePickerManager;
+    // 2026-10-29 john 额外领料防重：扫码处理锁、出库提交锁、备料提交锁、最近条码去重
+    private boolean isProcessingScan;
+    private boolean isExecutingOut;
+    private boolean isExecutingBackup;
+    private String lastProcessedBarcode;
+    private long lastProcessedBarcodeTime;
 
     private OnViewClickListener onViewClickListener = new OnViewClickListener() {
         @Override public <T> void onClickAction(View v, String tag, T t) {
@@ -98,6 +109,9 @@ public class StockOutMoreExtraActivity extends BaseActivity {
         btnWarehouseOut = (Button) findViewById(R.id.btn_exe_warehouse_out);
         selectDateButton = findViewById(R.id.btn_issue_extra_add_date);
         btnRemark = findViewById(R.id.btn_remark);
+        titleLayoutManagerView = findViewById(R.id.title_layout);
+        tvIssueMoreExtraTitle = findViewById(R.id.tv_issue_more_extra_title);
+        btnExtraBackup = findViewById(R.id.btn_issue_more_backup_extra);
 
 
         newissuelist = new ArrayList<>();
@@ -116,6 +130,15 @@ public class StockOutMoreExtraActivity extends BaseActivity {
         if (themw != null) {
             themw.setMwNameTextView(txtMw_Title);
 
+        }
+
+        isBackup = who.getBooleanExtra(IntentConstant.Intent_continue_put_extra_from_backup, false);
+        if (isBackup) {
+            titleLayoutManagerView.setTitle("额外领料备料");
+            tvIssueMoreExtraTitle.setText("额外领料备料");
+            selectDateButton.setVisibility(View.GONE);
+            btnWarehouseOut.setVisibility(View.GONE);
+            btnExtraBackup.setVisibility(View.VISIBLE);
         }
 
         btnAddTray.setOnClickListener(new View.OnClickListener() {
@@ -146,52 +169,12 @@ public class StockOutMoreExtraActivity extends BaseActivity {
         });
 
 
-        btnWarehouseOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (TextUtils.isEmpty(remarkTextView.getText().toString())){
-                    ToastUtil.showToastShort("请为本操作添加备注");
-//                    remarkTextView.requestFocus();
-                    return;
-                }
-
-                if (newissuelist.size() > 0) {
-                    if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())){
-                        if (!TextUtils.isEmpty(remark)){
-                            AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
-                            task.execute();
-                        }else{
-                            ToastUtil.showToastShort("额外领料，请选择备注！");
-                        }
-                    }else{
-                        CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockOutMoreExtraActivity.this)
-                                .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
-                                .setLeftText("确定");
-
-
-                        builder.setOnViewClickListener(new OnDialogViewClickListener() {
-                            @Override
-                            public void onViewClick(Dialog dialog, View v, int tag) {
-                                switch (tag) {
-                                    case CommAlertDialog.TAG_CLICK_LEFT:
-                                        CommonUtil.doLogout(StockOutMoreExtraActivity.this);
-                                        dialog.dismiss();
-                                        break;
-                                }
-                            }
-                        });
-                        builder.create().show();
-                    }
-
-                }
-
-            }
-
-        });
+        btnWarehouseOut.setOnClickListener(v -> handleExtraWarehouseOut());
+        btnExtraBackup.setOnClickListener(v -> handleExtraWarehouseBackup());
 
         inputEditText.addTextChangedListener(new TextWatcherImpl() {
             @Override
-protected void onTextChangedSafe(CharSequence text) {
+            protected void onTextChangedSafe(CharSequence text) {
                 //                if (text.toString().endsWith("\n")) {
                 if (text.toString().length() > 0) {
 //                    ToastUtil.showToastLong("扫描结果:" + text.toString());
@@ -202,6 +185,67 @@ protected void onTextChangedSafe(CharSequence text) {
         });
 
 
+    }
+
+    private void handleExtraWarehouseOut() {
+        if (isExecutingOut) {
+            return;
+        }
+        if (TextUtils.isEmpty(remarkTextView.getText().toString())) {
+            ToastUtil.showToastShort("请为本操作添加备注");
+            return;
+        }
+
+        if (newissuelist.size() <= 0) {
+            return;
+        }
+
+        if (UserSingleton.get().getHRID() <= 0 || TextUtils.isEmpty(UserSingleton.get().getHRName())) {
+            CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockOutMoreExtraActivity.this)
+                    .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
+                    .setLeftText("确定");
+            builder.setOnViewClickListener(new OnDialogViewClickListener() {
+                @Override
+                public void onViewClick(Dialog dialog, View v, int tag) {
+                    switch (tag) {
+                        case CommAlertDialog.TAG_CLICK_LEFT:
+                            CommonUtil.doLogout(StockOutMoreExtraActivity.this);
+                            dialog.dismiss();
+                            break;
+                    }
+                }
+            });
+            builder.create().show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(remark)) {
+            ToastUtil.showToastShort("额外领料，请选择备注！");
+            return;
+        }
+
+        isExecutingOut = true;
+        AsyncExeWarehouseOut task = new AsyncExeWarehouseOut();
+        task.execute();
+    }
+
+    // codex by john 2026-08-31 15:49 - 额外领料备料提交，走通用备料方法（与 StockOutMoreActivity 的 HandleWarehouseBackupAsyncTask 一致）
+    private void handleExtraWarehouseBackup() {
+        if (isExecutingBackup) {
+            return;
+        }
+        if (newissuelist == null || newissuelist.size() <= 0) {
+            ToastUtil.showToastShort("未有待投料数据！");
+            return;
+        }
+
+        if (TextUtils.isEmpty(remark)) {
+            ToastUtil.showToastShort("额外领料，请选择备注！");
+            return;
+        }
+        isExecutingBackup = true;
+        AsyncExeWarehouseBackup task = new AsyncExeWarehouseBackup();
+        task.execute();
     }
 
     private void refreshIssueMoreExtraList() {
@@ -256,6 +300,16 @@ protected void onTextChangedSafe(CharSequence text) {
     }
 
     private void parseScanResult(String result) {
+        if (isProcessingScan) {
+            return;
+        }
+        if (TextUtils.isEmpty(result)) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        if (result.equals(lastProcessedBarcode) && now - lastProcessedBarcodeTime < 1500L) {
+            return;
+        }
 //        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
 //        String X = result.getContents();
         if (result.contains("/")) {
@@ -266,6 +320,9 @@ protected void onTextChangedSafe(CharSequence text) {
                 if (!qrTitle.equals("")) {
                     if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
                         //物品条码
+                        lastProcessedBarcode = result;
+                        lastProcessedBarcodeTime = System.currentTimeMillis();
+                        isProcessingScan = true;
                         scanstring = result;
                         scanCodeList.add(result);
                         GetIssueMoreExtraBoxAsyncTask task = new GetIssueMoreExtraBoxAsyncTask();
@@ -276,23 +333,6 @@ protected void onTextChangedSafe(CharSequence text) {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    protected void setHomeButton() {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -368,7 +408,6 @@ protected void onTextChangedSafe(CharSequence text) {
 
         @Override
         protected void onPostExecute(Void result) {
-            //tv.setText(fahren + "∞ F");
 
             if (scanresult != null) {
                 if (!scanresult.getResult() ) {
@@ -383,16 +422,7 @@ protected void onTextChangedSafe(CharSequence text) {
             }
             inputEditText.setText("");
             inputEditText.setHint("请继续扫描");
-            //pbScan.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
+            isProcessingScan = false;
         }
 
     }
@@ -414,7 +444,7 @@ protected void onTextChangedSafe(CharSequence text) {
                     outDate = new Date() ;
                 }
 
-                ws_result = WebServiceUtil.op_Commit_MW_Issue_Extra_Item(themw.getMPIWC_ID(), bi,remark,outDate,scanCodeList.size() == newissuesize ? scanCodeList.get(0):"");
+                ws_result = WebServiceUtil.op_Commit_MW_Issue_Extra_Item(themw.getMPIWC_ID(), bi, remark, outDate, scanCodeList.size() == newissuesize ? scanCodeList.get(0):"");
 
                 if (ws_result.getResult() ) {
                     successList.add(bi);
@@ -434,24 +464,59 @@ protected void onTextChangedSafe(CharSequence text) {
                 newissuelist.removeAll(successList);
             }
             refreshIssueMoreExtraList();
-            //pbScan.setVisibility(View.INVISIBLE);
             remarkTextView.setText("");
             remark = "";
             if (ws_result != null) {
                 CommonUtil.ShowWsResultToast(StockOutMoreExtraActivity.this, ws_result, "成功出库", Toast.LENGTH_SHORT);
             }
             scanCodeList.clear();
+            isExecutingOut = false;
+        }
+
+    }
+
+    // codex by john 2026-08-31 15:49 - 额外领料备料异步提交，逐条调 op_Commit_MW_Issue_Item_To_Backup（与 HandleWarehouseBackupAsyncTask 一致）
+    private class AsyncExeWarehouseBackup extends AsyncTask<String, Void, Void> {
+        WsResult ws_result;
+        private final List<BoxItemEntity> successList = new ArrayList<>();
+
+        @Override
+        protected Void doInBackground(String... params) {
+            List<BoxItemEntity> selectedList = new ArrayList<>(newissuelist);
+            int count = 0;
+            int size = selectedList.size();
+            while (count < size) {
+                BoxItemEntity bi = selectedList.get(count);
+                if (outDate == null) {
+                    outDate = new Date();
+                }
+//                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item_To_Backup(
+                ws_result = WebServiceUtil.op_Commit_MW_Issue_Item_To_Backup_EXtra(
+                        themw.getMPIWC_ID(), bi, outDate,
+                        scanCodeList.size() == size ? scanCodeList.get(count) : "",remark);
+                if (ws_result.getResult()) {
+                    successList.add(bi);
+                } else {
+                    return null;
+                }
+                count++;
+            }
+            return null;
         }
 
         @Override
-        protected void onPreExecute() {
-            //pbScan.setVisibility(View.VISIBLE);
+        protected void onPostExecute(Void result) {
+            if (!successList.isEmpty()) {
+                newissuelist.removeAll(successList);
+            }
+            refreshIssueMoreExtraList();
+            if (ws_result != null) {
+                CommonUtil.ShowWsResultToast(StockOutMoreExtraActivity.this, ws_result, "成功备料", Toast.LENGTH_SHORT);
+            }
+            scanCodeList.clear();
+            remark = "";
+            isExecutingBackup = false;
         }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-
     }
 
 
@@ -461,14 +526,5 @@ protected void onTextChangedSafe(CharSequence text) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         super.onResume();
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putSerializable("BoxItemList", (Serializable) newissuelist);
-
     }
 }

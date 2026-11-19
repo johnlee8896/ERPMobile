@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
         <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+            android:id="@+id/title_layout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             app:app_title_text="额外领料" />
@@ -69,6 +70,14 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="出库登账" />
+
+            <Button
+                android:id="@+id/btn_issue_more_backup_extra"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="额外领料备料"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -153,4 +162,3 @@
     </LinearLayout>
 
 </LinearLayout>
-

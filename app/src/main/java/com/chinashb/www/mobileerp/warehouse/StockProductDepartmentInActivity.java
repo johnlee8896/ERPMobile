@@ -23,6 +23,7 @@ import com.chinashb.www.mobileerp.basicobject.UserAllInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.basicobject.WsResult;
 import com.chinashb.www.mobileerp.bean.DepartmentBean;
+import com.chinashb.www.mobileerp.bean.ProductFeeRdmBean;
 import com.chinashb.www.mobileerp.bean.ResearchItemBean;
 import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
 import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
@@ -45,6 +46,8 @@ import com.google.zxing.integration.android.IntentResult;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.List;
 
 /***
@@ -70,6 +73,13 @@ public class StockProductDepartmentInActivity extends BaseActivity {
     private String scanstring;
     private DepartmentBean departmentBean;
     private ResearchItemBean researchItemBean;
+    private ProductFeeRdmBean productFeeRdmBean;
+    private List<ProductFeeRdmBean> productFeeRdmBeanList;
+    private Button selectSubResearchProgramButton;
+    private TextView tvSubReseachProgram;
+    private String selectedSubProgramCode;
+    private String selectedSubProgramName;
+    private Map<String, String> subResearchProgramMap;
     private TextView useTextView;
     private TextView titleTextView;
     private Button selectUseButton;
@@ -85,6 +95,7 @@ public class StockProductDepartmentInActivity extends BaseActivity {
     private int currentQty = 0;
 
     private CommonSelectInputDialog hrNODialog;
+    private String currentNRDMItemSubNumber = "";
 
     private OnViewClickListener onHRNOViewClickListener = new OnViewClickListener() {
         @Override
@@ -97,15 +108,40 @@ public class StockProductDepartmentInActivity extends BaseActivity {
                 } else {
                     ToastUtil.showToastShort("工号解析失败！");
                 }
+                if (hrNODialog != null && hrNODialog.isShowing()) {
+                    hrNODialog.dismiss();
+                }
+
             }
-            if (hrNODialog != null && hrNODialog.isShowing()) {
-                hrNODialog.dismiss();
-            }
-        }
-    };
+        }};
 
     private boolean isCurrentSmallPackage = false;
     private TextView itemInfoTextView;
+    private class JudgeRdmOperationCorrectTask extends AsyncTask<Void, Void, WsResult> {
+        @Override
+        protected WsResult doInBackground(Void... params) {
+            String productItem = (productFeeRdmBean != null) ? productFeeRdmBean.getNumber() : "";
+            String subItem = (selectedSubProgramCode != null) ? selectedSubProgramCode : "";
+            int entityId = (departmentBean != null) ? departmentBean.getDepartmentID() : 0;
+            return WebServiceUtil.judgeProductRdmOperationCorrect(
+                    UserSingleton.get().getHRID(),
+                    UserSingleton.get().getUserInfo().getBu_ID(),
+                    655,
+                    entityId,
+                    productItem,
+                    subItem);
+        }
+
+        @Override
+        protected void onPostExecute(WsResult result) {
+            if (result != null && result.getResult()) {
+                new WarehouseOutAsyncTask().execute();
+            } else {
+                String errMsg = (result != null) ? result.getErrorInfo() : "校验失败";
+                CommonUtil.ShowToast(StockProductDepartmentInActivity.this, errMsg, R.mipmap.warning);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +168,7 @@ public class StockProductDepartmentInActivity extends BaseActivity {
     }
 
     protected void bindView() {
+        initSubResearchProgramMap();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         setContentView(R.layout.activity_product_stock_out_dep_layout);
         mContext = this;
@@ -143,8 +180,11 @@ public class StockProductDepartmentInActivity extends BaseActivity {
         selectDepartmentButton = (Button) findViewById(R.id.btn_stock_out_dep_product_select_dep_product);
         selectResearchProgramButton = (Button) findViewById(R.id.btn_stock_out_dep_product_select_program);
         scanAddTrayButton = (Button) findViewById(R.id.product_btn_issue_more_add_extra);
+        selectSubResearchProgramButton = (Button) findViewById(R.id.btn_stock_out_dep_product_sub_program);
+        tvSubReseachProgram = (TextView) findViewById(R.id.tv_stock_out_dep_product_sub_program);
         outStockButton = (Button) findViewById(R.id.product_btn_exe_warehouse_out);
         scanHRCodeButton = findViewById(R.id.department__in_scan_hr_code_button);
+        scanHRCodeButton.setVisibility(View.GONE);
         inputHRNOButton = findViewById(R.id.department__in_input_hrno_button);
         selectUseButton = findViewById(R.id.department__in_select_use_button);
         useTextView = findViewById(R.id.department__in_select_use_button);
@@ -194,34 +234,20 @@ public class StockProductDepartmentInActivity extends BaseActivity {
         selectResearchProgramButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(StockDepartmentInActivity.this, SelectItemActivity.class);
-                Intent intent = new Intent(StockProductDepartmentInActivity.this, CommonSelectItemActivity.class);
-
-                String sql = "Select Product.Product_ID,PS_Version.PS_ID,Product.Abb,Fi_Standard_Product_Type.FiPT_ID," +
-                        "Fi_Standard_Product_Type.TypeName As Program, St.FSPD_ID,St.Fi_Standard_Product_Developing_Status As Status,Program.Program_ID " +
-                        "From Product Inner Join PS_Version On PS_Version.Product_ID=Product.Product_ID And Product.Current_PS=PS_Version.PS_ID " +
-                        "Inner Join Program On Product.Program_ID=Program.Program_ID " +
-                        " Inner Join Fi_Standard_Product On Product.Product_ID=Fi_Standard_Product.Product_ID " +
-                        " Inner Join Fi_Standard_product_Type On Fi_Standard_Product.Fi_Standard_Product_Type=Fi_Standard_Product_Type.FiPT_ID  " +
-                        " Inner Join Fi_Standard_Product_Developing_Status As St On Fi_Standard_Product.Fi_Standard_Product_Developing_Status=St.FSPD_ID " +
-                        " Where Fi_Standard_product_Type.Obsolete=0 And Program.Company_ID=" + UserSingleton.get().getUserInfo().getCompany_ID() +
-                        " And Program.Bu_ID=" + UserSingleton.get().getUserInfo().getBu_ID() + " And Fi_Standard_Product_Type.Obsolete=0  ";
-
-                List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(10, 10, 120, 10, 120, 10, 120, 10));
-                List<String> ColCaption = new ArrayList<String>(Arrays.asList("Product_ID", "PS_ID", "产品通称", "FiPT_ID", "研发项目", "FSPD_ID", "研发状态", "Program_ID"));
-                List<String> HiddenCol = new ArrayList<String>(Arrays.asList("Product_ID", "PS_ID", "FiPT_ID", "FSPD_ID", "Program_ID"));
-
-                String Title = "选择研发项目";
-                intent.putExtra("Title", Title);
-                intent.putExtra("SQL", sql);
-                intent.putExtra("ColWidthList", (Serializable) ColWith);
-                intent.putExtra("ColCaptionList", (Serializable) ColCaption);
-                intent.putExtra("hiddenColList", (Serializable) HiddenCol);
-                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_ReSearch_Program);
-
-                startActivityForResult(intent, 200);
+                new GetProductFeeRdmAsyncTask().execute();
             }
 
+        });
+
+        selectSubResearchProgramButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (productFeeRdmBean == null) {
+                    ToastUtil.showToastShort("请先选择研发项目！");
+                    return;
+                }
+                showSubResearchProgramDialog();
+            }
         });
 
         scanAddTrayButton.setOnClickListener(new View.OnClickListener() {
@@ -244,12 +270,15 @@ public class StockProductDepartmentInActivity extends BaseActivity {
                         return;
                     }
 
+                    if (TextUtils.isEmpty(selectedSubProgramCode)) {
+                        CommonUtil.ShowToast(StockProductDepartmentInActivity.this, "没有选择研发子项目", R.mipmap.warning);
+                        return;
+                    }
 
                     //// TODO: 2020/4/21 这里可以与isLogin的公共判断方法合并
                     if (UserSingleton.get().getHRID() > 0 && !TextUtils.isEmpty(UserSingleton.get().getHRName())) {
 
-                        WarehouseOutAsyncTask task = new WarehouseOutAsyncTask();
-                        task.execute();
+                        new JudgeRdmOperationCorrectTask().execute();
                     } else {
                         CommAlertDialog.DialogBuilder builder = new CommAlertDialog.DialogBuilder(StockProductDepartmentInActivity.this)
                                 .setTitle("").setMessage("您当前程序账号有误，需重新登录！")
@@ -419,8 +448,16 @@ public class StockProductDepartmentInActivity extends BaseActivity {
     protected void ActivityResultSelectResearchProgram(Intent data) {
         if (data != null) {
             researchItemBean = data.getParcelableExtra("SelectItem");
+            selectedSubProgramCode = null;
+            selectedSubProgramName = null;
+            tvSubReseachProgram.setText("研发子项目");
             if (researchItemBean != null) {
                 tvReseachProgram.setText(researchItemBean.getAbb() + "  --  " + researchItemBean.getProgram());
+                selectSubResearchProgramButton.setVisibility(View.VISIBLE);
+                tvSubReseachProgram.setVisibility(View.VISIBLE);
+            } else {
+                selectSubResearchProgramButton.setVisibility(View.GONE);
+                tvSubReseachProgram.setVisibility(View.GONE);
             }
         }
     }
@@ -480,7 +517,7 @@ public class StockProductDepartmentInActivity extends BaseActivity {
                 //// TODO: 2019/9/18 大概可能是修改数量后仍是原来的数量导致 ，其他 的那种修改应该也有这个问题
                 long tempBoxID = boxIDList.get(0);
 
-                ws_result = WebServiceUtil.opProductDepNotPalletIssue(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, tempBoxID, currentQty, description);
+                ws_result = WebServiceUtil.opProductDepNotPalletIssue(UserSingleton.get().getUserInfo().getBu_ID(), departmentBean, tempBoxID, currentQty, description,currentNRDMItemSubNumber,productFeeRdmBean != null ? productFeeRdmBean.getFiptID() : 0);
 //                if (ws_result.getResult()) {
 //                    boxItemEntityList.remove(boxItemEntity);
 //                    //如果实际出库数量小于扫描出的要再处理
@@ -511,6 +548,7 @@ public class StockProductDepartmentInActivity extends BaseActivity {
             }
             itemInfoTextView.setText("");
             boxIDList.clear();
+            currentNRDMItemSubNumber = "";
         }
 
     }
@@ -616,4 +654,73 @@ public class StockProductDepartmentInActivity extends BaseActivity {
 
 
     }
+
+    private void initSubResearchProgramMap() {
+        subResearchProgramMap = new LinkedHashMap<>();
+        subResearchProgramMap.put("-SY-002", "环境可靠性试验");
+        subResearchProgramMap.put("-SY-003", "耐久可靠性试验");
+        subResearchProgramMap.put("-SY-004", "机械负荷试验");
+        subResearchProgramMap.put("-SY-005", "电机电气性能试验");
+        subResearchProgramMap.put("-SY-006", "常规性能试验");
+        subResearchProgramMap.put("-QT-007", "其他试验项目");
+        subResearchProgramMap.put("-GY-008", "技术及工艺验证项目");
+    }
+
+    private void showSubResearchProgramDialog() {
+        final String[] codes = subResearchProgramMap.keySet().toArray(new String[0]);
+        final String[] names = new String[codes.length];
+        for (int i = 0; i < codes.length; i++) {
+            names[i] = codes[i] + "  " + subResearchProgramMap.get(codes[i]);
+        }
+
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(StockProductDepartmentInActivity.this);
+        builder.setTitle("选择研发子项目");
+        builder.setItems(names, (dialog, which) -> {
+            selectedSubProgramCode = codes[which];
+            selectedSubProgramName = subResearchProgramMap.get(selectedSubProgramCode);
+            String displayText = selectedSubProgramCode + "  " + selectedSubProgramName;
+            tvSubReseachProgram.setText(displayText);
+            if (productFeeRdmBean != null) {
+                String number = productFeeRdmBean.getNumber();
+                currentNRDMItemSubNumber = number;
+                tvReseachProgram.setText(number + "  --  " + productFeeRdmBean.getResearchType() + "  |  " + number + "-" + selectedSubProgramCode);
+            }
+        });
+        builder.show();
+    }
+
+    private class GetProductFeeRdmAsyncTask extends AsyncTask<Void, Void, List<ProductFeeRdmBean>> {
+        @Override
+        protected List<ProductFeeRdmBean> doInBackground(Void... params) {
+            return WebServiceUtil.getProductFeeRdm(
+                    UserSingleton.get().getHRID(),
+                    UserSingleton.get().getUserInfo().getBu_ID());
+        }
+
+        @Override
+        protected void onPostExecute(List<ProductFeeRdmBean> list) {
+            if (list == null || list.isEmpty()) {
+                ToastUtil.showToastShort("获取研发项目列表失败！");
+                return;
+            }
+            productFeeRdmBeanList = list;
+            final String[] typeNames = new String[list.size()];
+            for (int i = 0; i < list.size(); i++) {
+                typeNames[i] = list.get(i).getResearchType();
+            }
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(StockProductDepartmentInActivity.this);
+            builder.setTitle("选择研发项目");
+            builder.setItems(typeNames, (dialog, which) -> {
+                productFeeRdmBean = productFeeRdmBeanList.get(which);
+                selectedSubProgramCode = null;
+                selectedSubProgramName = null;
+                tvSubReseachProgram.setText("研发子项目");
+                tvReseachProgram.setText(productFeeRdmBean.getNumber() + "  --  " + productFeeRdmBean.getResearchType());
+                selectSubResearchProgramButton.setVisibility(View.VISIBLE);
+                tvSubReseachProgram.setVisibility(View.VISIBLE);
+            });
+            builder.show();
+        }
+    }
+
 }

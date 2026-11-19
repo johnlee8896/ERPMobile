@@ -154,7 +154,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/dialog_query_inv_recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="350dp"
+                    android:layout_height="260dp"
                     android:paddingLeft="@dimen/dimen_size_20"
                     android:paddingRight="@dimen/dimen_size_10"
                     android:clickable="true"
@@ -173,6 +173,28 @@
             app:app_empty_image_src="@mipmap/ic_empty_no_message"
             app:app_empty_text="没有消息"
             tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/dialog_item_usage_line_title_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_8"
+            android:layout_marginRight="@dimen/dimen_size_20"
+            android:text="该物料线别投料明细"
+            android:textColor="@color/color_orange_FF6A00"
+            android:textSize="@dimen/text_size_14"
+            android:textStyle="bold" />
+
+        <com.chinashb.www.mobileerp.widget.CustomRecyclerView
+            android:id="@+id/dialog_item_usage_line_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginTop="@dimen/dimen_size_6"
+            android:scrollbars="vertical"
+            app:app_item_decoration_type="ITEM_SPACE"
+            app:app_layout_style="list_vertical"
+            tools:listitem="@layout/item_item_usage_line_query" />
     </LinearLayout>
 
     <LinearLayout

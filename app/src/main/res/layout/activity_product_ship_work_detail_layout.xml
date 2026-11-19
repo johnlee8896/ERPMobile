@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:orientation="vertical">
+
+    <com.chinashb.www.mobileerp.widget.TitleLayoutManagerView
+        android:id="@+id/product_ship_work_detail_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:app_title_text="发货作业" />
+
+    <TextView
+        android:id="@+id/product_ship_work_detail_status_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_20"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:gravity="center"
+        android:text="正在读取作业详情"
+        android:textColor="@color/color_orange_FF6A00"
+        android:textSize="@dimen/text_size_16" />
+
+    <TextView
+        android:id="@+id/product_ship_work_detail_summary_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_size_20"
+        android:layout_marginTop="@dimen/dimen_size_12"
+        android:layout_marginRight="@dimen/dimen_size_20"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_15" />
+
+    <Button
+        android:id="@+id/product_ship_work_detail_retry_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dimen_size_15"
+        android:text="重新查询"
+        android:visibility="gone" />
+
+</LinearLayout>

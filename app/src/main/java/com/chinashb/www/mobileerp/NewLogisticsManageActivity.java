@@ -18,6 +18,7 @@ import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
 import com.chinashb.www.mobileerp.funs.WebServiceUtil;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.utils.JsonUtil;
+import com.chinashb.www.mobileerp.utils.ShipWorkFormatUtil;
 import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
 import com.chinashb.www.mobileerp.utils.ToastUtil;
 import com.chinashb.www.mobileerp.widget.CustomRecyclerView;
@@ -28,6 +29,7 @@ import com.google.gson.JsonParser;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -78,6 +80,17 @@ public class NewLogisticsManageActivity extends BaseActivity {
     TextView diiiScanText;
     @BindView(R.id.new_logistics_location_scan_text)
     TextView locationScanText;
+
+    @BindView(R.id.new_logistics_sender_section)
+    View senderSection;
+    @BindView(R.id.new_logistics_scan_info_section)
+    View scanInfoSection;
+    @BindView(R.id.new_logistics_receiver_section)
+    View receiverSection;
+    @BindView(R.id.new_logistics_logistics_info_section)
+    View logisticsInfoSection;
+    @BindView(R.id.new_logistics_detail_section)
+    View detailSection;
 
     @BindView(R.id.new_logistics_supplier_text)
     TextView supplierText;
@@ -141,6 +154,8 @@ public class NewLogisticsManageActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_logistics_manage);
         ButterKnife.bind(this);
+
+        senderSection.setVisibility(View.GONE);
 
         initRecyclerView();
         initListener();
@@ -356,11 +371,25 @@ public class NewLogisticsManageActivity extends BaseActivity {
 
     private void refreshUi() {
         refreshModeButtons();
+        refreshInfoSections();
         actionButton.setText(currentMode.getActionButtonText());
         statusText.setText(buildStatusText());
         bindSummaryFields();
         buildDisplayList();
         focusInput();
+    }
+
+    private void refreshInfoSections() {
+        boolean hasScannedObject = !TextUtils.isEmpty(currentManifestScan)
+                || !TextUtils.isEmpty(currentDiiiScan)
+                || !TextUtils.isEmpty(currentLocationScan);
+        boolean hasManifestInfo = !TextUtils.isEmpty(currentManifestInfoJson);
+        boolean hasDiiiInfo = !TextUtils.isEmpty(currentDiiiInfoJson);
+
+        scanInfoSection.setVisibility(hasScannedObject ? View.VISIBLE : View.GONE);
+        receiverSection.setVisibility(hasManifestInfo || hasDiiiInfo ? View.VISIBLE : View.GONE);
+        logisticsInfoSection.setVisibility(hasManifestInfo || hasDiiiInfo ? View.VISIBLE : View.GONE);
+        detailSection.setVisibility(currentDetailList.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
     private void refreshModeButtons() {
@@ -557,9 +586,72 @@ public class NewLogisticsManageActivity extends BaseActivity {
         }
         try {
             JsonElement root = new JsonParser().parse(json);
+            if (root.isJsonObject() && root.getAsJsonObject().has("Items")) {
+                buildManifestItemDetails(root.getAsJsonObject());
+                return;
+            }
             collectDetailEntries(title, title, root, currentDetailList);
         } catch (Exception e) {
             currentDetailList.add(new DisplayEntity(title, "原始信息", json));
+        }
+    }
+
+    private void buildManifestItemDetails(JsonObject root) {
+        JsonElement itemsElement = root.get("Items");
+        if (itemsElement == null || !itemsElement.isJsonArray()) {
+            return;
+        }
+        JsonArray items = itemsElement.getAsJsonArray();
+        for (int i = 0; i < items.size(); i++) {
+            if (!items.get(i).isJsonObject()) {
+                continue;
+            }
+            JsonObject item = items.get(i).getAsJsonObject();
+            String itemId = getPrimitive(item, "Item_ID");
+            String name = firstNonEmpty(
+                    getPrimitive(item, "名称"),
+                    getPrimitive(item, "ItemName"),
+                    getPrimitive(item, "Item_Name"));
+            String quantity = formatQuantity(firstNonEmpty(
+                    getPrimitive(item, "发货数量"),
+                    getPrimitive(item, "Qty"),
+                    getPrimitive(item, "Quantity"),
+                    getPrimitive(item, "ReceiveQuantity"),
+                    getPrimitive(item, "ReceivedQuantity")));
+            String pieces = formatQuantity(firstNonEmpty(
+                    getPrimitive(item, "件数"),
+                    getPrimitive(item, "PackageCount"),
+                    getPrimitive(item, "BoxCount"),
+                    getPrimitive(item, "Count")));
+            String requiredDate = ShipWorkFormatUtil.date(firstNonEmpty(
+                    getPrimitive(item, "发货日期"),
+                    getPrimitive(item, "要求日期"),
+                    getPrimitive(item, "RequestDate"),
+                    getPrimitive(item, "RequireDate"),
+                    getPrimitive(item, "DeliveryDate")));
+
+            String title = "ITEM-ID " + (TextUtils.isEmpty(itemId) ? "-" : itemId);
+            if (!TextUtils.isEmpty(name)) {
+                title += "  " + name;
+            }
+            String detail = "数量 " + (TextUtils.isEmpty(quantity) ? "-" : quantity)
+                    + "  件数 " + (TextUtils.isEmpty(pieces) ? "-" : pieces)
+                    + "  要求日期 " + (TextUtils.isEmpty(requiredDate) ? "-" : requiredDate);
+            currentDetailList.add(new DisplayEntity("明细清单", title, detail));
+        }
+        if (currentDetailList.isEmpty()) {
+            currentDetailList.add(new DisplayEntity("明细清单", "暂无明细", "-"));
+        }
+    }
+
+    private String formatQuantity(String value) {
+        if (TextUtils.isEmpty(value)) {
+            return "";
+        }
+        try {
+            return new BigDecimal(value).stripTrailingZeros().toPlainString();
+        } catch (Exception e) {
+            return value;
         }
     }
 

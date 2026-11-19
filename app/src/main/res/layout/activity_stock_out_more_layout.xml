@@ -38,63 +38,78 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="bottom"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/btn_issue_more_add"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:layout_weight="1"
-                    android:text="扫描新投料" />
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/btn_issue_more_add_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="选择出库日期"
-                    />
+                    <Button
+                        android:id="@+id/btn_issue_more_add"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="扫描新投料" />
 
-                <Button
-                    android:id="@+id/btn_issue_more_add_extra"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="扫描额外领料"
-                    android:visibility="gone" />
+                    <Button
+                        android:id="@+id/btn_issue_more_add_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="选择出库日期" />
 
-                <Button
-                    android:id="@+id/btn_exe_warehouse_out"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="出库登账" />
+                    <Button
+                        android:id="@+id/btn_issue_more_add_extra"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="扫描额外领料"
+                        android:visibility="gone" />
 
-                <Button
-                    android:id="@+id/btn_exe_backup"
-                    android:layout_width="wrap_content"
+                    <Button
+                        android:id="@+id/btn_issue_more_add_backup_extra"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="额外领料备料"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="投料备料" />
-                <Button
-                    android:id="@+id/btn_query_backup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="查看备料" />
-                <Button
-                    android:id="@+id/btn_query_backup_bom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="查看Bom含备料" />
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_exe_warehouse_out"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="出库登账" />
+
+                    <Button
+                        android:id="@+id/btn_exe_backup"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="投料备料" />
+
+                    <Button
+                        android:id="@+id/btn_query_backup"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="查看备料" />
+
+                    <Button
+                        android:id="@+id/btn_query_backup_bom"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="查看Bom含备料" />
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -112,9 +127,6 @@
             android:textColor="@color/black"
             android:textCursorDrawable="@drawable/shape_custom_edit_text_cursor_bg"
             android:textSize="@dimen/text_size_14" />
-
-
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -177,5 +189,3 @@
 
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
-
-

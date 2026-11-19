@@ -1,0 +1,1456 @@
+package com.chinashb.www.mobileerp.warehouse;
+
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.chinashb.www.mobileerp.BaseActivity;
+import com.chinashb.www.mobileerp.R;
+import com.chinashb.www.mobileerp.basicobject.BoxItemEntity;
+import com.chinashb.www.mobileerp.basicobject.IstPlaceEntity;
+import com.chinashb.www.mobileerp.basicobject.WsResult;
+import com.chinashb.www.mobileerp.bean.CountSessionBean;
+import com.chinashb.www.mobileerp.bean.PanDianItemBean;
+import com.chinashb.www.mobileerp.commonactivity.CommonSelectItemActivity;
+import com.chinashb.www.mobileerp.commonactivity.CustomScannerActivity;
+import com.chinashb.www.mobileerp.commonactivity.SelectItemActivity;
+import com.chinashb.www.mobileerp.funs.CommonUtil;
+import com.chinashb.www.mobileerp.funs.WebServiceUtil;
+import com.chinashb.www.mobileerp.singleton.UserSingleton;
+import com.chinashb.www.mobileerp.utils.IntentConstant;
+import com.chinashb.www.mobileerp.utils.StringUtils;
+import com.chinashb.www.mobileerp.utils.TextWatcherImpl;
+import com.chinashb.www.mobileerp.utils.ToastUtil;
+import com.chinashb.www.mobileerp.widget.SwitchPanDianTypeDialog;
+import com.chinashb.www.mobileerp.widget.TitleLayoutManagerView;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
+import java.io.Serializable;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+/**
+ * 零部件库存盘点
+ */
+public class StockCheckPartInvCommonActivity extends BaseActivity {
+    Button btnSelectCheckFile;
+    Button btnScanIst;
+    Button btnScanItem;
+    Button btnCommit;
+
+    //    TextView tvCI;
+    private TitleLayoutManagerView titleLayoutManagerView;
+    Integer CI_ID;
+    Boolean ShowERPInv = false;
+    private String ScanFor;
+    private IstPlaceEntity thePlace;
+    private BoxItemEntity boxItemEntity;
+    private List<BoxItemEntity> boxItemEntityList;
+    private TextView tvIst;
+    private TextView tvERPIst;
+    private TextView tvItemCode;
+    private TextView tvManuLotno;
+    private TextView tvLeftQty;
+    private TextView tvItemName;
+    private TextView tvBoxName;
+    private EditText etN;
+    private EditText etPN;
+    private EditText etDQ;
+    private TextView realQtyTextView;
+    private Button btnCal;
+    private EditText etRemark;
+    private EditText inputEditText;
+    private EditText searchEditText;
+    private Button searchButton;
+    private RelativeLayout searchLayout;
+
+    // 范围先定新增：草稿作业、扫描范围、查看范围
+    private Button btnSelectDraftSession;
+    private Button btnScanScope;
+    private Button btnViewScope;
+    private TextView tvScopeSession;
+    private Integer CountSession_ID;
+    private String scopeSessionName = "";
+
+    private int Ac_Type = 1;
+//    private UserInfoEntity userInfo;
+
+    private String qty = "";
+    private String remark = "";
+
+    private String N = "";
+    private String PN = "";
+    private String DQ = "";
+    private boolean inventoryFileSelect = false;
+    private boolean istHasSelect = false;
+    private boolean fromZaiZhiPin = false;
+    private boolean fromSelfProduct;
+    private SwitchPanDianTypeDialog panDianTypeDialog;
+    private int pandianType = 1;
+    private PanDianItemBean panDianItemBean;
+    private EditText storeAreaEditText;
+    private EditText manuLotEditText;
+    private String storeArea = "";
+    private String manuLotNO = "";
+//    private boolean hasScannItemClickButtonForPhoto = false;
+    private boolean fromPart = false;
+    private LinearLayout originalDataLayout;
+    private LinearLayout productSearchLayout;
+    private RecyclerView productSearchRecyclerView;
+    private boolean isProcessingItemScan = false;
+    private boolean isProcessingIstScan = false;
+    private boolean isCommitingResult = false;
+    private String pendingScanText = "";
+    private final Handler inputHandler = new Handler();
+    private final Runnable parseInputRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!TextUtils.isEmpty(pendingScanText)) {
+                parseScanData(pendingScanText);
+            }
+        }
+    };
+
+    public StockCheckPartInvCommonActivity() {
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //todo  这个页面还没有统一
+        setContentView(R.layout.activity_stock_check_part_inv);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+        setHomeButton();
+        bindView();
+        setButtonClick();
+        getExtras();
+//        userInfo = UserSingleton.get().getUserInfo();
+        boxItemEntityList = new ArrayList<>();
+//        resumestate(savedInstanceState);
+
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
+    }
+
+    private void getExtras() {
+        Intent who = getIntent();
+        Ac_Type = (Integer) who.getIntExtra("Ac_Type", 1);
+        // 2026-10-25 john：零件盘点（新）只作为零件盘点使用，
+        // 撤回原先复制过来的成品/在制品分支，不改变原 StockCheckPartInvActivity。
+        productSearchLayout.setVisibility(View.GONE);
+    }
+
+    void bindView() {
+        btnSelectCheckFile = (Button) findViewById(R.id.btn_select_check_inv);
+        btnScanIst = (Button) findViewById(R.id.btn_select_check_inv_scan_ist);
+        btnScanItem = (Button) findViewById(R.id.btn_select_check_inv_add_item);
+        btnCommit = (Button) findViewById(R.id.btn_affirm_qty);
+        btnCal = (Button) findViewById(R.id.btn_check_inv_cal_qty);
+//        tvCI = (TextView) findViewById(R.id.tv_checkinventory_file);
+        titleLayoutManagerView = findViewById(R.id.stock_check_part_titleLayout);
+        tvIst = (TextView) findViewById(R.id.tv_check_stock_ist);
+
+        tvERPIst = (TextView) findViewById(R.id.tv_check_stock_ist_erp);
+        tvItemCode = (TextView) findViewById(R.id.tv_check_stock_item_code);
+        tvManuLotno = (TextView) findViewById(R.id.tv_check_stock_manulotno);
+        tvItemName = (TextView) findViewById(R.id.tv_check_stock_item_name);
+        tvBoxName = (TextView) findViewById(R.id.tv_check_stock_box);
+        tvLeftQty = (TextView) findViewById(R.id.tv_check_stock_box_left_qty);
+        realQtyTextView = (TextView) findViewById(R.id.et_check_stock_box_real_qty);
+        etN = (EditText) findViewById(R.id.et_check_stock_box_n);
+        etPN = (EditText) findViewById(R.id.et_check_stock_box_pn);
+        etDQ = (EditText) findViewById(R.id.et_check_stock_box_dq);
+        etRemark = (EditText) findViewById(R.id.et_check_stock_box_remark);
+        inputEditText = findViewById(R.id.content_stock_check_part_input_EditeText);
+
+        searchEditText = findViewById(R.id.check_inv_search_editText);
+        searchButton = findViewById(R.id.btn_check_inv_search);
+        searchLayout = findViewById(R.id.check_inv_search_layout);
+
+        storeAreaEditText = findViewById(R.id.et_check_stock_ist);
+        manuLotEditText = findViewById(R.id.et_check_stock_manulotno);
+
+        originalDataLayout = findViewById(R.id.check_part_inv_original_data_layout);
+        productSearchLayout = findViewById(R.id.check_part_inv_product_serarch_data_layout);
+        productSearchRecyclerView = findViewById(R.id.check_part_inv_product_search_recyclerView);
+
+        addScopeFirstControls();
+    }
+
+    /**
+     * 范围先定新增按钮：草稿作业、扫描范围、查看范围。
+     * 2026-10-24 john
+     */
+    private void addScopeFirstControls() {
+        android.view.ViewGroup root = (android.view.ViewGroup) titleLayoutManagerView.getParent();
+        LinearLayout scopePanel = new LinearLayout(this);
+        scopePanel.setOrientation(LinearLayout.VERTICAL);
+        scopePanel.setPadding(8, 4, 8, 4);
+
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(android.view.Gravity.CENTER);
+
+        btnSelectDraftSession = new Button(this);
+        btnSelectDraftSession.setText("草稿作业");
+        btnSelectDraftSession.setLayoutParams(new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        row.addView(btnSelectDraftSession);
+
+        btnScanScope = new Button(this);
+        btnScanScope.setText("扫描范围");
+        btnScanScope.setLayoutParams(new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        row.addView(btnScanScope);
+
+        btnViewScope = new Button(this);
+        btnViewScope.setText("查看范围");
+        btnViewScope.setLayoutParams(new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        row.addView(btnViewScope);
+
+        scopePanel.addView(row);
+
+        tvScopeSession = new TextView(this);
+        tvScopeSession.setPadding(8, 8, 8, 8);
+        tvScopeSession.setText("未选择草稿作业");
+        tvScopeSession.setTextColor(Color.DKGRAY);
+        scopePanel.addView(tvScopeSession);
+
+        btnSelectDraftSession.setOnClickListener(v -> new ScopeListAsyncTask().execute());
+        btnScanScope.setOnClickListener(v -> {
+            if (CountSession_ID == null) {
+                ToastUtil.showToastShort("请先选择草稿作业");
+                return;
+            }
+            ScanFor = "Scope";
+            new IntentIntegrator(StockCheckPartInvCommonActivity.this)
+                    .setCaptureActivity(CustomScannerActivity.class).initiateScan();
+        });
+        btnViewScope.setOnClickListener(v -> {
+            if (CountSession_ID == null) {
+                ToastUtil.showToastShort("请先选择草稿作业");
+                return;
+            }
+            new ScopeLocationsAsyncTask().execute();
+        });
+
+        root.addView(scopePanel, 1);
+    }
+
+//    private void resumestate(Bundle savedInstanceState) {
+//        if (savedInstanceState != null) {
+//            CI_ID = savedInstanceState.getInt("CI_ID");
+//            thePlace = (IstPlaceEntity) savedInstanceState.getSerializable("thePlace");
+//            scanitem = (BoxItemEntity) savedInstanceState.getSerializable("scanitem");
+//            scanstring = savedInstanceState.getString("scanstring");
+//            ScanFor = savedInstanceState.getString("ScanFor");
+//            saveditems = (List<BoxItemEntity>) savedInstanceState.getSerializable("saveditems");
+//            //还需恢复界面数据
+//        }
+//    }
+
+    void setButtonClick() {
+        btnSelectCheckFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StockCheckPartInvCommonActivity.this, SelectItemActivity.class);
+//                Intent intent = new Intent(StockCheckPartInvCommonActivity.this, CommonSelectItemActivity.class);
+                Integer Bu_ID = UserSingleton.get().getUserInfo().getBu_ID();
+
+
+//                String sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20)," +
+//                        "Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory " +
+//                        "Inner Join (" +
+//                        W + ") As W On W.Warehouse_ID=CheckInventory.Warehouse_ID " +
+//                        "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type ;
+                String sql = "";
+//                Datediff(day, Insert_Time, Getdate())<100  2025-07-28 将原100改为200，可扩大显示时间
+                if (Ac_Type == 13 || Ac_Type == 14){
+
+//                    2023-06-25 john 如果是五金，则ac_type只为1
+                    if (Bu_ID == 13 || Bu_ID == 94){
+                        Ac_Type = 1;
+                    }
+                    // TODO: 5/4/26 将  And Datediff(day, CheckDate, Getdate()) <= 0 and Datediff(day, Insert_Time, Getdate()) >= 0
+                     sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20),Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory\n" +
+//                            " Where Bu_ID=" + Bu_ID + " And  Ac_Type=" + Ac_Type + " And Datediff(day, Insert_Time, Getdate())<60 ";
+                            " Where Bu_ID=" + Bu_ID + " And  Ac_Type=" + Ac_Type + " And Datediff(day, CheckDate, Getdate()) <= 0 and Datediff(day, Insert_Time, Getdate()) >= 0 ";
+                }else if (Ac_Type == 1 || Ac_Type == 2){
+                    String W = "Select Distinct Warehouse_ID From Bu_W_Ac " +
+                            "Inner Join Bu_Ac On Bu_W_Ac.Ac_Book_ID=Bu_Ac.Ac_Book_ID " +
+                            "Where Bu_ID=" + Bu_ID + " And Ac_Type = " + Ac_Type;
+//
+                     sql = "Select CI_ID, CI_Name , Editor_name , Convert(nvarchar(100),CheckDate,20) ," +
+                            "Isnull(ShowERPInv,0) As ShowERPInv  From CheckInventory " +
+                            "Inner Join (" +
+                            W + ") As W On W.Warehouse_ID=CheckInventory.Warehouse_ID " +
+                            "Where Bu_ID=" + Bu_ID + " And Wc_ID Is null And Ac_Type=" + Ac_Type +
+                            " And " +
+//                        "Datediff(day, Insert_Time, Getdate())<30 ";
+                            " Datediff(day, CheckDate, Getdate()) <= 0 and Datediff(day, Insert_Time, Getdate()) >= 0";
+                }
+
+
+                List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(80, 120, 120, 120));
+                List<String> ColCaption = new ArrayList<String>(Arrays.asList("CI_ID", "盘存名称", "盘存者", "盘存日期"));
+                List<String> HiddenCol = new ArrayList<String>(Arrays.asList("ShowERPInv"));
+
+                String Title = "选择盘点文件";
+                intent.putExtra("Title", Title);
+                intent.putExtra("SQL", sql);
+                intent.putExtra("ColWidthList", (Serializable) ColWith);
+                intent.putExtra("ColCaptionList", (Serializable) ColCaption);
+                intent.putExtra("hiddenColList", (Serializable) HiddenCol);
+                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_Check_File);
+
+                startActivityForResult(intent, 200);
+
+            }
+        });
+
+
+        btnScanIst.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (SelectCI == null) {
+                    Toast.makeText(StockCheckPartInvCommonActivity.this, "请先选择盘点表", Toast.LENGTH_LONG).show();
+                    inputEditText.setText("");
+                    return;
+                }
+                ScanFor = "Ist";
+                new IntentIntegrator(StockCheckPartInvCommonActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+
+            }
+        });
+
+
+        btnScanItem.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (thePlace == null) {
+//                    Toast.makeText(StockCheckPartInvCommonActivity.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
+                    ToastUtil.showToastLong("请先扫描托盘所在的仓库单元位置条码");
+                    inputEditText.setText("");
+                    return;
+                }
+                ScanFor = "Item";
+//                hasScannItemClickButtonForPhoto = true;
+                new IntentIntegrator(StockCheckPartInvCommonActivity.this).setCaptureActivity(CustomScannerActivity.class).initiateScan();
+
+            }
+        });
+
+
+        btnCommit.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (SelectCI == null) {
+                    Toast.makeText(StockCheckPartInvCommonActivity.this, "请先选择盘点表", Toast.LENGTH_LONG).show();
+                    return;
+                }
+//                if (!fromZaiZhiPin) {
+//                    if (thePlace == null) {
+//                        Toast.makeText(StockCheckPartInvCommonActivity.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
+//                        return;
+//                    }
+//                }
+//                if (!fromZaiZhiPin) {
+//                    if (scanitem == null) {
+//                        Toast.makeText(StockCheckPartInvCommonActivity.this, "请扫描物料", Toast.LENGTH_LONG).show();
+//                        return;
+//                    }
+//                    if (is_box_existed(scanitem)) {
+//                        CommonUtil.ShowToast(StockCheckPartInvCommonActivity.this,
+//                                "前面已经提交过", R.mipmap.warning, Toast.LENGTH_SHORT);
+//                        return;
+//                    }
+//                }
+
+                String qty = realQtyTextView.getText().toString();
+
+                if (qty.equals("")) {
+                    ToastUtil.showToastShort("数量为空!");
+                    return;
+                }
+
+
+//                if (fromZaiZhiPin){
+//                    if (!StringUtils.isStringValid(etRemark.getText().toString())){
+//                        ToastUtil.showToastShort("在制品盘存需要输入备注!");
+//                        return;
+//                    }
+//                }
+
+//                if (fromZaiZhiPin){
+//                    if (storeArea == null || storeArea.length() == 0){
+//                        ToastUtil.showToastShort("库位位置为空!");
+//                        return;
+//                    }
+//
+//                    if (manuLotNO == null || manuLotNO.length() == 0){
+//                        ToastUtil.showToastShort("生产批次为空!");
+//                        return;
+//                    }
+//                }
+
+                Commit_Result();
+
+            }
+        });
+
+        btnCal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (boxItemEntity == null && panDianItemBean == null){
+                    ToastUtil.showToastShort("未选择物料，请扫描物料或搜索！");
+                    return;
+                }
+                Integer n = 1;
+                if (etN.getText().toString().equals("")) {
+                    etN.setText("1");
+                }
+                n = Integer.valueOf(etN.getText().toString());
+
+                double pn = 1;
+                if (etPN.getText().toString().equals("")) {
+                    etPN.setText("1");
+                }
+
+                pn = Double.valueOf(etPN.getText().toString());
+
+                double dq = 0;
+                if (etDQ.getText().toString().equals("")) {
+                    etDQ.setText("0");
+                }
+                dq = Double.valueOf(etDQ.getText().toString());
+
+                double q;
+                q = n * pn + dq;
+                realQtyTextView.setText(CommonUtil.DecimalFormat(q));
+            }
+        });
+
+        inputEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                String textValue = text == null ? "" : text.toString();
+                if (TextUtils.isEmpty(textValue)) {
+                    return;
+                }
+                if (!inventoryFileSelect) {
+                    ToastUtil.showToastShort("请先选择盘点表！");
+                    inputEditText.setText("");
+                    return;
+                }
+                if (textValue.length() > 7) {
+                    pendingScanText = textValue;
+                    inputHandler.removeCallbacks(parseInputRunnable);
+                    inputHandler.postDelayed(parseInputRunnable, 80);
+                }
+            }
+        });
+
+        storeAreaEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                storeArea = text.toString();
+            }
+        });
+
+        manuLotEditText.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                manuLotNO = text.toString();
+            }
+        });
+
+        realQtyTextView.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                qty = text.toString();
+            }
+        });
+
+        etRemark.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                remark = text.toString();
+//                parseScanData(text.toString());
+            }
+        });
+        etN.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                N = text.toString();
+//                parseScanData(text.toString());
+            }
+        });
+        etPN.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                PN = text.toString();
+//                parseScanData(text.toString());
+            }
+        });
+        etDQ.addTextChangedListener(new TextWatcherImpl() {
+            @Override
+protected void onTextChangedSafe(CharSequence text) {
+                                DQ = text.toString();
+//                parseScanData(text.toString());
+            }
+        });
+
+        searchButton.setOnClickListener(v -> {
+
+            if (!StringUtils.isStringValid(searchEditText.getText().toString())) {
+                ToastUtil.showToastShort("您的搜索内容为为空！");
+                return;
+            }
+            if (!inventoryFileSelect) {
+                ToastUtil.showToastShort("请先选择盘点表！");
+                return;
+            }
+
+            if (!fromZaiZhiPin) {
+                if (thePlace == null) {
+                    //                    Toast.makeText(StockCheckPartInvCommonActivity.this, "请先扫描托盘所在的仓库单元位置条码", Toast.LENGTH_LONG).show();
+                    ToastUtil.showToastLong("请先扫描托盘所在的仓库单元位置条码");
+                    return;
+                }
+            }
+
+            String input = searchEditText.getText().toString();
+//            if (input.contains(" ")){
+//
+//            }else{
+//
+//            }
+//            String whereSql = " and CF_Chinese_Name like '%"+keyWord+"%'";
+            if (fromSelfProduct){
+//                QueryProductStockAsyncTask productStockAsyncTask = new QueryProductStockAsyncTask();
+//                productStockAsyncTask.execute(input);
+                String sql = String.format("Select top 60 Item.Item_ID,Item_Version.IV_ID,product.Product_DrawNO as Item_Name, Item_Version.Item_Version As Version,Item.Item_Unit_Exchange ,Item.Item_Unit ,product.Product_DrawNO " +
+                        "From product inner join Item on product.item_id = item.item_id Inner Join Item_Version On Item.Item_ID = Item_Version.Item_ID Where  (product.Product_DrawNO like %s or product.current_ps like %s or item.item_id like %s) ", "'%" + input + "%'", "'%" + input + "%'", "'%" + input + "%'");
+
+                Intent intent = new Intent(StockCheckPartInvCommonActivity.this, CommonSelectItemActivity.class);
+                List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(50, 100, 100));
+                List<String> ColCaption = new ArrayList<String>(Arrays.asList("Item_ID", "IV_ID", "物料", "版本"));
+
+                String Title = "选择物料";
+                intent.putExtra("Title", Title);
+                intent.putExtra("SQL", sql);
+                intent.putExtra("ColWidthList", (Serializable) ColWith);
+                intent.putExtra("ColCaptionList", (Serializable) ColCaption);
+                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_PanDina);
+
+                startActivityForResult(intent, 500);
+
+            }else{
+
+                String sql = String.format("Select top 60 Item.Item_ID,Item_Version.IV_ID,Item.Item+' '+Item.Item_Name+' '+isnull(Item.Item_Spec2,'') As Item_Name, Item_Version.Item_Version As Version,Item.Item_Unit_Exchange ,Item.Item_Unit  " +
+                        "From Item Inner Join Item_Version On Item.Item_ID = Item_Version.Item_ID Where   (item.item like %s or item.item_drawno like %s or item.item_id like %s) ", "'%" + input + "%'", "'%" + input + "%'", "'%" + input + "%'");
+
+                Intent intent = new Intent(StockCheckPartInvCommonActivity.this, CommonSelectItemActivity.class);
+                List<Integer> ColWith = new ArrayList<Integer>(Arrays.asList(50, 100, 100));
+                List<String> ColCaption = new ArrayList<String>(Arrays.asList("Item_ID", "IV_ID", "物料", "版本"));
+
+                String Title = "选择物料";
+                intent.putExtra("Title", Title);
+                intent.putExtra("SQL", sql);
+                intent.putExtra("ColWidthList", (Serializable) ColWith);
+                intent.putExtra("ColCaptionList", (Serializable) ColCaption);
+                intent.putExtra(IntentConstant.Intent_Extra_to_select_search_from_postition, IntentConstant.Select_Search_From_Select_PanDina);
+
+                startActivityForResult(intent, 500);
+            }
+        });
+
+
+    }
+
+
+    protected void Commit_Result() {
+        if (isCommitingResult) {
+            return;
+        }
+        isCommitingResult = true;
+        CommitStockResultAsyncTask task = new CommitStockResultAsyncTask();
+        task.execute();
+    }
+
+
+    protected Boolean is_box_existed(BoxItemEntity box_item) {
+        Boolean result = false;
+
+        if (boxItemEntityList != null) {
+            for (int i = 0; i < boxItemEntityList.size(); i++) {
+                if (boxItemEntityList.get(i).getSMT_ID() == box_item.getSMT_ID()
+                        && boxItemEntityList.get(i).getSMM_ID() == box_item.getSMM_ID()
+                        && boxItemEntityList.get(i).getSMLI_ID() == box_item.getSMLI_ID() &&
+                        // TODO: 2019/12/3 扫描入库的判断是   if (boxItemEntityList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
+                        //                        return true;
+                        //                    }
+//                        saveditems.get(i).getLotID() == box_item.getLotID() ) {
+                        boxItemEntityList.get(i).getLotID() == box_item.getLotID() && boxItemEntityList.get(i).getDIII_ID() == box_item.getDIII_ID()) {
+                    return true;
+                }
+
+
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); // back button
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    protected void setHomeButton() {
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //选择盘点文件
+        if (requestCode == 200 && resultCode == 1) {
+            ActivityResultSelectInventoryFile(data);
+            return;
+        } else if (requestCode == 500 && resultCode == 1) {
+            //选择盘点物料，手动搜索
+            panDianItemBean = data.getParcelableExtra("SelectItem");
+            handlePandianItem(panDianItemBean);
+            return;
+        }
+
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+
+            if (result.getContents() == null) {
+            } else {
+                if ("Scope".equals(ScanFor)) {
+                    handleScopeScan(result.getContents());
+                } else {
+                    parseScanData(result.getContents());
+                }
+
+            }
+        } else {
+            // This is important, otherwise the result will not be passed to the fragment
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void handlePandianItem(PanDianItemBean panDianItemBean) {
+        tvItemCode.setText("暂无相关条码");
+
+        //// TODO: 2020/12/29  重复的判断
+        DecimalFormat DF = new DecimalFormat("####.####");
+//        tvERPIst.setText(bi.getIstName());
+        tvERPIst.setText("");
+//        if (thePlace.getIst_ID() != bi.getIst_ID() || thePlace.getSub_Ist_ID() != bi.getSub_Ist_ID()) {
+//            tvERPIst.setTextColor(Color.RED);
+//        } else {
+//            tvERPIst.setTextColor(Color.BLACK);
+//        }
+        tvItemName.setText(panDianItemBean.getItem_Name());
+//        tvBoxName.setText(bi.getBoxNameNo());
+//        tvManuLotno.setText(bi.getManuLotNo());
+        if (!ShowERPInv) {
+            tvLeftQty.setVisibility(View.INVISIBLE);
+        } else {
+            tvLeftQty.setVisibility(View.VISIBLE);
+        }
+//        tvLeftQty.setText(DF.format(bi.getQty()));
+//        //realQtyTextView.setText(DF.format(bi.getBoxQty()));
+//        if (bi.getQty() != bi.getBoxQty()) {
+//            tvLeftQty.setTextColor(Color.RED);
+//        } else {
+//            tvLeftQty.setTextColor(Color.BLACK);
+//        }
+
+        etPN.setText(panDianItemBean.getItem_Unit_Exchange() + "");
+        inputEditText.setText("");
+        inputEditText.findFocus();
+
+
+    }
+
+    static HashMap<String, String> SelectCI;
+
+    protected void ActivityResultSelectInventoryFile(Intent data) {
+        if (data != null) {
+//            SelectCI= (HashMap<String,String>) data.getSerializableExtra("SelectItem");
+            SelectCI = (HashMap<String, String>) data.getSerializableExtra("SelectItem");
+            if (SelectCI != null) {
+//                tvCI.setText(SelectCI.get("CI_Name"));
+                titleLayoutManagerView.setTitle(SelectCI.get("CI_Name"));
+                CI_ID = Integer.valueOf(SelectCI.get("CI_ID"));
+                ShowERPInv = Boolean.valueOf(SelectCI.get("ShowERPInv"));
+
+                //空
+//                thePlace = null;
+                tvIst.setText("");
+
+                boxItemEntity = null;
+                inventoryFileSelect = true;
+            }
+        }
+    }
+
+
+    private void parseScanData(String result) {
+        //// TODO: 2019/12/10 这块逻辑可优化
+        if (TextUtils.isEmpty(result)) {
+            return;
+        }
+        if (result.contains("/")) {
+            System.out.println("result = " + result);
+            if (!inventoryFileSelect) {
+                ToastUtil.showToastShort("请先选择盘点表！");
+                inputEditText.setText("");
+                return;
+            }
+            String[] qrContent;
+            qrContent = result.split("/");
+            if (qrContent.length >= 2) {
+                String qrTitle = qrContent[0];
+                if (!qrTitle.equals("")) {
+                    if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
+                        //物品条码
+                        if (!istHasSelect) {
+                            ToastUtil.showToastShort("请先扫描库位码！");
+                            inputEditText.setText("");
+                            return;
+                        }
+                        if (isProcessingItemScan || isCommitingResult) {
+                            return;
+                        }
+                        isProcessingItemScan = true;
+                        scanstring = result;
+                        AsyncGetInvBox task = new AsyncGetInvBox();
+                        task.execute();
+                    }
+
+
+                }
+
+                if (result.startsWith("/SUB_IST_ID/") || result.startsWith("/IST_ID/")) {
+                    //仓库位置码
+                    if (isProcessingIstScan || isCommitingResult) {
+                        return;
+                    }
+                    isProcessingIstScan = true;
+                    scanstring = result;
+                    GetIstAsynctTask task = new GetIstAsynctTask();
+                    task.execute();
+                }
+
+                //  2023-06-25 john 五金的特殊解析
+                if (result.startsWith("Item")){
+                    if (isProcessingItemScan || isCommitingResult) {
+                        return;
+                    }
+                    isProcessingItemScan = true;
+                    scanstring = result;
+                    AsyncGetItemWujin task = new AsyncGetItemWujin();
+                    task.execute();
+
+                }
+            }
+        }
+    }
+
+    //    protected void ActivityResultScanIst(String result) {
+////        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
+////        String X = result.getContents();
+////        String X = result;
+//        if (result.startsWith("/SUB_IST_ID/") || result.startsWith("/IST_ID/")) {
+//            //仓库位置码
+//            scanstring = result;
+//            GetIstAsynctTask task = new GetIstAsynctTask();
+//            task.execute();
+//        }
+//    }
+    String scanstring;
+
+//    protected void ActivityResultScanItem(String result) {
+////        Toast.makeText(this, "Scanned: " + result, Toast.LENGTH_LONG).show();
+////        String X = result.getContents();
+//        scanstring = result;
+//        if (result.contains("/")) {
+//            String[] qrContent;
+//            qrContent = result.split("/");
+//            if (qrContent.length >= 2) {
+//                String qrTitle = qrContent[0];
+//                if (!qrTitle.equals("")) {
+//                    if (qrTitle.equals("VE") || qrTitle.equals("VF") || qrTitle.equals("VG") || qrTitle.equals("V9") || qrTitle.equals("VA") || qrTitle.equals("VB") || qrTitle.equals("VC")) {
+//                        //物品条码
+//                        AsyncGetInvBox task = new AsyncGetInvBox();
+//                        task.execute();
+//                    }
+//                }
+//
+//            }
+//        }
+//    }
+
+
+    @Override
+    protected void onResume() {
+        if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+        super.onResume();
+    }
+
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        outState.putSerializable("CI_ID", CI_ID);
+//        outState.putSerializable("thePlace", (Serializable) thePlace);
+//        outState.putSerializable("scanitem", (Serializable) scanitem);
+//        outState.putSerializable("scanstring", (Serializable) scanstring);
+//        outState.putSerializable("ScanFor", (Serializable) ScanFor);
+//
+//        outState.putSerializable("saveditems", (Serializable) saveditems);
+//
+//    }
+
+    private void handleScopeScan(String barcode) {
+        if (CountSession_ID == null) {
+            ToastUtil.showToastShort("请先选择草稿作业");
+            return;
+        }
+        new ScopeScanAsyncTask().execute(barcode);
+    }
+
+    // 范围先定：列出待扫描草稿作业
+    private class ScopeListAsyncTask extends AsyncTask<Void, Void, WsResult> {
+        @Override
+        protected WsResult doInBackground(Void... params) {
+            int buId = UserSingleton.get().getUserInfo().getBu_ID();
+            int warehouseId = 2; // TODO 从用户/仓库选择中取
+            return WebServiceUtil.op_CheckInventory_ScopeListV2(buId, warehouseId, Ac_Type,
+                    UserSingleton.get().getHRName(), "");
+        }
+
+        @Override
+        protected void onPostExecute(WsResult result) {
+            if (result != null && result.getResult()) {
+                showSessionSelectDialog(result.getInfo());
+            } else {
+                tvScopeSession.setText("获取草稿作业失败");
+                if (result != null && result.getErrorInfo() != null) {
+                    ToastUtil.showToastShort(result.getErrorInfo());
+                }
+            }
+        }
+    }
+
+    private void showSessionSelectDialog(String json) {
+        try {
+            JsonObject root = new JsonParser().parse(json).getAsJsonObject();
+            JsonArray sessions = root.getAsJsonArray("Sessions");
+            java.util.List<CountSessionBean> sessionList = new Gson().fromJson(sessions,
+                    new TypeToken<java.util.List<CountSessionBean>>() {
+                    }.getType());
+            if (sessionList == null || sessionList.isEmpty()) {
+                ToastUtil.showToastShort("没有可用的草稿作业");
+                return;
+            }
+            String[] items = new String[sessionList.size()];
+            for (int i = 0; i < sessionList.size(); i++) {
+                CountSessionBean bean = sessionList.get(i);
+                items[i] = bean.getCountSession_Name() + "\n" + bean.getFormattedCheckDate();
+            }
+            new android.app.AlertDialog.Builder(StockCheckPartInvCommonActivity.this)
+                    .setTitle("选择草稿作业")
+                    .setItems(items, (dialog, which) -> {
+                        CountSessionBean bean = sessionList.get(which);
+                        CountSession_ID = bean.getCountSession_ID();
+                        scopeSessionName = bean.getCountSession_Name();
+                        tvScopeSession.setText("已选择：" + scopeSessionName);
+                    })
+                    .show();
+        } catch (Exception e) {
+            tvScopeSession.setText("解析草稿作业失败");
+        }
+    }
+
+    // 范围先定：查看已扫描/冻结范围
+    private class ScopeLocationsAsyncTask extends AsyncTask<Void, Void, WsResult> {
+        @Override
+        protected WsResult doInBackground(Void... params) {
+            int buId = UserSingleton.get().getUserInfo().getBu_ID();
+            int warehouseId = 2;
+            return WebServiceUtil.op_CheckInventory_ScopeLocationsV2(CountSession_ID, buId, warehouseId, Ac_Type,
+                    UserSingleton.get().getHRName(), "");
+        }
+
+        @Override
+        protected void onPostExecute(WsResult result) {
+            if (result != null && result.getResult()) {
+                tvScopeSession.setText("范围信息：" + result.getInfo());
+            } else {
+                ToastUtil.showToastShort(result != null && result.getErrorInfo() != null
+                        ? result.getErrorInfo() : "查看范围失败");
+            }
+        }
+    }
+
+    // 范围先定：扫描并加入草稿范围
+    private class ScopeScanAsyncTask extends AsyncTask<String, Void, WsResult> {
+        @Override
+        protected WsResult doInBackground(String... params) {
+            int buId = UserSingleton.get().getUserInfo().getBu_ID();
+            int warehouseId = 2;
+            return WebServiceUtil.op_CheckInventory_ScopeScanV2(params[0], CountSession_ID, buId, warehouseId, Ac_Type,
+                    UserSingleton.get().getHRName(), "");
+        }
+
+        @Override
+        protected void onPostExecute(WsResult result) {
+            if (result != null && result.getResult()) {
+                tvScopeSession.setText("扫描范围成功：" + result.getInfo());
+            } else {
+                ToastUtil.showToastShort(result != null && result.getErrorInfo() != null
+                        ? result.getErrorInfo() : "扫描范围失败");
+            }
+        }
+    }
+
+    private class AsyncGetInvBox extends AsyncTask<String, Void, Void> {
+        BoxItemEntity boxItemEntity;
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            BoxItemEntity bi = null;
+            //// TODO: 2019/12/12 actype = 1 是零部件，2是成品 ，以下是原来代码注释掉
+//            if (Ac_Type == 1 && userInfo.getBu_ID() == 1) {
+//                bi = WebServiceUtil.op_Check_Stock_Item_Barcode(userInfo.getBu_ID(), scanstring);
+//            } else {
+//                bi = WebServiceUtil.op_Check_Stock_Item_Barcode_V2(scanstring);
+//            }
+
+
+
+            if (Ac_Type == 1) {
+                bi = WebServiceUtil.op_Check_Stock_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(), scanstring);
+            } else {
+                bi = WebServiceUtil.op_Check_Stock_Item_Barcode_V2(scanstring);
+            }
+
+
+            boxItemEntity = bi;
+
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //tv.setText(fahren + "∞ F");
+
+            tvItemCode.setText(scanstring);
+            if (boxItemEntity != null) {
+                if (!boxItemEntity.getResult()) {
+                    Toast.makeText(StockCheckPartInvCommonActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                    inputEditText.setText("");
+                } else {
+                    BoxItemEntity bi = boxItemEntity;
+                    if (is_box_existed(bi)) {
+                        CommonUtil.ShowToast(StockCheckPartInvCommonActivity.this,
+                                "前面已经扫描过", R.mipmap.warning, Toast.LENGTH_SHORT);
+                    } else {
+                        //暂存一下
+                        StockCheckPartInvCommonActivity.this.boxItemEntity = bi;
+                        DecimalFormat DF = new DecimalFormat("####.####");
+                        tvERPIst.setText(bi.getIstName());
+                        if (thePlace.getIst_ID() != bi.getIst_ID() || thePlace.getSub_Ist_ID() != bi.getSub_Ist_ID()) {
+                            tvERPIst.setTextColor(Color.RED);
+                        } else {
+                            tvERPIst.setTextColor(Color.BLACK);
+                        }
+                        tvItemName.setText(bi.getItemName());
+                        tvBoxName.setText(bi.getBoxNameNo());
+                        tvManuLotno.setText(bi.getManuLotNo());
+
+                        if (!ShowERPInv) {
+                            tvLeftQty.setVisibility(View.INVISIBLE);
+                        } else {
+                            tvLeftQty.setVisibility(View.VISIBLE);
+                        }
+                        tvLeftQty.setText(DF.format(bi.getQty()));
+                        //realQtyTextView.setText(DF.format(bi.getBoxQty()));
+                        if (bi.getQty() != bi.getBoxQty()) {
+                            tvLeftQty.setTextColor(Color.RED);
+                        } else {
+                            tvLeftQty.setTextColor(Color.BLACK);
+                        }
+
+                        if (fromZaiZhiPin){
+                            tvLeftQty.setVisibility(View.GONE);
+//                        storeAreaEditText.setVisibility(View.GONE);
+//                        manuLotEditText.setVisibility(View.GONE);
+
+
+                        }
+                        inputEditText.setText("");
+                        inputEditText.findFocus();
+                    }
+                }
+            }
+            pendingScanText = "";
+            isProcessingItemScan = false;
+
+
+            //pbScan.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+
+    private class AsyncGetItemWujin extends AsyncTask<String, Void, Void> {
+        BoxItemEntity boxItemEntity;
+
+        @Override
+        protected Void doInBackground(String... params) {
+
+            BoxItemEntity bi = null;
+
+//            if (Ac_Type == 1) {
+//                bi = WebServiceUtil.op_Check_Stock_Item_Barcode(UserSingleton.get().getUserInfo().getBu_ID(), scanstring);
+//            } else {
+//                bi = WebServiceUtil.op_Check_Stock_Item_Barcode_V2(scanstring);
+//            }
+            bi = WebServiceUtil.op_Check_Commit_Item_Wujin(scanstring);
+
+
+            boxItemEntity = bi;
+
+
+            return null;
+        }
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+            //tv.setText(fahren + "∞ F");
+
+            tvItemCode.setText(scanstring);
+            if (boxItemEntity != null) {
+                if (!boxItemEntity.getResult()) {
+                    Toast.makeText(StockCheckPartInvCommonActivity.this, boxItemEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                    inputEditText.setText("");
+                } else {
+                    BoxItemEntity bi = boxItemEntity;
+//                    if (is_box_existed(bi)) {
+//                        CommonUtil.ShowToast(StockCheckPartInvCommonActivity.this,
+//                                "前面已经扫描过", R.mipmap.warning, Toast.LENGTH_SHORT);
+//                        return;
+//                    }
+//                    五金的判断主要是item_id和iv_id
+
+
+                    //暂存一下
+                    StockCheckPartInvCommonActivity.this.boxItemEntity = bi;
+                    DecimalFormat DF = new DecimalFormat("####.####");
+                    tvERPIst.setText(bi.getIstName());
+                    if (thePlace.getIst_ID() != bi.getIst_ID() || thePlace.getSub_Ist_ID() != bi.getSub_Ist_ID()) {
+                        tvERPIst.setTextColor(Color.RED);
+                    } else {
+                        tvERPIst.setTextColor(Color.BLACK);
+                    }
+                    tvItemName.setText(bi.getItemName());
+                    tvBoxName.setText(bi.getBoxNameNo());
+                    tvManuLotno.setText(bi.getManuLotNo());
+
+                    if (!ShowERPInv) {
+                        tvLeftQty.setVisibility(View.INVISIBLE);
+                    } else {
+                        tvLeftQty.setVisibility(View.VISIBLE);
+                    }
+                    tvLeftQty.setText(DF.format(bi.getQty()));
+                    //realQtyTextView.setText(DF.format(bi.getBoxQty()));
+                    if (bi.getQty() != bi.getBoxQty()) {
+                        tvLeftQty.setTextColor(Color.RED);
+                    } else {
+                        tvLeftQty.setTextColor(Color.BLACK);
+                    }
+
+                    if (fromZaiZhiPin){
+                        tvLeftQty.setVisibility(View.GONE);
+//                        storeAreaEditText.setVisibility(View.GONE);
+//                        manuLotEditText.setVisibility(View.GONE);
+
+
+                    }
+                    inputEditText.setText("");
+                    inputEditText.findFocus();
+                }
+            }
+            pendingScanText = "";
+            isProcessingItemScan = false;
+
+
+            //pbScan.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+
+    private class GetIstAsynctTask extends AsyncTask<String, Void, Void> {
+        private IstPlaceEntity scanIstPlaceEntity;
+
+        @Override
+        protected Void doInBackground(String... params) {
+            scanIstPlaceEntity = WebServiceUtil.op_Check_Commit_IST_Barcode(scanstring);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+
+            if (scanIstPlaceEntity != null && scanIstPlaceEntity.getResult()) {
+                thePlace = scanIstPlaceEntity;
+                //清空
+                boxItemEntity = null;
+                tvIst.setText(thePlace.getIstName());
+                inputEditText.setText("");
+                inputEditText.setHint("请继续扫描");
+                istHasSelect = true;
+            } else {
+                if (scanIstPlaceEntity != null) {
+                    Toast.makeText(StockCheckPartInvCommonActivity.this, scanIstPlaceEntity.getErrorInfo(), Toast.LENGTH_LONG).show();
+                }
+                inputEditText.setText("");
+            }
+            pendingScanText = "";
+            isProcessingIstScan = false;
+
+            //pbScan.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+
+    private class CommitStockResultAsyncTask extends AsyncTask<String, Void, Void> {
+        WsResult ws_result;
+
+        @Override
+
+        protected Void doInBackground(String... params) {
+            int Bu_ID = UserSingleton.get().getUserInfo().getBu_ID();
+            if (Bu_ID == 13 || Bu_ID == 94){
+                if ( boxItemEntity != null ) {
+                    //扫描模式
+                    BoxItemEntity bi = boxItemEntity;
+                    ws_result = WebServiceUtil.op_CheckInventory_Item_Wujin(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+                            thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, bi.getItem_ID(), bi.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+                }
+            }else{
+                if (fromZaiZhiPin) {
+//                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+//                        CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "", thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+//                        0, 0, 0, 0, qty, N, PN, DQ, remark);
+//
+//                ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),CI_ID,UserSingleton.get().getUserInfo().getBu_ID(),"",
+//                        thePlace.getIst_ID(),thePlace.getSub_Ist_ID(),0L,0L,0L,0L,qty,N,PN,DQ,remark);
+                    if ( boxItemEntity != null ) {
+                        //扫描模式
+                        BoxItemEntity bi = boxItemEntity;
+                        if (Ac_Type == 1) {
+                            //todo  && userInfo.getBu_ID() == 1
+                            ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+                                    CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                    bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
+
+                        } else {
+                            ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
+                                    CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                    bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
+                        }
+                    } else {
+                        if (panDianItemBean != null){
+                            //输入模式
+                            ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+                                    thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+
+                        }
+                    }
+
+                } else {
+                    if (fromSelfProduct){
+                        if ( boxItemEntity != null ) {
+                            BoxItemEntity bi = null;
+                            bi= boxItemEntity;
+                            //解决编译通过但报错的问题
+//            String qty = realQtyTextView.getText().toString();
+//            String remark = etRemark.getText().toString();
+//
+//            String N = etN.getText().toString();
+//            String PN = etPN.getText().toString();
+//            String DQ = etDQ.getText().toString();
+
+                            if(bi != null && bi.getItem_ID() > 0){
+
+                                if (Ac_Type == 1) {
+                                    //todo  && userInfo.getBu_ID() == 1
+                                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+                                            CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
+
+                                } else {
+                                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
+                                            CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
+                                }
+                            }
+                        }else{
+                            if (panDianItemBean != null){
+
+                                ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+                                        thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+                            }
+
+                        }
+
+
+
+
+                    }else {
+                        if (fromPart){
+                            //boxitemEntity就扫描，即相机或pda，而pandianbean是搜索的物料
+                            if ( boxItemEntity != null && panDianItemBean == null  ) {
+                                BoxItemEntity bi = null;
+                                bi= boxItemEntity;
+                                //解决编译通过但报错的问题
+//            String qty = realQtyTextView.getText().toString();
+//            String remark = etRemark.getText().toString();
+//
+//            String N = etN.getText().toString();
+//            String PN = etPN.getText().toString();
+//            String DQ = etDQ.getText().toString();
+
+                                if(bi != null && bi.getItem_ID() > 0){
+
+//                                if (Ac_Type == 1) {
+                                    //todo  && userInfo.getBu_ID() == 1
+                                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V4(UserSingleton.get().getHRName(),
+                                            CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+                                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), bi.getLotID(), qty, N, PN, DQ, remark);
+
+//                                } else {
+//                                    ws_result = WebServiceUtil.op_Commit_Stock_Result_V3(UserSingleton.get().getHRName(),
+//                                            CI_ID, scanstring, thePlace.getIst_ID(), thePlace.getSub_Ist_ID(),
+//                                            bi.getSMT_ID(), bi.getSMM_ID(), bi.getSMLI_ID(), qty, N, PN, DQ, remark);
+//                                }
+                                }
+                            }else if (panDianItemBean != null){
+                                //零件也可以调这个方法
+                                ws_result = WebServiceUtil.commit_Self_Product_Pandian(UserSingleton.get().getHRName(), CI_ID, UserSingleton.get().getUserInfo().getBu_ID(), "",
+                                        thePlace != null ? thePlace.getIst_ID() : 0, thePlace != null ? thePlace.getSub_Ist_ID() : 0, panDianItemBean.getItem_ID(), panDianItemBean.getIV_ID(), 0L, qty, N, PN, DQ, remark, storeArea, manuLotNO);
+
+                            }
+
+
+
+
+                        }
+
+
+                    }
+
+
+                }
+            }
+
+
+
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            isCommitingResult = false;
+            if (ws_result != null && ws_result.getResult()) {
+                CommonUtil.ShowToast(StockCheckPartInvCommonActivity.this,
+                        "提交成功", R.mipmap.smiley, Toast.LENGTH_SHORT);
+
+                if (boxItemEntity != null) {
+                    boxItemEntityList.add(boxItemEntity);
+                }
+
+                //Clear Text
+                realQtyTextView.setText("");
+                etRemark.setText("");
+                tvBoxName.setText("");
+                tvERPIst.setText("");
+                tvItemCode.setText("");
+                tvItemName.setText("");
+                tvLeftQty.setText("");
+                tvManuLotno.setText("");
+
+                inputEditText.setText("");
+                inputEditText.findFocus();
+//                hasScannItemClickButtonForPhoto = false;
+                panDianItemBean = null;
+                boxItemEntity = null;
+                pendingScanText = "";
+
+            } else {
+                String errorInfo = ws_result == null ? "接口无返回结果" : ws_result.getErrorInfo();
+                ToastUtil.showToastLong("提交失败" + errorInfo);
+
+            }
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            //pbScan.setVisibility(View.VISIBLE);
+
+
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
+
+    }
+
+
+//    private AdapterProInv productAdapter;
+//    private List<ProductsEntity> productsEntityList;
+//    private int currentPage = 1;
+//    private class QueryProductStockAsyncTask extends AsyncTask<String, Void, Void> {
+//        //ArrayList<ProductsEntity> us = new ArrayList<ProductsEntity>();
+//
+//        @Override
+//        protected Void doInBackground(String... params) {
+//
+////            String keyWord = etFilter.getText().toString();
+//            String keyWord = params[0];
+//            String js = WebServiceUtil.getQueryInv(UserSingleton.get().getUserInfo().getBu_ID(), 2, keyWord, currentPage, 20);
+//            Gson gson = new Gson();
+//            productsEntityList = gson.fromJson(js, new TypeToken<List<ProductsEntity>>() {
+//            }.getType());
+//
+//            return null;
+//        }
+//
+//
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            //tv.setText(fahren + "∞ F");
+//
+//            productAdapter = new AdapterProInv(StockCheckPartInvCommonActivity.this, productsEntityList);
+//            productSearchRecyclerView.setAdapter(productAdapter);
+//            if (productsEntityList != null && productsEntityList.size() > 0){
+//                originalDataLayout.setVisibility(View.GONE);
+//                productSearchLayout.setVisibility(View.VISIBLE);
+//            }
+//            productAdapter.setOnItemClickListener((view, position) -> {
+////                        if (productsEntityList != null && productsEntityList.size() > 0) {
+////                            Intent intent = new Intent(StockCheckPartInvCommonActivity.this, StockQueryProductItemActivity.class);
+////                            intent.putExtra("selected_item", (Serializable) productsEntityList.get(position));
+////                            startActivityForResult(intent, 100);
+////                        }
+////                    ToastUtil.showToastLong("正在开发！");
+////                PanDianItemBean tempPanDianItemBean = new PanDianItemBean(null);
+//
+//
+//                    }
+//            );
+//            //pbScan.setVisibility(View.INVISIBLE);
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            //pbScan.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Void... values) {
+//        }
+//
+//    }
+
+
+}

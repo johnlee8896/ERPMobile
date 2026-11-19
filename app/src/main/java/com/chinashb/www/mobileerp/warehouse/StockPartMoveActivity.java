@@ -426,7 +426,14 @@ protected void onTextChangedSafe(CharSequence text) {
                         Message message = new Message();
                         message.what = 1;
                         Bundle bundle = new Bundle();
-                        bundle.putString("suggest_ist", boxItemEntity.getIstName());
+                        if (!TextUtils.isEmpty(backUpScanCode)){
+                            //2026-07-10 john 撤销备料进入移库界面除建议库位外，还提示原来的库位
+                            if (backUpBean != null){
+                                bundle.putString("suggest_ist", boxItemEntity.getIstName() + "原库位：" + backUpBean.getIstName());
+                            }
+                        }else{
+                            bundle.putString("suggest_ist", boxItemEntity.getIstName());
+                        }
                         message.setData(bundle);
                         handler.sendMessage(message);
                     }

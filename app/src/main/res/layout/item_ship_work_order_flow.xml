@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/dimen_size_10"
+    android:layout_marginTop="@dimen/dimen_size_6"
+    android:layout_marginRight="@dimen/dimen_size_10"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/dimen_size_10">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_ship_work_order_flow_track_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/login_title_color"
+            android:textSize="@dimen/text_size_15"
+            android:textStyle="bold"
+            tools:text="单号 GW20261008-3" />
+
+        <TextView
+            android:id="@+id/item_ship_work_order_flow_customer_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_14"
+            tools:text="Tesla Fremont" />
+
+        <TextView
+            android:id="@+id/item_ship_work_order_flow_info_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_14"
+            tools:text="指令号 221619  日期 2026-10-08" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/item_ship_work_order_flow_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:paddingLeft="@dimen/dimen_size_8"
+        android:paddingRight="@dimen/dimen_size_8"
+        android:text="下一步" />
+
+</LinearLayout>

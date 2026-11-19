@@ -26,6 +26,7 @@ import com.chinashb.www.mobileerp.basicobject.QueryAsyncTask;
 import com.chinashb.www.mobileerp.basicobject.UserInfoEntity;
 import com.chinashb.www.mobileerp.funs.CommonUtil;
 import com.chinashb.www.mobileerp.funs.OnLoadDataListener;
+import com.chinashb.www.mobileerp.logistics.LogisticsIncomeCheckActivity;
 import com.chinashb.www.mobileerp.logistics.StockLogisticsInActivity;
 import com.chinashb.www.mobileerp.singleton.UserSingleton;
 import com.chinashb.www.mobileerp.talk.ShbTcpTest;
@@ -48,6 +49,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button returnWCButton;//返工出库
     private Button departMentInButton;//部门领料
     private Button partStockCheckButton;//零部件盘点
+    private Button partStockCheckNewButton;//零件盘点（新）
     private Button makingProductButton;//在制品盘存
     private Button selfProductButton;//自制车间成品盘点
     private Button completeProductButton;//成品库存
@@ -73,6 +75,14 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
     private Button getSendInfoButton;//扫描标签获取发货及入库信息
     private Button stockInCompany29Button;//零部件公司的入库三个结算中心
     private Button logisticsReceiveManageNewButton;//物流接收新，可扫送货单或发货
+    // codex by john 2026-09-10 10:52 - 物流来料检索按钮
+    private Button logisticsIncomeCheckButton;
+    // codex by john 2026-09-16 16:04 - 冻结投料按钮
+    private Button freezeFeedButton;
+    // codex by john 2026-11-12 - 来料待入库拣货按钮
+    private Button pendingWarehousePickingButton;
+    // codex by john 2026-11-12 - 物料使用线别查询按钮
+    private Button itemUsageLineQueryButton;
     private FloatingActionButton floatButton;
     //    private ProgressBar pbScan;
     private UserInfoEntity userInfo;
@@ -93,6 +103,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         lookQRButton = (Button) findViewById(R.id.look_qr_button);
         makingProductButton = (Button) findViewById(R.id.btn_check_inv_worksite);
         partStockCheckButton = (Button) findViewById(R.id.btn_check_part_inv);
+        partStockCheckNewButton = (Button) findViewById(R.id.btn_check_part_inv_new);
         selfProductButton = (Button) findViewById(R.id.btn_check_pro_part_inv);
         completeProductButton = (Button) findViewById(R.id.btn_query_product_inv);
         partStockInButton = (Button) findViewById(R.id.btn_query_part_inv);
@@ -115,6 +126,14 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         getSendInfoButton = findViewById(R.id.btn_get_diii_by_code);
         stockInCompany29Button = findViewById(R.id.btn_stock_in_company29);
         logisticsReceiveManageNewButton = findViewById(R.id.btn_stock_logistics_manage_new);
+        // codex by john 2026-09-10 10:52 - 物流来料检索按钮
+        logisticsIncomeCheckButton = findViewById(R.id.btn_logistics_income_check);
+        // codex by john 2026-09-16 16:04 - 冻结投料按钮
+        freezeFeedButton = findViewById(R.id.btn_freeze_feed);
+        // codex by john 2026-11-12 - 来料待入库拣货按钮
+        pendingWarehousePickingButton = findViewById(R.id.btn_pending_warehouse_picking);
+        // codex by john 2026-11-12 - 物料使用线别查询按钮
+        itemUsageLineQueryButton = findViewById(R.id.btn_item_usage_line_query);
 
 //        pbScan = (ProgressBar) findViewById(R.id.pb_scan_progressbar);
         floatButton = (FloatingActionButton) findViewById(R.id.fab_test_tcp_net);
@@ -180,6 +199,7 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         completeProductButton.setOnClickListener(this);
         partStockInButton.setOnClickListener(this);
         partStockCheckButton.setOnClickListener(this);
+        partStockCheckNewButton.setOnClickListener(this);
         selfProductButton.setOnClickListener(this);
         makingProductButton.setOnClickListener(this);
         workLineInButton.setOnClickListener(this);
@@ -202,6 +222,10 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
         getSendInfoButton.setOnClickListener(this);
         stockInCompany29Button.setOnClickListener(this);
         logisticsReceiveManageNewButton.setOnClickListener(this);
+        logisticsIncomeCheckButton.setOnClickListener(this);
+        freezeFeedButton.setOnClickListener(this);
+        pendingWarehousePickingButton.setOnClickListener(this);
+        itemUsageLineQueryButton.setOnClickListener(this);
     }
 
     private void productSupply() {
@@ -262,6 +286,8 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             makingProductCheck();
         } else if (view == partStockCheckButton) {
             partStockCheck(false);
+        } else if (view == partStockCheckNewButton) {
+            partStockCheckNew();
         } else if (view == selfProductButton) {
             selfProduct();
         } else if (view == lookQRButton) {
@@ -332,6 +358,26 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             Intent intent = new Intent(StockPartMainActivity.this, NewLogisticsManageActivity.class);
             startActivity(intent);
 
+        }else if (view == logisticsIncomeCheckButton){
+            // codex by john 2026-09-10 10:52 - 物流来料检索
+            Intent intent = new Intent(StockPartMainActivity.this, LogisticsIncomeCheckActivity.class);
+            startActivity(intent);
+
+        }else if (view == freezeFeedButton){
+            // codex by john 2026-09-16 16:04 - 冻结投料
+            Intent intent = new Intent(StockPartMainActivity.this, FreezeFeedActivity.class);
+            startActivity(intent);
+
+        }else if (view == pendingWarehousePickingButton){
+            // codex by john 2026-11-12 - 来料待入库拣货
+            Intent intent = new Intent(StockPartMainActivity.this, PendingWarehousePickingActivity.class);
+            startActivity(intent);
+
+        }else if (view == itemUsageLineQueryButton){
+            // codex by john 2026-11-12 - 物料使用线别查询
+            Intent intent = new Intent(StockPartMainActivity.this, ItemUsageLineQueryActivity.class);
+            startActivity(intent);
+
         }
 
     }
@@ -367,6 +413,18 @@ public class StockPartMainActivity extends BaseActivity implements View.OnClickL
             Intent intent = new Intent(StockPartMainActivity.this, StockCheckPartInvActivity.class);
             intent.putExtra("Ac_Type", 1);
             intent.putExtra(IntentConstant.Intent_Extra_check_from_zaizhipin, fromZaiZhiPin);
+            intent.putExtra(IntentConstant.Intent_Extra_check_part, true);
+            startActivity(intent);
+        }
+    }
+
+    private void partStockCheckNew() {
+        if (userInfo == null) {
+            Toast.makeText(StockPartMainActivity.this, "请先登录", Toast.LENGTH_LONG).show();
+        } else {
+            // 2026-10-29 john：零件盘点（新）改走最新 V2/V3 _New 页面。
+            Intent intent = new Intent(StockPartMainActivity.this, StockCheckPartInvCommonNewActivity.class);
+            intent.putExtra("Ac_Type", 1);
             intent.putExtra(IntentConstant.Intent_Extra_check_part, true);
             startActivity(intent);
         }

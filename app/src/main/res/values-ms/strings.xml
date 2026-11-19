@@ -25,7 +25,7 @@
 
     <!-- Printer -->
     <string name="discovery_printer">Cari Pencetak</string>
-    <string name="paired_printer_list">Senarai Pencetak Terkini</string>
+    <string name="paired_printer_list">Senarai Pencetak Berpasangan Sistem</string>
     <string name="print_text">Cetak Teks</string>
     <string name="print_1D_barcode">Cetak Kod Bar 1D</string>
     <string name="print_2D_barcode">Cetak Kod QR</string>
