@@ -44,26 +44,34 @@ public class UploadApk : IHttpHandler
             return;
         }
 
-        string downloadDirectory = context.Server.MapPath("~/Download/");
-        if (!Directory.Exists(downloadDirectory))
+        try
         {
-            Directory.CreateDirectory(downloadDirectory);
+            string downloadDirectory = context.Server.MapPath("~/Download/");
+            if (!Directory.Exists(downloadDirectory))
+            {
+                Directory.CreateDirectory(downloadDirectory);
+            }
+
+            string targetFilePath = Path.Combine(downloadDirectory, safeFileName);
+            string tempFilePath = targetFilePath + ".uploading";
+
+            postedFile.SaveAs(tempFilePath);
+
+            if (File.Exists(targetFilePath))
+            {
+                File.Delete(targetFilePath);
+            }
+
+            File.Move(tempFilePath, targetFilePath);
+
+            context.Response.StatusCode = 200;
+            context.Response.Write("Upload success: /Download/" + safeFileName);
         }
-
-        string targetFilePath = Path.Combine(downloadDirectory, safeFileName);
-        string tempFilePath = targetFilePath + ".uploading";
-
-        postedFile.SaveAs(tempFilePath);
-
-        if (File.Exists(targetFilePath))
+        catch (Exception ex)
         {
-            File.Delete(targetFilePath);
+            context.Response.StatusCode = 500;
+            context.Response.Write("Upload failed: " + ex.Message);
         }
-
-        File.Move(tempFilePath, targetFilePath);
-
-        context.Response.StatusCode = 200;
-        context.Response.Write("Upload success: /Download/" + safeFileName);
     }
 
     public bool IsReusable
